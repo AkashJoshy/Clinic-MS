@@ -1,0 +1,32 @@
+# Client
+client/node_modules/
+client/build/
+client/dist/
+
+# Server
+server/node_modules/
+server/dist/
+
+# Environment files
+.env.*
+client/.env
+server/.env
+
+# Logs
+*.log
+logs/
+
+# OS files
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# VS Code
+.vscode/
+
+# Vite
+client/.vite/
+
+#Prettier
+.prettierrc

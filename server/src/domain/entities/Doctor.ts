@@ -1,0 +1,96 @@
+import type {
+  AddDoctorProps,
+  DoctorStatus,
+  SubscriptionDetails,
+} from "../types/doctor.types.ts";
+import type { Gender, ImageData } from "../types/shared.types.ts";
+
+export class Doctor {
+  constructor(
+    public id: string | null,
+    public userId: string | null,
+    public displayName: string,
+    public doctorCode: string,
+    public bio: string | null,
+    public profilePicture: ImageData,
+    public languages: string[],
+    public gender: Gender,
+    public departmentId: string,
+    public specialization: string,
+    public qualification: string,
+    public experienceYears: number,
+    public licenceNumber: string,
+    public averageRating: number,
+    public totalReviews: number,
+    public registrationDoc: ImageData,
+    public medicalLicenceDoc: ImageData,
+    public status: DoctorStatus,
+    public subscription: {
+      current: SubscriptionDetails | null;
+      history: SubscriptionDetails[];
+    },
+    public reviewedAt: Date | null,
+    public reviewedMessage: string | null,
+    public readonly createdAt: Date | null,
+    public updatedAt: Date | null,
+  ) {}
+
+  static create(data: AddDoctorProps): Doctor {
+    return new Doctor(
+      data.id ?? null,
+      data.userId,
+      data.displayName,
+      data.doctorCode,
+      data.bio,
+      data.profilePicture ?? {
+        publicId: '',
+        url: ''
+      },
+      data.languages,
+      data.gender,
+      data.departmentId,
+      data.specialization,
+      data.qualification,
+      data.experienceYears,
+      data.licenceNumber,
+      data.averageRating,
+      data.totalReviews,
+      data.registrationDoc,
+      data.medicalLicenceDoc,
+      data.status,
+      data.subscription ?? {
+        current: null,
+        history: []
+      },
+      data.reviewedAt ?? null,
+      data.reviewedMessage ?? null,
+      data.createdAt ?? null,
+      data.updatedAt ?? null,
+    );
+  }
+
+  static register(data: Omit<AddDoctorProps, "status">): Doctor {
+    return this.create({ ...data, status: "PENDING" });
+  }
+
+  approve(reviewMessage: string) {
+    if (this.status !== "PENDING") {
+      throw new Error("Only pending doctors can be approved.");
+    }
+
+    this.status = "APPROVED";
+    this.reviewedMessage = reviewMessage;
+    this.reviewedAt = new Date();
+  }
+
+  reject(reviewMessage: string) {
+    if (this.status !== "PENDING") {
+      throw new Error("Only pending doctors can be rejected.");
+    }
+
+    this.status = "REJECTED";
+    this.reviewedMessage = reviewMessage;
+    this.reviewedAt = new Date();
+  }
+
+}

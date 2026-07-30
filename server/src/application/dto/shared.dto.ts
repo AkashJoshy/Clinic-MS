@@ -1,0 +1,67 @@
+import type { Address } from "../../domain/entities/Address.ts";
+import type { Clinic } from "../../domain/entities/Clinic.ts";
+import type { Doctor } from "../../domain/entities/Doctor.ts";
+import type { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
+import type User from "../../domain/entities/User.ts";
+import type { DepartmentDto } from "./admin.dto.ts";
+import type { ClinicDetails } from "./doctor.dto.ts";
+
+type DoctorClinicDetails = Omit<
+  DoctorClinic,
+  "timeZone" | "duration" | "updatedAt" | "createdAt" | "clinicId" | "doctorId"
+>;
+export type ClinicDoctorDetails = Omit<
+  Doctor,
+  "departmentId" | "status" | "createdAt" | "updatedAt" | "certificate"
+> & {
+  certificate: string
+}
+
+export type AdminDoctorDetails = Omit<
+  Doctor,
+  | "departmentId"
+  | "status"
+  | "createdAt"
+  | "updatedAt"
+  | "gender"
+  | "licenceNumber"
+  | "certificate"
+>;
+
+type UserDetails = Omit<
+  User,
+  | "role"
+  | "provider"
+  | "isEmailVerified"
+  | "updatedAt"
+  | "password"
+  | "isBlocked"
+  | "isActive"
+  | "isTwoFactorenabled"
+>;
+
+export interface DoctorProfileResponseDto {
+  clinicDetails: ClinicDetails | null;
+  doctorClinic: DoctorClinicDetails;
+  departmentDetails: DepartmentDto | null;
+  user: UserDetails;
+  address: Omit<BaseAddress, "ownerId"> | null
+}
+
+export type DoctorProfileServiceResponseDto = DoctorProfileResponseDto & {
+  doctor: Omit<ClinicDoctorDetails, "certificate"> & {
+    certificate: string
+  }
+}
+
+export interface ClinicWithDetailsDto {
+  clinic: Clinic;
+  user: Omit<User, "password"> | null;
+  address: Address | null;
+}
+
+type BaseAddress = Omit<Address, "updatedAt" | "createdAt" | "id" | "ownerType">
+
+export type UpdateAddressDto = BaseAddress
+
+export type AddressOption = "PRIMARY" | "NEW"

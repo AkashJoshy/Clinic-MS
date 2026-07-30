@@ -1,0 +1,101 @@
+import {
+  ALLOWED_DOC_TYPES,
+  BLOODGROUPS,
+  COUNTRIES,
+  RELATIONS,
+  ROLES,
+} from "@/constants/form-fields.constants";
+import * as z from "zod";
+
+export const email = z
+  .email("Please enter a valid email address.")
+  .trim()
+  .refine((val) => {
+    const [prefix, ...syn] = val.split("@");
+    return prefix.length >= 3;
+  }, "Please enter a valid email address.");
+
+export const phone = z
+  .string()
+  .trim()
+  .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number.");
+
+export const password = z
+  .string()
+  .min(8, "Password must be at least 8 characters long.")
+  .regex(/[A-Z]/, "Must contain one uppercase letters")
+  .regex(/[0-9]/, "Must contain one number")
+  .regex(/^\S*$/, "Password cannot contain spaces");
+
+export const otp = z
+  .string()
+  .length(6, "OTP must be 6 digits")
+  .regex(/^\d+$/, "OTP must be numeric");
+
+export const role = z.enum(ROLES);
+
+export const withPasswordConfirm = (schema: z.ZodObject<any>) => {
+  return schema.refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"],
+  })
+}
+
+export const fullName = z
+  .string()
+  .trim()
+  .min(3, "Full name must be at least 3 characters long.");
+
+export const strOptional = z.string().optional();
+
+export const yearEstablished = z
+  .string()
+  .min(4, "Enter valid year")
+  .max(4, "Enter valid year")
+  .refine((val) => {
+    const year = Number(val);
+    return year >= 1900 && year <= new Date().getFullYear();
+  }, "Enter a valid year");
+
+export const documentField = (
+  fieldName: string,
+  maxSize: number,
+  size: number,
+) =>
+  z
+    .any()
+    .refine((file) => file instanceof File, `${fieldName} is required`)
+    .refine((file) => file?.size <= maxSize, {
+      message: `Max file size is ${size}MB`,
+    })
+    .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
+      message: "Only PDF, JPG, PNG allowed",
+    });
+
+export const country = z.string().min(1, "Please select a country")
+
+export const relation = z.enum(RELATIONS, {
+  message: "Select the relation",
+});
+
+export const bloodGroup = z.enum(BLOODGROUPS, {
+  message: "Select the blood group",
+});
+
+export const state = z.string().min(1, "Please select a state")
+
+export const city = z.string().min(1, "Please select a city")
+
+export const district = z.string().trim().min(1, "District is required ");
+
+export const pincode = z
+  .string()
+  .trim()
+  .min(6, "Invalid PIN/ZIP")
+  .max(12, "Invalid PIN/ZIP")
+  .regex(/^[A-Z0-9\s\-]{4,10}$/i, "Invalid PIN/ZIP format");
+
+export const addressLine = z
+  .string()
+  .min(1, "Address is required")
+  .min(10, "Please enter a complete address");
