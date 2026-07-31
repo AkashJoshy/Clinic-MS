@@ -1,7 +1,7 @@
 import type { EntityStatus, ServiceMode } from "./common"
 
 export interface DepartmentData {
-    id?: string
+    id: string
     name: string
     status: EntityStatus,
     mode: ServiceMode
@@ -15,6 +15,8 @@ export type AllApprovalsProps = {
     icon?: React.ElementType;
     name:  string
 };
+
+export type SelectedDept = Omit<DepartmentData, "mode">;
 
 export type NotFoundProps = {
     name: string;

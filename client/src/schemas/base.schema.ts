@@ -1,7 +1,9 @@
 import {
   ALLOWED_DOC_TYPES,
+  ALLOWED_IMG_TYPES,
   BLOODGROUPS,
   COUNTRIES,
+  GENDER,
   RELATIONS,
   ROLES,
 } from "@/constants/form-fields.constants";
@@ -20,6 +22,12 @@ export const phone = z
   .trim()
   .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number.");
 
+export const altPhone = z
+  .string()
+  .trim()
+  .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number.")
+  .optional();
+
 export const password = z
   .string()
   .min(8, "Password must be at least 8 characters long.")
@@ -32,14 +40,20 @@ export const otp = z
   .length(6, "OTP must be 6 digits")
   .regex(/^\d+$/, "OTP must be numeric");
 
-export const role = z.enum(ROLES);
+export const role = z.enum(ROLES, {
+  message: "Please select a role",
+});
+
+export const gender = z.enum(GENDER, {
+  message: "Please select a gender",
+});
 
 export const withPasswordConfirm = (schema: z.ZodObject<any>) => {
   return schema.refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
     path: ["confirmPassword"],
-  })
-}
+  });
+};
 
 export const fullName = z
   .string()
@@ -72,7 +86,22 @@ export const documentField = (
       message: "Only PDF, JPG, PNG allowed",
     });
 
-export const country = z.string().min(1, "Please select a country")
+export const pictureField = (
+  fieldName: string,
+  maxSize: number,
+  size: number,
+) =>
+  z
+    .any()
+    .refine((file) => file instanceof File, `${fieldName} is required`)
+    .refine((file) => file?.size <= maxSize, {
+      message: `Max file size is ${size}MB`,
+    })
+    .refine((file) => ALLOWED_IMG_TYPES.includes(file?.type), {
+      message: "Only JPG, PNG, WEBP allowed",
+    });
+
+export const country = z.string().min(1, "Please select a country");
 
 export const relation = z.enum(RELATIONS, {
   message: "Select the relation",
@@ -82,9 +111,9 @@ export const bloodGroup = z.enum(BLOODGROUPS, {
   message: "Select the blood group",
 });
 
-export const state = z.string().min(1, "Please select a state")
+export const state = z.string().min(1, "Please select a state");
 
-export const city = z.string().min(1, "Please select a city")
+export const city = z.string().min(1, "Please select a city");
 
 export const district = z.string().trim().min(1, "District is required ");
 
@@ -97,5 +126,19 @@ export const pincode = z
 
 export const addressLine = z
   .string()
-  .min(1, "Address is required")
+  .min(1, "AddressLine is required")
   .min(10, "Please enter a complete address");
+
+export const latitude = z
+  .string()
+  .min(1, "Longitude is required")
+  .refine((val) => !val || /^-?\d+(\.\d+)?$/.test(val), {
+    message: "Invalid latitude",
+  });
+
+export const longitude = z
+  .string()
+  .min(1, "Longitude is required")
+  .refine((val) => !val || /^-?\d+(\.\d+)?$/.test(val), {
+    message: "Invalid longitude",
+  });

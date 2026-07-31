@@ -1,7 +1,7 @@
 import type { NavItem } from "@/types/sideNav";
 import {
   LayoutDashboard,
-  Building2,
+  Network,
   Stethoscope,
   CreditCard,
   Settings,
@@ -39,6 +39,11 @@ export const ADMIN_TOP_NAV_ITEMS: NavItem[] = [
     label: "Patients",
     icon: <Users size={20} />,
     path: "/admin/patients",
+  },
+  {
+    label: "Departments",
+    icon: <Network size={20} />,
+    path: "/admin/departments",
   },
   {
     label: "Subscription Plans",

@@ -9,7 +9,7 @@ const OTPVerification = ({ role }: { role: Role }) => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <OTPForm otpDetails={OTP_VERIFICATION_DETAILS} otpEmail={location.state?.email} role={role} />
+      <OTPForm otpDetails={OTP_VERIFICATION_DETAILS} otpEmail={location.state?.email} role={role} backRoute={backRoute} />
     </div>
   );
 };

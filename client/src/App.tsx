@@ -18,12 +18,15 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import { loginAdmin, loginDoctor } from "./services/auth.service";
 
 // Clinic layout + pages
-// import AddDoctorPage from "./pages/clinic/AddDoctorPage";
 import { ProtectedRoute } from "./components/shared/ProtectedRoute";
 import { AuthRoute } from "./components/shared/AuthRoute";
 import NotFoundPage from "./pages/NotFoundPage";
 import DoctorDashboardLayout from "./components/layout/DoctorDashboardLayout";
 import UnderConstruction from "./components/layout/UnderConstruction";
+import DepartmentPage from "./pages/admin/DepartmentPage";
+import AddDepartmentPage from "./pages/admin/AddDepartmentPage";
+import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
+// import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
 
 const router = createBrowserRouter([
   {
@@ -103,13 +106,16 @@ const router = createBrowserRouter([
       },
 
       { path: "/two-factor", element: <TwofactorAuthenticationPage /> },
-      { path: "/doctor-registration", element: (
-                  <UnderConstruction
-                    title="Doctor Registration"
-                    backTo="/"
-                    backLabel="Back to Home"
-                  />
-                ),},
+      {
+        path: "/doctor-registration",
+        element: (
+          <UnderConstruction
+            title="Doctor Registration"
+            backTo="/"
+            backLabel="Back to Homepage"
+          />
+        ),
+      },
 
       {
         element: <ProtectedRoute role="patient" />,
@@ -352,6 +358,18 @@ const router = createBrowserRouter([
                     backLabel="Back to Dashboard"
                   />
                 ),
+              },
+              {
+                path: "/admin/departments",
+                element: (<DepartmentPage />),
+              },
+              {
+                path: "/admin/department/add",
+                element: (<AddDepartmentPage />),
+              },
+              {
+                path: "/admin/department/edit/:deptId",
+                element: (<EditDepartmentPage />),
               },
               {
                 path: "/admin/subscriptions",

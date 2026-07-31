@@ -1,7 +1,6 @@
-import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { Trash, X, XCircle } from "lucide-react";
-import { MdRestore, MdRestoreFromTrash } from "react-icons/md";
+import { Trash, XCircle } from "lucide-react";
+import { MdRestoreFromTrash } from "react-icons/md";
 
 export interface DeleteModelProps {
   id: string;  
@@ -42,7 +41,7 @@ function DeleteConfirmationalModal({
                 <MdRestoreFromTrash size={18} className="text-primary-400" />
               }
             </div>
-            <h2 className="m-2">{updatedAction} {type}</h2>
+            <h2 className="m-2 text-white">{updatedAction} {type}</h2>
             <button
               onClick={closeDeleteBox}
               className="ml-auto rounded-lg p-1.5 text-[#8b9ab0] hover:bg-white/10 hover:text-white transition"
@@ -52,14 +51,14 @@ function DeleteConfirmationalModal({
           </div>
           <div className="border-t border-white/10" />
           <div className="p-3">
-            <p className="text-sm text-[#c8d1dc] min-[320px]:w-62.5 min-[375px]:w-100">
+            <p className="text-sm text-[#c8d1dc] xsxs:w-62.5 xxs:w-100">
               Are you sure you want to {action.toLocaleLowerCase()}{" "}
-              <span className={` ${action === "DELETE" ? "bg-red-600" : "bg-primary"}  rounded p-0.5`}>{name}</span>?
+              <span className={` ${action === "DELETE" ? "text-red-600" : "text-primary"}  rounded p-0.5`}>{name}</span>?
             </p>
             <div className="p-2 mt-2 flex">
               <Button
                 onClick={closeDeleteBox}
-                className="bg-gray-500 hover:bg-gray-500 min-[320px]:ml-22 min-[375px]:ml-34 min-[425px]:ml-46 md:ml-auto"
+                className="bg-gray-500 hover:bg-gray-500 xsxs:ml-22 xxs:ml-34 xs:ml-46 md:ml-auto"
               >
                 Cancel
               </Button> 

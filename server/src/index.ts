@@ -3,6 +3,7 @@ import authRouter from "./presentation/routes/auth.routes.js";
 import patientRouter from "./presentation/routes/patient.routes.ts"
 import adminRouter from "./presentation/routes/admin.routes.js"
 import doctorRouter from "./presentation/routes/doctor.routes.ts"
+import commonRouter from "./presentation/routes/common.routes.ts"
 import connectDB from "./infrastructure/database/config.js";
 import cors from "cors"
 import dotenv from "dotenv"
@@ -29,6 +30,7 @@ app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/patient", patientRouter)
 app.use("/api/v1/admin", adminRouter)
 app.use("/api/v1/doctor", doctorRouter)
+app.use("/api/v1/common", commonRouter)
 
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

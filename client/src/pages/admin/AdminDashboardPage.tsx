@@ -42,7 +42,7 @@ const AdminDashboardPage: React.FC = () => {
         <StatCard title="Total Clinics"   value="142"   delta="+12 clinics" />
         <StatCard title="Active Doctors"  value="538"   delta="+34 doctors" />
         <StatCard title="Subscriptions"   value="891"   delta="+67 plans" />
-        <StatCard title="Appointments"    value="3,204" delta="-5%"         positive={false} />
+        <StatCard title="Appointments"    value="3,204" delta="-5%" positive={false} />
       </div>
 
       <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">

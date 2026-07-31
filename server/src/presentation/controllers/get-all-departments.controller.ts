@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import type { IGetAllDepartmentsUseCase } from "../../../application/repositories/admin/IGetAllDepartmentsUseCase.ts";
+import { ResponseStatusCode } from "../../domain/enums/response.enums.js";
+import { RESPONSE_MESSAGE } from "../../domain/constants/response.constant.js";
+import type { IGetAllDepartmentsUseCase } from "../../application/repositories/admin/IGetAllDepartmentsUseCase.ts";
 
 
 export class GetAllDepartmentsController{

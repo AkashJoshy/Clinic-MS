@@ -17,7 +17,12 @@ export const ENDPOINTS = {
     GOOGLE: "/auth/google",
     GOOGLE_CALLBACK: "/auth/google/callback",
   },
-  ADMIN: {},
+  ADMIN: {
+    ADD_DEPARTMENT: "/admin/departments",
+    DOCTORS: "/admin/doctors",
+    DEPARTMENT: (id: string) => `/admin/departments/${id}`,
+    UPDATE_CLINIC_STATUS: (clinicId: string) => `/admin/clinics/${clinicId}`,
+  },
   PATIENT: {
     PROFILES: (userId: string) => `/patient/profiles/${userId}`,
   },
