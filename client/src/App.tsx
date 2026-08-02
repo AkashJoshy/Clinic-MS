@@ -26,7 +26,7 @@ import UnderConstruction from "./components/layout/UnderConstruction";
 import DepartmentPage from "./pages/admin/DepartmentPage";
 import AddDepartmentPage from "./pages/admin/AddDepartmentPage";
 import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
-// import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
+import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
 
 const router = createBrowserRouter([
   {
@@ -109,11 +109,7 @@ const router = createBrowserRouter([
       {
         path: "/doctor-registration",
         element: (
-          <UnderConstruction
-            title="Doctor Registration"
-            backTo="/"
-            backLabel="Back to Homepage"
-          />
+          <DoctorRegistrationPage />
         ),
       },
 

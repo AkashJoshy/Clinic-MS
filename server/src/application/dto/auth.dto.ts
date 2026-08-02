@@ -15,7 +15,6 @@ export interface RegisterUserDTO {
     role: Role;
 }
 
-
 export interface GoogleLoginDTO {
    name: string,
    email: string,

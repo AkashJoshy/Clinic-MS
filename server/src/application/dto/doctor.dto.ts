@@ -69,3 +69,36 @@ export type DoctorInfo = {
 } & {
   address: BaseAddress | null;
 }
+
+export interface DoctorRegisterDto {
+  fullName: string;
+  email: string;
+  phone: string;
+  bio: string;
+  gender: Gender,
+  departmentId: string;
+  specialization: string;
+  qualification: string;
+  experienceYears: number;
+  licenceNumber: string;
+  password: string;
+  confirmPassword: string;
+  clinicName: string;
+  registrationNumber: string;
+  about?: string;
+  altPhone?: string;
+  addressLine: string;
+  country: string;
+  state: string;
+  city: string;
+  pincode: string;
+  latitude: number;
+  longitude: number;
+  mode: ServiceMode;
+  consultationFee: number;
+  doctorProfilePicture?: Express.Multer.File[];
+  clinicRegistrationDoc?: Express.Multer.File[];
+  establishmentLicenceDoc?: Express.Multer.File[];
+  medicalLicenceDoc?: Express.Multer.File[];
+  doctorRegistrationDoc?: Express.Multer.File[];
+}

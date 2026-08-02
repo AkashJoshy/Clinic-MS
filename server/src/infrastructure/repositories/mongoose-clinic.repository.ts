@@ -17,7 +17,6 @@ export class MongooseClinicRepository
       registrationNumber: doc.registrationNumber,
       about: doc.about,
       altPhone: doc.altPhone,
-      yearOfEstablished: doc.yearOfEstablished,
       registrationDoc: doc.registrationDoc,
       establishmentLicenceDoc: doc.establishmentLicenceDoc,
       location: {
@@ -36,7 +35,6 @@ export class MongooseClinicRepository
       registrationNumber: entity.registrationNumber,
       about: entity.about,
       altPhone: entity.altPhone,
-      yearOfEstablished: entity.yearOfEstablished,
       registrationDoc: entity.registrationDoc,
       establishmentLicenceDoc: entity.establishmentLicenceDoc,
       location: {

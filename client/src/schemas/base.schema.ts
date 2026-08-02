@@ -2,7 +2,6 @@ import {
   ALLOWED_DOC_TYPES,
   ALLOWED_IMG_TYPES,
   BLOODGROUPS,
-  COUNTRIES,
   GENDER,
   RELATIONS,
   ROLES,
@@ -82,9 +81,16 @@ export const documentField = (
     .refine((file) => file?.size <= maxSize, {
       message: `Max file size is ${size}MB`,
     })
-    .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
-      message: "Only PDF, JPG, PNG allowed",
-    });
+    .refine((file) => {
+  console.log(file?.type);
+  console.log(ALLOWED_DOC_TYPES.includes(file?.type));
+  return ALLOWED_DOC_TYPES.includes(file?.type);
+}, {
+  message: "Only PDF, JPG, PNG allowed",
+})
+    // .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
+    //   message: "Only PDF, JPG, PNG allowed",
+    // });
 
 export const pictureField = (
   fieldName: string,
@@ -142,3 +148,19 @@ export const longitude = z
   .refine((val) => !val || /^-?\d+(\.\d+)?$/.test(val), {
     message: "Invalid longitude",
   });
+
+export const bio = z
+  .string()
+  .trim()
+  .max(1000, "Bio cannot exceed 1000 characters")
+  .optional()
+  .or(z.literal(""));
+
+export const mode = z.enum(["ONLINE", "OFFLINE", "BOTH"], {
+  message: "Select a consultation mode",
+});
+
+export const consultationFee = z.coerce
+  .number("Consulation fee is required")
+  .min(200, "Consultation fee must be at least ₹200")
+  .max(1000, "Consultation fee must not exceed ₹1000");

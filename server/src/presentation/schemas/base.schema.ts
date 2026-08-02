@@ -1,7 +1,11 @@
 import * as z from "zod";
-import { ALLOWED_DOC_TYPES, USER_ROLES } from "../../domain/constants/user.constants.ts";
+import {
+  ALLOWED_DOC_TYPES,
+  USER_ROLES,
+} from "../../domain/constants/user.constants.ts";
 import {
   BLOODGROUPS,
+  GENDER,
   RELATIONSTOSCHEMA,
 } from "../../domain/constants/patient.constants.ts";
 
@@ -24,12 +28,9 @@ export const fullName = z
     message: "Full name cannot exceed 20 characters",
   });
 
-export const gender = z.enum(
-  ["Male", "Female", "Others", "Prefer not to say"],
-  {
-    message: "Invalid gender",
-  },
-);
+export const gender = z.enum(GENDER, {
+  message: "Please select a gender",
+});
 
 export const password = z
   .string()
@@ -46,6 +47,12 @@ export const phone = z
   .string()
   .trim()
   .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number.");
+
+export const altPhone = z
+  .string()
+  .trim()
+  .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit phone number.")
+  .optional();
 
 export const token = z.string().trim().min(1, {
   message: "Token is required",
@@ -117,9 +124,8 @@ export const about = z
   .min(1, "About must be at least 10 characters")
   .max(1000, "About cannot exceed 1000 characters");
 
-export const departmentIds = z
-  .string()
-  .regex(/^[a-f\d]{24}$/i, "Invalid department");
+export const departmentId = z
+  .string().min(1, "Select a Department")
 
 export const year = z
   .string()
@@ -155,3 +161,19 @@ export const documentField = (
     .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
       message: "Only PDF, JPG, PNG allowed",
     });
+
+export const bio = z
+  .string()
+  .trim()
+  .max(1000, "Bio cannot exceed 1000 characters")
+  .optional()
+  .or(z.literal(""));
+
+export const mode = z.enum(["ONLINE", "OFFLINE", "BOTH"], {
+  message: "Invalid consultation mode",
+});
+
+export const consultationFee = z.coerce
+      .number("Consulation fee is required")
+      .min(200, "Consultation fee must be at least ₹200")
+      .max(1000, "Consultation fee must not exceed ₹1000")

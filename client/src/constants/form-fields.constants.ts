@@ -2,15 +2,13 @@ export const ALLOWED_DOC_TYPES = ["application/pdf", "image/jpeg", "image/png"] 
 
 export const ALLOWED_IMG_TYPES = ["image/jpeg", "image/png", "image/webp"] as const
 
-export const COUNTRIES = ["India", "USA", "UK"] as const;
-
 export const ROLES = ["PATIENT", "DOCTOR", "CLINIC", "ADMIN"] as const
 
 export const GENDER = [
-  "Male",
-  "Female",
-  "Others",
-  "Prefer Not To Say"
+  "MALE",
+  "FEMALE",
+  "OTHERS",
+  "PREFER NOT TO SAY"
 ] as const
 
 export const RELATIONS = [

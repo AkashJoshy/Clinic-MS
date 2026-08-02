@@ -23,35 +23,17 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
       mode:"onChange",
       resolver: zodResolver(doctorRegisterStep1Schema),
       defaultValues:{
-        fullName: "Kakashi",
-        email: "kakashi@gmail.com",
-        phone: "9554437278",
-        bio: "dfgdfdf",
-        gender: "Male",
-        department: "dept2",
-        specialization: "sdsdsdsd",
-        qualification: "sdsdsd",
-        experienceYears: 4,
-        licenceNumber: "dfdf453545",
-        password:"12Akashok",
-        confirmPassword: "12Akashok"
+        gender: "",
       }
   })
 
   const step2Form = useForm<DoctorRegisterStep2FormData>({
       mode:"onChange",
       resolver: zodResolver(doctorRegisterStep2Schema),
-      defaultValues:{
-        clinicName: "Health Care",
-          consultationFee: 250,
-          registrationNumber: "rtrt5456456",
-          altPhone: "9554437278",
-          about: "sfdsfdfdfdf",
-          addressLine: "sddzddsdsdsdsdfsfsds dsf sfdfdrfdf",
-          country: "",
+      defaultValues:{country: "",
           state: "",
           city: "",
-          pincode: "3545454"
+          departmentId: ""
       }
     })
 
@@ -89,9 +71,6 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
       ...step3Form.getValues()
     };
 
-    console.log(`PayLoad: `)
-    console.log(payload)
-    
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {

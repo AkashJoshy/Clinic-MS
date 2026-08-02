@@ -7,19 +7,19 @@ import type { RegisterUserDTO, UserDto } from "../dto/auth.dto.js";
 
 export class UserCreationService {
   constructor(
-    private readonly userRepo: IUserRepository,
-    private readonly _hasher: IHashService,
+    private readonly _userRepository: IUserRepository,
+    private readonly _hasheService: IHashService,
   ) {}
 
   async execute(dto: RegisterUserDTO, message?: string): Promise<UserDto> {
-    const exists = await this.userRepo.findByEmail(dto.email);
+    const exists = await this._userRepository.findByEmail(dto.email);
     if (exists) throw new AlreadyExistsError(message);
 
-    const hashed = await this._hasher.hashPassword(dto.password);
+    const hashed = await this._hasheService.hashPassword(dto.password);
     if (!hashed) {
         throw new InternalServerError()
     }
-    return this.userRepo.save(User.create({
+    return this._userRepository.save(User.create({
       ...dto,
       password: hashed,
       isEmailVerified: false,

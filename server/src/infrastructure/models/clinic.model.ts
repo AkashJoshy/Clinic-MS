@@ -12,7 +12,6 @@ export interface IClinic extends Document {
   registrationNumber: string;
   about: string;
   altPhone: string | null;
-  yearOfEstablished: number;
   registrationDoc: ImageData;
   establishmentLicenceDoc: ImageData;
   location: {
@@ -43,10 +42,6 @@ const clinicSchema = new Schema<IClinic>(
     altPhone: {
       type: String,
       default: null,
-    },
-    yearOfEstablished: {
-      type: Number,
-      required: true,
     },
     registrationDoc: ImageDataSchema,
     establishmentLicenceDoc: ImageDataSchema,

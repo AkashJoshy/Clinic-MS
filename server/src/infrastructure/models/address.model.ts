@@ -44,7 +44,9 @@ const addressSchema: Schema<IAddress> = new Schema(
     pincode: {
       type: String,
       trim: true,
-      match: [/^\d{6}$/, "Please enter a valid 6-digit pincode"],
+      minlength: [6, "Invalid PIN/ZIP"],
+      maxlength: [12, "Invalid PIN/ZIP"],
+      match: [/^[A-Z0-9\s\-]{4,10}$/i, "Invalid PIN/ZIP format"],
     },
   },
   {

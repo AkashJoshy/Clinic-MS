@@ -10,6 +10,13 @@ import { MongooseDoctorClinicRepository } from "../../infrastructure/repositorie
 import { MongooseClinicRepository } from "../../infrastructure/repositories/mongoose-clinic.repository.ts";
 import { DoctorProfileController } from "../controllers/doctor/doctor-profile.controller.ts";
 import { DoctorProfileUseCase } from "../../application/use-cases/doctor/profile/doctor-profile.usecase.ts";
+import { doctorRegistrationSchema } from "../schemas/doctor/doctor-register.schema.ts";
+import { validate } from "../middlewares/validate.middleware.ts";
+import { DoctorRegisterController } from "../controllers/doctor/doctor-register.controller.ts";
+import { doctorUpload } from "../middlewares/upload.middleware.ts";
+import { DoctorRegisterUseCase } from "../../application/use-cases/doctor/profile/doctor-register.usecase.ts";
+import { UserCreationService } from "../../application/services/user-creation.service.ts";
+import { ArgonPasswordService } from "../../infrastructure/services/ArgonPasswordService.ts";
 
 const router = Router();
 
@@ -19,9 +26,16 @@ const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
 const mongooseUserRepository = new MongooseUserRepository();
 const mongooseClinicRepository = new MongooseClinicRepository();
 const mongooseAddressRepository = new MongooseAddressRepository();
+
 // Services
+const argonPasswordService = new ArgonPasswordService()
 
 // Service-Usecase
+const userCreationService = new UserCreationService(
+    mongooseUserRepository,
+    argonPasswordService
+)
+
 
 // Use-cases
 const doctorProfileUseCase = new DoctorProfileUseCase(
@@ -31,10 +45,20 @@ const doctorProfileUseCase = new DoctorProfileUseCase(
    mongooseClinicRepository,
    mongooseAddressRepository
 )
+const doctorRegisterUseCase = new DoctorRegisterUseCase(
+   mongooseDoctorRepository,
+   mongooseDoctorClinicRepository,
+   mongooseClinicRepository,
+   mongooseAddressRepository,
+   userCreationService
+)
 
 // Controllers
 const doctorProfileController = new DoctorProfileController(
   doctorProfileUseCase
+);
+const doctorRegisterController = new DoctorRegisterController(
+  doctorRegisterUseCase
 );
 
 // Routes
@@ -45,5 +69,12 @@ router.get(DOCTOR_ENDPOINTS["profile"],
         await doctorProfileController.handle(req, res, next)
     }
 );
+router.post(DOCTOR_ENDPOINTS["register"],
+    doctorUpload,
+    // validate(doctorRegistrationSchema),
+    async (req, res, next) => {
+        await doctorRegisterController.handle(req, res, next)
+    }
+)
 
 export default router;

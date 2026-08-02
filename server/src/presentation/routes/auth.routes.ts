@@ -44,6 +44,7 @@ import { ResendOtp } from "../../application/use-cases/auth/resend-otp/resend-ot
 import { PatientLoginUseCase } from "../../application/use-cases/auth/login/patient-login.usecase.ts";
 import { AdminLoginUseCase } from "../../application/use-cases/auth/login/admin-login.usecase.ts";
 import { DoctorLoginUseCase } from "../../application/use-cases/auth/login/doctor-login.usecase.ts";
+import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
 
 const router = Router();
 
@@ -51,6 +52,8 @@ const router = Router();
 const mongooseUserRepository = new MongooseUserRepository();
 const mongoosePatientRepository = new MongoosePatientRepository();
 const mongooseAddressRepository = new MongooseAddressRepository();
+const mongooseDoctorRepository = new MongooseDoctorRepository();
+
 
 // Services
 const argonPasswordService = new ArgonPasswordService();
@@ -98,6 +101,7 @@ const doctorLoginUseCase = new DoctorLoginUseCase(
   userExistenceService,
   tokenGenerationService,
   emailVerificationService,
+  mongooseDoctorRepository
 );
 const forgotPasswordUseCase = new ForgotPasswordUseCase(
   mongooseUserRepository,

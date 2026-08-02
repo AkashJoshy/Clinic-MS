@@ -28,7 +28,13 @@ export const clinicUpload = upload.fields([
   { name: "medicalEstablishmentDoc", maxCount: 1 },
 ]);
 
-export const doctorUpload = upload.single("licenceDocument")
+export const doctorUpload = upload.fields([
+  { name: "doctorProfilePicture", maxCount: 1 },
+  { name: "clinicRegistrationDoc", maxCount: 1 },
+  { name: "establishmentLicenceDoc", maxCount: 1 },
+  { name: "medicalLicenceDoc", maxCount: 1 },
+  { name: "doctorRegistrationDoc", maxCount: 1 },
+])
 
 
 export const profileupload = upload.single("profilePicture")

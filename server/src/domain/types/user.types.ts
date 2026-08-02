@@ -22,5 +22,5 @@ export interface CreateUserProps extends RegisterUserProps {
 
 export type AuthProvider = "LOCAL" | "GOOGLE";
 export type Role = "PATIENT" | "ADMIN" | "DOCTOR";
-export type ModeRoleRef = "Patient" | "Admin" | "Doctor";
+export type ModeRoleRef = "Patient" | "Admin" | "Doctor" | "Clinic"
 export type EntityType = "Doctor"

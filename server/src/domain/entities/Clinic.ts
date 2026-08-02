@@ -8,7 +8,6 @@ export class Clinic {
     public registrationNumber: string,
     public about: string,
     public altPhone: string | null,
-    public yearOfEstablished: number,
     public registrationDoc: ImageData,
     public establishmentLicenceDoc: ImageData,
     public location: {
@@ -20,27 +19,40 @@ export class Clinic {
     public updatedAt: Date | null,
   ) {}
 
-  static create(data: RegisterClinicProps): Clinic {
+  static create(data: Partial<RegisterClinicProps>): Clinic {
     return new Clinic(
-      data.id,
-      data.name,
-      data.registrationNumber,
-      data.about,
+      data.id ?? null,
+      data.name ?? "",
+      data.registrationNumber!,
+      data.about ?? "",
       data.altPhone ?? null,
-      data.yearOfEstablished,
-      data.registrationDoc,
-      data.establishmentLicenceDoc,
+      data.registrationDoc ?? {
+        publicId: '',
+        url: ''
+      },
+      data.establishmentLicenceDoc ?? {
+        publicId: '',
+        url: ''
+      },
       {
-        type: data.location.type ?? "Point",
+        type: data?.location?.type ?? "Point",
         coordinates: [
-          data.location.coordinates[0] ?? 0,
-          data.location.coordinates[1] ?? 0,
+          data?.location?.coordinates[0] ?? 0,
+          data?.location?.coordinates[1] ?? 0,
         ],
       },
       data.status ?? "PENDING",
       data.createdAt ?? null,
       data.updatedAt ?? null,
     );
+  }
+
+  static register(data: Partial<Omit<RegisterClinicProps, "status">>): Clinic {
+    return this.create({ ...data, status: "PENDING" })
+  }
+
+  approve() {
+    this.status = "APPROVED"
   }
 
   isApproved() {

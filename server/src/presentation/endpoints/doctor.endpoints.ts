@@ -1,3 +1,4 @@
 export const DOCTOR_ENDPOINTS = {
-    'profile': `/profile/:userId`
+    register: `/register`,
+    profile: `/profile/:userId`
 }

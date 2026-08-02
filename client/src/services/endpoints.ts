@@ -30,6 +30,7 @@ export const ENDPOINTS = {
     DEPARTMENTS: `/common/departments`,
   },
   DOCTOR: {
+    REGISTER: `/doctor/register`,
     PROFILE: (userId: string) => `/doctor/profile/${userId}`
   }
 };

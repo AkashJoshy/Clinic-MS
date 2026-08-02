@@ -1,5 +1,8 @@
+import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.ts";
+import { LockedError } from "../../../../domain/errors/locked.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import type { LoginDTO, LoginResponseDTO } from "../../../dto/auth.dto.ts";
 import type { IEmailVerificationService } from "../../../IService/IEmailVerificationService.ts";
@@ -11,20 +14,28 @@ export class DoctorLoginUseCase implements ILoginUseCase {
   constructor(
     private _userExistenceService: IUserExistenceService,
     private _tokenGenerationService: ITokenGenerationService,
-    private readonly _mailVerficationService: IEmailVerificationService
+    private readonly _mailVerficationService: IEmailVerificationService,
+    private _doctorRepository: IDoctorRepository
   ) {}
 
   async execute(data: LoginDTO): Promise<LoginResponseDTO> {
     const user = await this._userExistenceService.execute(data);
 
-    if (!user) {
+    if (!user || !user.id) {
       throw new NotFoundError("doctor")
     }
-    // if (clinic.status === "PENDING") {
-    //     throw new LockedError("Your clinic is under review. An admin needs to approve it.")
-    // } else if (clinic?.status === "REJECTED") {
-    //     throw new ForbiddenError("Your clinic has been rejected. Please apply again.");
-    // }
+    
+    const doctor = await this._doctorRepository.findOneBy({ userId: user.id })
+    
+    if (!doctor || !doctor.id) {
+      throw new NotFoundError("doctor")
+    }
+
+    if (doctor.status === "PENDING") {
+        throw new LockedError("Your doctor is under review. An admin needs to approve it.")
+    } else if (doctor?.status === "REJECTED") {
+        throw new ForbiddenError("Your clinic has been rejected. Please apply again.");
+    }
       
     if (!user.isEmailVerified) {
       await this._mailVerficationService.execute(user.email, user.fullName, user.role as Role);

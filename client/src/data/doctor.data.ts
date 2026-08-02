@@ -6,7 +6,7 @@ import type {
 } from "@/schemas/doctor/doctor.schema";
 
 export const DOCTOR_STEP1_INPUTS: FormInputs[] = [
-  fieldGenerator("Full Name", "text", "e.g. Dr. John Doe", "fullName", true),
+  fieldGenerator("Full Name", "text", "e.g. John Doe", "fullName", true),
 
   fieldGenerator("Email Address", "email", "doctor@example.com", "email", true),
 
@@ -28,24 +28,12 @@ export const DOCTOR_STEP1_INPUTS: FormInputs[] = [
     true,
     undefined,
     undefined,
-    ["Male", "Female", "Others", "Prefer Not To Say"],
-  ),
-
-  fieldGenerator(
-    "Department",
-    "select",
-    "Select department",
-    "department",
-    true,
-    undefined,
-    undefined,
-    ["dept1", "dept2", "dept3", "dept4"],
-  ),
-
+    [{ label: "Male", value: "MALE" }, { label: "Female", value: "FEMALE" }, { label: "Others", value: "OTHERS" }, { label: "Prefer Not To Say", value: "PREFER NOT TO SAY" }],
+  ), 
   fieldGenerator(
     "Specialization",
     "text",
-    "e.g. Cardiologist",
+    "e.g. Pediatric Cardiology",
     "specialization",
     true,
   ),
@@ -87,7 +75,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     "clinicName",
     true,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Registration Number",
     "text",
@@ -95,7 +82,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     "registrationNumber",
     true,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "About Clinic",
     "textarea",
@@ -103,7 +89,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     "about",
     false,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Alternative Phone",
     "text",
@@ -111,7 +96,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     "altPhone",
     false,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Address",
     "text",
@@ -119,7 +103,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     "addressLine",
     true,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Country",
     "select",
@@ -130,7 +113,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     undefined,
     [],
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "State",
     "select",
@@ -141,7 +123,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     undefined,
     [],
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "City",
     "select",
@@ -152,7 +133,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     undefined,
     [],
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Pincode",
     "text",
@@ -169,7 +149,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     true,
     true,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Longitude",
     "number",
@@ -178,7 +157,6 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     true,
     true,
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Consultation Mode",
     "select",
@@ -187,15 +165,23 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     true,
     undefined,
     undefined,
-    ["Online", "Offline", "Both"],
+    [{ label: "Online", value: "ONLINE" }, { label:"Offline", value: "OFFLINE" }, { label: "Both", value: "BOTH" }],
   ),
-
   fieldGenerator<DoctorRegisterStep2FormData>(
     "Consultation Fee",
     "number",
     "e.g. 500",
     "consultationFee",
     true,
+  ),
+  fieldGenerator(
+    "Department",
+    "select",
+    "Select department",
+    "departmentId",
+    true,
+    undefined,
+    undefined,
   ),
 ];
 

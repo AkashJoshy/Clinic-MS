@@ -13,7 +13,6 @@ export interface RegisterClinicProps {
   registrationNumber: string;
   about: string;
   altPhone: string | null,
-  yearOfEstablished: number;
   registrationDoc: ImageData;
   establishmentLicenceDoc: ImageData;
   location: LocationType;

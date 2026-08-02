@@ -2,7 +2,9 @@ import * as z from "zod";
 import {
   addressLine,
   altPhone,
+  bio,
   city,
+  consultationFee,
   country,
   documentField,
   email,
@@ -10,6 +12,7 @@ import {
   gender,
   latitude,
   longitude,
+  mode,
   password,
   phone,
   pictureField,
@@ -17,16 +20,18 @@ import {
   state,
   withPasswordConfirm,
 } from "../base.schema";
-import { FILE_SIZE_2MB, FILE_SIZE_5MB } from "@/constants/clinical-registration.constant";
+import {
+  FILE_SIZE_2MB,
+  FILE_SIZE_5MB,
+} from "@/constants/clinical-registration.constant";
 
 export const doctorRegisterStep1Schema = withPasswordConfirm(
   z.object({
     fullName,
     email,
     phone,
-    bio: z.string().trim(),
+    bio,
     gender: gender,
-    department: z.string().trim().min(1, "Please select a department"),
     specialization: z
       .string()
       .trim()
@@ -66,7 +71,7 @@ export const doctorRegisterStep2Schema = z.object({
     .trim()
     .max(500, "About clinic must not exceed 500 characters")
     .optional(),
-  altPhone: altPhone,
+  altPhone,
   addressLine,
   country,
   state,
@@ -74,20 +79,35 @@ export const doctorRegisterStep2Schema = z.object({
   pincode,
   longitude,
   latitude,
-  mode: z.enum(["Online", "Offline", "Both"], {
-    message: "Please select a consultation mode",
-  }),
-  consultationFee: z.coerce
-      .number("Consulation fee is required")
-      .min(200, "Consultation fee must be at least ₹200")
-      .max(1000, "Consultation fee must not exceed ₹1000"),
-
+  mode,
+  consultationFee,
+  departmentId: z.string().trim().min(1, "Please select a department"),
 });
 
 export const doctorRegisterStep3Schema = z.object({
-  doctorProfilePicture: pictureField("Doctor Profile Picture", FILE_SIZE_2MB, 2),
-  clinicRegistrationDoc: documentField("Clinic Registration Document", FILE_SIZE_5MB, 5),
-  establishmentLicenceDoc: documentField("Establishment Licence Document", FILE_SIZE_5MB, 5),
-  medicalLicenceDoc: documentField("Medical Licence Document", FILE_SIZE_5MB, 5),
-  doctorRegistrationDoc: documentField("Doctor Registration Document", FILE_SIZE_5MB, 5),
+  doctorProfilePicture: pictureField(
+    "Doctor Profile Picture",
+    FILE_SIZE_2MB,
+    2,
+  ),
+  clinicRegistrationDoc: documentField(
+    "Clinic Registration Document",
+    FILE_SIZE_5MB,
+    5,
+  ),
+  establishmentLicenceDoc: documentField(
+    "Establishment Licence Document",
+    FILE_SIZE_5MB,
+    5,
+  ),
+  medicalLicenceDoc: documentField(
+    "Medical Licence Document",
+    FILE_SIZE_5MB,
+    5,
+  ),
+  doctorRegistrationDoc: documentField(
+    "Doctor Registration Document",
+    FILE_SIZE_5MB,
+    5,
+  ),
 });

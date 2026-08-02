@@ -35,29 +35,35 @@ export class Doctor {
     public updatedAt: Date | null,
   ) {}
 
-  static create(data: AddDoctorProps): Doctor {
+  static create(data: Partial<AddDoctorProps>): Doctor {
     return new Doctor(
       data.id ?? null,
-      data.userId,
-      data.displayName,
-      data.doctorCode,
-      data.bio,
+      data.userId ?? null,
+      data.displayName ?? '',
+      data.doctorCode!,
+      data.bio ?? '',
       data.profilePicture ?? {
         publicId: '',
         url: ''
       },
-      data.languages,
-      data.gender,
-      data.departmentId,
-      data.specialization,
-      data.qualification,
-      data.experienceYears,
-      data.licenceNumber,
-      data.averageRating,
-      data.totalReviews,
-      data.registrationDoc,
-      data.medicalLicenceDoc,
-      data.status,
+      data.languages ?? [],
+      data.gender ?? 'PREFER NOT TO SAY',
+      data.departmentId!,
+      data.specialization ?? '',
+      data.qualification ?? '',
+      data.experienceYears ?? 0,
+      data.licenceNumber!,
+      data.averageRating ?? 0,
+      data.totalReviews ?? 0,
+      data.registrationDoc?? {
+        publicId: '',
+        url: ''
+      },
+      data.medicalLicenceDoc ?? {
+        publicId: '',
+        url: ''
+      },
+      data.status ?? "PENDING",
       data.subscription ?? {
         current: null,
         history: []
@@ -69,8 +75,8 @@ export class Doctor {
     );
   }
 
-  static register(data: Omit<AddDoctorProps, "status">): Doctor {
-    return this.create({ ...data, status: "PENDING" });
+  static register(data: Partial<Omit<AddDoctorProps, "status">>): Doctor {
+    return this.create({ ...data, status: "PENDING"});
   }
 
   approve(reviewMessage: string) {
