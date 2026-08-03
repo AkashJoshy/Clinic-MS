@@ -33,3 +33,4 @@ export const fetchDoctorProfile = async (userId: string) => {
     };
   }
 };
+

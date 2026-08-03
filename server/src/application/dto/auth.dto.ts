@@ -23,7 +23,7 @@ export interface GoogleLoginDTO {
    provider: AuthProvider
 }
 
-export type SafeUser = Omit<User, "password">
+export type SafeUser = Omit<User, "password" | "block" | "unblock">
 
 export type UserDto = User
 

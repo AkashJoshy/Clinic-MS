@@ -14,6 +14,17 @@ export const authMiddleware2 = async (
         message: RESPONSE_MESSAGE.UNAUTHORIZED_ACCESS,
       });
     }
+    
+    if (req.user) {
+      if (req.user?.isBlocked || !req.user?.isActive) {
+        return res.status(ResponseStatusCode.FORBIDDEN).json({
+          success: false,
+          message: RESPONSE_MESSAGE.UNAUTHORIZED_ACCESS,
+        });
+        
+      }
+    }
+
     next();
   } catch (error: any) {
     next(error);

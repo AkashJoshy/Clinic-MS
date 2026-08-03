@@ -1,6 +1,5 @@
 import type { Clinic } from "../../domain/entities/Clinic.ts";
-import type { ServiceMode } from "../../domain/types/shared.types.ts";
-import type { ImageDto } from "./auth.dto.ts";
+import type { ImageData, ServiceMode } from "../../domain/types/shared.types.ts";
 import type { BaseAddress } from "./patient.dto.ts";
 import type {
   ClinicDoctorDetails,
@@ -25,10 +24,10 @@ export interface RegisterClinicDto {
   latitude: string;
   longitude: string;
   docs: {
-    clinicPhoto: ImageDto;
-    clinicRegistrationDoc: ImageDto;
-    medicalEstablishmentDoc: ImageDto;
-    idProofDoc: ImageDto;
+    clinicPhoto: ImageData;
+    clinicRegistrationDoc: ImageData;
+    medicalEstablishmentDoc: ImageData;
+    idProofDoc: ImageData;
   };
 }
 

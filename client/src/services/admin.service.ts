@@ -5,6 +5,7 @@ import type {
   UpdateDoctorStatusDto,
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
+import type { DeletePatientDto } from "@/types/patient";
 
 export const addDepartment = async (data: Omit<DepartmentData, "id">) => {
   try {
@@ -92,7 +93,9 @@ export const getAllDoctors = async () => {
 export const approveDoctor = async (data: DoctorStatusUpdateDto) => {
   try {
     const { id, reviewMessage } = data;
-    const res = await api.patch(ENDPOINTS.ADMIN.APPROVE_DOCTOR(id), { reviewMessage });
+    const res = await api.patch(ENDPOINTS.ADMIN.APPROVE_DOCTOR(id), {
+      reviewMessage,
+    });
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -110,10 +113,46 @@ export const rejectDoctor = async (data: DoctorStatusUpdateDto) => {
   try {
     const { id, reviewMessage } = data;
     const res = await api.delete(ENDPOINTS.ADMIN.REJECT_DOCTOR(id), {
-        data: {
-            reviewMessage
-        }
+      data: {
+        reviewMessage,
+      },
     });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getAllPatients = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.PATIENTS);
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updatePatient = async (data: DeletePatientDto) => {
+  try {
+    const {
+        id,
+        method
+    } = data
+    const res = await api.patch(ENDPOINTS.ADMIN.PATIENT(id), { method })
     return res.data;
   } catch (error: any) {
     if (error.response) {

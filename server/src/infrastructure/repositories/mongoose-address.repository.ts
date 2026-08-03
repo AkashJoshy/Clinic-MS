@@ -31,7 +31,7 @@ export class MongooseAddressRepository extends MongooseBaseRepository<Address, I
     
     protected toPersistence(entity: Address): Partial<IAddress> {
         return {
-            ownerId: new mongoose.Types.ObjectId(entity.ownerId),
+            ownerId: new mongoose.Types.ObjectId(entity.ownerId!),
             ownerType: entity.ownerType,
             addressLine: entity.addressLine,
             country: entity.country,

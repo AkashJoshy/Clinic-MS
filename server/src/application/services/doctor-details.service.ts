@@ -135,6 +135,7 @@ export class DoctorDetailsService implements IDoctorDetailsService {
               state: clinicAddressDetails.state,
               city: clinicAddressDetails.city,
               pincode: clinicAddressDetails.pincode,
+              ownerId: clinicAddressDetails.ownerId
             }
           : null,
         department: department

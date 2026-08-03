@@ -51,6 +51,8 @@ const PatientLoginForm = () => {
   const message = searchParams.get("message");
 
   useEffect(() => {
+      console.log(`Message: ${message}`);
+      
       if (message) {
         toast.error(message)
         navigate("/login", { replace: true })

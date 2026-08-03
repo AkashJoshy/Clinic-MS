@@ -112,6 +112,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
             state: address.state,
             city: address.city,
             pincode: address.pincode,
+            ownerId: address.ownerId
           }
         : null,
       department: doctorDepartment
@@ -122,8 +123,6 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
         : null,
     };
 
-    console.log(`Response: `);
-    console.log(response);
 
     return response;
   }

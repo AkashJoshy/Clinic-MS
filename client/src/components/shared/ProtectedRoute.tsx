@@ -46,5 +46,5 @@ export const ProtectedRoute = ({ role }: RouteRoleProps) => {
     return <Navigate to={loginRoutes[role]} replace />;
   }
 
-  return <Outlet />;
+  return token ? <Outlet /> : <Navigate to={loginRoutes[role]} replace />
 };

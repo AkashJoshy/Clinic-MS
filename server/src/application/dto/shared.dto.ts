@@ -2,9 +2,12 @@ import type { Address } from "../../domain/entities/Address.ts";
 import type { Clinic } from "../../domain/entities/Clinic.ts";
 import type { Doctor } from "../../domain/entities/Doctor.ts";
 import type { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
+import type Patient from "../../domain/entities/Patient.ts";
 import type User from "../../domain/entities/User.ts";
+import type { ImageData } from "../../domain/types/shared.types.ts";
 import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
+import type { PatientProfile } from "./patient.dto.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -14,8 +17,8 @@ export type ClinicDoctorDetails = Omit<
   Doctor,
   "departmentId" | "status" | "createdAt" | "updatedAt" | "certificate"
 > & {
-  certificate: string
-}
+  certificate: string;
+};
 
 export type AdminDoctorDetails = Omit<
   Doctor,
@@ -45,14 +48,14 @@ export interface DoctorProfileResponseDto {
   doctorClinic: DoctorClinicDetails;
   departmentDetails: DepartmentDto | null;
   user: UserDetails;
-  address: Omit<BaseAddress, "ownerId"> | null
+  address: Omit<BaseAddress, "ownerId"> | null;
 }
 
 export type DoctorProfileServiceResponseDto = DoctorProfileResponseDto & {
   doctor: Omit<ClinicDoctorDetails, "certificate"> & {
-    certificate: string
-  }
-}
+    certificate: string;
+  };
+};
 
 export interface ClinicWithDetailsDto {
   clinic: Clinic;
@@ -60,8 +63,38 @@ export interface ClinicWithDetailsDto {
   address: Address | null;
 }
 
-type BaseAddress = Omit<Address, "updatedAt" | "createdAt" | "id" | "ownerType">
+type BaseAddress = Omit<
+  Address,
+  "updatedAt" | "createdAt" | "id" | "ownerType"
+>;
 
-export type UpdateAddressDto = BaseAddress
+export type UpdateAddressDto = BaseAddress;
 
-export type AddressOption = "PRIMARY" | "NEW"
+export type AddressOption = "PRIMARY" | "NEW";
+
+export type DeleteMethods = "RESTORE" | "DELETE"
+
+export type PatientInfoDto = PatientProfile & {
+  user: Pick<
+    User,
+    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
+  >;
+};
+
+export type PatientBasicInfoDto = {
+  patient: Pick<
+    Patient,
+    | "id"
+    | "displayName"
+    | "patientNumber"
+    | "medicalInformation"
+    | "gender"
+    | "userId"
+  > & {
+    imageUrl: Omit<ImageData, "publicId">;
+  };
+} & {
+  address: BaseAddress | null;
+} & {
+  user: Pick<User, "email" | "phone" | "isActive">;
+};

@@ -21,16 +21,23 @@ import { MongooseDoctorClinicRepository } from "../../infrastructure/repositorie
 import { MongooseClinicRepository } from "../../infrastructure/repositories/mongoose-clinic.repository.ts";
 import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.ts";
 import { DoctorDetailsService } from "../../application/services/doctor-details.service.ts";
-import { GetAllDoctorsUseCase } from "../../application/use-cases/admin/department-management/get-all-doctors.usecase.ts";
+import { GetAllDoctorsUseCase } from "../../application/use-cases/admin/doctor-management/get-all-doctors.usecase.ts";
 import { ApproveDoctorController } from "../controllers/admin/approve-doctor.controller.ts";
-import { ApproveDoctorUseCase } from "../../application/use-cases/admin/department-management/approve-doctor.usecase.ts";
+import { ApproveDoctorUseCase } from "../../application/use-cases/admin/doctor-management/approve-doctor.usecase.ts";
 import { RejectDoctorController } from "../controllers/admin/reject-doctor.controller.ts";
-import { RejectDoctorUseCase } from "../../application/use-cases/admin/department-management/reject-doctor.usecase.ts";
+import { RejectDoctorUseCase } from "../../application/use-cases/admin/doctor-management/reject-doctor.usecase.ts";
+import { GetAllPatientsController } from "../controllers/admin/get-all-patients.controller.ts";
+import { GetAllPatientsUseCase } from "../../application/use-cases/admin/patient-management/get-all-patients.usecase.ts";
+import { MongoosePatientRepository } from "../../infrastructure/repositories/mongoose-patient.repository.ts";
+import { PatientDetailsService } from "../../application/services/patient-details.service.ts";
+import { UpdatePatientStatusController } from "../controllers/admin/update-patient-status.controller.ts";
+import { UpdatePatientStatusUseCase } from "../../application/use-cases/admin/patient-management/update-patient-status.usecase.ts";
 
 const router = Router();
 
 // DB Repo's
 const mongooseUserRepository = new MongooseUserRepository();
+const mongoosePatientRepository = new MongoosePatientRepository();
 const mongooseClinicRepository = new MongooseClinicRepository();
 const mongooseDoctorRepository = new MongooseDoctorRepository();
 const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
@@ -49,6 +56,10 @@ const doctorDetailsService = new DoctorDetailsService(
     mongooseClinicRepository,
     mongooseAddressRepository,
     mongooseDepartmentRepository
+)
+const patientDetailsService = new PatientDetailsService(
+    mongooseUserRepository,
+    mongooseAddressRepository
 )
 
 
@@ -69,17 +80,25 @@ const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
   mongooseDoctorRepository,
   doctorDetailsService
 );
+const getAllPatientsUseCase = new GetAllPatientsUseCase(
+  mongoosePatientRepository,
+  patientDetailsService
+);
 const approveDoctorUseCase = new ApproveDoctorUseCase(
   mongooseDoctorRepository,
   mongooseUserRepository,
   nodeMailerService
 );
 const rejectDoctorUseCase = new RejectDoctorUseCase(
-  mongooseDoctorRepository,
-  mongooseUserRepository,
-  mongooseDoctorClinicRepository,
-  mongooseAddressRepository,
-  nodeMailerService
+    mongooseDoctorRepository,
+    mongooseUserRepository,
+    mongooseDoctorClinicRepository,
+    mongooseAddressRepository,
+    nodeMailerService
+);
+const updatePatientStatusUseCase = new UpdatePatientStatusUseCase(
+  mongoosePatientRepository,
+  mongooseUserRepository
 );
 
 
@@ -99,11 +118,17 @@ const updateDepartmentStatusController = new UpdateDepartmentStatusController(
 const getAllDoctorsController = new GetAllDoctorsController(
   getAllDoctorsUseCase,
 );
+const getAllPatientsController = new GetAllPatientsController(
+  getAllPatientsUseCase,
+);
 const approveDoctorController = new ApproveDoctorController(
-  approveDoctorUseCase
+    approveDoctorUseCase
 );
 const rejectDoctorController = new RejectDoctorController(
-  rejectDoctorUseCase
+    rejectDoctorUseCase
+);
+const updatePatientStatusController = new UpdatePatientStatusController(
+    updatePatientStatusUseCase
 );
 
 // Routes
@@ -155,6 +180,15 @@ router.get(
   },
 );
 
+router.get(
+  ADMIN_ENDPOINTS["FETCH_PATIENTS"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await getAllPatientsController.handle(req, res, next);
+  },
+);
+
 router.patch(
   ADMIN_ENDPOINTS["APPROVE_DOCTOR"],
   authMiddleware,
@@ -173,6 +207,13 @@ router.delete(
   },
 );
 
-
+router.patch(
+  ADMIN_ENDPOINTS["UPDATE_PATIENT"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await updatePatientStatusController.handle(req, res, next);
+  },
+);
 
 export default router;

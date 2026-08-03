@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { ImageData } from "./common";
+import type { DeleteMethods, ImageData } from "./common";
 import type { Address, User } from "./user";
 import type React from "react";
 
@@ -47,13 +47,12 @@ export type BaseAddress = Omit<
   "createdAt" | "updatedAt" | "ownerId" | "ownerType"
 >;
 
-export type ProfileDto = BaseProfile &
-  MedicalInformation & { name: string }
+export type ProfileDto = BaseProfile & MedicalInformation & { name: string };
 
 export interface LocationDto {
   latitude: number;
   longitude: number;
-  radius: number
+  radius: number;
 }
 
 export interface BookingData {
@@ -127,18 +126,34 @@ export interface FilterModalProps {
   doctors: string[];
 }
 
-export type PatientProfile = Omit<Patient, "imageUrl"> & {
-  imageUrl: Omit<ImageData, "publicId">;
+export type PatientProfile = {
+  patient: Omit<Patient, "imageUrl"> & {
+    imageUrl: Omit<ImageData, "publicId">;
+  };
 } & {
   address: BaseAddress | null;
 };
 
-type FormChangeEvent = React.ChangeEvent<
-  HTMLInputElement | HTMLSelectElement
->;
-type FormEvent = React.FormEvent<
-  HTMLElement 
->;
+export type PatientInfo = PatientProfile & {
+  user: Pick<
+    User,
+    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
+  >;
+}
+
+export type PatientBasicInfo = {
+  patient: 
+    Pick<Patient, "id" | "displayName" | "patientNumber" | "medicalInformation" | "gender" | "userId"> &  {
+    imageUrl: Omit<ImageData, "publicId">,
+  }  
+} & {
+  address: BaseAddress | null
+} & {
+  user: Pick<User, "email" | "phone" | "isActive">
+}
+
+type FormChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;
+type FormEvent = React.FormEvent<HTMLElement>;
 
 export type PersonalDetailsProps = {
   handleSave: (prof: PersonalProfile) => boolean;
@@ -148,26 +163,26 @@ export type PersonalDetailsProps = {
   inputClasses: string;
   patientProfile: PersonalProfile;
   originalProfile: PersonalProfile;
-  setProfile: (pro: PersonalProfile) => void
-  setOriginalProfile: (pro: PersonalProfile) => void
+  setProfile: (pro: PersonalProfile) => void;
+  setOriginalProfile: (pro: PersonalProfile) => void;
 };
 
 export type AddressDetailsProps = {
   handleSave: (addr: ProfileAddress) => boolean;
   handleChange: (e: FormChangeEvent) => void;
-  disabledInputClasses: string
+  disabledInputClasses: string;
   labelClasses: string;
   inputClasses: string;
   address: ProfileAddress;
   originalAddress: ProfileAddress;
-  setAddress: Dispatch<SetStateAction<ProfileAddress>>
-  setOriginalAddress: Dispatch<SetStateAction<ProfileAddress>>
+  setAddress: Dispatch<SetStateAction<ProfileAddress>>;
+  setOriginalAddress: Dispatch<SetStateAction<ProfileAddress>>;
 };
 
 export interface PersonalProfile {
   id: string;
   displayName: string;
-  email: string; 
+  email: string;
   phone: string;
   dateOfBirth: string;
   gender: Gender;
@@ -183,4 +198,9 @@ export interface ProfileAddress {
   state: string;
   city: string;
   pincode: string;
+}
+
+export interface DeletePatientDto {
+  id: string,
+  method: DeleteMethods
 }

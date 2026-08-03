@@ -22,6 +22,18 @@ api.interceptors.request.use(
   },
 );
 
+const loginRoutes: Record<string, string> = {
+  admin: "/admin",
+  clinic: "/clinic",
+  doctor: "/doctor",
+  patient: "/login",
+};
+
+const redirectToLogin = (role: string | undefined, message: string) => {
+  const redirectPath = role ? loginRoutes[role] || "/login" : "/login";
+  window.location.replace(`${redirectPath}?message=${encodeURIComponent(message)}`)
+};
+
 api.interceptors.response.use(
   (response: AxiosResponse<any, {}>) => {
     return response;
@@ -29,7 +41,6 @@ api.interceptors.response.use(
   (error) => {
     const status = error.response?.status;
     const code = error.response?.data?.code;
-    console.log(`Axios Response`);
 
     if (status === 401) {
       const { user, logout } = useAuthStore.getState();
@@ -39,22 +50,24 @@ api.interceptors.response.use(
         logout(role as any);
       }
 
-      const loginRoutes: Record<string, string> = {
-        admin: "/admin",
-        clinic: "/clinic",
-        doctor: "/doctor",
-        patient: "/login",
-      };
-      
-      let message = "";
+      let message = "Session expired. Please login again.";
       if (code === "TOKEN_EXPIRED" || code === "INVALID_TOKEN") {
+        message = "Session expired. Please login again.";
       }
-      message = "Session expired. Please login again.";
 
-      const redirectPath = role ? loginRoutes[role] || "/login" : "/login";
-      window.location.href = message
-    ? `${redirectPath}?message=${message}`
-    : redirectPath;
+      redirectToLogin(role, message);
+    }
+
+    if (status === 403) {
+      const { user, logout } = useAuthStore.getState();
+      const role = user?.role?.toLowerCase();
+
+      if (role) {
+        logout(role as any);
+      }
+
+      const message = "Account blocked";
+      redirectToLogin(role, message);
     }
 
     return Promise.reject(error);

@@ -127,6 +127,8 @@ export type AccountStatus = "APPROVED" | "SUSPENDED";
 
 export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
+export type DeleteMethods = "RESTORE" | "DELETE"
+
 export type StateWithCode = {
   name: string;
   state_code: string;

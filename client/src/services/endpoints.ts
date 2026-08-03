@@ -24,6 +24,8 @@ export const ENDPOINTS = {
     REJECT_DOCTOR: (doctorId: string) => `/admin/doctors/${doctorId}/reject`,
     DEPARTMENT: (id: string) => `/admin/departments/${id}`,
     UPDATE_CLINIC_STATUS: (clinicId: string) => `/admin/clinics/${clinicId}`,
+    PATIENTS: "/admin/patients",
+    PATIENT: (patientId: string) => `/admin/patients/${patientId}`
   },
   PATIENT: {
     PROFILES: (userId: string) => `/patient/profiles/${userId}`,

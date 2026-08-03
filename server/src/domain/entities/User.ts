@@ -33,8 +33,28 @@ class User {
       data.isTwoFactorenabled ?? false,
       data.createdAt ?? null,
       data.updatedAt ?? null,
-    );
+    )
   }
+
+  block() {
+    if (this.isBlocked){
+      throw new Error("User is alreday blocked")
+    }
+
+    this.isBlocked = true
+    this.isActive = false
+  }
+
+  unblock() {
+    if (!this.isBlocked){
+      throw new Error("User is alreday unblocked")
+    }
+
+    this.isBlocked = false
+    this.isActive = true
+  }
+
+
 
 }
 

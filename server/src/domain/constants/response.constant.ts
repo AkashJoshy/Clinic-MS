@@ -15,6 +15,7 @@ export const RESPONSE_MESSAGE = {
   LOGOUT_SUCCESS: "Logout successful",
   INVALID_CREDENTIALS: "Invalid email or password",
   UNAUTHORIZED_ACCESS: "Unauthorized access",
+  BLOCKED: "Access is blocked",
   TOKEN_EXPIRED: "Session expired. Please login again",
 
   USER_PROFILE_RETRIEVED: "User profile retrieved successfully",

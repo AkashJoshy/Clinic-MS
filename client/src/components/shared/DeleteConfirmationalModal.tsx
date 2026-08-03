@@ -8,11 +8,11 @@ export interface DeleteModelProps {
   type: string;
   action: "DELETE" | "RESTORE",
   status: "ACTIVE" | "INACTIVE";
-  service: (data: { id: string, status: "ACTIVE" | "INACTIVE" }) => void;
+  service: () => void;
   closeDeleteBox: () => void;
 }
 
-function DeleteConfirmationalModal({
+function DeleteConfirmationalModal ({
   id,
   name,
   status,
@@ -64,7 +64,7 @@ function DeleteConfirmationalModal({
               </Button> 
               <Button
                 onClick={() => {
-                  service({id, status});
+                  service()
                 }}
                 className={`ml-2 ${action === "DELETE" ? `bg-rose-500 hover:bg-rose-600` : `bg-[#1dc465] hover:bg-primary-600` } `}
               >

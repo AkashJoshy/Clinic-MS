@@ -26,6 +26,12 @@ const DepartmentPage: React.FC = () => {
     onSuccess: () => setOpen(false),
   });
 
+  function onUpdate() {
+    if (selectedDept && selectedDept.id) {
+        mutate({ id: selectedDept?.id, status: selectedDept?.status })
+    }
+  }
+
   const filteredDepartments = allDepartments.filter((dept) =>
     dept.name.toLowerCase().includes(searchQuery.toLowerCase().trim()),
   );
@@ -215,7 +221,7 @@ const DepartmentPage: React.FC = () => {
             type="Department"
             action={selectedDept.action}
             status={selectedDept.status}
-            service={mutate}
+            service={onUpdate}
             closeDeleteBox={closeDeleteBox}
           />
         ) : (
