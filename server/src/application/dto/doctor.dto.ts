@@ -1,4 +1,5 @@
 import type { Clinic } from "../../domain/entities/Clinic.ts";
+import type { Department } from "../../domain/entities/Department.ts";
 import type { Doctor } from "../../domain/entities/Doctor.ts";
 import type { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
 import type User from "../../domain/entities/User.ts";
@@ -8,6 +9,7 @@ import type {
   WeeklySchedule,
 } from "../../domain/types/doctorClinic.types.ts";
 import type {
+  ApprovalStatus,
   DayOfWeek,
   EntityStatus,
   Gender,
@@ -17,45 +19,43 @@ import type {
 } from "../../domain/types/shared.types.ts";
 import type { BaseAddress } from "./patient.dto.ts";
 
-export interface UpdateDoctorStatusDTO {
-  doctorId: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
-  reviewedAt: Date;
-  reviewMessage?: string;
-}
-
 export interface ClinicDetails {
   id: string;
   name: string;
 }
 
+export interface DoctorStatusUpdateDto {
+  id: string,
+  reviewMessage: string
+}
 
 export type DoctorInfo = {
+  user: Pick<User, "email" | "phone"> | null;
   doctor: Pick<
-  Doctor,
-  | "id"
-  | "displayName"
-  | "doctorCode"
-  | "bio"
-  | "languages"
-  | "gender"
-  | "departmentId"
-  | "specialization"
-  | "qualification"
-  | "experienceYears"
-  | "averageRating"
-  | "totalReviews"
-  | "status"
-  | "createdAt"
-  | "updatedAt"
->& {
+    Doctor,
+    | "id"
+    | "displayName"
+    | "doctorCode"
+    | "bio"
+    | "languages"
+    | "gender"
+    | "departmentId"
+    | "specialization"
+    | "qualification"
+    | "experienceYears"
+    | "averageRating"
+    | "totalReviews"
+    | "status"
+    | "createdAt"
+    | "updatedAt"
+  > & {
     registrationDoc: PlainUrl;
   } & {
     medicalLicenceDoc: PlainUrl;
   } & {
     profilePicture: PlainUrl;
   };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location">;
+  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> | null;
   doctorClinic: Pick<
     DoctorClinic,
     | "id"
@@ -65,9 +65,11 @@ export type DoctorInfo = {
     | "slotDuration"
     | "timeZone"
     | "isActive"
-  >;
+  > | null;
 } & {
   address: BaseAddress | null;
+} & {
+  department: Pick<Department, "id" | "name"> | null
 }
 
 export interface DoctorRegisterDto {
@@ -75,7 +77,7 @@ export interface DoctorRegisterDto {
   email: string;
   phone: string;
   bio: string;
-  gender: Gender,
+  gender: Gender;
   departmentId: string;
   specialization: string;
   qualification: string;

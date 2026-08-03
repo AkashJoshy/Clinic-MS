@@ -21,3 +21,4 @@ export interface Clinic {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+

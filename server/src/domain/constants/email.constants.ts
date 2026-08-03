@@ -1,76 +1,82 @@
 import type { EntityType } from "../types/user.types.ts";
 
 export const EMAIL_SUBJECTS = {
-    WELCOME:  "Welcome to Heathixia Care",
-    RESET_PASSWORD: "Reset Your Password",
-    OTP_VERIFY: "Your OTP Verification Code",
-    ACCOUNT_BLOCKED: "Your Account Has Been Blocked",
-    CLINIC_APPROVED: "Your Clinic Has Been Approved 🎉",
-    CLINIC_REJECTED: "Your Clinic Registration Was Rejected ❌",
-    DOCTOR_APPROVED: "Your Doctor Has Been Approved 🎉",
-    DOCTOR_REJECTED: "Your Doctor Registration Was Rejected ❌",
-} as const
+  WELCOME: "Welcome to Heathixia Care",
+  RESET_PASSWORD: "Reset Your Password",
+  OTP_VERIFY: "Your OTP Verification Code",
+  ACCOUNT_BLOCKED: "Your Account Has Been Blocked",
+  CLINIC_APPROVED: "Your Clinic Has Been Approved 🎉",
+  CLINIC_REJECTED: "Your Clinic Registration Was Rejected ❌",
+  DOCTOR_APPROVED: "Your Registration Has Been Approved 🎉",
+  DOCTOR_REJECTED: "Your Registration Has Been Rejected ❌",
+} as const;
 
 export const EMAIL_BODY = {
-    WELCOME: "<h1>Welcome!</h1><p>Your account has been created successfully.</p>",
-    RESET_PASSWORD: "<h1>Reset Password</h1><p>Click the link below to reset your password.</p>",
-    OTP_VERIFY: "<h1>OTP Verification</h1><p>Your OTP code is: <strong>{{OTP}}</strong></p>",
-    ACCOUNT_BLOCKED: "<h1>Account Blocked</h1><p>Your account has been blocked. Contact support.</p>",
-} as const
+  WELCOME:
+    "<h1>Welcome!</h1><p>Your account has been created successfully.</p>",
+  RESET_PASSWORD:
+    "<h1>Reset Password</h1><p>Click the link below to reset your password.</p>",
+  OTP_VERIFY:
+    "<h1>OTP Verification</h1><p>Your OTP code is: <strong>{{OTP}}</strong></p>",
+  ACCOUNT_BLOCKED:
+    "<h1>Account Blocked</h1><p>Your account has been blocked. Contact support.</p>",
+} as const;
 
 export const EMAIL_FOOTER = {
-    FOOTER1: "<p>Best regards,<br/><strong>The Healthixia Team</strong></p>",
-    FOOTER_DOCTOR: "<p>Best regards,<br/><strong>clinicName</strong></p>"
-}
+  FOOTER1: "<p>Best regards,<br/><strong>The Healthixia Team</strong></p>",
+  FOOTER_DOCTOR: "<p>Best regards,<br/><strong>clinicName</strong></p>",
+};
 
 export const ERROR_MESSAGES = {
-    USER_NOT_FOUND: "User not found",
-    INVALID_CREDENTIALS: "Invalid email or password",
-    UNAUTHORIZED: "You are not authorized",
-    EMAIL_ALREADY_EXISTS: "Email already exists",
-    SOMETHING_WENT_WRONG: "Something went wrong, please try again",
-} as const
+  USER_NOT_FOUND: "User not found",
+  INVALID_CREDENTIALS: "Invalid email or password",
+  UNAUTHORIZED: "You are not authorized",
+  EMAIL_ALREADY_EXISTS: "Email already exists",
+  SOMETHING_WENT_WRONG: "Something went wrong, please try again",
+} as const;
 
 export const SUCCESS_MESSAGES = {
-    LOGIN_SUCCESS: "Login successful",
-    REGISTER_SUCCESS: "Registration successful",
-    EMAIL_SENT: "Email sent successfully",
-    PASSWORD_UPDATED: "Password updated successfully",
-} as const
+  LOGIN_SUCCESS: "Login successful",
+  REGISTER_SUCCESS: "Registration successful",
+  EMAIL_SENT: "Email sent successfully",
+  PASSWORD_UPDATED: "Password updated successfully",
+} as const;
 
 export const APPROVED_MESSAGE = (name: string, entityType: EntityType) => `
-Hello ${name},
+Hello ${name}, <br /><br />
 
-Welcome to Clinical Healthixia Care!
+Welcome to Clinical Healthixia Care! <br /><br />
 
 We’re pleased to inform you that your ${entityType.toLowerCase()} has been successfully approved.
 You can now access your dashboard and start using all available features.
-
+<br /><br />
 We’re excited to have you onboard 🚀
-
-Regards,  
+<br /><br />
+Regards, <br />
 Clinical Healthixia Care Team
 `;
 
+export const REJECTED_MESSAGE = (
+  name: string,
+  entityType: EntityType,
+  reason?: string,
+) => `
+Hello ${name}, <br /><br />
 
-export const REJECTED_MESSAGE = (name: string, entityType: EntityType, reason?: string) => `
-Hello ${name},
-
-Thank you for registering with Clinical Healthixia Care.
+Thank you for registering with Clinical Healthixia Care. <br /><br />
 
 We regret to inform you that your ${entityType.toLowerCase()} registration has been rejected.
 
 Reason:
-${reason || "Not specified"}
+${reason || "Not specified"} <br /><br />
 
-Please review the provided details and feel free to reapply after making the necessary corrections.
+Please review the provided details and feel free to reapply after making the necessary corrections. <br /><br />
 
 If you need assistance, our support team is here to help.
-
-Regards,  
+<br /><br />
+Regards,  <br />
 Clinical Healthixia Care Team
 `;
-
 
 export const DOCTOR_APPROVED = (email: string) => {
   const setPasswordUrl = `${process.env.CLIENT_ORIGIN}/doctor/forgot-password`;

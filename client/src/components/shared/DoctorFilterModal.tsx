@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  Check,
-  RefreshCcw,
-  Stethoscope,
-  Circle,
-} from "lucide-react";
+import { X, Check, RefreshCcw, Stethoscope, Circle } from "lucide-react";
 import { Button } from "../ui/button";
 
 type DepartmentDetails = {
@@ -15,20 +9,18 @@ type DepartmentDetails = {
 };
 
 export interface DoctorFilterState {
-  status: "ALL" | "ACTIVE" | "INACTIVE";
-  gender: "ALL" | "MALE" | "FEMALE" | "OTHER" | "Prefer Not To Say";
+  gender: "ALL" | "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
   department: DepartmentDetails[];
   sortBy: "NEWEST" | "OLDEST" | "NAME_ASC" | "NAME_DESC";
 }
 
 export const defaultDoctorFilters: DoctorFilterState = {
-  status: "ALL",
   gender: "ALL",
   department: [{ id: "1", name: "ALL" }],
   sortBy: "NEWEST",
 };
 
-interface DoctorFilterModalProps {
+export interface DoctorFilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   filters: DoctorFilterState;
@@ -154,41 +146,6 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
             <div className="px-5 py-5 overflow-y-auto custom-scrollbar flex flex-col gap-5">
               <div>
                 <label className="text-[13px] font-semibold text-white mb-2 block">
-                  Status
-                </label>
-                <SegmentedControl
-                  value={localFilters.status}
-                  onChange={(v) =>
-                    setLocalFilters({ ...localFilters, status: v as any })
-                  }
-                  options={[
-                    { value: "ALL", label: "All" },
-                    {
-                      value: "ACTIVE",
-                      label: "Active",
-                      icon: (
-                        <Circle
-                          size={8}
-                          className="fill-[#1dc465] text-[#1dc465]"
-                        />
-                      ),
-                    },
-                    {
-                      value: "INACTIVE",
-                      label: "Inactive",
-                      icon: (
-                        <Circle
-                          size={8}
-                          className="fill-[#4a5568] text-[#4a5568]"
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-
-              <div>
-                <label className="text-[13px] font-semibold text-white mb-2 block">
                   Gender
                 </label>
                 <SegmentedControl
@@ -200,7 +157,8 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
                     { value: "ALL", label: "All" },
                     { value: "MALE", label: "Male" },
                     { value: "FEMALE", label: "Female" },
-                    { value: "OTHER", label: "Other" },
+                    { value: "OTHERS", label: "Others" },
+                    { value: "PREFER NOT TO SAY", label: "Prefer Not To Say" },
                   ]}
                 />
               </div>

@@ -24,7 +24,7 @@ export abstract class MongooseBaseRepository<
     return this.toDomain(doc);
   }
 
-  async find(): Promise<[] | TEntity[]> {
+  async find(): Promise<TEntity[]> {
     const docs = await this.model.find();
     if (docs.length <= 0) return [];
     return docs.map((doc) => this.toDomain(doc));
@@ -70,7 +70,7 @@ export abstract class MongooseBaseRepository<
   }
 
   async delete(id: string): Promise<void> {
-    await this.model.findByIdAndDelete(id);
+    await this.model.findByIdAndDelete(id)
   }
   
   protected abstract toDomain(doc: TDocument): TEntity;

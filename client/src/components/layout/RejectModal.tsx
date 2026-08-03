@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import { useMutate } from "@/hooks/useMutate";
-import { updateClinicStatus } from "@/services/admin.service";
+import { rejectDoctor } from "@/services/admin.service";
 
-interface RejectModalProps {
+interface RejectModalProps<T> {
   id: string;
-  clinicName: string;
+  name: string;
   onConfirm: (reason: string) => void;
   onClose: () => void;
+  mutateFn: (data: T) =>  void | Promise<void>
 }
 
-export const RejectModal = ({
+export const RejectModal = <T,>({
   id,
-  clinicName,
+  name,
   onConfirm,
   onClose,
-}: RejectModalProps) => {
+  mutateFn,
+}: RejectModalProps<T>) => {
   const [reason, setReason] = useState("");
   const [error, setError] = useState(false);
-
-  const { mutate, isPending } = useMutate(updateClinicStatus)
 
   return (
     <div
@@ -40,7 +40,7 @@ export const RejectModal = ({
             </h3>
             <p className="text-[#8b9ab0] text-sm mt-0.5">
               You are rejecting{" "}
-              <span className="text-white font-medium">{clinicName}</span>
+              <span className="text-white font-medium">{name}</span>
             </p>
           </div>
           <button
@@ -87,7 +87,7 @@ export const RejectModal = ({
                 setError(true);
                 return;
               }
-              mutate({ clinicId: id, status: "REJECTED", reviewedAt: new Date(), reviewMessage: reason.trim() })
+              mutateFn({ id: id, reviewMessage: reason.trim() } as T)
               onConfirm(reason.trim())
             }}
             className="px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 transition-all duration-150 cursor-pointer"

@@ -1,10 +1,12 @@
-export const RESPONSE_MESSAGE =  {
+export const RESPONSE_MESSAGE = {
   SUCCESS: "Request completed successfully",
   CREATED: "Resource created successfully",
   UPDATED: "Resource updated successfully",
   DELETED: "Resource deleted successfully",
   FETCHED: "Resource fetched successfully",
-  
+  APPROVED: "Resource approved successfully",
+  REJECTED: "Resource rejected successfully",
+
   ACCOUNT_AUTHENTICATED: "Account authenticated",
   ACCOUNT_CREATED: "Account created successfully",
   ACCOUNT_UPDATED: "Account updated successfully",
@@ -17,13 +19,14 @@ export const RESPONSE_MESSAGE =  {
 
   USER_PROFILE_RETRIEVED: "User profile retrieved successfully",
   USER_NOT_FOUND: "User not found",
-  
+
   PATIENT_REGISTERED: "Patient registered successfully",
   PATIENT_UPDATED: "Patient record updated successfully",
   PATIENT_DELETED: "Patient record deleted successfully",
   PATIENT_NOT_FOUND: "Patient not found",
   PATIENT_APPOINTMENT_BOOKED: "Appointment Booked successfully",
-  PATIENT_SLOT_HOLD: "Slot reserved successfully. Complete payment within 5 minutes",
+  PATIENT_SLOT_HOLD:
+    "Slot reserved successfully. Complete payment within 5 minutes",
 
   DOCTOR_REGISTERED: "Doctor registered successfully",
 
@@ -36,7 +39,8 @@ export const RESPONSE_MESSAGE =  {
 
   INVALID_REQUEST: "Invalid request data",
   MISSING_REQUIRED_FIELDS: "Required fields are missing",
-  
+
   INTERNAL_SERVER_ERROR: "Internal server error. Please try again later",
-  SERVICE_UNAVAILABLE: "Service temporarily unavailable. Please try again later"
-} as const 
+  SERVICE_UNAVAILABLE:
+    "Service temporarily unavailable. Please try again later",
+} as const;

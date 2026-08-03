@@ -14,16 +14,43 @@ import { EditDepartmentController } from "../controllers/admin/edit-department.c
 import { UpdateDepartmentStatusController } from "../controllers/admin/update-department-status.controller.ts";
 import { EditDepartmentUseCase } from "../../application/use-cases/admin/department-management/edit-department.usecase.ts";
 import { UpdateDepartmentStatusUseCase } from "../../application/use-cases/admin/department-management/update-department-status.usecase.ts";
+import { GetAllDoctorsController } from "../controllers/admin/get-all-doctors.controller.ts";
+import { MongooseAddressRepository } from "../../infrastructure/repositories/mongoose-address.repository.ts";
+import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
+import { MongooseDoctorClinicRepository } from "../../infrastructure/repositories/mongoose-doctor-clinic.repository.ts";
+import { MongooseClinicRepository } from "../../infrastructure/repositories/mongoose-clinic.repository.ts";
+import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.ts";
+import { DoctorDetailsService } from "../../application/services/doctor-details.service.ts";
+import { GetAllDoctorsUseCase } from "../../application/use-cases/admin/department-management/get-all-doctors.usecase.ts";
+import { ApproveDoctorController } from "../controllers/admin/approve-doctor.controller.ts";
+import { ApproveDoctorUseCase } from "../../application/use-cases/admin/department-management/approve-doctor.usecase.ts";
+import { RejectDoctorController } from "../controllers/admin/reject-doctor.controller.ts";
+import { RejectDoctorUseCase } from "../../application/use-cases/admin/department-management/reject-doctor.usecase.ts";
 
 const router = Router();
 
 // DB Repo's
+const mongooseUserRepository = new MongooseUserRepository();
+const mongooseClinicRepository = new MongooseClinicRepository();
+const mongooseDoctorRepository = new MongooseDoctorRepository();
+const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
+const mongooseAddressRepository = new MongooseAddressRepository();
 const mongooseDepartmentRepository = new MongooseDepartmentRepository();
+
 
 // Services
 const nodeMailerService = new NodeMailerService();
 
+
 // Service-Usecase
+const doctorDetailsService = new DoctorDetailsService(
+    mongooseUserRepository,
+    mongooseDoctorClinicRepository,
+    mongooseClinicRepository,
+    mongooseAddressRepository,
+    mongooseDepartmentRepository
+)
+
 
 // Use-cases
 const getDepartmentUseCase = new GetDepartmentUseCase(
@@ -37,6 +64,22 @@ const editDepartmentUseCase = new EditDepartmentUseCase(
 );
 const updateDepartmentStatusUseCase = new UpdateDepartmentStatusUseCase(
   mongooseDepartmentRepository,
+);
+const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
+  mongooseDoctorRepository,
+  doctorDetailsService
+);
+const approveDoctorUseCase = new ApproveDoctorUseCase(
+  mongooseDoctorRepository,
+  mongooseUserRepository,
+  nodeMailerService
+);
+const rejectDoctorUseCase = new RejectDoctorUseCase(
+  mongooseDoctorRepository,
+  mongooseUserRepository,
+  mongooseDoctorClinicRepository,
+  mongooseAddressRepository,
+  nodeMailerService
 );
 
 
@@ -53,10 +96,19 @@ const editDepartmentController = new EditDepartmentController(
 const updateDepartmentStatusController = new UpdateDepartmentStatusController(
   updateDepartmentStatusUseCase,
 );
+const getAllDoctorsController = new GetAllDoctorsController(
+  getAllDoctorsUseCase,
+);
+const approveDoctorController = new ApproveDoctorController(
+  approveDoctorUseCase
+);
+const rejectDoctorController = new RejectDoctorController(
+  rejectDoctorUseCase
+);
 
 // Routes
 router.get(
-  ADMIN_ENDPOINTS["DEPARTMENT"],
+  ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
   authMiddleware,
   authMiddleware2,
   async (req, res, next) => {
@@ -75,7 +127,7 @@ router.post(
 );
 
 router.put(
-  ADMIN_ENDPOINTS["DEPARTMENT"],
+  ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
   authMiddleware,
   authMiddleware2,
   validate(createDepartmentSchema),
@@ -85,7 +137,7 @@ router.put(
 );
 
 router.patch(
-  ADMIN_ENDPOINTS["DEPARTMENT"],
+  ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
   authMiddleware,
   authMiddleware2,
   validate(updateDepartmentSchema),
@@ -93,5 +145,34 @@ router.patch(
     await updateDepartmentStatusController.handle(req, res, next);
   },
 );
+
+router.get(
+  ADMIN_ENDPOINTS["FETCH_DOCTORS"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await getAllDoctorsController.handle(req, res, next);
+  },
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["APPROVE_DOCTOR"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await approveDoctorController.handle(req, res, next);
+  },
+);
+
+router.delete(
+  ADMIN_ENDPOINTS["REJECT_DOCTOR"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await rejectDoctorController.handle(req, res, next);
+  },
+);
+
+
 
 export default router;

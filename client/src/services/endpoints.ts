@@ -20,6 +20,8 @@ export const ENDPOINTS = {
   ADMIN: {
     ADD_DEPARTMENT: "/admin/departments",
     DOCTORS: "/admin/doctors",
+    APPROVE_DOCTOR: (doctorId: string) => `/admin/doctors/${doctorId}/approve`,
+    REJECT_DOCTOR: (doctorId: string) => `/admin/doctors/${doctorId}/reject`,
     DEPARTMENT: (id: string) => `/admin/departments/${id}`,
     UPDATE_CLINIC_STATUS: (clinicId: string) => `/admin/clinics/${clinicId}`,
   },

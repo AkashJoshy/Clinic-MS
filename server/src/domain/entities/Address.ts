@@ -4,7 +4,7 @@ import type { ModeRoleRef, Role } from "../types/user.types.ts";
 export class Address {
     constructor(
         public id: string | null,
-        public ownerId: string,
+        public ownerId: string | null,
         public ownerType: ModeRoleRef,
         public addressLine: string,
         public country: string,

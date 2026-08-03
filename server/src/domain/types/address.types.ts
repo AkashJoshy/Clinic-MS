@@ -2,7 +2,7 @@ import type { ModeRoleRef } from "./user.types.ts";
 
 export interface AddressProps {
   id: string | null;
-  ownerId: string;
+  ownerId: string | null;
   ownerType: ModeRoleRef;
   addressLine: string;
   country: string;

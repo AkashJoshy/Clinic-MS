@@ -8,8 +8,9 @@ import type {
   ImageData,
   PlainUrl,
 } from "./common";
-import type { DoctorClinic, WeeklySchedule } from "./doctor-clinic";
+import type { DoctorClinic } from "./doctor-clinic";
 import type { Clinic } from "./clinic";
+import type { DepartmentData } from "./admin";
 
 export interface Doctor {
   id: string | null;
@@ -94,6 +95,7 @@ export type DoctorDetails = DoctorClinic & {
 };
 
 export type DoctorInfo = {
+  user: Pick<User,  "email" | "phone"> | null
   doctor: Omit<
     Doctor,
     | "reviewedAt"
@@ -123,5 +125,10 @@ export type DoctorInfo = {
 } & {
   address: BaseAddress | null;
 } & {
-  user: Pick<User, "id" | "email" | "phone">;
+  department: Pick<DepartmentData, "id" | "name"> | null
+}
+
+export interface DoctorStatusUpdateDto {
+  id: string,
+  reviewMessage: string
 }

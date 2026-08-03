@@ -17,6 +17,7 @@ import { doctorUpload } from "../middlewares/upload.middleware.ts";
 import { DoctorRegisterUseCase } from "../../application/use-cases/doctor/profile/doctor-register.usecase.ts";
 import { UserCreationService } from "../../application/services/user-creation.service.ts";
 import { ArgonPasswordService } from "../../infrastructure/services/ArgonPasswordService.ts";
+import { MongooseDepartmentRepository } from "../../infrastructure/repositories/mongoose-department.repository.ts";
 
 const router = Router();
 
@@ -26,6 +27,7 @@ const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
 const mongooseUserRepository = new MongooseUserRepository();
 const mongooseClinicRepository = new MongooseClinicRepository();
 const mongooseAddressRepository = new MongooseAddressRepository();
+const mongooseDepartmentRepository = new MongooseDepartmentRepository();
 
 // Services
 const argonPasswordService = new ArgonPasswordService()
@@ -43,7 +45,8 @@ const doctorProfileUseCase = new DoctorProfileUseCase(
    mongooseDoctorRepository,
    mongooseDoctorClinicRepository,
    mongooseClinicRepository,
-   mongooseAddressRepository
+   mongooseAddressRepository,
+   mongooseDepartmentRepository
 )
 const doctorRegisterUseCase = new DoctorRegisterUseCase(
    mongooseDoctorRepository,
@@ -71,7 +74,7 @@ router.get(DOCTOR_ENDPOINTS["profile"],
 );
 router.post(DOCTOR_ENDPOINTS["register"],
     doctorUpload,
-    // validate(doctorRegistrationSchema),
+    validate(doctorRegistrationSchema),
     async (req, res, next) => {
         await doctorRegisterController.handle(req, res, next)
     }

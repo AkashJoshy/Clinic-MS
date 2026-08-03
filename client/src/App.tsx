@@ -27,6 +27,7 @@ import DepartmentPage from "./pages/admin/DepartmentPage";
 import AddDepartmentPage from "./pages/admin/AddDepartmentPage";
 import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
 import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
+import DoctorManagementPage from "./pages/admin/DoctorManagementPage";
 
 const router = createBrowserRouter([
   {
@@ -338,11 +339,7 @@ const router = createBrowserRouter([
               {
                 path: "/admin/doctors",
                 element: (
-                  <UnderConstruction
-                    title="Doctors"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
+                  <DoctorManagementPage />
                 ),
               },
               {

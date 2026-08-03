@@ -10,6 +10,7 @@ import type { IAddressRepository } from "../../../../domain/repositories/IAddres
 import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
+import type { ModeRoleRef } from "../../../../domain/types/user.types.ts";
 import { uploadToCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorRegisterDto } from "../../../dto/doctor.dto.ts";
 import type { IUserCreationService } from "../../../IService/IUserCreationService.ts";
@@ -143,11 +144,12 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
       clinic = await this._clinicRepository.save(
         Clinic.register(clinicDetailsToUpdate),
       );
-      
+
       const clinicAddressToUpdate = {
         id: null,
-        owner: clinic.id,
+        ownerId: clinic.id,
         addressLine,
+        ownerType: "Clinic" as ModeRoleRef,
         country,
         state,
         city,
@@ -155,7 +157,7 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
       };
   
       await this._addressRepository.save(
-        Address.createForOwner(clinicAddressToUpdate, "Clinic"),
+        Address.create(clinicAddressToUpdate)
       )
 
     }

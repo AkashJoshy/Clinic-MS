@@ -1,0 +1,18 @@
+import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
+import type { DoctorInfo } from "../../../dto/doctor.dto.ts";
+import type { IDoctorDetailsService } from "../../../IService/IDoctorDetailsService.ts";
+import type { IGetAllDoctorsUseCase } from "../../../repositories/admin/IGetAllDoctorsUseCase.ts";
+
+export class GetAllDoctorsUseCase implements IGetAllDoctorsUseCase {
+  constructor(
+    private _doctorRepository: IDoctorRepository,
+    private _doctorDetailsService: IDoctorDetailsService,
+  ) {}
+
+  async execute(): Promise<DoctorInfo[]> {
+    const doctors = await this._doctorRepository.find();
+
+    const response = await this._doctorDetailsService.execute(doctors);
+    return response;
+  }
+}

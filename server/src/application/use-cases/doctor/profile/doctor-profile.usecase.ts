@@ -1,6 +1,7 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
 import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
+import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
@@ -14,17 +15,18 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
     readonly _doctorClinicRepository: IDoctorClinicRepository,
     readonly _clinicRepository: IClinicRepository,
     readonly _addressRepository: IAddressRepository,
+    readonly _departmentRepository: IDepartmentRepository,
   ) {}
 
   async execute(userId: string): Promise<DoctorInfo> {
     const user = await this._userRepository.findById(userId);
- 
+
     if (!user || !user.id) {
       throw new NotFoundError("Doctor");
     }
-    
+
     const doctor = await this._doctorRepository.findOneBy({ userId });
-    
+
     if (!doctor || !doctor.id) {
       throw new NotFoundError("Doctor");
     }
@@ -43,18 +45,28 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
       throw new NotFoundError("Doctor");
     }
 
+    const doctorDepartment = await this._departmentRepository.findOneBy({
+      _id: doctor.departmentId,
+    });
+
     const address = await this._addressRepository.findOneBy({
       ownerId: doctor.id,
     });
 
     const response = {
+      user: user
+        ? {
+            email: user.email,
+            phone: user.phone,
+          }
+        : null,
       clinic: {
         id: clinic.id,
         name: clinic.name,
         about: clinic.about,
         location: {
           type: clinic.location.type,
-          coordinates: clinic.location.coordinates as [number, number]
+          coordinates: clinic.location.coordinates as [number, number],
         },
       },
       doctor: {
@@ -71,13 +83,13 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
         averageRating: doctor.averageRating,
         totalReviews: doctor.totalReviews,
         registrationDoc: {
-          url: doctor.registrationDoc.url
+          url: doctor.registrationDoc.url,
         },
         medicalLicenceDoc: {
-          url: doctor.medicalLicenceDoc.url
+          url: doctor.medicalLicenceDoc.url,
         },
         profilePicture: {
-          url: doctor.profilePicture.url
+          url: doctor.profilePicture.url,
         },
         status: doctor.status,
         createdAt: doctor.createdAt ?? null,
@@ -92,19 +104,27 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
         timeZone: doctorClinic.timeZone,
         isActive: doctorClinic.isActive,
       },
-      address: address ? {
-        id: address.id,
-        addressLine: address.addressLine,
-        country: address.country,
-        state: address.state,
-        city: address.city,
-        pincode: address.pincode,
-      } : null
+      address: address
+        ? {
+            id: address.id,
+            addressLine: address.addressLine,
+            country: address.country,
+            state: address.state,
+            city: address.city,
+            pincode: address.pincode,
+          }
+        : null,
+      department: doctorDepartment
+        ? {
+            id: doctorDepartment.id,
+            name: doctorDepartment.name,
+          }
+        : null,
     };
 
     console.log(`Response: `);
     console.log(response);
 
-    return response
+    return response;
   }
 }
