@@ -6,7 +6,7 @@ export const emptyProfile: PersonalProfile = {
   email: "",
   phone: "",
   dateOfBirth: "",
-  gender: "Male",
+  gender: "MALE",
   bloodGroup: "",
   allergies: [],
   chronicConditions: []

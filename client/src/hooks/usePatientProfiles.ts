@@ -17,10 +17,8 @@ export function usePatientProfiles() {
       try {
         if (!user.id) return
         const profiles = await fetchPatientProfiles(user.id);
-        console.log(`Profiles`)
-        console.log(profiles)
         const activeProfile = profiles.data.find(
-          (p: any) => p.relation == "SELF",
+          (p: { patient: { relation: string; }; }) => p.patient.relation == "SELF",
         );
         setPatients(profiles.data);
         if (!activePatient) setActivePatient(activeProfile);

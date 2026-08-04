@@ -29,6 +29,7 @@ import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
 import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
 import DoctorManagementPage from "./pages/admin/DoctorManagementPage";
 import PatientManagementPage from "./pages/admin/Patientmanagementpage";
+import MyProfilePage from "./pages/patient/MyProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -194,13 +195,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/patient/my-profile",
-                element: (
-                  <UnderConstruction
-                    title="My Profile"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                element: <MyProfilePage />,
               },
               {
                 path: "/patient/settings",

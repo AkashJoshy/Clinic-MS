@@ -16,7 +16,7 @@ export const authMiddleware2 = async (
     }
     
     if (req.user) {
-      if (req.user?.isBlocked || !req.user?.isActive) {
+      if ((req.user as any)?.isBlocked  || !(req.user as any)?.isActive) {
         return res.status(ResponseStatusCode.FORBIDDEN).json({
           success: false,
           message: RESPONSE_MESSAGE.UNAUTHORIZED_ACCESS,

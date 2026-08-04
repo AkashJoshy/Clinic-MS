@@ -25,16 +25,20 @@ export const ENDPOINTS = {
     DEPARTMENT: (id: string) => `/admin/departments/${id}`,
     UPDATE_CLINIC_STATUS: (clinicId: string) => `/admin/clinics/${clinicId}`,
     PATIENTS: "/admin/patients",
-    PATIENT: (patientId: string) => `/admin/patients/${patientId}`
+    PATIENT: (patientId: string) => `/admin/patients/${patientId}`,
   },
   PATIENT: {
     PROFILES: (userId: string) => `/patient/profiles/${userId}`,
+    UPDATE_PROFILE: (patientId: string) => `/patient/profiles/${patientId}`,
+    UPDATE_PROFILE_PICTURE: () => `/patient/profiles/picture/p`,
+    UPDATE_ADDRESS: (onwerId: string) => `/patient/profiles/address/${onwerId}`,
+    CREATE_PROFILE: `/patient/profiles`,
   },
   COMMON: {
     DEPARTMENTS: `/common/departments`,
   },
   DOCTOR: {
     REGISTER: `/doctor/register`,
-    PROFILE: (userId: string) => `/doctor/profile/${userId}`
-  }
+    PROFILE: (userId: string) => `/doctor/profile/${userId}`,
+  },
 };

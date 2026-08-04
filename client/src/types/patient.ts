@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { DeleteMethods, ImageData } from "./common";
 import type { Address, User } from "./user";
 import type React from "react";
+import type { PatientFormInstance } from "@/hooks/usePatientForm";
 
 export interface Patient {
   id: null | string;
@@ -103,7 +104,7 @@ type RelationToPatient =
   | "Other"
   | "Self";
 
-export type Gender = "Male" | "Female" | "Others" | "Prefer Not To Say";
+export type Gender = "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
 
 export interface FilterState {
   status: string[];
@@ -132,9 +133,15 @@ export type PatientProfile = {
   };
 } & {
   address: BaseAddress | null;
-};
+}
 
-export type PatientInfo = PatientProfile & {
+export type PatientInfo = {
+  patient: Omit<Patient, "imageUrl"> & {
+    imageUrl: Omit<ImageData, "publicId">;
+  };
+} & {
+  address: BaseAddress | null;
+} & {
   user: Pick<
     User,
     "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
@@ -203,4 +210,10 @@ export interface ProfileAddress {
 export interface DeletePatientDto {
   id: string,
   method: DeleteMethods
+}
+
+export interface AddProfileProps {
+  isSubmit: boolean;
+  onClose?: () => void;
+  formInstance?: PatientFormInstance;
 }

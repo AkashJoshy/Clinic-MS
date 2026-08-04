@@ -2,6 +2,7 @@ import { useAuthStore } from "@/store";
 import { Activity, Check, ChevronDown, LogOut, PlusCircle, UserRound, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { Patient, PatientProfile } from "@/types/patient";
+import AddProfileModal from "./AddProfileModal";
 
 
 export function Header() {
@@ -29,7 +30,7 @@ export function Header() {
   
   function switchProfile(patient: PatientProfile) {
     if (!activePatient || !patient) return
-    if (activePatient.id === patient.id) return
+    if (activePatient.patient?.id === patient.patient?.id) return
     setActivePatient(patient)
   }
 
@@ -54,7 +55,7 @@ export function Header() {
             <Users size={14} className="text-white/80" />
           </div>
           <span className="text-sm font-medium text-white max-w-20 truncate">
-            {activePatient?.displayName}
+            {activePatient?.patient?.displayName}
           </span>
           <ChevronDown
             size={14}
@@ -71,11 +72,11 @@ export function Header() {
                 Profiles
               </p>
               {patients.map((patient) => {
-                const isActive = patient.id === activePatient!.id;
+                const isActive = patient.patient?.id === activePatient!.patient?.id;
 
                 return (
                   <button
-                    key={patient.id}
+                    key={patient.patient?.id}
                     onClick={() => switchProfile(patient)}
                     className="w-full flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/8 transition-colors group"
                   >
@@ -85,10 +86,10 @@ export function Header() {
                       </div>
                       <div className="text-left">
                         <p className={`text-sm leading-tight ${isActive ? "text-white font-medium" : "text-white/60 group-hover:text-white/80"}`}>
-                          {patient.displayName}
+                          {patient.patient?.displayName}
                         </p>
                         <p className="text-[10px] text-white/30 capitalize">
-                          {patient.relation.toLowerCase()}
+                          {patient.patient?.relation.toLowerCase()}
                         </p>
                       </div>
                     </div>
@@ -108,6 +109,7 @@ export function Header() {
                 </span>
               </button>
             </div>
+            <AddProfileModal isOpen={isAddOpen} onClose={() => setAddOpen(false)} />
             <div className="border-t border-white/8 p-1">
               <button className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-red-500/10 transition-colors group">
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10">

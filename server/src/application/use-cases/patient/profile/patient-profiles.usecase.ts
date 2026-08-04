@@ -49,7 +49,7 @@ export class PatientProfilesUseCase implements IPatientProfilesUseCase {
         patient
       }
     })
-
+    
     return response;
   }
 }
