@@ -29,6 +29,7 @@ import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
 import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
 import DoctorManagementPage from "./pages/admin/DoctorManagementPage";
 import PatientManagementPage from "./pages/admin/Patientmanagementpage";
+import PatientDetailsPage from "./pages/admin/PatientDetailsPage";
 import MyProfilePage from "./pages/patient/MyProfilePage";
 
 const router = createBrowserRouter([
@@ -341,6 +342,10 @@ const router = createBrowserRouter([
               {
                 path: "/admin/patients",
                 element: <PatientManagementPage />,
+              },
+              {
+                path: "/admin/patients/:patientId",
+                element: <PatientDetailsPage />,
               },
               {
                 path: "/admin/departments",

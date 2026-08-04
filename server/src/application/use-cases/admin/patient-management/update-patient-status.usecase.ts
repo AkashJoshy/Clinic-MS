@@ -16,7 +16,7 @@ export class UpdatePatientStatusUseCase implements IUpdatePatientStatusUseCase {
     private _userRepository: IUserRepository,
   ) {}
 
-  async execute(data: DeletePatientDto): Promise<void> {
+  async execute(data: DeletePatientDto): Promise<string> {
     const patient = await this._patientRepository.findById(data.id);
 
     if (!patient || !patient.id || !patient.userId) {
@@ -29,10 +29,13 @@ export class UpdatePatientStatusUseCase implements IUpdatePatientStatusUseCase {
       throw new NotFoundError("Patient");
     }
 
+    let message = ''
     if (data.method === "DELETE") {
       user.block();
+      message = "Patient has been blocked successfully.";
     } else if (data.method === "RESTORE") {
       user.unblock();
+      message = "Patient has been restored successfully.";
     } else {
       throw new Error("Invalid Operation");
     }
@@ -41,5 +44,7 @@ export class UpdatePatientStatusUseCase implements IUpdatePatientStatusUseCase {
       isBlocked: user.isBlocked,
       isActive: user.isActive,
     });
+
+    return message
   }
 }

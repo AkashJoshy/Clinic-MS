@@ -146,6 +146,22 @@ export const getAllPatients = async () => {
   }
 };
 
+export const getPatient = async (patientId: string) => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.PATIENT(patientId));
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
 export const updatePatient = async (data: DeletePatientDto) => {
   try {
     const {

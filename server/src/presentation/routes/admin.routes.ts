@@ -3,7 +3,10 @@ import { ADMIN_ENDPOINTS } from "../endpoints/admin.endpoints.js";
 import { NodeMailerService } from "../../infrastructure/services/mail/NodeMailerService.ts";
 import { authMiddleware } from "../middlewares/auth.middleware.ts";
 import { authMiddleware2 } from "../middlewares/auth.middleware2.ts";
-import { createDepartmentSchema, updateDepartmentSchema } from "../schemas/admin/department.schema.ts";
+import {
+  createDepartmentSchema,
+  updateDepartmentSchema,
+} from "../schemas/admin/department.schema.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import { GetDepartmentController } from "../controllers/admin/get-department.controller.ts";
 import { GetDepartmentUseCase } from "../../application/use-cases/admin/department-management/get-department.usecase.ts";
@@ -32,6 +35,8 @@ import { MongoosePatientRepository } from "../../infrastructure/repositories/mon
 import { PatientDetailsService } from "../../application/services/patient-details.service.ts";
 import { UpdatePatientStatusController } from "../controllers/admin/update-patient-status.controller.ts";
 import { UpdatePatientStatusUseCase } from "../../application/use-cases/admin/patient-management/update-patient-status.usecase.ts";
+import { GetPatientController } from "../controllers/admin/get-patient.controller.ts";
+import { GetPatientUseCase } from "../../application/use-cases/admin/patient-management/get-patient.usecase.ts";
 
 const router = Router();
 
@@ -44,24 +49,21 @@ const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
 const mongooseAddressRepository = new MongooseAddressRepository();
 const mongooseDepartmentRepository = new MongooseDepartmentRepository();
 
-
 // Services
 const nodeMailerService = new NodeMailerService();
 
-
 // Service-Usecase
 const doctorDetailsService = new DoctorDetailsService(
-    mongooseUserRepository,
-    mongooseDoctorClinicRepository,
-    mongooseClinicRepository,
-    mongooseAddressRepository,
-    mongooseDepartmentRepository
-)
+  mongooseUserRepository,
+  mongooseDoctorClinicRepository,
+  mongooseClinicRepository,
+  mongooseAddressRepository,
+  mongooseDepartmentRepository,
+);
 const patientDetailsService = new PatientDetailsService(
-    mongooseUserRepository,
-    mongooseAddressRepository
-)
-
+  mongooseUserRepository,
+  mongooseAddressRepository,
+);
 
 // Use-cases
 const getDepartmentUseCase = new GetDepartmentUseCase(
@@ -78,29 +80,33 @@ const updateDepartmentStatusUseCase = new UpdateDepartmentStatusUseCase(
 );
 const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
   mongooseDoctorRepository,
-  doctorDetailsService
+  doctorDetailsService,
 );
 const getAllPatientsUseCase = new GetAllPatientsUseCase(
   mongoosePatientRepository,
-  patientDetailsService
+  patientDetailsService,
+);
+const getPatientUseCase = new GetPatientUseCase(
+  mongoosePatientRepository,
+  mongooseAddressRepository,
+  mongooseUserRepository,
 );
 const approveDoctorUseCase = new ApproveDoctorUseCase(
   mongooseDoctorRepository,
   mongooseUserRepository,
-  nodeMailerService
+  nodeMailerService,
 );
 const rejectDoctorUseCase = new RejectDoctorUseCase(
-    mongooseDoctorRepository,
-    mongooseUserRepository,
-    mongooseDoctorClinicRepository,
-    mongooseAddressRepository,
-    nodeMailerService
+  mongooseDoctorRepository,
+  mongooseUserRepository,
+  mongooseDoctorClinicRepository,
+  mongooseAddressRepository,
+  nodeMailerService,
 );
 const updatePatientStatusUseCase = new UpdatePatientStatusUseCase(
   mongoosePatientRepository,
-  mongooseUserRepository
+  mongooseUserRepository,
 );
-
 
 // Controllers
 const getDepartmentController = new GetDepartmentController(
@@ -121,14 +127,13 @@ const getAllDoctorsController = new GetAllDoctorsController(
 const getAllPatientsController = new GetAllPatientsController(
   getAllPatientsUseCase,
 );
+const getPatientController = new GetPatientController(getPatientUseCase);
 const approveDoctorController = new ApproveDoctorController(
-    approveDoctorUseCase
+  approveDoctorUseCase,
 );
-const rejectDoctorController = new RejectDoctorController(
-    rejectDoctorUseCase
-);
+const rejectDoctorController = new RejectDoctorController(rejectDoctorUseCase);
 const updatePatientStatusController = new UpdatePatientStatusController(
-    updatePatientStatusUseCase
+  updatePatientStatusUseCase,
 );
 
 // Routes
@@ -186,6 +191,15 @@ router.get(
   authMiddleware2,
   async (req, res, next) => {
     await getAllPatientsController.handle(req, res, next);
+  },
+);
+
+router.get(
+  ADMIN_ENDPOINTS["FETCH_PATIENT"],
+  authMiddleware,
+  authMiddleware2,
+  async (req, res, next) => {
+    await getPatientController.handle(req, res, next);
   },
 );
 

@@ -34,8 +34,6 @@ export default function PatientManagementPage() {
         const getPatients = await getAllPatients();
         const data = getPatients.data;
         if (data) {
-          console.log(`Data`);
-          console.log(data);
           setPatientDetails(data);
         } else {
           setPatientDetails([]);

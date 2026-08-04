@@ -60,9 +60,9 @@ export const PatientListItem = ({ patientInfo }: PatientListItemProps) => {
             )}
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-white text-base font-semibold truncate">
+          <div className=" ">
+            <div className="">
+              <h3 className="text-white text-base font-semibold truncate xsxs:max-w-20">
                 {patientInfo.patient.displayName}
               </h3>
 

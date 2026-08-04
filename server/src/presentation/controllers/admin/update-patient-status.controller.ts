@@ -12,11 +12,11 @@ export class UpdatePatientStatusController {
       let id = req.params.patientId;
       id = Array.isArray(id) ? id[0] : id;
 
-      await this._updatePatient.execute({ ...data, id });
+      const message = await this._updatePatient.execute({ ...data, id });
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,
-        message: RESPONSE_MESSAGE.APPROVED.replace("Resource", "Doctor"),
+        message: message,
       });
     } catch (error) {
       return next(error);
