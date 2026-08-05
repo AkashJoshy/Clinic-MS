@@ -13,11 +13,11 @@ export class GetPatientUseCase implements IGetPatientUseCase {
     private _userRepository: IUserRepository,
   ) {}
 
-  async execute(patientId: string): Promise<PatientInfoDto> {
+  async execute(patientId: string): Promise<PatientInfoDto | null> {
     const patient = await this._patientRepository.findById(patientId);
 
     if (!patient || !patient.id) {
-      throw new NotFoundError("Patient")
+      return null;
     }
 
     const [user, address] = await Promise.all([
@@ -25,9 +25,9 @@ export class GetPatientUseCase implements IGetPatientUseCase {
       this._addressRepository.findOneBy({
         ownerId: patient.id!,
       }),
-    ]).catch(error => {
-      throw new Error(error)
-    })
+    ]).catch((error) => {
+      throw new Error(error);
+    });
 
     return {
       patient: {
@@ -65,6 +65,6 @@ export class GetPatientUseCase implements IGetPatientUseCase {
         isActive: user?.isActive ?? false,
         isEmailVerified: user?.isEmailVerified ?? false,
       },
-    }
+    };
   }
 }

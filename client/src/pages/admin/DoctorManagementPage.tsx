@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { Building2, Filter, Search, Stethoscope, X } from "lucide-react";
-// import { Pagination } from "../../components/layout/admin/clinic-management/Pagination";
-// import { RejectModal } from "../../components/layout/admin/clinic-management/RejectModal";
-// import { AllClinicCard } from "../../components/layout/admin/clinic-management/AllClinicCard";
-// import { PendingClinicCard } from "../../components/layout/admin/clinic-management/PendingClinicCard";
 import {
   approveDoctor,
   getAllDoctors,
   rejectDoctor,
 } from "@/services/admin.service";
 import toast from "react-hot-toast";
-// import { PendingApproval } from "@/components/shared/admin/PendingApproval";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
 import { RejectModal } from "@/components/layout/RejectModal";

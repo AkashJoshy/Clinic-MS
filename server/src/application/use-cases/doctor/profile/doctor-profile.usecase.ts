@@ -5,7 +5,7 @@ import type { IDepartmentRepository } from "../../../../domain/repositories/IDep
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
-import type { DoctorInfo } from "../../../dto/doctor.dto.ts";
+import type { DoctorInfo, DoctorProfileInfo } from "../../../dto/doctor.dto.ts";
 import type { IDoctorProfileUseCase } from "../../../repositories/doctor/IDoctorProfileUseCase.ts";
 
 export class DoctorProfileUseCase implements IDoctorProfileUseCase {
@@ -18,7 +18,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
     readonly _departmentRepository: IDepartmentRepository,
   ) {}
 
-  async execute(userId: string): Promise<DoctorInfo> {
+  async execute(userId: string): Promise<DoctorProfileInfo> {
     const user = await this._userRepository.findById(userId);
 
     if (!user || !user.id) {
@@ -53,13 +53,19 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
       ownerId: doctor.id,
     });
 
+    const allAddress = await this._addressRepository.find()
+    console.log(`All Address`)
+    console.log(allAddress)
+
+    console.log(`Address Id: `,clinic.id)
+    
+    const clinicAddress = await this._addressRepository.findOneBy({
+      ownerId: clinic.id
+    })
+    console.log(`clinicAddress`)
+    console.log(clinicAddress)
+
     const response = {
-      user: user
-        ? {
-            email: user.email,
-            phone: user.phone,
-          }
-        : null,
       clinic: {
         id: clinic.id,
         name: clinic.name,
@@ -68,6 +74,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
           type: clinic.location.type,
           coordinates: clinic.location.coordinates as [number, number],
         },
+        clinicAddress: clinicAddress ?? null
       },
       doctor: {
         id: doctor.id,

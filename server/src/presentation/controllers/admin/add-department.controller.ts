@@ -5,7 +5,6 @@ import type { IAddDepartmentUseCase } from "../../../application/repositories/ad
 
 export class AddDepartmentController {
   constructor(private _addDepartmentUseCase: IAddDepartmentUseCase) {}
-
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
       let data = req.body;

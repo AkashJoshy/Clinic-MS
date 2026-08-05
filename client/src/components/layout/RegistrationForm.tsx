@@ -67,7 +67,7 @@ const RegistrationForm = () => {
                 password,
                 phone,
                 role,
-                provider: "LOCAL"
+                provider: "LOCAL",
               });
               if (res.data.token) {
                 navigate(`/verify-email?token=${res.data.token}`);

@@ -13,12 +13,13 @@ export interface User {
   role: Role;
   provider: AuthProvider;
   isEmailVerified: boolean;
+  isBlocked: boolean
   isActive: boolean,
   createdAt: Date
   updatedAt: Date
 }
 
-export type RegisterUser = Omit<AuthUser, "id" | "isBlocked" | "isActive" | "isTwoFactorEnabled" | "isEmailVerified" | "imageUrl">
+export type RegisterUser = Omit<AuthUser, "id" | "isBlocked" | "isActive" | "isTwoFactorEnabled" | "isEmailVerified" | "imageUrl" | "createdAt" | "updatedAt">
 
 
 export interface AuthUser

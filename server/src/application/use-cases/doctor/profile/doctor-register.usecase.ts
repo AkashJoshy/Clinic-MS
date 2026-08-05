@@ -155,13 +155,9 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
         city,
         pincode,
       };
-  
-      await this._addressRepository.save(
-        Address.create(clinicAddressToUpdate)
-      )
 
+      await this._addressRepository.save(Address.create(clinicAddressToUpdate));
     }
-
 
     const doctorCode = process.env.DOCTOR_NUMBER_MODEL + "-" + code;
 
@@ -194,9 +190,22 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
       consultationFee,
     };
 
+    const doctorAddressToUpdate = {
+      id: null,
+      ownerId: createDoctor.id,
+      addressLine: "",
+      country: "",
+      state: "",
+      city: "",
+      pincode: "",
+    };
+
     await Promise.all([
       this._doctorClinicRepository.save(
         DoctorClinic.register(doctorClinicDetailsToUpdate),
+      ),
+      this._addressRepository.save(
+        Address.createForOwner(doctorAddressToUpdate, "Doctor"),
       ),
     ]);
   }

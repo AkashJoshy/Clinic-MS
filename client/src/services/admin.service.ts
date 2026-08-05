@@ -130,6 +130,42 @@ export const rejectDoctor = async (data: DoctorStatusUpdateDto) => {
   }
 };
 
+export const getDoctor = async (doctorId: string) => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.DOCTOR(doctorId));
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateDoctorStatus = async (data: {
+  id: string;
+  method: "DELETE" | "RESTORE";
+}) => {
+  try {
+    const { id, method } = data;
+    const res = await api.patch(ENDPOINTS.ADMIN.UPDATE_DOCTOR(id), { method });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
 export const getAllPatients = async () => {
   try {
     const res = await api.get(ENDPOINTS.ADMIN.PATIENTS);
@@ -164,11 +200,8 @@ export const getPatient = async (patientId: string) => {
 
 export const updatePatient = async (data: DeletePatientDto) => {
   try {
-    const {
-        id,
-        method
-    } = data
-    const res = await api.patch(ENDPOINTS.ADMIN.PATIENT(id), { method })
+    const { id, method } = data;
+    const res = await api.patch(ENDPOINTS.ADMIN.PATIENT(id), { method });
     return res.data;
   } catch (error: any) {
     if (error.response) {

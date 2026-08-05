@@ -33,37 +33,55 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
           )}
         </div>
 
-        <span
-          className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
-            doctor?.status === "APPROVED"
-              ? "bg-[#1dc465]/15 text-[#1dc465]"
-              : doctor?.status === "REJECTED"
-              ? "bg-red-600 text-white"
-              : "bg-amber-500/10 text-amber-400"
-          }`}
-        >
-          {doctor?.status === "APPROVED" ? (
-            <CheckCircle size={11} />
-          ) : (
-            <Clock size={11} />
-          )}
-          {doctor?.status}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Doctor Approval Status */}
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+              doctor?.status === "APPROVED"
+                ? "bg-emerald-500/15 text-emerald-400"
+                : doctor?.status === "REJECTED"
+                  ? "bg-red-500/15 text-red-400"
+                  : "bg-amber-500/15 text-amber-400"
+            }`}
+          >
+            {doctor?.status === "APPROVED" ? (
+              <CheckCircle size={12} />
+            ) : (
+              <Clock size={12} />
+            )}
+            {doctor?.status}
+          </span>
+
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+              user?.isBlocked || !user?.isActive
+                ? "bg-red-500/15 text-red-400"
+                : "bg-blue-500/15 text-blue-400"
+            }`}
+          >
+            <span
+              className={`mr-1.5 h-2 w-2 rounded-full ${
+                user?.isBlocked || !user?.isActive
+                  ? "bg-red-400"
+                  : "bg-blue-400"
+              }`}
+            />
+            {user?.isBlocked || !user?.isActive ? "Blocked" : "Active"}
+          </span>
+        </div>
       </div>
 
       <h3 className="text-white text-sm font-semibold">
         {doctor?.displayName}
       </h3>
 
-      <p className="text-[#8b9ab0] text-xs mb-3">
-        {clinic?.name ?? "--"}
-      </p>
+      <p className="text-[#8b9ab0] text-xs mb-3">{clinic?.name ?? "--"}</p>
 
       <div className="space-y-1.5">
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
           <MapPin size={12} className="text-[#1dc465]" />
           {address
-            ? `${address.city}, ${address.state}, ${address.country}`
+            ? `${address.city ?? "-"}, ${address.state ?? "-"}, ${address.country ?? "-"}`
             : "--"}
         </p>
 
@@ -87,7 +105,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
 
         <button
           onClick={() =>
-            navigate(`/admin/doctor/${doctor?.id}/details`, {
+            navigate(`/admin/doctors/${doctor?.id}`, {
               state: doctorInfo,
             })
           }

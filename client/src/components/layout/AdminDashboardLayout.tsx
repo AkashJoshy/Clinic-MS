@@ -10,7 +10,7 @@ const AdminDashboardLayout: React.FC = () => {
 
    return (
     <div className="flex flex-col h-screen overflow-hidden">
-      <DashboardHeader name={admin?.fullName ?? "Admin"} />
+      <DashboardHeader />
       <div className="flex-1 bg-[#080d14] flex overflow-hidden">
         <AdminSideNav />
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">

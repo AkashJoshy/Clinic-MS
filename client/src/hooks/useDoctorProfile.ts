@@ -12,6 +12,8 @@ export function useDoctorProfile() {
       try {
         const doctordata = await fetchDoctorProfile(user.id!);
         setDoctor(doctordata?.data)
+        console.log(`Doctordata Data`)
+        console.log(doctordata?.data)
       } catch (error) {
         throw new Error("Error finding profiles..");
       }

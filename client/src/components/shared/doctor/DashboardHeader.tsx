@@ -1,7 +1,10 @@
+import { useAuthStore } from "@/store";
 import { Activity, User } from "lucide-react";
 
 
-export function DashboardHeader({name}: { name:string}) {
+export function DashboardHeader() {
+
+  const user = useAuthStore(state => state.user)
 
   return (
     <div className="sticky top-0 z-100 flex items-center justify-between border-b border-white/8 bg-primary p-3.5 shadow-[0_6px_16px_-8px_rgba(0,0,0,0.6)]">
@@ -23,7 +26,7 @@ export function DashboardHeader({name}: { name:string}) {
             <User size={14} className="text-white/80" />
           </div>
           <span className="text-sm font-medium text-white max-w-20 truncate">
-            {name}
+            {user?.fullName.split(" ")[0]}
           </span>
         </div>
 

@@ -95,7 +95,7 @@ export type DoctorDetails = DoctorClinic & {
 };
 
 export type DoctorInfo = {
-  user: Pick<User,  "email" | "phone"> | null
+  user: Pick<User,  "email" | "phone" | "isActive" | "isBlocked"> | null
   doctor: Omit<
     Doctor,
     | "reviewedAt"
@@ -110,8 +110,10 @@ export type DoctorInfo = {
     medicalLicenceDoc: PlainUrl;
   } & {
     profilePicture: PlainUrl;
-  };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location">;
+  }
+  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & {
+    clinicAddress: BaseAddress | null
+  }
   doctorClinic: Pick<
     DoctorClinic,
     | "id"

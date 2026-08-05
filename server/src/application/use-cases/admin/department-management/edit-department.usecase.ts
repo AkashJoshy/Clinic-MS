@@ -1,5 +1,6 @@
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
+import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
 import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
 import type { DepartmentDto } from "../../../dto/admin.dto.ts";
 import type { IEditDepartmentUseCase } from "../../../repositories/admin/IEditDepartmentUseCase.ts";
@@ -13,6 +14,13 @@ export class EditDepartmentUseCase implements IEditDepartmentUseCase {
     if (!id) {
       throw new NotFoundError("Department");
     }
+
+    const isAlreadyExisted = await this._departmentRepository.findByName(data.name)
+
+    if (isAlreadyExisted) {
+        throw new AlreadyExistsError("Department Cannot be edited!")
+    }
+
 
     const isUpdated = await this._departmentRepository.findByIdAndUpdate(
       id,

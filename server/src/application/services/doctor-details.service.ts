@@ -45,10 +45,16 @@ export class DoctorDetailsService implements IDoctorDetailsService {
       "ownerId",
       clinicIds,
     );
-    console.log(`Address of Clinic`)
-    console.log(clinicAddresses)
+    const doctorAddresses = await this._addressRepository.findByIds(
+      "ownerId",
+      doctorIds,
+    );
+
     const clinicAddressMap = new Map(
       clinicAddresses.map((a) => [a.ownerId, a]),
+    );
+    const doctorAddressMap = new Map(
+      doctorAddresses.map((a) => [a.ownerId, a]),
     );
 
     const departments = await this._departmentRepository.findByIds(
@@ -67,6 +73,8 @@ export class DoctorDetailsService implements IDoctorDetailsService {
         clinicDetails && clinicDetails.id
           ? clinicAddressMap.get(clinicDetails?.id ?? null)
           : null;
+      const doctorAddressDetails =
+        doctorAddressMap.get(doctor?.id ?? null) ?? null;
       const department = departmentMap.get(doctor.departmentId) ?? null;
 
       return {
@@ -74,6 +82,8 @@ export class DoctorDetailsService implements IDoctorDetailsService {
           ? {
               email: userDetails.email,
               phone: userDetails.phone,
+              isActive: userDetails.isActive,
+              isBlocked: userDetails.isBlocked
             }
           : null,
         clinic: clinicDetails
@@ -88,6 +98,17 @@ export class DoctorDetailsService implements IDoctorDetailsService {
                   number,
                 ],
               },
+              clinicAddress: clinicAddressDetails
+                ? {
+                    id: clinicAddressDetails.id,
+                    addressLine: clinicAddressDetails.addressLine,
+                    country: clinicAddressDetails.country,
+                    state: clinicAddressDetails.state,
+                    city: clinicAddressDetails.city,
+                    pincode: clinicAddressDetails.pincode,
+                    ownerId: clinicAddressDetails.ownerId,
+                  }
+                : null,
             }
           : null,
         doctor: {
@@ -127,15 +148,15 @@ export class DoctorDetailsService implements IDoctorDetailsService {
               isActive: doctorClinicDetails.isActive,
             }
           : null,
-        address: clinicAddressDetails
+        address: doctorAddressDetails
           ? {
-              id: clinicAddressDetails.id,
-              addressLine: clinicAddressDetails.addressLine,
-              country: clinicAddressDetails.country,
-              state: clinicAddressDetails.state,
-              city: clinicAddressDetails.city,
-              pincode: clinicAddressDetails.pincode,
-              ownerId: clinicAddressDetails.ownerId
+              id: doctorAddressDetails.id,
+              addressLine: doctorAddressDetails.addressLine,
+              country: doctorAddressDetails.country,
+              state: doctorAddressDetails.state,
+              city: doctorAddressDetails.city,
+              pincode: doctorAddressDetails.pincode,
+              ownerId: doctorAddressDetails.ownerId,
             }
           : null,
         department: department

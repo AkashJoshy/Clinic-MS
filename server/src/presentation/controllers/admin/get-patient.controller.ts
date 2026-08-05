@@ -17,13 +17,22 @@ export class GetPatientController {
         throw new NotFoundError("Patient")
       }
 
+
       const data = await this._getPatient.execute(patientId);
 
+      if (!data) {
+        return res.status(ResponseStatusCode.OK).json({
+          success: true,
+          message: RESPONSE_MESSAGE.PATIENT_NOT_FOUND,
+          data: data,
+        });
+      }
       return res.status(ResponseStatusCode.OK).json({
         success: true,
         message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Doctor"),
         data: data,
       });
+
     } catch (error) {
       return next(error);
     }

@@ -1,35 +1,35 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
 import type { DeletePatientDto } from "../../../dto/patient.dto.ts";
 import type { IUpdateStatusUseCase } from "../../../repositories/admin/IUpdateStatusUseCase.ts";
 
-export class UpdatePatientStatusUseCase implements IUpdateStatusUseCase {
+export class UpdateDoctorStatusUseCase implements IUpdateStatusUseCase {
   constructor(
-    private _patientRepository: IPatientRepository,
+    private _doctorRepository: IDoctorRepository,
     private _userRepository: IUserRepository,
   ) {}
 
   async execute(data: DeletePatientDto): Promise<string> {
-    const patient = await this._patientRepository.findById(data.id);
+    const doctor = await this._doctorRepository.findById(data.id);
 
-    if (!patient || !patient.id || !patient.userId) {
-      throw new NotFoundError("Patient");
+    if (!doctor || !doctor.id || !doctor.userId) {
+      throw new NotFoundError("doctor");
     }
 
-    const user = await this._userRepository.findById(patient.userId);
+    const user = await this._userRepository.findById(doctor.userId);
 
     if (!user || !user.id) {
-      throw new NotFoundError("Patient");
+      throw new NotFoundError("Doctor");
     }
 
     let message = "";
     if (data.method === "DELETE") {
       user.block();
-      message = "Patient has been blocked successfully.";
+      message = "Doctor has been blocked successfully.";
     } else if (data.method === "RESTORE") {
       user.unblock();
-      message = "Patient has been restored successfully.";
+      message = "Doctor has been restored successfully.";
     } else {
       throw new Error("Invalid Operation");
     }

@@ -28,9 +28,10 @@ import AddDepartmentPage from "./pages/admin/AddDepartmentPage";
 import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
 import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
 import DoctorManagementPage from "./pages/admin/DoctorManagementPage";
-import PatientManagementPage from "./pages/admin/Patientmanagementpage";
+import DoctorDetailsPage from "./pages/admin/DoctorDetailsPage";
 import PatientDetailsPage from "./pages/admin/PatientDetailsPage";
 import MyProfilePage from "./pages/patient/MyProfilePage";
+import PatientManagementPage from "./pages/admin/PatientmanagementPage";
 
 const router = createBrowserRouter([
   {
@@ -338,6 +339,10 @@ const router = createBrowserRouter([
                 element: (
                   <DoctorManagementPage />
                 ),
+              },
+              {
+                path: "/admin/doctors/:doctorId",
+                element: <DoctorDetailsPage />,
               },
               {
                 path: "/admin/patients",

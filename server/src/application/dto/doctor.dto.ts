@@ -30,7 +30,7 @@ export interface DoctorStatusUpdateDto {
 }
 
 export type DoctorInfo = {
-  user: Pick<User, "email" | "phone"> | null;
+  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Pick<
     Doctor,
     | "id"
@@ -55,7 +55,7 @@ export type DoctorInfo = {
   } & {
     profilePicture: PlainUrl;
   };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> | null;
+  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & { clinicAddress: BaseAddress | null } | null;
   doctorClinic: Pick<
     DoctorClinic,
     | "id"
@@ -71,6 +71,8 @@ export type DoctorInfo = {
 } & {
   department: Pick<Department, "id" | "name"> | null
 }
+
+export type DoctorProfileInfo = Omit<DoctorInfo, "user">
 
 export interface DoctorRegisterDto {
   fullName: string;
