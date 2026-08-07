@@ -20,7 +20,7 @@ const RegistrationForm = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors, dirtyFields, touchedFields },
+    formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
@@ -60,7 +60,7 @@ const RegistrationForm = () => {
             try {
               setIsPending(true);
               const { email, fullName, password, phone, role } =
-                data as unknown as RegisterUserDto;
+                data as RegisterUserDto;
               const res = await registerUser({
                 email,
                 fullName,

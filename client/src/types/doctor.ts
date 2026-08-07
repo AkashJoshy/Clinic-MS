@@ -95,7 +95,7 @@ export type DoctorDetails = DoctorClinic & {
 };
 
 export type DoctorInfo = {
-  user: Pick<User,  "email" | "phone" | "isActive" | "isBlocked"> | null
+  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
     Doctor,
     | "reviewedAt"
@@ -110,10 +110,10 @@ export type DoctorInfo = {
     medicalLicenceDoc: PlainUrl;
   } & {
     profilePicture: PlainUrl;
-  }
+  };
   clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & {
-    clinicAddress: BaseAddress | null
-  }
+    clinicAddress: BaseAddress | null;
+  };
   doctorClinic: Pick<
     DoctorClinic,
     | "id"
@@ -127,10 +127,65 @@ export type DoctorInfo = {
 } & {
   address: BaseAddress | null;
 } & {
-  department: Pick<DepartmentData, "id" | "name"> | null
-}
+  department: Pick<DepartmentData, "id" | "name"> | null;
+};
 
 export interface DoctorStatusUpdateDto {
-  id: string,
-  reviewMessage: string
+  id: string;
+  reviewMessage: string;
+}
+
+type DoctorProfCard = Pick<
+  Doctor,
+  | "doctorCode"
+  | "bio"
+  | "displayName"
+  | "averageRating"
+  | "totalReviews"
+  | "status"
+> & {
+  profilePicture: {
+    url: string;
+  };
+};
+
+export interface DoctorProfileCardProps {
+  doctor: DoctorProfCard;
+  department: { id: string; name: string } | null;
+  isBlocked: boolean;
+}
+
+type DoctorQualificationCard = Pick<
+  Doctor,
+  | "specialization"
+  | "qualification"
+  | "experienceYears"
+  | "gender"
+  | "createdAt"
+> & {
+  registrationDoc: {
+    url: string;
+  };
+} & {
+  medicalLicenceDoc: {
+    url: string;
+  };
+};
+
+export interface DoctorQualificationsCardProps {
+  doctor: DoctorQualificationCard;
+  onViewDocument: (url: string) => void;
+  formatDate: (date: any) => string;
+}
+
+type ClinicCard = Pick<Clinic, "name" | "about" > & {
+  clinicAddress: BaseAddress | null;
+};
+
+type DoctorClinicCard = Pick<DoctorClinic, "consultationFee" | "slotDuration" | "type" | "isActive">
+
+export interface DoctorClinicCardProps {
+  clinic: ClinicCard;
+  doctorClinic: DoctorClinicCard;
+  address: BaseAddress | null;
 }

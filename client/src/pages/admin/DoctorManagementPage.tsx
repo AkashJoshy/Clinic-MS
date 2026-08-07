@@ -42,7 +42,6 @@ export default function DoctorManagementPage() {
       try {
         const getDoctors = await getAllDoctors();
         const data = getDoctors.data;
-        console.log(getDoctors);
         if (data) {
           setDoctorDetails(data);
         } else {
@@ -58,7 +57,7 @@ export default function DoctorManagementPage() {
         const getDepartments = await getAllDepartments();
         const data = getDepartments.data;
         if (data) {
-          setDepartments([{ id: "1", name: "ALL"}, ...data]);
+          setDepartments([{ id: "1", name: "ALL" }, ...data]);
         } else {
           setDepartments([]);
         }
@@ -74,40 +73,36 @@ export default function DoctorManagementPage() {
   const [allPage, setAllPage] = useState<number>(1);
   const [pendingPage, setPendingPage] = useState<number>(1);
 
- const filteredDoctors = doctorDetails.filter((det) => {
-  // Search
-  if (searchQuery.trim()) {
-    const q = searchQuery.toLowerCase().trim();
+  const filteredDoctors = doctorDetails.filter((det) => {
+    // Search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
 
-    const match =
-      det.clinic.name.toLowerCase().includes(q) ||
-      det.doctor.displayName.toLowerCase().includes(q);
+      const match =
+        det.clinic.name.toLowerCase().includes(q) ||
+        det.doctor.displayName.toLowerCase().includes(q);
 
-    if (!match) return false;
-  }
+      if (!match) return false;
+    }
 
-  if (
-    filters.gender !== "ALL" &&
-    det.doctor.gender !== filters.gender.toUpperCase()
-  ) {
-    return false;
-  }
+    if (
+      filters.gender !== "ALL" &&
+      det.doctor.gender !== filters.gender.toUpperCase()
+    ) {
+      return false;
+    }
 
-  const isAllDepartment = filters.department.some(
-    (d) => d.name === "ALL"
-  );
+    const isAllDepartment = filters.department.some((d) => d.name === "ALL");
 
-  if (
-    !isAllDepartment &&
-    !filters.department.some(
-      (d) => d.id === det.doctor.departmentId
-    )
-  ) {
-    return false;
-  }
+    if (
+      !isAllDepartment &&
+      !filters.department.some((d) => d.id === det.doctor.departmentId)
+    ) {
+      return false;
+    }
 
-  return true;
-});
+    return true;
+  });
 
   filteredDoctors.sort((a, b) => {
     if (filters.sortBy === "NEWEST") {

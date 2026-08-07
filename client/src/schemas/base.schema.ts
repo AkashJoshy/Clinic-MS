@@ -81,16 +81,14 @@ export const documentField = (
     .refine((file) => file?.size <= maxSize, {
       message: `Max file size is ${size}MB`,
     })
-    .refine((file) => {
-  console.log(file?.type);
-  console.log(ALLOWED_DOC_TYPES.includes(file?.type));
-  return ALLOWED_DOC_TYPES.includes(file?.type);
-}, {
-  message: "Only PDF, JPG, PNG allowed",
-})
-    // .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
-    //   message: "Only PDF, JPG, PNG allowed",
-    // });
+    .refine(
+      (file) => {
+        return ALLOWED_DOC_TYPES.includes(file?.type);
+      },
+      {
+        message: "Only PDF, JPG, PNG allowed",
+      },
+    );
 
 export const pictureField = (
   fieldName: string,

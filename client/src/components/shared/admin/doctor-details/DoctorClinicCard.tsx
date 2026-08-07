@@ -1,12 +1,6 @@
-import React from "react";
+import type { DoctorClinicCardProps } from "@/types/doctor";
 import { Building2, Activity, MapPin } from "lucide-react";
-import type { BaseAddress } from "@/types/patient";
 
-interface DoctorClinicCardProps {
-  clinic: any;
-  doctorClinic: any;
-  address: BaseAddress | null;
-}
 
 export const DoctorClinicCard = ({ clinic, doctorClinic, address }: DoctorClinicCardProps) => {
   return (

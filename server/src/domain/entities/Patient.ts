@@ -54,7 +54,12 @@ export default class Patient {
   static createSelf(data: Partial<RegisterPatientProps>, patientCode: string): Patient {
     return this.create({
       ...data,
-      relation: "SELF"
+      relation: "SELF",
+      medicalInformation: {
+        bloodGroup: "",
+        allergies: [],
+        chronicConditions: []
+      }
     }, patientCode)
   }
   

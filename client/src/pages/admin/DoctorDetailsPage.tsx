@@ -113,7 +113,7 @@ export default function DoctorDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] h-full space-y-4">
+      <div className="flex flex-col items-center justify-center min-h-100 h-full space-y-4">
         <div className="w-12 h-12 border-4 border-[#1dc465]/20 border-t-[#1dc465] rounded-full animate-spin"></div>
         <p className="text-[#8b9ab0] text-sm animate-pulse">Loading doctor details...</p>
       </div>
@@ -153,7 +153,7 @@ export default function DoctorDetailsPage() {
   const isBlocked = (user as User)?.isBlocked === true || (user as any)?.isActive === false;
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-[1400px] mx-auto animate-fade-in">
+    <div className="border border-white/10 bg-white/2 shadow-2xs p-6 lg:p-8 space-y-6 max-w-[1400px] mx-auto animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button
           onClick={() => navigate("/admin/doctors")}
@@ -170,7 +170,7 @@ export default function DoctorDetailsPage() {
                 onClick={() => setIsRejectOpen(true)}
                 className="flex items-center gap-2 px-5 py-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl text-sm font-semibold transition-all cursor-pointer"
               >
-                Reject Request
+                Reject Doctor
               </button>
               <button
                 onClick={handleApprove}

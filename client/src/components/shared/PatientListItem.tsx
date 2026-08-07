@@ -63,7 +63,7 @@ export const PatientListItem = ({ patientInfo }: PatientListItemProps) => {
           <div className=" ">
             <div className="">
               <h3 className="text-white text-base font-semibold truncate xsxs:max-w-20">
-                {patientInfo.patient.displayName}
+                {patientInfo.patient.displayName} 
               </h3>
 
               <span className="text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[#8b9ab0]">
@@ -99,6 +99,7 @@ export const PatientListItem = ({ patientInfo }: PatientListItemProps) => {
               </div>
             </div>
           </div>
+          
         </div>
 
         <div className="flex flex-col sm:flex-row xl:flex-col gap-2 shrink-0">

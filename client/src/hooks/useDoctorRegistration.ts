@@ -1,8 +1,7 @@
-import { useState, useRef } from "react";
-import { useForm, Watch } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { UseFormReturn } from "react-hook-form";
-import type { RefObject } from "react";
 import type { DoctorRegisterStep1FormData, DoctorRegisterStep2FormData, DoctorRegisterStep3FormData } from "@/schemas/doctor/doctor.schema";
 import { doctorRegisterStep1Schema, doctorRegisterStep2Schema, doctorRegisterStep3Schema } from "@/schemas/doctor/register.schema";
 
@@ -48,8 +47,6 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
       if (valid) setStep(2);
     } else if (s === 2) {
       const valid = await step2Form.trigger();
-      console.log(`Is Valid: ${valid}`)
-      console.log(step2Form.getValues());
       if (valid) setStep(3);
     }
   };
@@ -64,6 +61,9 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
 
   const onSubmit = async () => {
     const valid = await step3Form.trigger();
+    console.log(`Errors:- `)
+    console.log(step3Form.formState.errors);
+
     if (!valid) return;
     const payload = {
       ...step1Form.getValues(),
@@ -72,7 +72,7 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
     };
 
     const formData = new FormData();
-
+    
     Object.entries(payload).forEach(([key, value]) => {
       if (value instanceof File) {
         formData.append(key, value);
@@ -82,6 +82,8 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
         formData.append(key, String(value ?? ""));
       }
     });
+
+    console.log(formData);
 
     return formData;
   };

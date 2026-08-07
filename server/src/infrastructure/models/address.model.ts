@@ -44,9 +44,22 @@ const addressSchema: Schema<IAddress> = new Schema(
     pincode: {
       type: String,
       trim: true,
-      minlength: [6, "Invalid PIN/ZIP"],
-      maxlength: [12, "Invalid PIN/ZIP"],
-      match: [/^[A-Z0-9\s\-]{4,10}$/i, "Invalid PIN/ZIP format"],
+      validate: [{
+        validator(value: string) {
+          return value === "" || value.length >= 6
+        },
+        message: "Invalid PIN/ZIP",
+      }, {
+        validator(value: string) {
+          return value === "" || value.length <= 12
+        },
+        message: "Invalid PIN/ZIP",
+      }, {
+        validator(value: string) {
+          return value === "" || /^[A-Z0-9\s\-]{6,12}$/i.test(value)
+        },
+        message: "Invalid PIN/ZIP"
+      }]
     },
   },
   {

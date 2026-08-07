@@ -34,7 +34,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Doctor Approval Status */}
+
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
               doctor?.status === "APPROVED"
@@ -80,9 +80,9 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
       <div className="space-y-1.5">
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
           <MapPin size={12} className="text-[#1dc465]" />
-          {address
+          {address && address?.city
             ? `${address.city ?? "-"}, ${address.state ?? "-"}, ${address.country ?? "-"}`
-            : "--"}
+            : "-- -- --"}
         </p>
 
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
@@ -97,10 +97,10 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-        <p className="text-[#8b9ab0] text-xs">
+        <p className="text-primary text-[13px] ">
           {doctorClinic?.consultationFee
             ? `₹${doctorClinic.consultationFee}`
-            : ""}
+            : "Not available"}
         </p>
 
         <button

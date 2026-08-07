@@ -8,22 +8,23 @@ export class DoctorRegisterController {
 
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
+      const data = req.body;
+      const files = req.files;
 
-      const data = req.body
-      const files = req.files
-
-      console.log(data);
-      
       const updatedData = {
-        ...data, gender: data.gender.toUpperCase(),
-        mode: data.mode.toUpperCase(), latitude: Number(data.latitude),
-        longitude: Number(data.longitude), consultationFee: Number(data.consultationFee)
-      }
-      await this._doctorRegister.execute({...updatedData, ...files});
+        ...data,
+        gender: data.gender.toUpperCase(),
+        mode: data.mode.toUpperCase(),
+        latitude: Number(data.latitude),
+        longitude: Number(data.longitude),
+        consultationFee: Number(data.consultationFee),
+      };
+
+      await this._doctorRegister.execute({ ...updatedData, ...files });
 
       return res.status(ResponseStatusCode.CREATED).json({
         success: true,
-        message: RESPONSE_MESSAGE.SUCCESS
+        message: RESPONSE_MESSAGE.SUCCESS,
       });
     } catch (error) {
       return next(error);

@@ -133,7 +133,7 @@ export type PatientProfile = {
   };
 } & {
   address: BaseAddress | null;
-}
+};
 
 export type PatientInfo = {
   patient: Omit<Patient, "imageUrl"> & {
@@ -146,18 +146,25 @@ export type PatientInfo = {
     User,
     "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
   >;
-}
+};
 
 export type PatientBasicInfo = {
-  patient: 
-    Pick<Patient, "id" | "displayName" | "patientNumber" | "medicalInformation" | "gender" | "userId"> &  {
-    imageUrl: Omit<ImageData, "publicId">,
-  }  
+  patient: Pick<
+    Patient,
+    | "id"
+    | "displayName"
+    | "patientNumber"
+    | "medicalInformation"
+    | "gender"
+    | "userId"
+  > & {
+    imageUrl: Omit<ImageData, "publicId">;
+  };
 } & {
-  address: BaseAddress | null
+  address: BaseAddress | null;
 } & {
-  user: Pick<User, "email" | "phone" | "isActive">
-}
+  user: Pick<User, "email" | "phone" | "isActive">;
+};
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 type FormEvent = React.FormEvent<HTMLElement>;
@@ -208,12 +215,32 @@ export interface ProfileAddress {
 }
 
 export interface DeletePatientDto {
-  id: string,
-  method: DeleteMethods
+  id: string;
+  method: DeleteMethods;
 }
 
 export interface AddProfileProps {
   isSubmit: boolean;
   onClose?: () => void;
   formInstance?: PatientFormInstance;
+}
+
+type PatientProfCard = Pick<
+  Patient,
+  "displayName" | "patientNumber" | "relation"
+> & {
+  imageUrl: {
+    url: string;
+  };
+};
+
+export type DoctorProfileCardProps = {
+  patient: PatientProfCard;
+  isActive: boolean;
+  isEmailVerified: boolean;
+};
+
+export type PatientPersonalInformation = {
+  patient: Pick<Patient, "createdAt" | "updatedAt" | "dateOfBirth" | "medicalInformation" | "emergencyContact" | "gender">,
+  address: BaseAddress | null
 }

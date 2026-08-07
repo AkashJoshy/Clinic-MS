@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import { useMutate } from "@/hooks/useMutate";
-import { rejectDoctor } from "@/services/admin.service";
 
 interface RejectModalProps<T> {
   id: string;

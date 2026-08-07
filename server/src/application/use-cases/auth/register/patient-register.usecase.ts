@@ -48,11 +48,6 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
             publicId: "",
             url: "",
           },
-          medicalInformation: {
-            bloodGroup: "",
-            allergies: [],
-            chronicConditions: [],
-          },
         },
         patientNumber,
       ),
@@ -67,7 +62,12 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
     await this._addressRepository.save(
       Address.createForOwner({
         id: null,
-        ownerId: patient.id
+        ownerId: patient.id,
+        addressLine: '',
+        country: '',
+        state: '',
+        city: '',
+        pincode: '',
       }, "Patient")
     )
 

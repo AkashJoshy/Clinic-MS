@@ -53,17 +53,9 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
       ownerId: doctor.id,
     });
 
-    const allAddress = await this._addressRepository.find()
-    console.log(`All Address`)
-    console.log(allAddress)
-
-    console.log(`Address Id: `,clinic.id)
-    
     const clinicAddress = await this._addressRepository.findOneBy({
-      ownerId: clinic.id
-    })
-    console.log(`clinicAddress`)
-    console.log(clinicAddress)
+      ownerId: clinic.id,
+    });
 
     const response = {
       clinic: {
@@ -74,7 +66,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
           type: clinic.location.type,
           coordinates: clinic.location.coordinates as [number, number],
         },
-        clinicAddress: clinicAddress ?? null
+        clinicAddress: clinicAddress ?? null,
       },
       doctor: {
         id: doctor.id,
@@ -119,7 +111,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
             state: address.state,
             city: address.city,
             pincode: address.pincode,
-            ownerId: address.ownerId
+            ownerId: address.ownerId,
           }
         : null,
       department: doctorDepartment
@@ -129,7 +121,6 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
           }
         : null,
     };
-
 
     return response;
   }

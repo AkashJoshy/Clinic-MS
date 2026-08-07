@@ -1,11 +1,6 @@
-import React from "react";
 import { Stethoscope, Star } from "lucide-react";
+import type { DoctorProfileCardProps } from "@/types/doctor";
 
-interface DoctorProfileCardProps {
-  doctor: any;
-  department: { id: string; name: string } | null;
-  isBlocked: boolean;
-}
 
 export const DoctorProfileCard = ({ doctor, department, isBlocked }: DoctorProfileCardProps) => {
   return (

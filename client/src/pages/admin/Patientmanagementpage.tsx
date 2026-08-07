@@ -11,7 +11,6 @@ import type {
   PatientInfo,
 } from "@/types/patient";
 import { PatientListItem } from "@/components/shared/PatientListItem";
-import { useMutate } from "@/hooks/useMutate";
 // import {
 //   defaultPatientFilters,
 //   PatientFilterModal,

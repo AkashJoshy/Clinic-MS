@@ -9,6 +9,7 @@ import {
   Phone,
   X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface PendingDoctorCardProps {
   doctorInfo: DoctorInfo;
@@ -23,9 +24,12 @@ export const PendingDoctorCard = ({
   onReject,
   setPreviewImage,
 }: PendingDoctorCardProps) => {
+  const navigate = useNavigate()
   const { doctor, clinic, user, address, doctorClinic } = doctorInfo;
 
   const submittedDate = String(doctor.createdAt).split("T")[0];
+
+
 
   return (
     <div className="bg-[#0d1a27] border border-amber-500/20 rounded-2xl p-5 hover:border-amber-500/40 transition-all duration-200">
@@ -56,9 +60,9 @@ export const PendingDoctorCard = ({
       <div className="space-y-1.5 mb-4">
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
           <MapPin size={12} className="text-[#1dc465]" />
-          {address
+          {address && address?.city
             ? `${address.city} ${address.state} ${address.country}`
-            : "--"}
+            : "-- -- --"}
         </p>
 
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
@@ -104,9 +108,23 @@ export const PendingDoctorCard = ({
       </div>
 
       <div className="pt-3 border-t border-white/5">
-        <p className="text-[#4a5568] text-[11px] mb-3">
+      <div className="flex mb-3">
+        <p className="text-[#4a5568] text-[11px]">
           Submitted: {submittedDate}
         </p>
+
+       <button
+          onClick={() =>
+            navigate(`/admin/doctors/${doctor?.id}`, {
+              state: doctorInfo,
+            })
+          }
+          className="text-xs font-medium text-[#1dc465] hover:underline cursor-pointer ml-auto"
+        >
+          View Details →
+        </button>
+
+      </div>
 
         <div className="flex gap-2">
           <button

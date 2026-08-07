@@ -1,11 +1,6 @@
-import React from "react";
 import { Award, Briefcase, FileText, ExternalLink } from "lucide-react";
+import type { DoctorQualificationsCardProps } from "@/types/doctor";
 
-interface DoctorQualificationsCardProps {
-  doctor: any;
-  onViewDocument: (url: string) => void;
-  formatDate: (date: any) => string;
-}
 
 export const DoctorQualificationsCard = ({
   doctor,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { addressLine, altPhone, bio, city, consultationFee, country, email, fullName, gender, latitude, longitude, mode, password, phone, pincode, state } from "../base.schema.ts";
+import { addressLine, altPhone, bio, city, consultationFee, country, departmentId, email, fullName, gender, latitude, longitude, mode, password, phone, pincode, state } from "../base.schema.ts";
 
 export const doctorRegistrationSchema = z
   .object({
@@ -8,10 +8,7 @@ export const doctorRegistrationSchema = z
     phone,
     bio,
     gender,
-    departmentId: z
-      .string()
-      .trim()
-      .min(1, "Department is required"),
+    departmentId,
     specialization: z
       .string()
       .trim()

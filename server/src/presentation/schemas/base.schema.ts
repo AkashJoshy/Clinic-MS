@@ -1,6 +1,6 @@
 import * as z from "zod";
 import {
-  ALLOWED_DOC_TYPES,
+  ALLOWED_DOCUMENT_TYPES,
   USER_ROLES,
 } from "../../domain/constants/user.constants.ts";
 import {
@@ -111,7 +111,7 @@ export const pincode = z
   .trim()
   .min(6, "Invalid PIN/ZIP")
   .max(12, "Invalid PIN/ZIP")
-  .regex(/^[A-Z0-9\s\-]{4,10}$/i, "Invalid PIN/ZIP format");
+  .regex(/^[A-Z0-9\s\-]{6,12}$/i, "Invalid PIN/ZIP format");
 
 export const registrationNumber = z
   .string()
@@ -124,8 +124,7 @@ export const about = z
   .min(1, "About must be at least 10 characters")
   .max(1000, "About cannot exceed 1000 characters");
 
-export const departmentId = z
-  .string().min(1, "Select a Department")
+export const departmentId = z.string().trim().min(1, "Select a Department");
 
 export const year = z
   .string()
@@ -158,7 +157,7 @@ export const documentField = (
     .refine((file) => file?.size <= maxSize, {
       message: `Max file size is ${size}MB`,
     })
-    .refine((file) => ALLOWED_DOC_TYPES.includes(file?.type), {
+    .refine((file) => ALLOWED_DOCUMENT_TYPES.includes(file?.type), {
       message: "Only PDF, JPG, PNG allowed",
     });
 
@@ -174,6 +173,6 @@ export const mode = z.enum(["ONLINE", "OFFLINE", "BOTH"], {
 });
 
 export const consultationFee = z.coerce
-      .number("Consulation fee is required")
-      .min(200, "Consultation fee must be at least ₹200")
-      .max(1000, "Consultation fee must not exceed ₹1000")
+  .number("Consulation fee is required")
+  .min(200, "Consultation fee must be at least ₹200")
+  .max(1000, "Consultation fee must not exceed ₹1000");

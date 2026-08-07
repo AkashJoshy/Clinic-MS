@@ -7,7 +7,6 @@ import { InternalServerError } from "../../../../domain/errors/internal-server.e
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { ValidationError } from "../../../../domain/errors/validation.error.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
