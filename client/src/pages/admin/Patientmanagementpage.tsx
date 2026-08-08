@@ -4,11 +4,13 @@ import toast from "react-hot-toast";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
 import { getAllPatients } from "@/services/admin.service";
-import type {
-  PatientBasicInfo,
-} from "@/types/patient";
+import type { PatientBasicInfo } from "@/types/patient";
 import { PatientListItem } from "@/components/shared/PatientListItem";
-import { defaultPatientFilters, PatientFilterModal, type PatientFilterState } from "@/components/shared/PatientFilterModal";
+import {
+  defaultPatientFilters,
+  PatientFilterModal,
+  type PatientFilterState,
+} from "@/components/shared/PatientFilterModal";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -21,21 +23,21 @@ export default function PatientManagementPage() {
   );
   const [page, setPage] = useState<number>(1);
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const getPatients = await getAllPatients();
-        const data = getPatients.data;
-        if (data) {
-          setPatientDetails(data);
-        } else {
-          setPatientDetails([]);
-        }
-      } catch (error: any) {
-        toast.error(error?.message);
+  const fetchPatients = async () => {
+    try {
+      const getPatients = await getAllPatients();
+      const data = getPatients.data;
+      if (data) {
+        setPatientDetails(data);
+      } else {
+        setPatientDetails([]);
       }
-    };
+    } catch (error: any) {
+      toast.error(error?.message);
+    }
+  };
 
+  useEffect(() => {
     fetchPatients();
   }, []);
 
@@ -43,25 +45,23 @@ export default function PatientManagementPage() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
 
-      
       const match =
-      det.patient.displayName.toLowerCase().includes(q) ||
-      det.user.email?.toLowerCase().includes(q);
-      
+        det.patient.displayName.toLowerCase().includes(q) ||
+        det.user.email?.toLowerCase().includes(q);
+
       if (!match) return false;
     }
-    
+
     if (
       filters.gender !== "ALL" &&
       det.patient.gender !== filters.gender.toUpperCase()
     ) {
       return false;
     }
-    const activeStatus = det.user.isActive ? "ACTIVE" : "INACTIVE"
+    const activeStatus = det.user.isActive ? "ACTIVE" : "INACTIVE";
 
-    if (filters.status !== "ALL" && 
-      filters.status !== activeStatus
-    ) return false
+    if (filters.status !== "ALL" && filters.status !== activeStatus)
+      return false;
 
     return true;
   });
@@ -158,7 +158,7 @@ export default function PatientManagementPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {paginatedPatients.map((det) => (
-            <PatientListItem key={det.patient?.id} patientInfo={det} />
+            <PatientListItem key={det.patient?.id} patientInfo={det} setPatientInfo={setPatientDetails} />
           ))}
         </div>
       )}

@@ -1,12 +1,21 @@
-import { Stethoscope, Star, Clock, ShieldAlert, ExternalLink, MapPin, Droplet, HeartPulse, User } from "lucide-react";
+import {
+  Stethoscope,
+  Star,
+  Clock,
+  ShieldAlert,
+  ExternalLink,
+  MapPin,
+  Droplet,
+  HeartPulse,
+  User,
+} from "lucide-react";
 import type { PatientPersonalInformation } from "@/types/patient";
 
 export const PersonalInformation = ({
   patient,
-  address
+  address,
 }: PatientPersonalInformation) => {
-  
-   const formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "N/A";
@@ -15,7 +24,7 @@ export const PersonalInformation = ({
       month: "long",
       day: "numeric",
     });
-  }
+  };
 
   const calculateAge = (dobString: string) => {
     if (!dobString) return "";
@@ -26,7 +35,7 @@ export const PersonalInformation = ({
     const years = Math.abs(ageDate.getUTCFullYear() - 1970);
     return `${years} years`;
   };
-  
+
   return (
     <div className="lg:col-span-8 space-y-6">
       <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">
@@ -151,32 +160,46 @@ export const PersonalInformation = ({
                 <p className="text-xs text-[#8b9ab0] font-semibold uppercase tracking-wider">
                   Street Address
                 </p>
-                <p className="text-white font-medium">{address.addressLine}</p>
+                <p className="text-white font-medium">
+                  {address.addressLine
+                    ? address.addressLine
+                    : "Address Line not provided"}
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-[#8b9ab0] font-semibold uppercase tracking-wider">
                     City
                   </p>
-                  <p className="text-white font-medium">{address.city}</p>
+                  <p className="text-white font-medium">
+                    {address.city ? address.city : "City not provided"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-[#8b9ab0] font-semibold uppercase tracking-wider">
                     State / Region
                   </p>
-                  <p className="text-white font-medium">{address.state}</p>
+                  <p className="text-white font-medium">
+                    {address.state
+                      ? address.state
+                      : "State/Region not provided"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-[#8b9ab0] font-semibold uppercase tracking-wider">
                     Country
                   </p>
-                  <p className="text-white font-medium">{address.country}</p>
+                  <p className="text-white font-medium">
+                    {address.country ? address.country : "Country not provided"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-[#8b9ab0] font-semibold uppercase tracking-wider">
                     Pincode
                   </p>
-                  <p className="text-white font-medium">{address.pincode}</p>
+                  <p className="text-white font-medium">
+                    {address.pincode ? address.pincode : "Pincode not provided"}
+                  </p>
                 </div>
               </div>
             </div>

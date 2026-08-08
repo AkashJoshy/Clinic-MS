@@ -27,6 +27,7 @@ import { DoctorQualificationsCard } from "@/components/shared/admin/doctor-detai
 import { DoctorClinicCard } from "@/components/shared/admin/doctor-details/DoctorClinicCard";
 import { DoctorScheduleCard } from "@/components/shared/admin/doctor-details/DoctorScheduleCard";
 import type { User } from "@/types/user";
+import type { UpdateMethods } from "@/types/common";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useParams<{ doctorId: string }>();
@@ -34,7 +35,7 @@ export default function DoctorDetailsPage() {
   const [doctorData, setDoctorData] = useState<DoctorInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [actionType, setActionType] = useState<"DELETE" | "RESTORE">("DELETE");
+  const [actionType, setActionType] = useState<UpdateMethods | null>(null);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -80,8 +81,7 @@ export default function DoctorDetailsPage() {
   });
 
   const handleBlockToggle = () => {
-    if (!doctorData?.doctor?.id) return;
-    console.log(doctorData)
+    if (!doctorData?.doctor?.id || !actionType ) return;
     mutateStatus({
       id: doctorData.doctor.id,
       method: actionType,
@@ -198,7 +198,7 @@ export default function DoctorDetailsPage() {
               ) : (
                 <button
                   onClick={() => {
-                    setActionType("DELETE");
+                    setActionType("BLOCK");
                     setIsConfirmOpen(true);
                   }}
                   className="flex items-center gap-2 px-5 py-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl text-sm font-semibold transition-all cursor-pointer"
@@ -249,7 +249,7 @@ export default function DoctorDetailsPage() {
           name={doctor.displayName}
           type="Doctor"
           status={isBlocked ? "INACTIVE" : "ACTIVE"}
-          action={actionType}
+          action={actionType!}
           service={handleBlockToggle}
           closeDeleteBox={() => setIsConfirmOpen(false)}
         />

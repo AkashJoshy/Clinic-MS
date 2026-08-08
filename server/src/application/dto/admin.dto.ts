@@ -9,7 +9,6 @@ import type {
   ServiceMode,
 } from "../../domain/types/shared.types.ts";
 import type { UpdateDto } from "./auth.dto.ts";
-import type { AvailabilitySlot, AvailabilitySlotsWithServiceMode, DoctorDto } from "./doctor.dto.ts";
 import type {
   AdminDoctorDetails,
   DoctorProfileResponseDto,
@@ -52,10 +51,9 @@ export interface AdminDoctorProfileResponseDto extends DoctorProfileResponseDto 
   doctor: AdminDoctorDetails;
 }
 
-export type RegisterDoctorDTO = DoctorDto
-
-export type UpdateDoctorDto
-  = Omit<DoctorDto, "certificate" | "availabilitySlot" | "fullName" | "email" | "phone" | "licenceDocument"> & {
-  certificate: ImageData;
-  availabilitySlots: AvailabilitySlotsWithServiceMode;
-} & UpdateDto
+export type UserStatusDto = {
+  userId: string;
+  isActive: boolean;
+  isBlocked: boolean;
+  message: string
+};

@@ -18,7 +18,7 @@ export class EditDepartmentUseCase implements IEditDepartmentUseCase {
     const isAlreadyExisted = await this._departmentRepository.findByName(data.name)
 
     if (isAlreadyExisted) {
-        throw new AlreadyExistsError("Department Cannot be edited!")
+        throw new AlreadyExistsError("Department alreday exists")
     }
 
 

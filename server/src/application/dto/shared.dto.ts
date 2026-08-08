@@ -72,7 +72,7 @@ export type UpdateAddressDto = BaseAddress;
 
 export type AddressOption = "PRIMARY" | "NEW";
 
-export type DeleteMethods = "RESTORE" | "DELETE"
+export type DeleteMethods = "RESTORE" | "DELETE" | "BLOCK"
 
 export type PatientInfoDto = PatientProfile & {
   user: Pick<

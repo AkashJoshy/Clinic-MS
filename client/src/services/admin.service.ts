@@ -6,6 +6,7 @@ import type {
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
 import type { DeletePatientDto } from "@/types/patient";
+import type { UpdateMethods } from "@/types/common";
 
 export const addDepartment = async (data: Omit<DepartmentData, "id">) => {
   try {
@@ -148,7 +149,7 @@ export const getDoctor = async (doctorId: string) => {
 
 export const updateDoctorStatus = async (data: {
   id: string;
-  method: "DELETE" | "RESTORE";
+  method: UpdateMethods;
 }) => {
   try {
     const { id, method } = data;

@@ -2,31 +2,55 @@ import {
   Phone,
   Mail,
   Eye,
-  Trash2,
   RotateCcw,
   UserRound,
   Droplet,
+  Ban,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { PatientListItemProps } from "@/types/patient";
 import { useState } from "react";
 import DeleteConfirmationalModal from "./DeleteConfirmationalModal";
-import type { EntityStatus } from "@/types/common";
+import type { EntityStatus, UpdateMethods } from "@/types/common";
 import { useMutate } from "@/hooks/useMutate";
 import { updatePatient } from "@/services/admin.service";
 
-export const PatientListItem = ({ patientInfo }: PatientListItemProps) => {
+export const PatientListItem = ({
+  patientInfo,
+  setPatientInfo,
+}: PatientListItemProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedPatient, setSelectedPatient] = useState<
     | ({ id: string; name: string; status: EntityStatus } & {
-        action: "DELETE" | "RESTORE";
+        action: UpdateMethods;
       })
     | null
   >(null);
   const navigate = useNavigate();
 
   const { mutate } = useMutate(updatePatient, {
-    onSuccess: () => setIsOpen(false),
+    onSuccess: (data) => {
+      setIsOpen(false);
+      if (data.data?.userId === patientInfo.patient.userId) {
+        setPatientInfo((prev) => {
+          return prev.map((p) => {
+            if (p.patient.userId === data.data?.userId) {
+              return {
+                ...p,
+                user: {
+                  ...p.user,
+                  isActive: data.data?.isActive,
+                  isBlocked: data.data?.isBlocked,
+                },
+              };
+            }
+
+            return p;
+          });
+        });
+        
+      }
+    },
   });
 
   function onUpdate() {
@@ -122,14 +146,14 @@ export const PatientListItem = ({ patientInfo }: PatientListItemProps) => {
                   setSelectedPatient({
                     id: patientInfo.patient.id,
                     name: patientInfo.patient.displayName,
-                    action: "DELETE",
+                    action: "BLOCK",
                     status: "ACTIVE",
                   });
               }}
               className="xsxs:w-full md:w-35 text-xs flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition cursor-pointer"
             >
-              <Trash2 size={12} />
-              Delete
+              <Ban size={12} />
+              Block
             </button>
           ) : (
             <button

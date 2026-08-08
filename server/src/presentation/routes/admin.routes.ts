@@ -41,6 +41,7 @@ import { GetDoctorController } from "../controllers/admin/get-doctor.controller.
 import { GetDoctorUseCase } from "../../application/use-cases/admin/doctor-management/get-doctor.usecase.ts";
 import { UpdateDoctorStatusController } from "../controllers/admin/update-doctor-status.controller.ts";
 import { UpdateDoctorStatusUseCase } from "../../application/use-cases/admin/patient-management/update-doctor-status.usecase.ts";
+import { updateUserSchema } from "../schemas/shared/user.schema.ts";
 
 const router = Router();
 
@@ -257,6 +258,7 @@ router.patch(
   ADMIN_ENDPOINTS["UPDATE_PATIENT"],
   authMiddleware,
   authMiddleware2,
+  validate(updateUserSchema),
   async (req, res, next) => {
     await updatePatientStatusController.handle(req, res, next);
   },
@@ -266,6 +268,7 @@ router.patch(
   ADMIN_ENDPOINTS["UPDATE_DOCTOR"],
   authMiddleware,
   authMiddleware2,
+  validate(updateUserSchema),
   async (req, res, next) => {
     await updateDoctorStatusController.handle(req, res, next);
   },

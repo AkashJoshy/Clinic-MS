@@ -188,4 +188,5 @@ export interface DoctorClinicCardProps {
   clinic: ClinicCard;
   doctorClinic: DoctorClinicCard;
   address: BaseAddress | null;
+  
 }

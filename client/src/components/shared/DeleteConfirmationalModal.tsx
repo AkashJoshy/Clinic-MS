@@ -1,77 +1,113 @@
+import type { UpdateMethods } from "@/types/common";
 import { Button } from "../ui/button";
 import { Trash, XCircle } from "lucide-react";
 import { MdRestoreFromTrash } from "react-icons/md";
 
 export interface DeleteModelProps {
-  id: string;  
+  id: string;
   name: string;
   type: string;
-  action: "DELETE" | "RESTORE",
+  action: UpdateMethods;
   status: "ACTIVE" | "INACTIVE";
   service: () => void;
   closeDeleteBox: () => void;
 }
 
-function DeleteConfirmationalModal ({
-  id,
+function DeleteConfirmationalModal({
   name,
-  status,
   type,
   action,
   service,
   closeDeleteBox,
 }: DeleteModelProps) {
+  const firstLetter = action[0];
+  const updatedAction =
+    firstLetter + action.toLowerCase().slice(1);
 
-  const firstLetter = action[0]
-  const updatedAction = firstLetter + action.toLowerCase().slice(1)
+  const isDanger = action === "DELETE" || action === "BLOCK";
 
   return (
-    <div>
-      <div className="border w-[90%] sm:w-95
-    md:w-105
-    lg:w-105
-    max-w-[95vw] rounded-2xl fixed top-55 overflow-hidden left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in-95 duration-200 backdrop-blur-4xl">
-        <div className="w-105 rounded-2xl border border-white/10 bg-[#0d1a27] shadow-2xl overflow-hidden">
-          <div className="flex p-3">
-            <div className={`flex h-9 w-9 items-center justify-center rounded-full ${action === "DELETE" ? ` bg-rose-500/10 mt-1` : ` bg-primary-600/10 mt-1` }`}>
-              {
-                action === "DELETE" ?
-                <Trash size={18} className="text-rose-400" />
-                :
-                <MdRestoreFromTrash size={18} className="text-primary-400" />
-              }
-            </div>
-            <h2 className="m-2 text-white">{updatedAction} {type}</h2>
-            <button
-              onClick={closeDeleteBox}
-              className="ml-auto rounded-lg p-1.5 text-[#8b9ab0] hover:bg-white/10 hover:text-white transition"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {/* Modal */}
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111827] p-6 shadow-2xl">
+        
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                isDanger
+                  ? "bg-rose-500/10 text-rose-500"
+                  : "bg-primary-600/10 text-primary"
+              }`}
             >
-              <XCircle size={18} />
-            </button>
-          </div>
-          <div className="border-t border-white/10" />
-          <div className="p-3">
-            <p className="text-sm text-[#c8d1dc] xsxs:w-62.5 xxs:w-100">
-              Are you sure you want to {action.toLocaleLowerCase()}{" "}
-              <span className={` ${action === "DELETE" ? "text-red-600" : "text-primary"}  rounded p-0.5`}>{name}</span>?
-            </p>
-            <div className="p-2 mt-2 flex">
-              <Button
-                onClick={closeDeleteBox}
-                className="bg-gray-500 hover:bg-gray-500 xsxs:ml-22 xxs:ml-34 xs:ml-46 md:ml-auto"
-              >
-                Cancel
-              </Button> 
-              <Button
-                onClick={() => {
-                  service()
-                }}
-                className={`ml-2 ${action === "DELETE" ? `bg-rose-500 hover:bg-rose-600` : `bg-[#1dc465] hover:bg-primary-600` } `}
-              >
-                {updatedAction}
-              </Button>
+              {isDanger ? (
+                <Trash size={20} />
+              ) : (
+                <MdRestoreFromTrash size={22} />
+              )}
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold text-white">
+                {updatedAction} {type}
+              </h2>
+
+              <p className="text-xs text-gray-400">
+                Please confirm this action
+              </p>
             </div>
           </div>
+
+          {/* Close */}
+          <button
+            onClick={closeDeleteBox}
+            className="rounded-lg p-1 text-gray-400 transition hover:bg-white/5 hover:text-white"
+          >
+            <XCircle size={20} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="mt-6">
+          <p className="text-sm leading-6 text-gray-400">
+            Are you sure you want to{" "}
+            <span
+              className={`font-semibold ${
+                isDanger ? "text-rose-400" : "text-primary"
+              }`}
+            >
+              {action.toLowerCase()}
+            </span>{" "}
+            <span className="font-semibold text-white">
+              {name}
+            </span>
+            ?
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-7 flex justify-end gap-3">
+          <Button
+            type="button"
+            onClick={closeDeleteBox}
+            variant="outline"
+            className="border-white/10 bg-transparent text-gray-300 hover:bg-white/5 hover:text-white"
+          >
+            Cancel
+          </Button>
+
+          <Button
+            type="button"
+            onClick={service}
+            className={
+              isDanger
+                ? "bg-rose-500 text-white hover:bg-rose-600"
+                : "bg-[#1dc465] text-black hover:bg-primary-600"
+            }
+          >
+            {updatedAction}
+          </Button>
         </div>
       </div>
     </div>

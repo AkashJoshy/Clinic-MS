@@ -11,11 +11,14 @@ export class UpdatePatientStatusController {
       let id = req.params.patientId;
       id = Array.isArray(id) ? id[0] : id;
 
-      const message = await this._updatePatient.execute({ ...data, id });
+      const response = await this._updatePatient.execute({ ...data, id });
+
+      const { message, ...userData } = response;
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,
-        message: message,
+        message,
+        data: userData,
       });
     } catch (error) {
       return next(error);

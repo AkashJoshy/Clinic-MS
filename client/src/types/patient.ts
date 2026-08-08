@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import type { DeleteMethods, ImageData } from "./common";
+import type { ImageData, UpdateMethods } from "./common";
 import type { Address, User } from "./user";
 import type React from "react";
 import type { PatientFormInstance } from "@/hooks/usePatientForm";
@@ -215,7 +215,7 @@ export interface ProfileAddress {
 
 export interface DeletePatientDto {
   id: string;
-  method: DeleteMethods;
+  method: UpdateMethods;
 }
 
 export interface AddProfileProps {
@@ -246,4 +246,5 @@ export type PatientPersonalInformation = {
 
 export interface PatientListItemProps {
   patientInfo: PatientBasicInfo;
+  setPatientInfo: Dispatch<SetStateAction<PatientBasicInfo[]>>
 }
