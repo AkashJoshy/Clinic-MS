@@ -1,11 +1,10 @@
-import type { Doctor } from "../../domain/entities/Doctor.ts";
 import type Patient from "../../domain/entities/Patient.ts";
 import type { IAddressRepository } from "../../domain/repositories/IAddressRepository.ts";
-import type { IClinicRepository } from "../../domain/repositories/IClinicRepository.ts";
-import type { IDepartmentRepository } from "../../domain/repositories/IDepartmentRepository.ts";
-import type { IDoctorClinicRepository } from "../../domain/repositories/IDoctorClinicRepository.ts";
 import type { IUserRepository } from "../../domain/repositories/IUserRepository.ts";
-import type { PatientInfoDto } from "../dto/shared.dto.ts";
+import type {
+  PatientFullDetailsDto,
+  PatientInfoDto,
+} from "../dto/shared.dto.ts";
 import type { IPatientDetailsService } from "../IService/IPatientDetailsService.ts";
 
 export class PatientDetailsService implements IPatientDetailsService {
@@ -14,7 +13,7 @@ export class PatientDetailsService implements IPatientDetailsService {
     private _addressRepository: IAddressRepository,
   ) {}
 
-  async execute(patients: Patient[]): Promise<PatientInfoDto[]> {
+  async execute(patients: Patient[]): Promise<PatientFullDetailsDto[]> {
     const userIds = patients
       .map((patient) => patient.userId)
       .filter((p) => p !== null);
@@ -33,45 +32,36 @@ export class PatientDetailsService implements IPatientDetailsService {
       addressess.map((address) => [address.ownerId, address]),
     );
 
-    const response: PatientInfoDto[] = patients.map((patient) => {
+    const response: PatientFullDetailsDto[] = patients.map((patient) => {
       const user = userMap.get(patient.userId!);
+
+      const updatedUser = user
+        ? ((user) => {
+            const { password, ...data } = user;
+            return data;
+          })(user)
+        : null;
+
       const address = addressMap.get(patient.id!);
 
       return {
-        patient: {
-          id: patient.id!,
-          userId: patient.userId!,
-          displayName: patient.displayName,
-          patientNumber: patient.patientNumber,
-          relation: patient.relation,
-          medicalInformation: patient.medicalInformation,
-          imageUrl: {
-            url: patient.imageUrl.url,
-          },
-          emergencyContact: patient.emergencyContact,
-          dateOfBirth: patient.dateOfBirth,
-          gender: patient.gender,
-          createdAt: patient.createdAt,
-          updatedAt: patient.updatedAt,
-        },
-        address: address
-          ? {
-              addressLine: address.addressLine,
-              city: address.city,
-              state: address.state,
-              country: address.country,
-              pincode: address.pincode,
-              ownerId: address.ownerId
-            }
-          : null,
-        user: {
-          email: user?.email ?? "",
-          phone: user?.phone ?? "",
-          createdAt: user?.createdAt ?? null,
-          isActive: user?.isActive ?? false,
-          isEmailVerified: user?.isEmailVerified ?? false,
-        },
-      };
+        user: user? {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          provider: user.provider,
+          isActive: user.isActive,
+          isEmailVerified: user.isEmailVerified,
+          isBlocked: user.isBlocked,
+          isTwoFactorenabled: user.isTwoFactorenabled,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        } : null,
+        patient: patient,
+        address: address ?? null
+      }
     });
 
     return response;

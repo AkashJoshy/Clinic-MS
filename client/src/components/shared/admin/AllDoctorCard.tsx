@@ -97,7 +97,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-        <p className="text-primary text-[13px] ">
+        <p className="text-primary text-[13px] font-bold">
           {doctorClinic?.consultationFee
             ? `₹${doctorClinic.consultationFee}`
             : "Not available"}

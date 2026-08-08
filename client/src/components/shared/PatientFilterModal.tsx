@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, RefreshCcw, Stethoscope, Circle } from "lucide-react";
+import { X, Check, RefreshCcw, Stethoscope } from "lucide-react";
 import { Button } from "../ui/button";
 
 type DepartmentDetails = {
@@ -8,24 +8,23 @@ type DepartmentDetails = {
   name: string;
 };
 
-export interface DoctorFilterState {
+export interface PatientFilterState {
+  status: "ALL" | "ACTIVE" | "INACTIVE",
   gender: "ALL" | "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
-  department: DepartmentDetails[];
   sortBy: "NEWEST" | "OLDEST" | "NAME_ASC" | "NAME_DESC";
 }
 
-export const defaultDoctorFilters: DoctorFilterState = {
+export const defaultPatientFilters: PatientFilterState = {
+  status: "ALL",
   gender: "ALL",
-  department: [{ id: "1", name: "ALL" }],
   sortBy: "NEWEST",
 };
 
 export interface DoctorFilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  filters: DoctorFilterState;
-  onApplyFilters: (filters: DoctorFilterState) => void;
-  departments: DepartmentDetails[];
+  filters: PatientFilterState;
+  onApplyFilters: (filters: PatientFilterState) => void;
 }
 
 const SegmentedControl: React.FC<{
@@ -77,15 +76,14 @@ const RadioCard: React.FC<{
   </label>
 );
 
-export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
+export const PatientFilterModal: React.FC<DoctorFilterModalProps> = ({
   isOpen,
   onClose,
   filters: initialFilters,
   onApplyFilters,
-  departments,
 }) => {
   const [localFilters, setLocalFilters] =
-    useState<DoctorFilterState>(initialFilters);
+    useState<PatientFilterState>(initialFilters);
 
   useEffect(() => {
     if (isOpen) setLocalFilters(initialFilters);
@@ -96,7 +94,7 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
     onClose();
   };
 
-  const handleReset = () => setLocalFilters(defaultDoctorFilters);
+  const handleReset = () => setLocalFilters(defaultPatientFilters);
 
   return (
     <AnimatePresence>
@@ -107,7 +105,7 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed -inset-6.25 bg-black/30 backdrop-blur-sm z-[100]"
+            className="fixed -inset-6.25 bg-black/30 backdrop-blur-sm z-100"
           />
 
           <motion.div
@@ -116,27 +114,27 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
             exit={{ opacity: 0, scale: 0.97, y: 20 }}
             transition={{ type: "spring", duration: 0.45, bounce: 0.25 }}
             className="
-              fixed z-[101] flex flex-col overflow-hidden
+              fixed z-101 flex flex-col overflow-hidden
               bg-[#0d1a27] border border-white/8 shadow-2xl
 
               /* Mobile: centered modal */
               left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-              w-[92vw] max-w-[440px] rounded-[16px] max-h-[88vh]
+              w-[92vw] max-w-110 rounded-3xl max-h-[88vh]
             "
           >
             <div className="px-5 py-4 border-b border-white/8 shrink-0">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-base font-bold text-white tracking-tight leading-none">
-                    Filter doctors
+                    Filter Patients
                   </h2>
                   <p className="text-[13px] text-[#8b9ab0] mt-1.5 leading-snug">
-                    Refine the directory by status, department and more
+                    Refine the directory by status, gender and more
                   </p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 cursor-pointer rounded-[8px] flex items-center justify-center text-[#8b9ab0] hover:bg-white/5 hover:text-white transition-colors shrink-0 bg-white/[0.03]"
+                  className="w-8 h-8 cursor-pointer rounded-xl flex items-center justify-center text-[#8b9ab0] hover:bg-white/5 hover:text-white transition-colors shrink-0 bg-white/3"
                 >
                   <X size={16} />
                 </button>
@@ -144,6 +142,24 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
             </div>
 
             <div className="px-5 py-5 overflow-y-auto custom-scrollbar flex flex-col gap-5">
+              
+              <div>
+                <label className="text-[13px] font-semibold text-white mb-2 block">
+                  Status
+                </label>
+                <SegmentedControl
+                  value={localFilters.status}
+                  onChange={(v) =>
+                    setLocalFilters({ ...localFilters, status: v as any })
+                  }
+                  options={[
+                    { value: "ALL", label: "All" },
+                    { value: "ACTIVE", label: "Active" },
+                    { value: "INACTIVE", label: "Inactive" },
+                  ]}
+                />
+              </div>
+
               <div>
                 <label className="text-[13px] font-semibold text-white mb-2 block">
                   Gender
@@ -163,49 +179,6 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
                 />
               </div>
 
-              <div>
-                <label className="text-[13px] font-semibold text-white mb-2 block">
-                  Department
-                </label>
-
-                <div className="grid grid-cols-2 gap-2">
-                  {departments.map((dept) => {
-                    const isSelected = localFilters.department.some(
-                      (d) => d.id == dept.id,
-                    );
-
-                    return (
-                      <button
-                        key={dept.id}
-                        type="button"
-                        onClick={() => {
-                          const updatedDepartments = isSelected
-                            ? localFilters.department.filter(
-                                (d) => d.name !== dept.name,
-                              )
-                            : [...localFilters.department, dept];
-
-                          setLocalFilters({
-                            ...localFilters,
-                            department: updatedDepartments,
-                          });
-                        }}
-                        className={`flex items-center justify-center gap-2 px-3 py-2.5 text-[13px] rounded-[10px] border transition-all ${
-                          isSelected
-                            ? "bg-[#1dc465]/10 border-[#1dc465]/40 text-[#1dc465] font-semibold"
-                            : "bg-[#080d14] border-white/8 text-[#8b9ab0] hover:text-white hover:border-white/20"
-                        }`}
-                      >
-                        <Stethoscope size={14} />
-
-                        <span className="truncate">{dept.name}</span>
-
-                        {isSelected && <Check size={14} />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
 
               <div>
                 <label className="text-[13px] font-semibold text-white mb-2 block">
@@ -244,7 +217,7 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center justify-between px-5 py-4 border-t border-white/8 bg-white/[0.02] shrink-0">
+            <div className="flex items-center justify-between px-5 py-4 border-t border-white/8 bg-white/2 shrink-0">
               <button
                 onClick={handleReset}
                 className="flex cursor-pointer items-center gap-2 text-[13px] text-[#8b9ab0] hover:text-white transition-colors font-medium"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Building2, Filter, Search, Stethoscope, X } from "lucide-react";
+import { Filter, Search, Stethoscope, X } from "lucide-react";
 import {
   approveDoctor,
   getAllDoctors,
@@ -9,12 +9,12 @@ import toast from "react-hot-toast";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
 import { RejectModal } from "@/components/layout/RejectModal";
-import type { Doctor, DoctorInfo, DoctorStatusUpdateDto } from "@/types/doctor";
+import type { DoctorInfo, DoctorStatusUpdateDto } from "@/types/doctor";
 import {
   defaultDoctorFilters,
   DoctorFilterModal,
   type DoctorFilterState,
-} from "@/components/shared/DoctorFilterModal";
+} from "@/components/shared/admin/DoctorFilterModal";
 import { AllDoctorCard } from "@/components/shared/admin/AllDoctorCard";
 import { PendingApproval } from "@/components/shared/admin/PendingApproval";
 import { PendingDoctorCard } from "@/components/shared/admin/PendingDoctorCard";
@@ -195,7 +195,7 @@ export default function DoctorManagementPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 ">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-[#1dc465]/15 border border-[#1dc465]/25 flex items-center justify-center shrink-0">
-            <Building2 size={24} className="text-[#1dc465]" />
+            <Stethoscope size={24} className="text-[#1dc465]" />
           </div>
           <div>
             <h1 className="text-white text-2xl font-bold tracking-tight">

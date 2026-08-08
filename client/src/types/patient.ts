@@ -157,14 +157,13 @@ export type PatientBasicInfo = {
     | "medicalInformation"
     | "gender"
     | "userId"
+    | "createdAt"
   > & {
     imageUrl: Omit<ImageData, "publicId">;
   };
 } & {
-  address: BaseAddress | null;
-} & {
   user: Pick<User, "email" | "phone" | "isActive">;
-};
+}
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 type FormEvent = React.FormEvent<HTMLElement>;
@@ -243,4 +242,8 @@ export type DoctorProfileCardProps = {
 export type PatientPersonalInformation = {
   patient: Pick<Patient, "createdAt" | "updatedAt" | "dateOfBirth" | "medicalInformation" | "emergencyContact" | "gender">,
   address: BaseAddress | null
+}
+
+export interface PatientListItemProps {
+  patientInfo: PatientBasicInfo;
 }

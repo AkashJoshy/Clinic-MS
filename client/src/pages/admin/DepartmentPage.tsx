@@ -22,7 +22,7 @@ const DepartmentPage: React.FC = () => {
   >(null);
   const [page, setPage] = useState<number>(1);
 
-  const { isPending, mutate } = useMutate(updateDepartment, {
+  const { mutate } = useMutate(updateDepartment, {
     onSuccess: () => setOpen(false),
   });
 
@@ -82,7 +82,7 @@ const DepartmentPage: React.FC = () => {
 
         <button
           onClick={() => navigate("/admin/department/add")}
-          className="flex items-center gap-2 px-4 py-2 bg-[#1dc465] rounded-[10px] font-semibold hover:bg-[#15a050] transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 bg-[#1dc465] rounded-[10px] font-bold hover:bg-[#15a050] transition-colors cursor-pointer"
         >
           <Plus size={18} />
           Add Department

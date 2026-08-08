@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react";
 import { Users, Filter, Search } from "lucide-react";
-// import { getAllPatients } from "@/services/admin.service";
 import toast from "react-hot-toast";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
-import { getAllPatients, updatePatient } from "@/services/admin.service";
+import { getAllPatients } from "@/services/admin.service";
 import type {
-  DeletePatientDto,
   PatientBasicInfo,
-  PatientInfo,
 } from "@/types/patient";
 import { PatientListItem } from "@/components/shared/PatientListItem";
-// import {
-//   defaultPatientFilters,
-//   PatientFilterModal,
-//   type PatientFilterState,
-// } from "@/components/shared/PatientFilterModal";
+import { defaultPatientFilters, PatientFilterModal, type PatientFilterState } from "@/components/shared/PatientFilterModal";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -23,8 +16,9 @@ export default function PatientManagementPage() {
   const [patientDetails, setPatientDetails] = useState<PatientBasicInfo[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  //   const [filters, setFilters] =
-  //     useState<PatientFilterState>(defaultPatientFilters);
+  const [filters, setFilters] = useState<PatientFilterState>(
+    defaultPatientFilters,
+  );
   const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
@@ -49,41 +43,47 @@ export default function PatientManagementPage() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
 
+      
       const match =
-        det.patient.displayName.toLowerCase().includes(q) ||
-        det.user.email?.toLowerCase().includes(q);
-
+      det.patient.displayName.toLowerCase().includes(q) ||
+      det.user.email?.toLowerCase().includes(q);
+      
       if (!match) return false;
     }
+    
+    if (
+      filters.gender !== "ALL" &&
+      det.patient.gender !== filters.gender.toUpperCase()
+    ) {
+      return false;
+    }
+    const activeStatus = det.user.isActive ? "ACTIVE" : "INACTIVE"
 
-    // if (
-    //   filters.gender !== "ALL" &&
-    //   det.patient.gender !== filters.gender.toUpperCase()
-    // ) {
-    //   return false;
-    // }
+    if (filters.status !== "ALL" && 
+      filters.status !== activeStatus
+    ) return false
 
     return true;
   });
 
-  //   filteredPatients.sort((a, b) => {
-  //     if (filters.sortBy === "NEWEST") {
-  //       return (
-  //         new Date(b.patient?.createdAt || 0).getTime() -
-  //         new Date(a.patient?.createdAt || 0).getTime()
-  //       );
-  //     } else if (filters.sortBy === "OLDEST") {
-  //       return (
-  //         new Date(a.patient?.createdAt || 0).getTime() -
-  //         new Date(b.patient?.createdAt || 0).getTime()
-  //       );
-  //     } else if (filters.sortBy === "NAME_ASC") {
-  //       return a.patient?.displayName.localeCompare(b.patient?.displayName);
-  //     } else if (filters.sortBy === "NAME_DESC") {
-  //       return b.patient?.displayName.localeCompare(a.patient?.displayName);
-  //     }
-  //     return 0;
-  //   });
+  filteredPatients.sort((a, b) => {
+    if (filters.sortBy === "NEWEST") {
+      return (
+        new Date(b.patient?.createdAt || 0).getTime() -
+        new Date(a.patient?.createdAt || 0).getTime()
+      );
+    } else if (filters.sortBy === "OLDEST") {
+      return (
+        new Date(a.patient?.createdAt || 0).getTime() -
+        new Date(b.patient?.createdAt || 0).getTime()
+      );
+    } else if (filters.sortBy === "NAME_ASC") {
+      return a.patient?.displayName.localeCompare(b.patient?.displayName);
+    } else if (filters.sortBy === "NAME_DESC") {
+      return b.patient?.displayName.localeCompare(a.patient?.displayName);
+    }
+    return 0;
+  });
 
   const totalPages = Math.ceil(filteredPatients.length / ITEMS_PER_PAGE);
   const paginatedPatients = filteredPatients.slice(
@@ -143,7 +143,7 @@ export default function PatientManagementPage() {
         </button>
       </div>
 
-      {/* <PatientFilterModal
+      <PatientFilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
@@ -151,7 +151,7 @@ export default function PatientManagementPage() {
           setFilters(newFilters);
           setPage(1);
         }}
-      /> */}
+      />
 
       {paginatedPatients.length === 0 ? (
         <AllApprovals icon={Users} name="Patients" />

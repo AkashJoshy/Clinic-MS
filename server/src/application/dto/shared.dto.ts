@@ -81,6 +81,12 @@ export type PatientInfoDto = PatientProfile & {
   >;
 };
 
+export type PatientFullDetailsDto = {
+  user: Omit<User, "password" | "block" | "unblock" | "create"> | null;
+  patient: Patient,
+  address: Address | null
+}
+
 export type PatientBasicInfoDto = {
   patient: Pick<
     Patient,
@@ -90,11 +96,10 @@ export type PatientBasicInfoDto = {
     | "medicalInformation"
     | "gender"
     | "userId"
+    | "createdAt"
   > & {
     imageUrl: Omit<ImageData, "publicId">;
   };
 } & {
-  address: BaseAddress | null;
-} & {
-  user: Pick<User, "email" | "phone" | "isActive">;
+  user: Pick<User, "email" | "phone" | "isActive"> | null
 };
