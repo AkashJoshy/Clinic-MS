@@ -12,6 +12,7 @@ import type { UpdateDto } from "./auth.dto.ts";
 import type {
   AdminDoctorDetails,
   DoctorProfileResponseDto,
+  MessageDto,
 } from "./shared.dto.ts";
 
 export interface UpdateClinicStatusDto {
@@ -55,5 +56,11 @@ export type UserStatusDto = {
   userId: string;
   isActive: boolean;
   isBlocked: boolean;
-  message: string
-};
+} & MessageDto
+
+
+
+export type DepartmentStatusDto = {
+  departmentId: string;
+  status: EntityStatus;
+} & MessageDto

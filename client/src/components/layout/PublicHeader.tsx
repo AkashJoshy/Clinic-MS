@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { PUBLIC_NAV_LINKS } from "@/constants/navLinks.constant";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const PublicHeader = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -13,11 +14,12 @@ const PublicHeader = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
+
+  const isDoctorRegistration = location.pathname === "/doctor-registration";
 
   return (
     <>
@@ -37,17 +39,19 @@ const PublicHeader = () => {
           </span>
         </div>
 
-        <div className="hidden md:flex gap-9">
-          {PUBLIC_NAV_LINKS.map((link) => (
-            <span
-              key={link}
-              className="nav-link cursor-pointer"
-              onClick={() => scrollTo(link.toLowerCase())}
-            >
-              {link}
-            </span>
-          ))}
-        </div>
+        {!isDoctorRegistration && (
+          <div className="hidden md:flex gap-9">
+            {PUBLIC_NAV_LINKS.map((link) => (
+              <span
+                key={link}
+                className="nav-link cursor-pointer"
+                onClick={() => scrollTo(link.toLowerCase())}
+              >
+                {link}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="hidden md:flex gap-2.5">
           <Link to={"/login"}>
@@ -88,16 +92,18 @@ const PublicHeader = () => {
           menuOpen ? "max-h-72 py-6" : "max-h-0 py-0"
         }`}
       >
-        {PUBLIC_NAV_LINKS.map((link) => (
-          <span
-            key={link}
-            className="nav-link cursor-pointer py-3 text-base border-b border-[#e8e4da] last:border-none"
-            onClick={() => scrollTo(link.toLowerCase())}
-          >
-            {link}
-          </span>
-        ))}
-        <div className="flex gap-2.5 mt-5">
+        {!isDoctorRegistration &&
+          PUBLIC_NAV_LINKS.map((link) => (
+            <span
+              key={link}
+              className="nav-link cursor-pointer py-3 text-base border-b border-[#e8e4da] last:border-none"
+              onClick={() => scrollTo(link.toLowerCase())}
+            >
+              {link}
+            </span>
+          ))}
+
+        <div className={`flex gap-2.5 ${isDoctorRegistration ? 'mt-0   ' : 'mt-5'}`}>
           <Link className="flex-1" to={"/login"}>
             <Button className="w-full" variant="main">
               Log In

@@ -21,4 +21,21 @@ export class Department {
       data.updatedAt ?? null,
     );
   }
+
+  block() {
+    if (this.status === "INACTIVE") {
+      throw new Error("Department is alreday blocked")
+    }
+
+    this.status = "INACTIVE"
+  }
+
+  unblock() {
+    if (this.status === "ACTIVE") {
+      throw new Error("Department is alreday unblocked")
+    }
+
+    this.status = "ACTIVE"
+  }
+
 }

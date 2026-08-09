@@ -18,6 +18,9 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
 
   const { clinic, address, user, doctor, doctorClinic } = doctorInfo;
 
+  const isAddressComplete =
+    address?.country || address?.state || address?.city || address?.pincode;
+
   return (
     <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-5 hover:border-[#1dc465]/30 transition-all duration-200">
       <div className="flex items-start justify-between mb-3">
@@ -34,7 +37,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
               doctor?.status === "APPROVED"
@@ -80,9 +82,9 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
       <div className="space-y-1.5">
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
           <MapPin size={12} className="text-[#1dc465]" />
-          {address && address?.city
+          {isAddressComplete
             ? `${address.city ?? "-"}, ${address.state ?? "-"}, ${address.country ?? "-"}`
-            : "-- -- --"}
+            : "Location not provided"}
         </p>
 
         <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
@@ -97,7 +99,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-        <p className="text-primary text-[13px] font-bold">
+        <p className="text-primary text-[14px] font-bold">
           {doctorClinic?.consultationFee
             ? `₹${doctorClinic.consultationFee}`
             : "Not available"}

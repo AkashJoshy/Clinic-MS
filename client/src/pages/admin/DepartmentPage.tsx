@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LayoutGrid, Pencil, Plus, Search, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationalModal from "@/components/shared/DeleteConfirmationalModal";
@@ -9,26 +9,55 @@ import { MdRestoreFromTrash } from "react-icons/md";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
 import type { DepartmentData, SelectedDept } from "@/types/admin";
+import type { UpdateMethods } from "@/types/common";
 
 const ITEMS_PER_PAGE = 6;
 
 const DepartmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [allDepartments, setAllDepartments] = useState<DepartmentData[] | []>([]);
+  const [allDepartments, setAllDepartments] = useState<DepartmentData[]>(
+    [],
+  );
   const [isOpen, setOpen] = useState<boolean>(false);
   const [selectedDept, setSelectedDept] = useState<
-    (SelectedDept & { action: "DELETE" | "RESTORE" }) | null
+    (SelectedDept & { action: UpdateMethods }) | null
   >(null);
   const [page, setPage] = useState<number>(1);
 
+  const fetchDepartments = async () => {
+    let response = await getAllDepartments();
+    const data = response.data;
+    setAllDepartments(data);
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
   const { mutate } = useMutate(updateDepartment, {
-    onSuccess: () => setOpen(false),
+    onSuccess: (data) => {
+      setAllDepartments((prev) => {
+        const updatedDepts = prev.map((dept) => {
+          if (dept.id === data.data?.departmentId) {
+            return {
+              ...dept,
+              status: data.data?.status,
+            };
+          }
+
+          return dept;
+        })
+
+        return updatedDepts
+      })
+      setOpen(false);
+    },
   });
 
   function onUpdate() {
     if (selectedDept && selectedDept.id) {
-        mutate({ id: selectedDept?.id, status: selectedDept?.status })
+      mutate({ id: selectedDept?.id, status: selectedDept?.status });
     }
   }
 
@@ -41,7 +70,7 @@ const DepartmentPage: React.FC = () => {
     name,
     status,
     action,
-  }: SelectedDept & { action: "DELETE" | "RESTORE" }) {
+  }: SelectedDept & { action: UpdateMethods }) {
     setSelectedDept({ id, name, status, action });
     setOpen((prev) => !prev);
   }
@@ -49,16 +78,6 @@ const DepartmentPage: React.FC = () => {
   function closeDeleteBox() {
     setOpen(false);
   }
-
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      let response = await getAllDepartments();
-      const data = response.data;
-      setAllDepartments(data);
-    };
-
-    fetchDepartments();
-  }, [allDepartments]);
 
   const totalItems = filteredDepartments.length;
   const totalPages = Math.ceil(filteredDepartments.length / ITEMS_PER_PAGE);
@@ -169,7 +188,7 @@ const DepartmentPage: React.FC = () => {
                           id: dept.id,
                           name: dept.name,
                           status: dept.status,
-                          action: "DELETE",
+                          action: "BLOCK",
                         });
                       } else {
                         handleDelete({
@@ -207,9 +226,9 @@ const DepartmentPage: React.FC = () => {
 
       {filteredDepartments.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-[#8b9ab0]">
+          <h1 className="text-[#8b9ab0]">
             <AllApprovals name="Departments" />
-          </p>
+          </h1>
         </div>
       )}
 

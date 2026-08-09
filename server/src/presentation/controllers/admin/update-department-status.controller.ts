@@ -12,13 +12,17 @@ export class UpdateDepartmentStatusController {
       const departmentId = req.params.departmentId;
       const data = req.body;
 
-      const updateMessage = await this._updateDepartmentStatus.execute({
+      const response = await this._updateDepartmentStatus.execute({
         id: departmentId,
         ...data,
       });
+
+      const { message, ...departmentData } = response;
+
       return res.status(ResponseStatusCode.OK).json({
         success: true,
-        message: updateMessage,
+        message: message,
+        data: departmentData
       });
     } catch (error) {
       return next(error);

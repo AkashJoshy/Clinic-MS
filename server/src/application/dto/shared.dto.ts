@@ -103,3 +103,7 @@ export type PatientBasicInfoDto = {
 } & {
   user: Pick<User, "email" | "phone" | "isActive"> | null
 };
+
+export type MessageDto = {
+  message: string
+}

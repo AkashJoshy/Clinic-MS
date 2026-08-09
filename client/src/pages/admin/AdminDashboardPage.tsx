@@ -1,10 +1,6 @@
 import React from "react";
 import {
   LayoutDashboard,
-  TrendingUp,
-  Users,
-  CalendarCheck,
-  Activity,
 } from "lucide-react";
 
 const StatCard: React.FC<{
