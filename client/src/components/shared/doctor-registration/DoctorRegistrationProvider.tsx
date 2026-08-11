@@ -2,7 +2,7 @@ import { useDoctorRegistration } from "@/hooks/useDoctorRegistration";
 import {
   DoctorRegistrationContext,
   useDoctorRegistrationContext,
-} from "@/hooks/useDoctorRegistrationContext";
+} from "@/contexts/useDoctorRegistrationContext";
 import { type ReactNode } from "react";
 
 const DoctorRegistrationProvider = ({ children }: { children: ReactNode }) => {

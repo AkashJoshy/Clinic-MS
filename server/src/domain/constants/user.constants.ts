@@ -3,6 +3,7 @@ export const PROVIDER = ["LOCAL", "GOOGLE"]
 
 export const FILE_SIZE_5MB = 5 * 1024 * 1024;
 export const FILE_SIZE_2MB = 2 * 1024 * 1024;
+export const FILE_SIZE_1MB = 1 * 1024 * 1024;
 
 export const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",

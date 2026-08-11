@@ -1,8 +1,8 @@
-import { useDoctorRegistrationContext } from '@/hooks/useDoctorRegistrationContext';
-import React from 'react'
-import FormFields from '../FormFields';
-import type { DoctorRegisterStep1FormData } from '@/schemas/doctor/doctor.schema';
-import { DOCTOR_STEP1_INPUTS } from '@/data/doctor.data';
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
+import React from "react";
+import FormFields from "../FormFields";
+import type { DoctorRegisterStep1FormData } from "@/schemas/doctor/doctor.schema";
+import { DOCTOR_STEP1_INPUTS } from "@/data/doctor.data";
 
 const ProfessionalInfo = () => {
   const { step1Form } = useDoctorRegistrationContext();
@@ -20,7 +20,7 @@ const ProfessionalInfo = () => {
         Professional Information
       </h2>
 
-      <form className='space-y-2'>
+      <form className="space-y-2">
         <FormFields<DoctorRegisterStep1FormData>
           fields={DOCTOR_STEP1_INPUTS.slice(5, 9)}
           register={register}
@@ -31,6 +31,6 @@ const ProfessionalInfo = () => {
       </form>
     </div>
   );
-}
+};
 
-export default ProfessionalInfo
+export default ProfessionalInfo;

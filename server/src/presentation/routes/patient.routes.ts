@@ -24,6 +24,7 @@ import { UpdatePatientProfileAddressController } from "../controllers/patient/up
 import { UpdatePatientProfileAddressUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-address.usecase.ts";
 import { CreatePatientProfileController } from "../controllers/patient/create-patient-profile.controller.ts";
 import { CreatePatientProfileUseCase } from "../../application/use-cases/patient/profile/create-patient-profile.usecase.ts";
+import { validateFile } from "../middlewares/validate-file.middleware.ts";
 
 const router = Router();
 
@@ -112,7 +113,7 @@ router.patch(
   authMiddleware,
   authMiddleware2,
   profileupload,
-  validate(updatePersonalProfilePictureSchema),
+  validateFile(updatePersonalProfilePictureSchema),
   async (req, res, next) => {
     await updatePatientProfilePictureController.handle(req, res, next);
   },

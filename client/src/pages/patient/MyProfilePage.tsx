@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Camera, Calendar, Activity, Clock, ShieldCheck } from "lucide-react";
 import { useAuthStore } from "@/store";
 import type {
-  Gender,
   PatientProfile,
   PersonalProfile,
   ProfileAddress,
@@ -18,40 +17,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updatePersonalProfilePictureSchema } from "@/schemas/patient/personalDetails.schema";
 import type { UpdatePersonalProfilePictureForm } from "@/schemas/patient/patient.schema";
-import { FILE_SIZE_5MB } from "@/constants/clinical-registration.constant";
-import {
-  ALLOWED_DOC_TYPES,
-  ALLOWED_IMG_TYPES,
-} from "@/constants/form-fields.constants";
 import PersonalDetails from "@/components/shared/patient/PersonalDetails";
 import AddressDetails from "@/components/shared/patient/AddressDetails";
+import { usePatientProfile } from "@/hooks/usePatientProfile";
+import { emptyAddress, emptyProfile } from "@/constants/patient.constant";
 
 const toDateInputValue = (value?: string) => {
   if (!value) return "";
   const d = new Date(value);
   if (isNaN(d.getTime())) return "";
   return d.toISOString().split("T")[0];
-};
-
-const emptyAddress: ProfileAddress = {
-  ownerId: "",
-  addressLine: "",
-  country: "",
-  state: "",
-  city: "",
-  pincode: "",
-};
-
-const emptyProfile: PersonalProfile = {
-  id: "",
-  displayName: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "",
-  gender: "MALE",
-  bloodGroup: "",
-  allergies: [],
-  chronicConditions: [],
 };
 
 const MyProfilePage: React.FC = () => {
@@ -122,12 +97,27 @@ const MyProfilePage: React.FC = () => {
     },
   });
 
-  const { mutateAsync: profilePictureMutate } = useMutate(
-    updatePatientProfilePicture,
-    {
-      onSuccess: () => {},
+  const {
+    mutateAsync: profilePictureMutate,
+    isPending: profilePictureIsPending,
+  } = useMutate(updatePatientProfilePicture, {
+    onSuccess: (data) => {
+      if (data.data) {
+        const updatedPatientInfo: PatientProfile = {
+          patient: {
+            ...activePatient?.patient!,
+            imageUrl: {
+              url: data.data?.pictureUrl,
+            },
+          },
+          address: activePatient?.address ?? null,
+        };
+
+        updateActivePatient(updatedPatientInfo);
+        updatePatients(updatedPatientInfo);
+      }
     },
-  );
+  });
 
   const {
     register,
@@ -166,7 +156,7 @@ const MyProfilePage: React.FC = () => {
     setOriginalProfile(prof);
     setOriginalAddress(addr);
 
-    console.log(user);
+    console.log(`ActivePatient`);
     console.log(activePatient);
   }, [activePatient, user]);
 
@@ -327,10 +317,11 @@ const MyProfilePage: React.FC = () => {
               <p className="text-gray-500 text-sm mb-4">Patient</p>
               <button
                 type="button"
+                disabled={profilePictureIsPending}
                 onClick={handleAvatarClick}
-                className="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm w-full"
+                className={`px-4 py-2 cursor-pointer bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm w-full ${profilePictureIsPending ? "opacity-50 cursor-not-allowed" : ""} `}
               >
-                Change Photo
+                {!profilePictureIsPending ? "Change Photo" : "Changing..."}
               </button>
             </form>
 

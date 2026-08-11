@@ -1,9 +1,8 @@
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 import FormFields from "../FormFields";
 import type { DoctorRegisterStep2FormData } from "@/schemas/doctor/doctor.schema";
 import { DOCTOR_STEP2_INPUTS } from "@/data/doctor.data";
 import type { DepartmentData } from "@/types/admin";
-import { ChevronDown } from "lucide-react";
 
 const ConsultationInfo = (props: { departments: DepartmentData[] }) => {
   const { step2Form } = useDoctorRegistrationContext();

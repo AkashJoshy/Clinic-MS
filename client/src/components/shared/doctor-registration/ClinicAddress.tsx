@@ -1,4 +1,4 @@
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 import React, { useEffect } from "react";
 import FormFields from "../FormFields";
 import type { DoctorRegisterStep2FormData } from "@/schemas/doctor/doctor.schema";
@@ -51,14 +51,14 @@ const ClinicAddress = () => {
       <h2 className="text-lg font-bold mb-3">Clinic Address</h2>
 
       <form className="space-y-2">
-      <FormFields<DoctorRegisterStep2FormData>
-        fields={DOCTOR_STEP2_INPUTS.slice(4, 9)}
-        register={register}
-        errors={errors}
-        control={control}
-        setValue={setValue}
+        <FormFields<DoctorRegisterStep2FormData>
+          fields={DOCTOR_STEP2_INPUTS.slice(4, 9)}
+          register={register}
+          errors={errors}
+          control={control}
+          setValue={setValue}
         />
-        </form>
+      </form>
 
       {city && <ClinicMap position={position} setPosition={setPosition} />}
     </section>

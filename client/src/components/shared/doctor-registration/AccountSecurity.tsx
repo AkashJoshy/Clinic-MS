@@ -1,8 +1,8 @@
-import React from 'react'
-import FormFields from '../FormFields';
-import type { DoctorRegisterStep1FormData } from '@/schemas/doctor/doctor.schema';
-import { DOCTOR_STEP1_INPUTS } from '@/data/doctor.data';
-import { useDoctorRegistrationContext } from '@/hooks/useDoctorRegistrationContext';
+import React from "react";
+import FormFields from "../FormFields";
+import type { DoctorRegisterStep1FormData } from "@/schemas/doctor/doctor.schema";
+import { DOCTOR_STEP1_INPUTS } from "@/data/doctor.data";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 
 const AccountSecurity = () => {
   const { step1Form } = useDoctorRegistrationContext();
@@ -16,11 +16,9 @@ const AccountSecurity = () => {
 
   return (
     <div>
-      <h2 className="text-lg font-bold mb-3 text-gray-700">
-        Account Security
-      </h2>
+      <h2 className="text-lg font-bold mb-3 text-gray-700">Account Security</h2>
 
-      <form className='space-y-2'>
+      <form className="space-y-2">
         <FormFields<DoctorRegisterStep1FormData>
           fields={DOCTOR_STEP1_INPUTS.slice(9)}
           register={register}
@@ -31,6 +29,6 @@ const AccountSecurity = () => {
       </form>
     </div>
   );
-}
+};
 
-export default AccountSecurity
+export default AccountSecurity;

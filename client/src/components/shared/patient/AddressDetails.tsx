@@ -14,15 +14,9 @@ import {
   type IState,
 } from "country-state-city";
 import { addressSchema, type AddressForm } from "@/schemas/patient/address.schema";
+import { emptyAddress } from "@/constants/patient.constant";
 
-const emptyAddress: ProfileAddress = {
-  ownerId: "",
-  addressLine: "",
-  country: "",
-  state: "",
-  city: "",
-  pincode: "",
-};
+
 
 const AddressDetails: React.FC<AddressDetailsProps> = ({
   address,

@@ -37,35 +37,35 @@ export default function DoctorManagementPage() {
   const [filters, setFilters] =
     useState<DoctorFilterState>(defaultDoctorFilters);
 
+  const fetchDoctors = async () => {
+    try {
+      const getDoctors = await getAllDoctors();
+      const data = getDoctors.data;
+      if (data) {
+        setDoctorDetails(data);
+      } else {
+        setDoctorDetails([]);
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const getDepartments = await getAllDepartments();
+      const data = getDepartments.data;
+      if (data) {
+        setDepartments([{ id: "1", name: "ALL" }, ...data]);
+      } else {
+        setDepartments([]);
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
+    }
+  };
+
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const getDoctors = await getAllDoctors();
-        const data = getDoctors.data;
-        if (data) {
-          setDoctorDetails(data);
-        } else {
-          setDoctorDetails([]);
-        }
-      } catch (error: any) {
-        toast.error(error?.message);
-      }
-    };
-
-    const fetchDepartments = async () => {
-      try {
-        const getDepartments = await getAllDepartments();
-        const data = getDepartments.data;
-        if (data) {
-          setDepartments([{ id: "1", name: "ALL" }, ...data]);
-        } else {
-          setDepartments([]);
-        }
-      } catch (error: any) {
-        toast.error(error?.message);
-      }
-    };
-
     fetchDoctors();
     fetchDepartments();
   }, []);

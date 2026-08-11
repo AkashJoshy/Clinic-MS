@@ -74,3 +74,13 @@ export interface DeletePatientDto {
   id: string,
   method: DeleteMethods
 }
+
+export interface UpdateProfilePictureDto {
+  userId: string,
+  ownerId: string,
+  picture: Express.Multer.File
+}
+export interface UpdateProfilePictureResponseDto {
+  ownerId: string,
+  pictureUrl: string
+}

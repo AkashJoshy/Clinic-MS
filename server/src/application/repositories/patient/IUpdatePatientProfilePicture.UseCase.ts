@@ -1,4 +1,5 @@
+import type { UpdateProfilePictureDto, UpdateProfilePictureResponseDto } from "../../dto/patient.dto.ts";
 
 export interface IUpdatePatientProfilePictureUseCase {
-  execute(data: any): Promise<boolean>;
+  execute(data: UpdateProfilePictureDto): Promise<UpdateProfilePictureResponseDto>;
 }

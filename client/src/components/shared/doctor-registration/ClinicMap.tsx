@@ -1,13 +1,20 @@
-import React, { useMemo, useRef, useState, useCallback, useEffect, type SetStateAction } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  type SetStateAction,
+} from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 interface ClinicPositionProps {
   position: {
-    lat: number,
-    lng: number,
-  },
-  setPosition: React.Dispatch<SetStateAction<{lat: number, lng:number}>>
+    lat: number;
+    lng: number;
+  };
+  setPosition: React.Dispatch<SetStateAction<{ lat: number; lng: number }>>;
 }
 const DEFAULT_POSITION = { lat: 0, lng: 0 };
 
@@ -37,11 +44,9 @@ function LocateButton({
 }: {
   onLocate: (pos: { lat: number; lng: number }) => void;
 }) {
-    const {
-      step2Form: {
-        setValue,
-      },
-    } = useDoctorRegistrationContext()
+  const {
+    step2Form: { setValue },
+  } = useDoctorRegistrationContext();
   const map = useMap();
   const [busy, setBusy] = useState(false);
 
@@ -56,13 +61,13 @@ function LocateButton({
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           onLocate({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          setValue("latitude", String(pos.coords.latitude))
-          setValue("longitude", String(pos.coords.longitude))
+          setValue("latitude", String(pos.coords.latitude));
+          setValue("longitude", String(pos.coords.longitude));
         },
         (error) => {
           console.log(error);
         },
-      )
+      );
       setBusy(false);
     });
     map.once("locationerror", () => setBusy(false));
@@ -106,17 +111,14 @@ function RecenterMap({ position }: { position: { lat: number; lng: number } }) {
   return null;
 }
 
-
 const ClinicMap = ({ position, setPosition }: ClinicPositionProps) => {
   const [draggable, setDraggable] = useState<boolean>(true);
   const [justDropped, setJustDropped] = useState(false);
   const markerRef = useRef<L.Marker | null>(null);
   const icon = useMemo(() => buildClinicIcon(false), []);
   const {
-      step2Form: {
-        setValue,
-      },
-    } = useDoctorRegistrationContext();
+    step2Form: { setValue },
+  } = useDoctorRegistrationContext();
 
   const eventHandlers = useMemo(
     () => ({
@@ -128,8 +130,8 @@ const ClinicMap = ({ position, setPosition }: ClinicPositionProps) => {
         if (!marker) return;
         const newPosition = marker.getLatLng();
         setPosition({ lat: newPosition.lat, lng: newPosition.lng });
-        setValue("latitude", String(newPosition.lat))
-        setValue("longitude", String(newPosition.lng))
+        setValue("latitude", String(newPosition.lat));
+        setValue("longitude", String(newPosition.lng));
         setJustDropped(true);
         window.setTimeout(() => setJustDropped(false), 1200);
       },

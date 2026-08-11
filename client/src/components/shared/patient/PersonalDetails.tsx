@@ -1,11 +1,9 @@
-import { emptyProfile } from "@/constants/patient.constants";
-import type { PersonalDetailsForm } from "@/schemas/patient/patient.schema";
-import { personalDetailsSchema } from "@/schemas/patient/personalDetails.schema";
-import type { Gender, PersonalDetailsProps } from "@/types/patient";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { usePatientProfileContext } from "@/contexts/usePatientProfileContext";
+import { formatDateDisplay, normalizeGender } from "@/helpers/profile.helper";
+import { usePatientProfile } from "@/hooks/usePatientProfile";
+import type { PersonalDetailsProps } from "@/types/patient";
 import { Info, Mail, Pencil, Phone, User } from "lucide-react";
-import React, { useEffect, useState, type FormEvent } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const PersonalDetails: React.FC<PersonalDetailsProps> = ({
@@ -19,92 +17,28 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
   setOriginalProfile,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [allergyInput, setAllergyInput] = useState("");
-  const [chronicInput, setChronicInput] = useState("");
 
   const {
+    addAllergy,
+    addChronic,
+    allergies,
+    allergyInput,
+    chronicConditions,
+    chronicInput,
+    errors,
     handleSubmit,
     register,
-    watch,
-    setValue,
+    removeAllergy,
+    removeChronic,
     reset,
-    formState: { errors },
-  } = useForm<PersonalDetailsForm>({
-    resolver: zodResolver(personalDetailsSchema),
-    defaultValues: emptyProfile,
-    mode: "onChange",
-  });
+    setAllergyInput,
+    setChronicInput,
+  } = usePatientProfile();
 
   const handleCancel = () => {
     reset();
     setProfile(originalProfile);
     setIsEditing(false);
-  };
-
-  const allergies = watch("allergies") || [];
-  const chronicConditions = watch("chronicConditions") || [];
-
-  const addAllergy = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const val = allergyInput.trim();
-    if (val && !allergies.includes(val)) {
-      setValue("allergies", [...allergies, val], { shouldValidate: true });
-      setAllergyInput("");
-    }
-  };
-
-  const removeAllergy = (item: string) => {
-    setValue(
-      "allergies",
-      allergies.filter((x) => x !== item),
-      { shouldValidate: true },
-    );
-  };
-
-  const addChronic = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const val = chronicInput.trim();
-    if (val && !chronicConditions.includes(val)) {
-      setValue("chronicConditions", [...chronicConditions, val], {
-        shouldValidate: true,
-      });
-      setChronicInput("");
-    }
-  };
-
-  const removeChronic = (item: string) => {
-    setValue(
-      "chronicConditions",
-      chronicConditions.filter((x) => x !== item),
-      { shouldValidate: true },
-    );
-  };
-
-  const formatDateDisplay = (value?: string) => {
-    if (!value) return "Not set";
-    const d = new Date(value);
-    if (isNaN(d.getTime())) return "Not set";
-    return d.toLocaleDateString("en-us", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  const GENDER_API_TO_LABEL: Record<string, string> = {
-    MALE: "Male",
-    FEMALE: "Female",
-    OTHER: "Other",
-    "PREFER NOT SAY": "Prefer not to say",
-  };
-  
-  
-  const normalizeGender = (value?: Gender): Gender => {
-    if (!value) return "Prefer Not To Say" as Gender;
-    return (
-      (GENDER_API_TO_LABEL[value.toUpperCase()] as Gender) ??
-      ("Prefer Not To Say" as Gender)
-    );
   };
 
   useEffect(() => {
@@ -192,7 +126,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                   disabled
                   value={patientProfile.email}
                   readOnly={!isEditing}
-                  className={`${inputClasses} pl-10 cursor-not-allowed `}
+                  className={`${inputClasses} pl-10 cursor-not-allowed`}
                 />
               </div>
             </div>
@@ -208,7 +142,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                   value={patientProfile.phone}
                   type="tel"
                   readOnly={!isEditing}
-                  className={`${inputClasses} pl-10`}
+                  className={`${inputClasses} pl-10 cursor-not-allowed`}
                 />
               </div>
               {errors.phone && (
@@ -278,7 +212,6 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
               )}
             </div>
 
-            {/* Allergies */}
             <div className="md:col-span-2">
               <label className={labelClasses}>Allergies</label>
               {isEditing ? (
@@ -339,7 +272,6 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
               )}
             </div>
 
-            {/* Chronic Conditions */}
             <div className="md:col-span-2">
               <label className={labelClasses}>Chronic Conditions</label>
               {isEditing ? (

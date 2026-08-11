@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 import { Upload, FileText, Image } from "lucide-react";
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 import type { DoctorRegisterStep3FormData } from "@/schemas/doctor/doctor.schema";
 
 const VerificationDocs = () => {
@@ -22,8 +22,6 @@ const VerificationDocs = () => {
     (field: keyof DoctorRegisterStep3FormData) =>
     (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0] ?? null;
-
-
 
       setValue(field, file as never, {
         shouldValidate: true,
@@ -90,9 +88,7 @@ const VerificationDocs = () => {
         </label>
 
         {error && (
-          <p className="text-xs text-red-500">
-            {error.message?.toString()}
-          </p>
+          <p className="text-xs text-red-500">{error.message?.toString()}</p>
         )}
       </div>
     );

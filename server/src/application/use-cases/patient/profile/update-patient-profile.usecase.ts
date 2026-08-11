@@ -41,6 +41,7 @@ export class UpdatePatientProfileUseCase implements IUpdatePatientProfileUseCase
       displayName: data.displayName,
       dateOfBirth: data.dateOfBirth,
       medicalInformation: data.medicalInformation,
+      gender: data.gender,
     };
     if (patient.isSelf()) {
       userDetailsToUpdate.fullName = data.displayName;

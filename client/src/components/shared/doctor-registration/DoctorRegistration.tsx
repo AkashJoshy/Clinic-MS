@@ -4,36 +4,25 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllDepartments } from "@/services/common.service";
 import RegistrationHeader from "./RegistrationHeader";
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 import ProfessionalInfo from "./ProfessionalInfo";
 import AccountSecurity from "./AccountSecurity";
 import ClinicInfo from "./ClinicInfo";
 import ClinicAddress from "./ClinicAddress";
 import ConsultationInfo from "./ConsultationInfo";
 import VerificationDocs from "./VerificationDocs";
-import type { DepartmentData } from "@/types/admin";
 import { registerDoctor } from "@/services/doctor.service";
+import { useDepartments } from "@/hooks/useDepartments";
 
-export default function ClinicRegistration() {
+export default function DoctorRegistration() {
   const { step, goNext, goBack, onSubmit } = useDoctorRegistrationContext();
-  const [allDepartments, setAllDepartments] = useState<DepartmentData[] | []>(
-    [],
-  );
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutate(registerDoctor, {
     onSuccess: () => navigate("/doctor"),
   });
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      let response: { data: DepartmentData[] } = await getAllDepartments();
-      const data = response.data.filter((dept) => dept.status === "ACTIVE");
-      setAllDepartments(data);
-    };
-
-    fetchDepartments();
-  }, []);
+  const { activeDepartments } = useDepartments();
 
   return (
     <div className="min-h-screen mt-15 bg-linear-to-br from-primary-50 via-white to-cyan-50 flex items-start justify-center py-10 px-4">
@@ -103,7 +92,7 @@ export default function ClinicRegistration() {
             <div className="space-y-8">
               <ClinicInfo />
               <ClinicAddress />
-              <ConsultationInfo departments={allDepartments} />
+              <ConsultationInfo departments={activeDepartments} />
 
               <div className="flex gap-3">
                 <button

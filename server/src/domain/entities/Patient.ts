@@ -71,4 +71,8 @@ export default class Patient {
     return this.relation === "SELF"
   }
   
+  updateProfilePicture(imageUrl: ImageData) {
+    return this.imageUrl = imageUrl
+  }
+
 }

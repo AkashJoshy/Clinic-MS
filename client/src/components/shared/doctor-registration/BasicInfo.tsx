@@ -1,11 +1,7 @@
 import FormFields from "../FormFields";
-import {
-  DOCTOR_STEP1_INPUTS,
-} from "@/data/doctor.data";
-import type {
-  DoctorRegisterStep1FormData,
-} from "@/schemas/doctor/doctor.schema";
-import { useDoctorRegistrationContext } from "@/hooks/useDoctorRegistrationContext";
+import { DOCTOR_STEP1_INPUTS } from "@/data/doctor.data";
+import type { DoctorRegisterStep1FormData } from "@/schemas/doctor/doctor.schema";
+import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 
 const BasicInfo = () => {
   const { step1Form } = useDoctorRegistrationContext();
