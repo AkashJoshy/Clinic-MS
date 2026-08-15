@@ -32,6 +32,7 @@ import DoctorDetailsPage from "./pages/admin/DoctorDetailsPage";
 import PatientDetailsPage from "./pages/admin/PatientDetailsPage";
 import MyProfilePage from "./pages/patient/MyProfilePage";
 import PatientManagementPage from "./pages/admin/PatientmanagementPage";
+import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -301,13 +302,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/doctor/my-profile",
-                element: (
-                  <UnderConstruction
-                    title="My Profile"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                element: <DoctorProfilePage />
               },
               {
                 path: "/doctor/settings",

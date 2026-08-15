@@ -1,3 +1,4 @@
+import type { ProfileAddress } from "@/types/patient";
 import api from "../api/interceptors"
 import { ENDPOINTS } from "./endpoints";
 
@@ -17,3 +18,4 @@ export const getAllDepartments = async () => {
     };
   }
 }
+

@@ -39,6 +39,7 @@ export type DoctorInfo = {
     | "bio"
     | "languages"
     | "gender"
+    | "licenceNumber"
     | "departmentId"
     | "specialization"
     | "qualification"
@@ -65,6 +66,7 @@ export type DoctorInfo = {
     | "slotDuration"
     | "timeZone"
     | "isActive"
+    | "updatedAt" 
   > | null;
 } & {
   address: BaseAddress | null;
@@ -106,3 +108,28 @@ export interface DoctorRegisterDto {
   medicalLicenceDoc?: Express.Multer.File[];
   doctorRegistrationDoc?: Express.Multer.File[];
 }
+
+export type DoctorProffesionalDetailsDto = Pick<
+  Doctor,
+  | "id"
+  | "bio"
+  | "gender"
+  | "experienceYears"
+  | "languages"
+  | "qualification"
+  | "specialization"
+  | "licenceNumber"
+  | "updatedAt"
+> & { userId: string;}
+
+export type DoctorConsultationDetailsDto = Pick<
+  DoctorClinic,
+  | "consultationFee"
+  | "isActive"
+  | "clinicId"
+  | "id"
+  | "doctorId"
+  | "type"
+  | "slotDuration"
+  | "timeZone"
+> & { userId: string, updatedAt: Date | null };

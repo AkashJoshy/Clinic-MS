@@ -15,7 +15,7 @@ export class GetDepartmentController {
       if (Array.isArray(departmentId)) {
         departmentId = departmentId[0]
       }
-
+      
       if (!departmentId) {
         throw new NotFoundError("Department")
       }

@@ -1,4 +1,3 @@
-// import { usePatientProfileContext } from "@/contexts/usePatientProfileContext";
 import { formatDateDisplay, normalizeGender } from "@/helpers/profile.helper";
 import { usePatientProfile } from "@/hooks/usePatientProfile";
 import type { PersonalDetailsProps } from "@/types/patient";
@@ -86,7 +85,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                   {
                     position: "bottom-right",
                   },
-                );
+                )
               }
             } catch (e: any) {
               toast.error("Failed to update profile. Please try again.");

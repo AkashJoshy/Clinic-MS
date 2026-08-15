@@ -6,7 +6,7 @@ import { authMiddleware2 } from "../middlewares/auth.middleware2.ts";
 import {
   createDepartmentSchema,
   updateDepartmentSchema,
-} from "../schemas/admin/department.schema.ts";
+} from "../schemas/admin/admin.schema.ts"
 import { validate } from "../middlewares/validate.middleware.ts";
 import { GetDepartmentController } from "../controllers/admin/get-department.controller.ts";
 import { GetDepartmentUseCase } from "../../application/use-cases/admin/department-management/get-department.usecase.ts";
@@ -41,7 +41,7 @@ import { GetDoctorController } from "../controllers/admin/get-doctor.controller.
 import { GetDoctorUseCase } from "../../application/use-cases/admin/doctor-management/get-doctor.usecase.ts";
 import { UpdateDoctorStatusController } from "../controllers/admin/update-doctor-status.controller.ts";
 import { UpdateDoctorStatusUseCase } from "../../application/use-cases/admin/patient-management/update-doctor-status.usecase.ts";
-import { updateUserSchema } from "../schemas/shared/user.schema.ts";
+import { updateUserSchema } from "../schemas/shared/shared.schema.ts";
 
 const router = Router();
 

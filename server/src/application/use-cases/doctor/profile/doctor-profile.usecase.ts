@@ -75,6 +75,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
         bio: doctor.bio,
         languages: doctor.languages,
         gender: doctor.gender,
+        licenceNumber: doctor.licenceNumber,
         departmentId: doctor.departmentId,
         specialization: doctor.specialization,
         qualification: doctor.qualification,
@@ -102,6 +103,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
         slotDuration: doctorClinic.slotDuration,
         timeZone: doctorClinic.timeZone,
         isActive: doctorClinic.isActive,
+        updatedAt: doctorClinic.updatedAt
       },
       address: address
         ? {

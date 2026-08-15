@@ -12,16 +12,15 @@ import { profileupload } from "../middlewares/upload.middleware.ts";
 import {
   createPatientProfileSchema,
   updatePersonalDetailsSchema,
-  updatePersonalProfilePictureSchema,
-} from "../schemas/patient/profile.schema.ts";
+} from "../schemas/patient/patient.schema.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import { UpdatePatientProfileUseCase } from "../../application/use-cases/patient/profile/update-patient-profile.usecase.ts";
 import { UpdatePatientProfileController } from "../controllers/patient/update-patient-profile.controller.ts";
-import { updateAddressSchema } from "../schemas/shared/address.schema.ts";
+import { updateAddressSchema, updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
 import { UpdatePatientProfilePictureController } from "../controllers/patient/update-patient-profile-picture.controller.ts";
 import { UpdatePatientProfilePictureUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-picture.usecase.ts";
-import { UpdatePatientProfileAddressController } from "../controllers/patient/update-patient-profile-address.controller.ts";
-import { UpdatePatientProfileAddressUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-address.usecase.ts";
+import { UpdatePatientAddressController } from "../controllers/patient/update-patient-address.controller.ts";
+import { UpdatePatientAddressUseCase } from "../../application/use-cases/patient/profile/update-patient-address.usecase.ts";
 import { CreatePatientProfileController } from "../controllers/patient/create-patient-profile.controller.ts";
 import { CreatePatientProfileUseCase } from "../../application/use-cases/patient/profile/create-patient-profile.usecase.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
@@ -42,38 +41,44 @@ const patientProfilesUseCase = new PatientProfilesUseCase(
   mongoosePatientRepository,
   mongooseAddressRepository,
 );
+
 const updatePatientProfileUseCase = new UpdatePatientProfileUseCase(
   mongooseUserRepository,
   mongoosePatientRepository,
 );
+
 const updatePatientProfilePictureUseCase =
   new UpdatePatientProfilePictureUseCase(
     mongooseUserRepository,
     mongoosePatientRepository,
   );
-const updatePatientProfileAddressUseCase =
-  new UpdatePatientProfileAddressUseCase(
-    mongoosePatientRepository,
-    mongooseAddressRepository,
-  );
+
+const updatePatientAddressUseCase = new UpdatePatientAddressUseCase(
+  mongoosePatientRepository,
+  mongooseAddressRepository,
+);
+
 const createPatientProfileUseCase = new CreatePatientProfileUseCase(
   mongoosePatientRepository,
   mongooseAddressRepository,
 );
 
-
-
 // Controllers
 const patientProfilesController = new PatientProfilesController(
   patientProfilesUseCase,
 );
+
 const updatePatientProfileController = new UpdatePatientProfileController(
   updatePatientProfileUseCase,
 );
+
 const updatePatientProfilePictureController =
   new UpdatePatientProfilePictureController(updatePatientProfilePictureUseCase);
-const updatePatientProfileAddressController =
-  new UpdatePatientProfileAddressController(updatePatientProfileAddressUseCase);
+
+const updatePatientAddressController = new UpdatePatientAddressController(
+  updatePatientAddressUseCase,
+);
+
 const createPatientProfileController = new CreatePatientProfileController(
   createPatientProfileUseCase,
 );
@@ -104,7 +109,7 @@ router.patch(
   authMiddleware2,
   validate(updateAddressSchema),
   async (req, res, next) => {
-    await updatePatientProfileAddressController.handle(req, res, next);
+    await updatePatientAddressController.handle(req, res, next);
   },
 );
 

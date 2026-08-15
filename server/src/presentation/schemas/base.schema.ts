@@ -176,3 +176,38 @@ export const consultationFee = z.coerce
   .number("Consulation fee is required")
   .min(200, "Consultation fee must be at least ₹200")
   .max(1000, "Consultation fee must not exceed ₹1000");
+
+  export const experienceYears = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce
+    .number("Please enter your years of experience")
+    .min(0, "Experience cannot be negative")
+    .max(60, "Experience cannot exceed 60 years"),
+);
+
+export const qualification = z
+  .string()
+  .trim()
+  .min(3, "Qualification must be at least 3 characters")
+  .max(150, "Qualification must not exceed 150 characters");
+
+export const specialization = z
+  .string()
+  .trim()
+  .min(3, "Specialization must be at least 3 characters")
+  .max(100, "Specialization must not exceed 100 characters");
+
+export const licenceNumber = z
+  .string()
+  .trim()
+  .min(3, "License number must be at least 3 characters")
+  .max(50, "License number must not exceed 50 characters");
+
+
+export const slotDuration = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce
+    .number("Please enter your slot duration")
+    .min(15, "Experience cannot be negative")
+    .max(90, "Experience cannot exceed 60 years"),
+);

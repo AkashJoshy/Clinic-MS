@@ -18,6 +18,6 @@ export const personalDetailsSchema = z.object({
 })
 
 export const updatePersonalProfilePictureSchema = z.object({
-  profilePicture: documentField("profilePicture", FILE_SIZE_5MB, 5)
+  profilePicture: documentField("profilePicture", FILE_SIZE_2MB, 2)
 });
 

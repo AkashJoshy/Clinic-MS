@@ -54,10 +54,14 @@ export const useAuthStore = create<AuthStore>()(
       },
       updatePatients(patient) {
         _set((state) => {
-          const exists = state.patients.some((p) => p.patient.id! === patient.patient.id!);
+          const exists = state.patients.some(
+            (p) => p.patient.id! === patient.patient.id!,
+          );
           return {
             patients: exists
-              ? state.patients.map((p) => (p.patient.id === patient.patient.id ? patient : p))
+              ? state.patients.map((p) =>
+                  p.patient.id === patient.patient.id ? patient : p,
+                )
               : [...state.patients, patient],
           };
         });
@@ -90,12 +94,12 @@ export const useAuthStore = create<AuthStore>()(
         }));
       },
       setDoctor(doctor) {
-        _set({ doctor })
+        _set({ doctor });
       },
       updateDoctor(partial) {
         _set((state) => ({
-          doctor: state?.doctor ? { ...state?.doctor, ...partial } : null
-        }))
+          doctor: state?.doctor ? { ...state?.doctor, ...partial } : null,
+        }));
       },
     }),
     {

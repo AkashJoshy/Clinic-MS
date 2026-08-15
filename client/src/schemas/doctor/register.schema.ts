@@ -8,15 +8,19 @@ import {
   country,
   documentField,
   email,
+  experienceYears,
   fullName,
   gender,
   latitude,
+  licenceNumber,
   longitude,
   mode,
   password,
   phone,
   pictureField,
   pincode,
+  qualification,
+  specialization,
   state,
   withPasswordConfirm,
 } from "../base.schema";
@@ -31,29 +35,11 @@ export const doctorRegisterStep1Schema = withPasswordConfirm(
     email,
     phone,
     bio,
-    gender: gender,
-    specialization: z
-      .string()
-      .trim()
-      .min(3, "Specialization must be at least 3 characters")
-      .max(100, "Specialization must not exceed 100 characters"),
-    qualification: z
-      .string()
-      .trim()
-      .min(3, "Qualification must be at least 3 characters")
-      .max(150, "Qualification must not exceed 150 characters"),
-    experienceYears: z.preprocess(
-      (value) => (value === "" ? undefined : value),
-      z.coerce
-        .number("Please enter your years of experience")
-        .min(0, "Experience cannot be negative")
-        .max(60, "Experience cannot exceed 60 years"),
-    ),
-    licenceNumber: z
-      .string()
-      .trim()
-      .min(3, "License number must be at least 3 characters")
-      .max(50, "License number must not exceed 50 characters"),
+    gender,
+    specialization,
+    qualification,
+    experienceYears,
+    licenceNumber,
     password,
     confirmPassword: password,
   }),

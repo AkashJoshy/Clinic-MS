@@ -15,6 +15,7 @@ import {
 } from "country-state-city";
 import { addressSchema, type AddressForm } from "@/schemas/patient/address.schema";
 import { emptyAddress } from "@/constants/patient.constant";
+import { useLocationOptions } from "@/hooks/useLocationOptions";
 
 
 
@@ -30,9 +31,13 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   setOriginalAddress,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [countries, setCountries] = useState<ICountry[]>([]);
-  const [states, setStates] = useState<IState[]>([]);
-  const [cities, setCities] = useState<ICity[]>([]);
+  const {
+    countries,
+    states,
+    handleCountryChange,
+    handleStateChange,
+    cities
+  } = useLocationOptions()
 
   const {
     handleSubmit,
@@ -47,8 +52,8 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     mode: "onChange",
   });
 
-  const watchedCountry = watch("country");
-  const watchedState = watch("state");
+  const country = watch("country");
+  const state = watch("state");
 
   useEffect(() => {
     reset(address);
@@ -60,50 +65,15 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     reset(address);
     setIsEditing(false);
   };
+  
+  useEffect(() => {
+    handleCountryChange(country)
+  }, [country, countries])
 
   useEffect(() => {
-    setCountries(Country.getAllCountries());
-  }, []);
+    handleStateChange(country, state)
+  }, [country, state, countries])
 
-  useEffect(() => {
-    if (!watchedCountry || countries.length === 0) {
-      setStates([]);
-      return;
-    }
-    const selectedCountry = countries.find((c) => c.name === watchedCountry);
-    if (!selectedCountry) {
-      setStates([]);
-      return;
-    }
-    setStates(State.getStatesOfCountry(selectedCountry.isoCode));
-  }, [watchedCountry, countries]);
-
-  useEffect(() => {
-    if (!watchedCountry || !watchedState || states.length === 0) {
-      setCities([]);
-      return;
-    }
-    const selectedCountry = countries.find((c) => c.name === watchedCountry);
-    const selectedState = states.find((s) => s.name === watchedState);
-    if (!selectedCountry || !selectedState) {
-      setCities([]);
-      return;
-    }
-    setCities(
-      City.getCitiesOfState(selectedCountry.isoCode, selectedState.isoCode),
-    );
-  }, [watchedState, states, watchedCountry, countries]);
-
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue("country", e.target.value, { shouldValidate: true });
-    setValue("state", "", { shouldValidate: true });
-    setValue("city", "", { shouldValidate: true });
-  };
-
-  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue("state", e.target.value, { shouldValidate: true });
-    setValue("city", "", { shouldValidate: true });
-  };
 
   const errorText = "text-xs text-red-600 mt-1";
 
@@ -178,7 +148,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                 </div>
                 <select
                   {...register("country")}
-                  onChange={handleCountryChange}
+                  // onChange={handleCountryChange}
                   className={`${inputClasses} pl-10 appearance-none`}
                 >
                   <option value="">Select Country</option>
@@ -202,10 +172,10 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                 </div>
                 <select
                   {...register("state")}
-                  onChange={handleStateChange}
-                  disabled={!watchedCountry}
+                  // onChange={handleStateChange}
+                  disabled={!country}
                   className={`${
-                    !watchedCountry ? disabledInputClasses : inputClasses
+                    !country ? disabledInputClasses : inputClasses
                   } pl-10 appearance-none`}
                 >
                   <option value="">Select State</option>
@@ -216,7 +186,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   ))}
                 </select>
               </div>
-              {!watchedCountry ? (
+              {!country ? (
                 <p className="text-xs text-gray-400 mt-1">
                   Select a country first
                 </p>
@@ -235,9 +205,9 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                 </div>
                 <select
                   {...register("city")}
-                  disabled={!watchedState}
+                  disabled={!state}
                   className={`${
-                    !watchedState ? disabledInputClasses : inputClasses
+                    !state ? disabledInputClasses : inputClasses
                   } pl-10 appearance-none`}
                 >
                   <option value="">Select City</option>
@@ -248,7 +218,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                   ))}
                 </select>
               </div>
-              {!watchedState ? (
+              {!state ? (
                 <p className="text-xs text-gray-400 mt-1">
                   Select a state first
                 </p>

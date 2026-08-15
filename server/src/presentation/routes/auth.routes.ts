@@ -33,18 +33,21 @@ import { ResetDoctorPasswordUseCase } from "../../application/use-cases/auth/res
 import { ForgotAdminPasswordUseCase } from "../../application/use-cases/auth/forgot-password/forgot-admin-password.usecase.ts";
 import { ResetAdminPasswordUseCase } from "../../application/use-cases/auth/reset-password/reset-admin-password.usecase.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
-import { loginSchema } from "../schemas/auth/login.schema.ts";
-import { registerSchema } from "../schemas/auth/patient-register.schema.ts";
-import { verifyOtpSchema } from "../schemas/auth/verify-otp.schema.ts";
-import { resendOtpSchema } from "../schemas/auth/resend-otp.schema.ts";
-import { forgotPasswordSchema } from "../schemas/auth/forgot-password.schema.ts";
-import { resetPasswordSchema } from "../schemas/auth/reset-password.schema.ts";
 import { PatientRegisterUseCase } from "../../application/use-cases/auth/register/patient-register.usecase.ts";
 import { ResendOtp } from "../../application/use-cases/auth/resend-otp/resend-otp.usecase.ts";
 import { PatientLoginUseCase } from "../../application/use-cases/auth/login/patient-login.usecase.ts";
 import { AdminLoginUseCase } from "../../application/use-cases/auth/login/admin-login.usecase.ts";
 import { DoctorLoginUseCase } from "../../application/use-cases/auth/login/doctor-login.usecase.ts";
 import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resendOtpSchema,
+  resetPasswordSchema,
+  verifyOtpSchema,
+} from "../schemas/auth/auth.schema.ts";
+
 
 const router = Router();
 
@@ -53,7 +56,6 @@ const mongooseUserRepository = new MongooseUserRepository();
 const mongoosePatientRepository = new MongoosePatientRepository();
 const mongooseAddressRepository = new MongooseAddressRepository();
 const mongooseDoctorRepository = new MongooseDoctorRepository();
-
 
 // Services
 const argonPasswordService = new ArgonPasswordService();
@@ -101,7 +103,7 @@ const doctorLoginUseCase = new DoctorLoginUseCase(
   userExistenceService,
   tokenGenerationService,
   emailVerificationService,
-  mongooseDoctorRepository
+  mongooseDoctorRepository,
 );
 const forgotPasswordUseCase = new ForgotPasswordUseCase(
   mongooseUserRepository,
@@ -181,6 +183,7 @@ const patientGoogleRegisterController = new PatientGoogleRegisterController(
   patientGoogleRegisterUseCase,
 );
 
+// Routes
 router.post(
   AUTH_ENDPOINTS["PATIENT_REGISTER"],
   validate(registerSchema),

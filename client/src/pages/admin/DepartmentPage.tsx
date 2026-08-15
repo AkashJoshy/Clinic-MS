@@ -16,9 +16,7 @@ const ITEMS_PER_PAGE = 6;
 const DepartmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [allDepartments, setAllDepartments] = useState<DepartmentData[]>(
-    [],
-  );
+  const [allDepartments, setAllDepartments] = useState<DepartmentData[]>([]);
   const [isOpen, setOpen] = useState<boolean>(false);
   const [selectedDept, setSelectedDept] = useState<
     (SelectedDept & { action: UpdateMethods }) | null
@@ -47,10 +45,10 @@ const DepartmentPage: React.FC = () => {
           }
 
           return dept;
-        })
+        });
 
-        return updatedDepts
-      })
+        return updatedDepts;
+      });
       setOpen(false);
     },
   });

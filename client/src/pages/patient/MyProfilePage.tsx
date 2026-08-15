@@ -19,7 +19,6 @@ import { updatePersonalProfilePictureSchema } from "@/schemas/patient/personalDe
 import type { UpdatePersonalProfilePictureForm } from "@/schemas/patient/patient.schema";
 import PersonalDetails from "@/components/shared/patient/PersonalDetails";
 import AddressDetails from "@/components/shared/patient/AddressDetails";
-import { usePatientProfile } from "@/hooks/usePatientProfile";
 import { emptyAddress, emptyProfile } from "@/constants/patient.constant";
 
 const toDateInputValue = (value?: string) => {
@@ -83,6 +82,7 @@ const MyProfilePage: React.FC = () => {
         patient: activePatient?.patient!,
         address: {
           id: activePatient?.address?.id ?? "",
+          ownerId: activePatient?.patient?.id ?? "",
           addressLine: address.addressLine,
           country: address.country,
           state: address.state,

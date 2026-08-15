@@ -1,5 +1,5 @@
 import type { User } from "./user";
-import type { BaseAddress, Gender } from "./patient";
+import type { BaseAddress, Gender, Patient } from "./patient";
 import type {
   DayOfWeek,
   ApprovalStatus,
@@ -34,8 +34,8 @@ export interface Doctor {
   subscription: Subscription;
   reviewedAt: Date | null;
   reviewedMessage: string | null;
-  createdAt: Date | null;
-  updatedAt: Date | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
 export type Certificate = {
@@ -94,6 +94,41 @@ export type DoctorDetails = DoctorClinic & {
   user: PublicUser | null;
 };
 
+export type DoctorProfileData = {
+  address: BaseAddress | null;
+
+  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & {
+    clinicAddress: BaseAddress | null;
+  };
+
+  department: Pick<DepartmentData, "id" | "name"> | null;
+
+  doctor: Omit<
+    Doctor,
+    | "reviewedAt"
+    | "reviewedMessage"
+    | "registrationDoc"
+    | "medicalLicenceDoc"
+    | "profilePicture"
+    | "subscription"
+  > & {
+    registrationDoc: PlainUrl;
+    medicalLicenceDoc: PlainUrl;
+    profilePicture: PlainUrl;
+  };
+
+  doctorClinic: Pick<
+    DoctorClinic,
+    | "id"
+    | "type"
+    | "consultationFee"
+    | "schedule"
+    | "slotDuration"
+    | "timeZone"
+    | "isActive"
+  >;
+};
+
 export type DoctorInfo = {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
@@ -123,6 +158,7 @@ export type DoctorInfo = {
     | "slotDuration"
     | "timeZone"
     | "isActive"
+    | "updatedAt"
   >;
 } & {
   address: BaseAddress | null;
@@ -178,15 +214,41 @@ export interface DoctorQualificationsCardProps {
   formatDate: (date: any) => string;
 }
 
-type ClinicCard = Pick<Clinic, "name" | "about" > & {
+type ClinicCard = Pick<Clinic, "name" | "about"> & {
   clinicAddress: BaseAddress | null;
 };
 
-type DoctorClinicCard = Pick<DoctorClinic, "consultationFee" | "slotDuration" | "type" | "isActive">
+type DoctorClinicCard = Pick<
+  DoctorClinic,
+  "consultationFee" | "slotDuration" | "type" | "isActive"
+>;
 
 export interface DoctorClinicCardProps {
   clinic: ClinicCard;
   doctorClinic: DoctorClinicCard;
   address: BaseAddress | null;
-  
 }
+
+export type DoctorProffesionalDetails = Pick<
+  Doctor,
+  | "id"
+  | "bio"
+  | "gender"
+  | "experienceYears"
+  | "languages"
+  | "qualification"
+  | "specialization"
+  | "licenceNumber"
+> & { userId: string };
+
+export type DoctorConsultationDetails = Pick<
+  DoctorClinic,
+  | "consultationFee"
+  | "isActive"
+  | "clinicId"
+  | "id"
+  | "doctorId"
+  | "type"
+  | "slotDuration"
+  | "timeZone"
+> & { userId: string };

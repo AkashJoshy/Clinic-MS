@@ -3,7 +3,7 @@ export const PATIENT_ENDPOINTS = {
     FETCH_PATIENT_PROFILES: "/profiles/:userId",
     CREATE_PATIENT_PROFILE: "/profiles",
     UPDATE_PATIENT_PROFILE: "/profiles/:patientId",
-    UPDATE_PATIENT_PROFILE_ADDRESS: "/profiles/address/:ownerId",
+    UPDATE_PATIENT_PROFILE_ADDRESS: "/profiles/addressess/:ownerId",
     UPDATE_PATIENT_PROFILE_PICTURE: "/profiles/picture/p",
     FETCH_NEARBY_DOCTORS: "/doctors/nearby",
     FETCH_ALL_DOCTORS: "/doctors/all/available",

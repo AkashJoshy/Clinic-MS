@@ -1,0 +1,39 @@
+import type { NextFunction, Request, Response } from "express";
+import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
+import type { IUpdateProfilePictureUseCase } from "../../../application/repositories/patient/IUpdateProfilePicture.UseCase.ts";
+import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
+import type User from "../../../domain/entities/User.ts";
+
+export class UpdateDoctorProfilePictureController {
+  constructor(
+    private _updateDoctorPicture: IUpdateProfilePictureUseCase,
+  ) {}
+
+  async handle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = req.body;
+      
+      if (!req.file) {
+        throw new NotFoundError("Profile Picture");
+      }
+
+      const result = await this._updateDoctorPicture.execute({
+        userId: (req.user as User).id!,
+        ownerId: data.doctorId,
+        picture: req.file,
+      });
+
+      return res.status(ResponseStatusCode.CREATED).json({
+        success: true,
+        message: RESPONSE_MESSAGE.UPDATED.replace(
+          "Resource",
+          "Profile Picture",
+        ),
+        data: result,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+}

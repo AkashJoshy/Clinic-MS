@@ -33,7 +33,7 @@ export const ENDPOINTS = {
     PROFILES: (userId: string) => `/patient/profiles/${userId}`,
     UPDATE_PROFILE: (patientId: string) => `/patient/profiles/${patientId}`,
     UPDATE_PROFILE_PICTURE: () => `/patient/profiles/picture/p`,
-    UPDATE_ADDRESS: (onwerId: string) => `/patient/profiles/address/${onwerId}`,
+    UPDATE_ADDRESS: (onwerId: string) => `/patient/profiles/addressess/${onwerId}`,
     CREATE_PROFILE: `/patient/profiles`,
   },
   COMMON: {
@@ -42,5 +42,10 @@ export const ENDPOINTS = {
   DOCTOR: {
     REGISTER: `/doctor/register`,
     PROFILE: (userId: string) => `/doctor/profile/${userId}`,
+    PROFESSIONAL_DETAILS: (userId: string) =>
+      `/doctor/${userId}/professional-details`,
+    CONSULTATION_DETAILS: (userId: string) => `/doctor/${userId}/consultation-details`,
+    UPDATE_ADDRESS: (onwerId: string) => `/doctor/addressess/${onwerId}`,
+    UPDATE_PROFILE_PICTURE: () => `/doctor/profile-picture`,
   },
 };

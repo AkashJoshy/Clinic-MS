@@ -11,9 +11,9 @@ import type {
   UpdateProfilePictureDto,
   UpdateProfilePictureResponseDto,
 } from "../../../dto/patient.dto.ts";
-import type { IUpdatePatientProfilePictureUseCase } from "../../../repositories/patient/IUpdatePatientProfilePicture.UseCase.ts";
+import type { IUpdateProfilePictureUseCase } from "../../../repositories/patient/IUpdateProfilePicture.UseCase.ts";
 
-export class UpdatePatientProfilePictureUseCase implements IUpdatePatientProfilePictureUseCase {
+export class UpdatePatientProfilePictureUseCase implements IUpdateProfilePictureUseCase {
   constructor(
     private readonly _userRepository: IUserRepository,
     private readonly _patientRepository: IPatientRepository,
@@ -45,7 +45,7 @@ export class UpdatePatientProfilePictureUseCase implements IUpdatePatientProfile
         "image",
       );
 
-      console.log(`Image Deleted`)
+      console.log(`Image Deleted`);
 
       if (!isDeleted) {
         patient.updateProfilePicture(existingImageUrl);

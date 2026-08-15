@@ -39,34 +39,34 @@ export class Doctor {
     return new Doctor(
       data.id ?? null,
       data.userId ?? null,
-      data.displayName ?? '',
+      data.displayName ?? "",
       data.doctorCode!,
-      data.bio ?? '',
+      data.bio ?? "",
       data.profilePicture ?? {
-        publicId: '',
-        url: ''
+        publicId: "",
+        url: "",
       },
       data.languages ?? [],
-      data.gender ?? 'PREFER NOT TO SAY',
+      data.gender ?? "PREFER NOT TO SAY",
       data.departmentId!,
-      data.specialization ?? '',
-      data.qualification ?? '',
+      data.specialization ?? "",
+      data.qualification ?? "",
       data.experienceYears ?? 0,
       data.licenceNumber!,
       data.averageRating ?? 0,
       data.totalReviews ?? 0,
-      data.registrationDoc?? {
-        publicId: '',
-        url: ''
+      data.registrationDoc ?? {
+        publicId: "",
+        url: "",
       },
       data.medicalLicenceDoc ?? {
-        publicId: '',
-        url: ''
+        publicId: "",
+        url: "",
       },
       data.status ?? "PENDING",
       data.subscription ?? {
         current: null,
-        history: []
+        history: [],
       },
       data.reviewedAt ?? null,
       data.reviewedMessage ?? null,
@@ -76,7 +76,7 @@ export class Doctor {
   }
 
   static register(data: Partial<Omit<AddDoctorProps, "status">>): Doctor {
-    return this.create({ ...data, status: "PENDING"});
+    return this.create({ ...data, status: "PENDING" });
   }
 
   approve(reviewMessage: string) {
@@ -97,6 +97,35 @@ export class Doctor {
     this.status = "REJECTED";
     this.reviewedMessage = reviewMessage;
     this.reviewedAt = new Date();
+  }
+
+  addLanguages(languages: string[]): string[] {
+    if (languages.length === 0) return [];
+    this.languages = languages;
+    return this.languages;
+  }
+
+  updateProfessionalDetails(
+    data: Pick<
+      AddDoctorProps,
+      | "bio"
+      | "experienceYears"
+      | "gender"
+      | "licenceNumber"
+      | "qualification"
+      | "specialization"
+    >,
+  ) {
+    this.bio = data.bio;
+    this.experienceYears = data.experienceYears;
+    this.gender = data.gender;
+    this.licenceNumber = data.licenceNumber;
+    this.qualification = data.qualification;
+    this.specialization = data.specialization;
+  }
+
+  updateProfilePicture(profilePicture: ImageData) {
+    return this.profilePicture = profilePicture
   }
 
 }

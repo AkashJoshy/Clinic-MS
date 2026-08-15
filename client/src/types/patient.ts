@@ -45,7 +45,7 @@ type BaseProfile = Omit<
 
 export type BaseAddress = Omit<
   Address,
-  "createdAt" | "updatedAt" | "ownerId" | "ownerType"
+  "createdAt" | "updatedAt" | "ownerType"
 >;
 
 export type ProfileDto = BaseProfile & MedicalInformation & { name: string };

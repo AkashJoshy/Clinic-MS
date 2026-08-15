@@ -66,6 +66,10 @@ export class DoctorClinic {
     this.isActive = false;
   }
 
+  activeStatus() {
+    return this.isActive
+  }
+
   addLeave(leave: Leave) {
     this.leaves.push(leave);
   }
@@ -80,6 +84,13 @@ export class DoctorClinic {
 
   updateSchedule(schedule: WeeklySchedule[]) {
     this.schedule = schedule;
+  }
+
+  updateConsultationDetails(data: Pick<DoctorClinic, "consultationFee" | "slotDuration" | "type" | "timeZone">) {
+    this.consultationFee = Number(data.consultationFee)
+    this.slotDuration = Number(data.slotDuration)
+    this.type = data.type,
+    this.timeZone = data.timeZone
   }
   
 }
