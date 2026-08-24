@@ -1,8 +1,8 @@
 import passport from "passport";
-import { MongooseUserRepository } from "../repositories/mongoose-user.repository.ts";
+import { UserRepository } from "../repositories/user.repository.ts";
 import "./strategies/google.strategy.ts";
 
-const userRepository = new MongooseUserRepository();
+const userRepository = new UserRepository();
 
 passport.serializeUser((user: any, done) => {
   done(null, user.id);

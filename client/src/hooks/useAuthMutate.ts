@@ -10,14 +10,25 @@ export const useAuthMutate = <TData, TVariables>(
   service: (data: TVariables) => Promise<TData>,
   options?: UseMutateOptions<TData>,
 ) => {
-  const { login, setLoading } = useAuthStore();
+  const login = useAuthStore(state => state.login);
+  const setLoading = useAuthStore(state => state.setLoading);
+  const user = useAuthStore(state => state.user);
+  const updateToken = useAuthStore(state => state.updateToken)
+
   const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: service,
     onSuccess: (data: any) => {
       setLoading(false);
-      toast.success(data.message);
+      if (data.message) toast.success(data.message);
       if (data?.data?.accessToken) {
-        login(data.data.accessToken, data.data.user, data.data.role);
+        if (!user) {
+          login(data.data.accessToken, data.data.user, data.data.role);
+        } else {
+          if (data.data?.user) {
+            const role = data.data.user.role.toLowerCase()
+            updateToken(data.data.accessToken, role)
+          }
+        }
       }
       options?.onSuccess?.(data);
     },

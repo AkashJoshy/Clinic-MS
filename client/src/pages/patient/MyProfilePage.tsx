@@ -28,7 +28,8 @@ const toDateInputValue = (value?: string) => {
   return d.toISOString().split("T")[0];
 };
 
-const MyProfilePage: React.FC = () => {
+const 
+MyProfilePage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<PersonalProfile>(emptyProfile);
   const [address, setAddress] = useState<ProfileAddress>(emptyAddress);
@@ -259,7 +260,7 @@ const MyProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="space-y-6 rounded-[5px] bg-white p-6 border border-gray-200 shadow-sm">
+      <div className="space-y-6 bg-white p-6 border border-gray-200 shadow-sm">
         <div className="mb-8">
           <h1 className="text-2xl font-extrabold text-slate-800">My Profile</h1>
           <p className="text-gray-500 mt-2">
@@ -271,7 +272,7 @@ const MyProfilePage: React.FC = () => {
           <div className="lg:col-span-1 space-y-6">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center"
+              className="bg-white rounded-[5px] shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center"
             >
               <input
                 type="file"
@@ -325,7 +326,7 @@ const MyProfilePage: React.FC = () => {
               </button>
             </form>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-[7px] shadow-sm border border-gray-100 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <ShieldCheck className="w-5 h-5 text-blue-500 mr-2" />
                 Account Info

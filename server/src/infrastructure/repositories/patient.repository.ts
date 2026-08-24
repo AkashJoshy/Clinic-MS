@@ -1,12 +1,12 @@
-import Patient from "../../domain/entities/Patient.js";
-import type { IPatientRepository } from "../../domain/repositories/IPatientRepository.js";
-import PatientModel, { type IPatient } from "../models/patient.model.js";
-import CounterModel from "../models/counter.model.js";
-import { MongooseBaseRepository } from "./base/mongoose-base.repository.js";
+import Patient from "../../domain/entities/Patient.ts";
+import type { IPatientRepository } from "../../domain/repositories/IPatientRepository.ts";
+import PatientModel, { type IPatient } from "../models/patient.model.ts";
+import CounterModel from "../models/counter.model.ts";
+import { BaseRepository } from "./base/base.repository.ts";
 import { Types } from "mongoose";
 
-export class MongoosePatientRepository
-  extends MongooseBaseRepository<Patient, IPatient>
+export class PatientRepository
+  extends BaseRepository<Patient, IPatient>
   implements IPatientRepository
 {
   constructor() {
@@ -114,7 +114,7 @@ export class MongoosePatientRepository
               relationship: "",
             },
         createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt
+        updatedAt: doc.updatedAt,
       },
       doc.patientNumber,
     );

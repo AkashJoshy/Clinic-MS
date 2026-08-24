@@ -28,13 +28,16 @@ export const PatientListItem = ({
   >(null);
   const navigate = useNavigate();
 
+  const isUser = patientInfo.user;
+  const isPatient = patientInfo.patient;
+
   const { mutate } = useMutate(updatePatient, {
     onSuccess: (data) => {
       setIsOpen(false);
-      if (data.data?.userId === patientInfo.patient.userId) {
+      if (data.data?.userId === isPatient?.userId) {
         setPatientInfo((prev) => {
           return prev.map((p) => {
-            if (p.patient.userId === data.data?.userId) {
+            if (p.patient?.userId === data.data?.userId) {
               return {
                 ...p,
                 user: {
@@ -48,7 +51,6 @@ export const PatientListItem = ({
             return p;
           });
         });
-        
       }
     },
   });
@@ -68,10 +70,10 @@ export const PatientListItem = ({
       <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
         <div className="flex items-start gap-4 flex-1 min-w-0">
           <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#1dc465]/10 border border-[#1dc465]/20 flex items-center justify-center shrink-0">
-            {patientInfo.patient?.imageUrl?.url ? (
+            {isPatient?.imageUrl?.url ? (
               <img
-                src={patientInfo.patient.imageUrl.url}
-                alt={patientInfo.patient.displayName}
+                src={isPatient?.imageUrl.url}
+                alt={isPatient?.displayName}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -82,11 +84,11 @@ export const PatientListItem = ({
           <div className=" ">
             <div className="">
               <h3 className="text-white text-base font-semibold truncate xsxs:max-w-20 md:max-w-40">
-                {patientInfo.patient.displayName}
+                {isPatient?.displayName}
               </h3>
 
               <span className="text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[#8b9ab0]">
-                {patientInfo.patient.patientNumber}
+                {isPatient?.patientNumber ?? "Patient Number not found"}
               </span>
             </div>
 
@@ -94,24 +96,24 @@ export const PatientListItem = ({
               <div className="flex gap-1 min-w-0">
                 <Mail size={13} className="text-[#1dc465] shrink-0 mt-0.5" />
                 <span className="truncate xsxs:w-20 xxs:w-40 md:w-30">
-                  {patientInfo.user.email}
+                  {isUser?.email || "Email address unavailable"}
                 </span>
               </div>
 
               <div className="gap-1 flex mt-2 truncate w-30">
                 <Phone size={13} className="text-[#1dc465]" />
-                {patientInfo.user.phone}
+                {isUser?.phone || "Phone unavailable"}
               </div>
 
               <div className="flex mt-2 xsxs:gap-2 xxs:gap-8 ">
-                {patientInfo.patient.medicalInformation.bloodGroup && (
+                {isPatient?.medicalInformation.bloodGroup && (
                   <div className="flex">
                     <Droplet size={13} className="text-[#1dc465]" />
-                    {patientInfo.patient.medicalInformation.bloodGroup}
+                    {isPatient?.medicalInformation.bloodGroup}
                   </div>
                 )}
 
-                <div className="">{patientInfo.patient.gender}</div>
+                <div className="">{isPatient?.gender}</div>
               </div>
             </div>
           </div>
@@ -120,25 +122,23 @@ export const PatientListItem = ({
         <div className="flex flex-col sm:flex-row xl:flex-col gap-2 shrink-0">
           <span
             className={`xsxs:w-full md:w-35 text-center text-xs font-semibold xsxs:py-2 md:py-3 rounded-lg ${
-              patientInfo.user.isActive
+              isUser?.isActive
                 ? "bg-[#1dc465]/15 text-[#1dc465]"
                 : "bg-red-500/15 text-red-400"
             }`}
           >
-            {patientInfo.user.isActive ? "Active" : "Blocked"}
+            {isUser?.isActive ? "Active" : "Blocked"}
           </span>
 
           <button
-            onClick={() =>
-              navigate(`/admin/patients/${patientInfo.patient.id}`)
-            }
+            onClick={() => navigate(`/admin/patients/${isPatient.id}`)}
             className="xsxs:w-full md:w-35 flex text-xs items-center justify-center gap-2 py-2 rounded-lg border border-white/10 text-[#8b9ab0] hover:text-white hover:border-[#1dc465]/40 transition cursor-pointer"
           >
             <Eye size={13} />
             Details
           </button>
 
-          {patientInfo.user.isActive ? (
+          {isUser?.isActive ? (
             <button
               onClick={() => {
                 setIsOpen(true);

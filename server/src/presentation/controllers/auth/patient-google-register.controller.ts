@@ -17,12 +17,15 @@ export class PatientGoogleRegisterController {
 
       const result = await this._googleRegister.execute(req.user as any);
 
-      const { accessToken, role, user, message } = result;
+      const { tokenPair, role, user, message } = result;
       const clientUrl = process.env.CLIENT_ORIGIN || "http://localhost:5173";
 
-      if (accessToken == "" || accessToken == " ") {
+      const { access, refresh } = tokenPair
+
+      if (access == "" || access == " " || refresh === "") {
         return res.redirect(`${clientUrl}/signup?message=${message}`);
       }
+      const accessToken = access
 
       return res.redirect(
         `${clientUrl}/login?token=${accessToken}&role=${role}&user=${JSON.stringify(user)}`,

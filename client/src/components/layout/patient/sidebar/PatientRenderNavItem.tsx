@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import LogoutAlert from "../../LogoutAlert";
 import { useAuthStore } from "@/store";
+import { logoutUser } from "@/services/auth.service";
+import { useAuthMutate } from "@/hooks/useAuthMutate";
 
 interface Props {
   item: NavItem;
@@ -17,7 +19,15 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   const isActive = location.pathname === item.path;
   const isLogout = item.label === "Logout";
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-  const logout = useAuthStore(state => state.logout)
+  const logout = useAuthStore((state) => state.logout);
+  const { mutate, isPending } = useAuthMutate(logoutUser, {
+    onSuccess: () => {
+      setShowLogoutAlert(false);
+      logout("patient");
+      toast.success("Logged out");
+      navigate("/login");
+    },
+  });
 
   const baseClasses = cn(
     "group relative flex items-center px-3 py-2.5 rounded-xl",
@@ -26,7 +36,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
     "text-sm font-medium",
     isActive
       ? "bg-[#1dc465]/10 text-[#1dc465]"
-      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900",
   );
 
   const inner = (
@@ -38,7 +48,9 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
       <span
         className={cn(
           "shrink-0 flex items-center justify-center transition-colors duration-200",
-          isActive ? "text-[#1dc465]" : "text-slate-400 group-hover:text-slate-600"
+          isActive
+            ? "text-[#1dc465]"
+            : "text-slate-400 group-hover:text-slate-600",
         )}
       >
         {item.icon}
@@ -47,7 +59,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
       <span
         className={cn(
           "whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out hidden lg:block",
-          !collapsed ? "max-w-50 opacity-100 ml-3" : "max-w-0 opacity-0 ml-0"
+          !collapsed ? "max-w-50 opacity-100 ml-3" : "max-w-0 opacity-0 ml-0",
         )}
       >
         {item.label}
@@ -59,7 +71,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
           "bg-slate-800 text-white text-xs font-medium rounded-lg shadow-xl",
           "opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 hidden",
           "transition-all duration-150 whitespace-nowrap",
-          collapsed ? "lg:flex" : "hidden"
+          collapsed ? "lg:flex" : "hidden",
         )}
       >
         {item.label}
@@ -68,10 +80,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   );
 
   const handleLogoutConfirm = () => {
-    setShowLogoutAlert(false);
-    logout("patient")
-    toast.success("Logged out");
-    navigate("/login");
+    mutate({})
   };
 
   if (isLogout) {

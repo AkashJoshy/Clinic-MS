@@ -1,6 +1,6 @@
 import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
 import type { ICacheService } from "../../../../domain/services/CacheService.ts";
-import type { IHashService } from "../../../../domain/services/PasswordService.ts";
+import type { IHashService } from "../../../../domain/services/hashService.ts";
 import { AppError } from "../../../../domain/errors/app.errors.ts";
 import type { ResetPasswordDto } from "../../../dto/auth.dto.ts";
 import type { IResetPasswordUseCase } from "../../../repositories/auth/IResetPasswordUseCase.ts";
@@ -56,7 +56,7 @@ export class ResetDoctorPasswordUseCase implements IResetPasswordUseCase {
     //   );
     // }
 
-    const hashedPassword = await this._passwordService.hashPassword(password);
+    const hashedPassword = await this._passwordService.hash(password, "Password");
 
     if (!hashedPassword) {
       throw new AppError("Failed to hash password");

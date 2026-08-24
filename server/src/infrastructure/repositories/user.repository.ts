@@ -1,11 +1,11 @@
-import User from "../../domain/entities/User.js";
-import type { IUserRepository } from "../../domain/repositories/IUserRepository.js";
-import type { Role } from "../../domain/types/user.types.js";
-import UserModel, { type UserDocument } from "../models/user.model.js";
-import { MongooseBaseRepository } from "./base/mongoose-base.repository.js";
+import User from "../../domain/entities/User.ts";
+import type { IUserRepository } from "../../domain/repositories/IUserRepository.ts";
+import type { Role } from "../../domain/types/user.types.ts";
+import UserModel, { type UserDocument } from "../models/user.model.ts";
+import { BaseRepository } from "./base/base.repository.ts";
 
-export class MongooseUserRepository
-  extends MongooseBaseRepository<User, UserDocument>
+export class UserRepository
+  extends BaseRepository<User, UserDocument>
   implements IUserRepository
 {
   constructor() {
@@ -13,7 +13,7 @@ export class MongooseUserRepository
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const userDoc = await UserModel.findOne({ email }).select("+password")
+    const userDoc = await UserModel.findOne({ email }).select("+password");
     if (!userDoc) return null;
     return this.toDomain(userDoc);
   }
@@ -49,7 +49,7 @@ export class MongooseUserRepository
       isActive: user.isActive,
       isTwoFactorenabled: user.isTwoFactorenabled,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
   }
 }

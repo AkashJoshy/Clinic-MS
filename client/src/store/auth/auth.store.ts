@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { AuthStateDTO } from "@/types/auth";
 import type { AuthActions } from "./auth.actions";
+import { initialAuthState } from "@/constants/user.constants";
 
 type AuthStore = AuthActions & AuthStateDTO;
 
@@ -44,6 +45,12 @@ export const useAuthStore = create<AuthStore>()(
             ? state.user
             : null,
           isAuthenticated: false,
+        }));
+      },
+      updateToken(accessToken, role) {
+        _set((state) => ({
+          ...state,
+          tokens: { ...state.tokens, [role]: accessToken },
         }));
       },
       setPatients(patients) {
@@ -104,6 +111,15 @@ export const useAuthStore = create<AuthStore>()(
     }),
     {
       name: "auth-storage",
+      version: 1,
+      migrate: (persistedState, version) => {
+        if (version < 1) {
+          return {
+            ...initialAuthState,
+          };
+        }
+        return persistedState;
+      },
       partialize: (state) => ({
         tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,

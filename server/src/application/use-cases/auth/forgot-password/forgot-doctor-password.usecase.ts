@@ -10,6 +10,7 @@ import { AppError } from "../../../../domain/errors/app.errors.ts";
 import type { ForgotRolePasswordDto } from "../../../dto/auth.dto.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IForgotPasswordUseCase } from "../../../repositories/auth/IForgotPasswordUseCase.ts";
+import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 
 export class ForgotDoctorPasswordUseCase implements IForgotPasswordUseCase {
   constructor(
@@ -23,28 +24,24 @@ export class ForgotDoctorPasswordUseCase implements IForgotPasswordUseCase {
     const user = await this._userRepository.findByEmail(email);
 
     if (!user || !user.id) {
-      throw new NotFoundError("User");
+      throw new NotFoundError(
+        "No account is registered with this email address",
+      );
     }
 
-    if (user.role != role) {
-      throw new AppError("Access Denied");
+    if (user.role !== "DOCTOR" || user.role !== role) {
+      throw new ForbiddenError(
+        "This email is not registered as a doctor account",
+      );
     }
 
     if (!user.isActive) {
-      throw new AppError("User is inactive or blocked");
+      throw new ForbiddenError("Account is currently inactive");
     }
 
-    // const clinic = await this._clinicRepository.findByUserId(user.id);
-
-    // if (!clinic) {
-    //   throw new NotFoundError("Clinic");
-    // }
-
-    // if (!clinic.isActive || clinic.status === "PENDING") {
-    //   throw new AppError(
-    //     "Clinic is under review. You can change your password after approval.",
-    //   );
-    // }
+    if (user.isBlocked) {
+      throw new ForbiddenError("Account is currently blocked");
+    }
 
     const resetToken = generateVerificationToken();
 

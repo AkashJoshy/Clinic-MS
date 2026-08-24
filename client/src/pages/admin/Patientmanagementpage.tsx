@@ -58,7 +58,7 @@ export default function PatientManagementPage() {
     ) {
       return false;
     }
-    const activeStatus = det.user.isActive ? "ACTIVE" : "INACTIVE";
+    const activeStatus = det.user ? det.user.isActive ? "ACTIVE" : "INACTIVE" : "INACTIVE"
 
     if (filters.status !== "ALL" && filters.status !== activeStatus)
       return false;
@@ -129,7 +129,7 @@ export default function PatientManagementPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-[#8b9ab0] text-sm font-bold">
           <span>Total Patients</span>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white/8 text-[#8b9ab0]">
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gray-800 text-primary">
             {filteredPatients.length}
           </span>
         </div>

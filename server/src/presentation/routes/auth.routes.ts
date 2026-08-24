@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.js";
-import { MongoosePatientRepository } from "../../infrastructure/repositories/mongoose-patient.repository.js";
-import { ArgonPasswordService } from "../../infrastructure/services/ArgonPasswordService.js";
+import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
+import { PatientRepository } from "../../infrastructure/repositories/patient.repository.ts";
+import { ArgonHashService } from "../../infrastructure/services/ArgonHashService.ts";
 import { NodeMailerService } from "../../infrastructure/services/mail/NodeMailerService.ts";
 import { RedisCacheService } from "../../infrastructure/services/RedisCacheService.js";
 import { redis } from "../../infrastructure/cache/redis.client.js";
@@ -15,9 +15,8 @@ import { AdminLoginController } from "../controllers/auth/admin-login.controller
 import { EmailVerificationService } from "../../application/services/email-verification.service.js";
 import { UserExistenceService } from "../../application/services/user-existence.service.ts";
 import { PatientLoginController } from "../controllers/auth/patient-login.controller.ts";
-import { TokenGenerationService } from "../../application/services/token.service.ts";
 import { DoctorLoginController } from "../controllers/auth/doctor-login.controller.ts";
-import { MongooseAddressRepository } from "../../infrastructure/repositories/mongoose-address.repository.ts";
+import { AddressRepository } from "../../infrastructure/repositories/address.repository.ts";
 import { ForgotPasswordUseCase } from "../../application/use-cases/auth/forgot-password/forgot-password.usecase.ts";
 import { ResetPasswordUseCase } from "../../application/use-cases/auth/reset-password/reset-password.usecase.ts";
 import { ForgotPasswordController } from "../controllers/auth/forgot-password.controller.ts";
@@ -38,7 +37,7 @@ import { ResendOtp } from "../../application/use-cases/auth/resend-otp/resend-ot
 import { PatientLoginUseCase } from "../../application/use-cases/auth/login/patient-login.usecase.ts";
 import { AdminLoginUseCase } from "../../application/use-cases/auth/login/admin-login.usecase.ts";
 import { DoctorLoginUseCase } from "../../application/use-cases/auth/login/doctor-login.usecase.ts";
-import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
+import { DoctorRepository } from "../../infrastructure/repositories/doctor.repository.ts";
 import {
   registerSchema,
   loginSchema,
@@ -47,18 +46,26 @@ import {
   resetPasswordSchema,
   verifyOtpSchema,
 } from "../schemas/auth/auth.schema.ts";
-
+import { AccessTokenGenerationService } from "../../application/services/access-token.service.ts";
+import { RefreshTokenGenerationService } from "../../application/services/refresh-token.service.ts";
+import { RefreshSessionRepository } from "../../infrastructure/repositories/refresh-session.repository.ts";
+import { RefreshTokenController } from "../controllers/auth/refresh-token.controller.ts";
+import { RefreshTokenUseCase } from "../../application/use-cases/auth/refresh-token/refresh-token.usecase.ts";
+import { LogoutController } from "../controllers/auth/logout.controller.ts";
+import { LogoutUseCase } from "../../application/use-cases/auth/logout/logout.usecase.ts";
+import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 
 const router = Router();
 
 // DB Repo's
-const mongooseUserRepository = new MongooseUserRepository();
-const mongoosePatientRepository = new MongoosePatientRepository();
-const mongooseAddressRepository = new MongooseAddressRepository();
-const mongooseDoctorRepository = new MongooseDoctorRepository();
+const mongooseUserRepository = new UserRepository();
+const mongoosePatientRepository = new PatientRepository();
+const mongooseAddressRepository = new AddressRepository();
+const mongooseDoctorRepository = new DoctorRepository();
+const mongooseRefreshSessionRepository = new RefreshSessionRepository();
 
 // Services
-const argonPasswordService = new ArgonPasswordService();
+const argonHashService = new ArgonHashService();
 const redisService = new RedisCacheService(redis);
 const nodemailService = new NodeMailerService();
 const jwtService = new JWTService();
@@ -66,7 +73,7 @@ const jwtService = new JWTService();
 // Service-Usecase
 const userCreationService = new UserCreationService(
   mongooseUserRepository,
-  argonPasswordService,
+  argonHashService,
 );
 const emailVerificationService = new EmailVerificationService(
   nodemailService,
@@ -74,9 +81,16 @@ const emailVerificationService = new EmailVerificationService(
 );
 const userExistenceService = new UserExistenceService(
   mongooseUserRepository,
-  argonPasswordService,
+  argonHashService,
 );
-const tokenGenerationService = new TokenGenerationService(jwtService);
+const accessTokenGenerationService = new AccessTokenGenerationService(
+  jwtService,
+);
+const refreshTokenGenerationService = new RefreshTokenGenerationService(
+  jwtService,
+  mongooseRefreshSessionRepository,
+  argonHashService,
+);
 
 // Use-cases
 const patientRegister = new PatientRegisterUseCase(
@@ -85,64 +99,95 @@ const patientRegister = new PatientRegisterUseCase(
   emailVerificationService,
   mongooseAddressRepository,
 );
+
 const verifyEmailUseCase = new VerifyEmailUseCase(
   mongooseUserRepository,
   redisService,
 );
-const resendOtp = new ResendOtp(redisService, nodemailService);
-const patientLogin = new PatientLoginUseCase(
+
+const resendOtpUseCase = new ResendOtp(redisService, nodemailService);
+
+const patientLoginUseCase = new PatientLoginUseCase(
   userExistenceService,
-  tokenGenerationService,
+  accessTokenGenerationService,
+  refreshTokenGenerationService,
   emailVerificationService,
 );
-const adminLogin = new AdminLoginUseCase(
+
+const adminLoginUseCase = new AdminLoginUseCase(
   userExistenceService,
-  tokenGenerationService,
+  accessTokenGenerationService,
+  refreshTokenGenerationService,
 );
+
 const doctorLoginUseCase = new DoctorLoginUseCase(
   userExistenceService,
-  tokenGenerationService,
   emailVerificationService,
   mongooseDoctorRepository,
+  accessTokenGenerationService,
+  refreshTokenGenerationService,
 );
+
+const refreshTokenUseCase = new RefreshTokenUseCase(
+  mongooseUserRepository,
+  mongooseRefreshSessionRepository,
+  argonHashService,
+  jwtService,
+  accessTokenGenerationService,
+);
+const logoutUseCase = new LogoutUseCase(
+  mongooseUserRepository,
+  mongooseRefreshSessionRepository,
+  argonHashService,
+  jwtService,
+);
+
 const forgotPasswordUseCase = new ForgotPasswordUseCase(
   mongooseUserRepository,
   mongoosePatientRepository,
   redisService,
   nodemailService,
 );
+
 const forgotDoctorPasswordUseCase = new ForgotDoctorPasswordUseCase(
   mongooseUserRepository,
   redisService,
   nodemailService,
 );
+
 const forgotAdminPasswordUseCase = new ForgotAdminPasswordUseCase(
   mongooseUserRepository,
   redisService,
   nodemailService,
 );
+
 const resetPasswordUseCase = new ResetPasswordUseCase(
   mongooseUserRepository,
   mongoosePatientRepository,
   redisService,
-  argonPasswordService,
+  argonHashService,
 );
+
 const resetDoctorPasswordUseCase = new ResetDoctorPasswordUseCase(
   mongooseUserRepository,
   redisService,
-  argonPasswordService,
+  argonHashService,
 );
+
 const resetAdminPasswordUseCase = new ResetAdminPasswordUseCase(
   mongooseUserRepository,
   redisService,
-  argonPasswordService,
+  argonHashService,
 );
+
 const patientGoogleLoginUseCase = new PatientGoogleLoginUseCase(
-  tokenGenerationService,
+  accessTokenGenerationService,
+  refreshTokenGenerationService, 
   mongooseUserRepository,
 );
+
 const patientGoogleRegisterUseCase = new PatientGoogleRegisterUseCase(
-  tokenGenerationService,
+  accessTokenGenerationService,
   mongooseUserRepository,
   mongoosePatientRepository,
   mongooseAddressRepository,
@@ -153,32 +198,48 @@ const patientGoogleRegisterUseCase = new PatientGoogleRegisterUseCase(
 const patientRegisterController = new PatientRegisterController(
   patientRegister,
 );
-const patientLoginController = new PatientLoginController(patientLogin);
-const adminLoginController = new AdminLoginController(adminLogin);
+const patientLoginController = new PatientLoginController(patientLoginUseCase);
+
+const adminLoginController = new AdminLoginController(adminLoginUseCase);
+
 const doctorLoginController = new DoctorLoginController(doctorLoginUseCase);
+
+const refreshTokenController = new RefreshTokenController(refreshTokenUseCase);
+
+const logoutController = new LogoutController(logoutUseCase);
+
 const verifyEmailController = new VerifyEmailController(verifyEmailUseCase);
-const resendOtpController = new ResendOtpController(resendOtp);
+
+const resendOtpController = new ResendOtpController(resendOtpUseCase);
+
 const forgotPasswordController = new ForgotPasswordController(
   forgotPasswordUseCase,
 );
+
 const forgotDoctorPasswordController = new ForgotPasswordController(
   forgotDoctorPasswordUseCase,
 );
+
 const forgotAdminPasswordController = new ForgotPasswordController(
   forgotAdminPasswordUseCase,
 );
+
 const resetPasswordController = new ResetPasswordController(
   resetPasswordUseCase,
 );
+
 const resetDoctorPasswordController = new ResetPasswordController(
   resetDoctorPasswordUseCase,
 );
+
 const resetAdminPasswordController = new ResetPasswordController(
   resetAdminPasswordUseCase,
 );
+
 const patientGoogleLoginController = new PatientGoogleLoginController(
   patientGoogleLoginUseCase,
 );
+
 const patientGoogleRegisterController = new PatientGoogleRegisterController(
   patientGoogleRegisterUseCase,
 );
@@ -219,6 +280,14 @@ router.post(
 router.patch(AUTH_ENDPOINTS["VERIFY_EMAIL"], async (req, res, next) => {
   (validate(verifyOtpSchema),
     await verifyEmailController.handle(req, res, next));
+});
+
+router.post(AUTH_ENDPOINTS["REFRESH_TOKEN"], async (req, res, next) => {
+  await refreshTokenController.handle(req, res, next);
+});
+
+router.post(AUTH_ENDPOINTS["LOGOUT"], async (req, res, next) => {
+  await logoutController.handle(req, res, next);
 });
 
 router.patch(

@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { PATIENT_ENDPOINTS } from "../endpoints/patient.endpoints.ts";
-import { authMiddleware } from "../middlewares/auth.middleware.ts";
-import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
-import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.ts";
-import { MongoosePatientRepository } from "../../infrastructure/repositories/mongoose-patient.repository.ts";
+import { authenticateUser } from "../middlewares/authenticate-user.middleware.ts";
+import { DoctorRepository } from "../../infrastructure/repositories/doctor.repository.ts";
+import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
+import { PatientRepository } from "../../infrastructure/repositories/patient.repository.ts";
 import { PatientProfilesUseCase } from "../../application/use-cases/patient/profile/patient-profiles.usecase.ts";
 import { PatientProfilesController } from "../controllers/patient/patient-profiles.controller.ts";
-import { MongooseAddressRepository } from "../../infrastructure/repositories/mongoose-address.repository.ts";
-import { authMiddleware2 } from "../middlewares/auth.middleware2.ts";
+import { AddressRepository } from "../../infrastructure/repositories/address.repository.ts";
+import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 import { profileupload } from "../middlewares/upload.middleware.ts";
 import {
   createPatientProfileSchema,
@@ -16,7 +16,10 @@ import {
 import { validate } from "../middlewares/validate.middleware.ts";
 import { UpdatePatientProfileUseCase } from "../../application/use-cases/patient/profile/update-patient-profile.usecase.ts";
 import { UpdatePatientProfileController } from "../controllers/patient/update-patient-profile.controller.ts";
-import { updateAddressSchema, updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
+import {
+  updateAddressSchema,
+  updatePersonalProfilePictureSchema,
+} from "../schemas/shared/shared.schema.ts";
 import { UpdatePatientProfilePictureController } from "../controllers/patient/update-patient-profile-picture.controller.ts";
 import { UpdatePatientProfilePictureUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-picture.usecase.ts";
 import { UpdatePatientAddressController } from "../controllers/patient/update-patient-address.controller.ts";
@@ -28,10 +31,10 @@ import { validateFile } from "../middlewares/validate-file.middleware.ts";
 const router = Router();
 
 // DB Repo's
-const mongooseDoctorRepository = new MongooseDoctorRepository();
-const mongooseUserRepository = new MongooseUserRepository();
-const mongoosePatientRepository = new MongoosePatientRepository();
-const mongooseAddressRepository = new MongooseAddressRepository();
+const mongooseDoctorRepository = new DoctorRepository();
+const mongooseUserRepository = new UserRepository();
+const mongoosePatientRepository = new PatientRepository();
+const mongooseAddressRepository = new AddressRepository();
 // Services
 
 // Service-Usecase
@@ -86,8 +89,8 @@ const createPatientProfileController = new CreatePatientProfileController(
 // Routes
 router.get(
   PATIENT_ENDPOINTS["FETCH_PATIENT_PROFILES"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await patientProfilesController.handle(req, res, next);
   },
@@ -95,8 +98,8 @@ router.get(
 
 router.patch(
   PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(updatePersonalDetailsSchema),
   async (req, res, next) => {
     await updatePatientProfileController.handle(req, res, next);
@@ -105,8 +108,8 @@ router.patch(
 
 router.patch(
   PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE_ADDRESS"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(updateAddressSchema),
   async (req, res, next) => {
     await updatePatientAddressController.handle(req, res, next);
@@ -115,8 +118,8 @@ router.patch(
 
 router.patch(
   PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE_PICTURE"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   profileupload,
   validateFile(updatePersonalProfilePictureSchema),
   async (req, res, next) => {
@@ -126,8 +129,8 @@ router.patch(
 
 router.post(
   PATIENT_ENDPOINTS["CREATE_PATIENT_PROFILE"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(createPatientProfileSchema),
   async (req, res, next) => {
     await createPatientProfileController.handle(req, res, next);

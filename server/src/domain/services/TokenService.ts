@@ -1,6 +1,9 @@
-import type { PayloadDTO } from "../../application/dto/auth.dto.ts"
+import type { AccessTokenPayloadDto, RefreshTokenPayloadDto } from "../../application/dto/auth.dto.ts"
 
 export interface ITokenService {
-    generateToken(payload: PayloadDTO): string
-    verifyToken(token: string): Record<string, unknown>
+    generateAccessToken(payload: AccessTokenPayloadDto): string
+    generateRefreshToken(payload: RefreshTokenPayloadDto): string
+    
+    verifyAccessToken(token: string): Record<string, unknown>
+    verifyRefreshToken(token: string): Record<string, unknown>
 }

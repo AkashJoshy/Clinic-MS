@@ -25,7 +25,7 @@ export class UpdateDoctorStatusUseCase implements IUpdateStatusUseCase {
     }
 
     let message = "";
-    if (data.method === "DELETE") {
+    if (data.method === "BLOCK") {
       user.block();
       message = "Doctor has been blocked successfully.";
     } else if (data.method === "RESTORE") {

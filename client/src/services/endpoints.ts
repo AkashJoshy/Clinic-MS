@@ -14,6 +14,8 @@ export const ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     RESET_CLINIC_PASSWORD: "/auth/clinic/reset-password",
     RESET_ADMIN_PASSWORD: "/auth/admin/reset-password",
+    REFRESH_TOKEN: "/auth/refresh",
+    LOGOUT: "/auth/logout",
     GOOGLE: "/auth/google",
     GOOGLE_CALLBACK: "/auth/google/callback",
   },

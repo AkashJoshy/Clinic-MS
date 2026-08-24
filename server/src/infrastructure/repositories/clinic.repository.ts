@@ -1,14 +1,14 @@
 import { Clinic } from "../../domain/entities/Clinic.ts";
 import type { IClinicRepository } from "../../domain/repositories/IClinicRepository.ts";
 import { type IClinic, ClinicModel } from "../models/clinic.model.ts";
-import { MongooseBaseRepository } from "./base/mongoose-base.repository.ts";
+import { BaseRepository } from "./base/base.repository.ts";
 
-export class MongooseClinicRepository
-  extends MongooseBaseRepository<Clinic, IClinic>
+export class ClinicRepository
+  extends BaseRepository<Clinic, IClinic>
   implements IClinicRepository
 {
   constructor() {
-    super(ClinicModel)
+    super(ClinicModel);
   }
   protected toDomain(doc: IClinic): Clinic {
     return Clinic.create({

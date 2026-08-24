@@ -9,11 +9,31 @@ export class PatientLoginController {
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
+      
       const result = await this._patientLogin.execute(data);
+
+      const { tokenPair, role, user, message } = result;
+
+      const { access, refresh } = tokenPair;
+
+      res.cookie("refreshToken", refresh, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      const updatedData = {
+        role,
+        user,
+        message,
+        accessToken: access,
+      }
+
       return res.status(ResponseStatusCode.OK).json({
         success: true,
         message: RESPONSE_MESSAGE.ACCOUNT_AUTHENTICATED,
-        data: result,
+        data: updatedData,
       });
     } catch (error) {
       return next(error);

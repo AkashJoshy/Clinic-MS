@@ -1,40 +1,43 @@
 import type { Request, Response, NextFunction } from "express";
-import { JWTService } from "../../infrastructure/services/JWTService.js";
-import { MongoosePatientRepository } from "../../infrastructure/repositories/mongoose-patient.repository.js";
-import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.js";
-import { AuthError } from "../../domain/errors/auth.error.js";
+import { JWTService } from "../../infrastructure/services/JWTService.ts";
+import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
+import { AuthError } from "../../domain/errors/auth.error.ts";
 
 const jwtService = new JWTService();
-const mongooseUserRepository = new MongooseUserRepository();
+const mongooseUserRepository = new UserRepository();
 
-export const authMiddleware = async (
+export const authenticateUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const authHeader = req.headers.authorization;
+
     if (!authHeader?.startsWith("Bearer ")) {
       throw new AuthError("Unauthorized");
     }
 
     const token = authHeader.split(" ")[1];
+
+    
     if (!token) {
       throw new AuthError("Unauthorized");
     }
-
-    const decoded = jwtService.verifyToken(token) as {
+    
+    const decoded = jwtService.verifyAccessToken(token) as {
       userId: string;
       role: string;
     };
-
-    if (!decoded || !decoded.userId) {
-      throw new AuthError("Invalid token");
-    }
-
+    
     const user = await mongooseUserRepository.findById(decoded.userId);
+
     if (!user) {
       throw new AuthError("User not found");
+    }
+
+    if (user.isBlocked || !user.isActive) {
+      throw new AuthError("Unauthorized");
     }
 
     req.user = {
@@ -43,8 +46,9 @@ export const authMiddleware = async (
       isBlocked: user.isBlocked,
       isActive: user.isActive,
     };
+
     next();
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 };

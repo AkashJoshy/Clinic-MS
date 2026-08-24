@@ -1,3 +1,9 @@
+@import url(
+  "https://fonts.google.com/share?selection.family=Archivo+Black|Black+Ops+One|Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800"
+  );
+@import url(
+  "https://fonts.google.com/share?selection.family=Archivo+Black|Black+Ops+One|Fjalla+One|Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800"
+  );
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -8,6 +14,10 @@
 @theme inline {
   --font-serif: "Georgia", "Times New Roman", serif;
   --font-sans: "DM Sans", sans-serif;
+  --font-archivo: "Archivo Black", sans-serif;
+  --font-fjalla: "Fjalla One", sans-serif;
+  --font-ops: "Black Ops One", sans-serif;
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
   --font-playfair: "Playfair Display", serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

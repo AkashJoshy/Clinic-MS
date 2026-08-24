@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { ADMIN_ENDPOINTS } from "../endpoints/admin.endpoints.js";
 import { NodeMailerService } from "../../infrastructure/services/mail/NodeMailerService.ts";
-import { authMiddleware } from "../middlewares/auth.middleware.ts";
-import { authMiddleware2 } from "../middlewares/auth.middleware2.ts";
+import { authenticateUser } from "../middlewares/authenticate-user.middleware.ts";
+import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 import {
   createDepartmentSchema,
   updateDepartmentSchema,
-} from "../schemas/admin/admin.schema.ts"
+} from "../schemas/admin/admin.schema.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import { GetDepartmentController } from "../controllers/admin/get-department.controller.ts";
 import { GetDepartmentUseCase } from "../../application/use-cases/admin/department-management/get-department.usecase.ts";
-import { MongooseDepartmentRepository } from "../../infrastructure/repositories/mongoose-department.repository.ts";
+import { DepartmentRepository } from "../../infrastructure/repositories/department.repository.ts";
 import { AddDepartmentController } from "../controllers/admin/add-department.controller.ts";
 import { AddDepartmentUseCase } from "../../application/use-cases/admin/department-management/add-department.usecase.ts";
 import { EditDepartmentController } from "../controllers/admin/edit-department.controller.ts";
@@ -18,11 +18,11 @@ import { UpdateDepartmentStatusController } from "../controllers/admin/update-de
 import { EditDepartmentUseCase } from "../../application/use-cases/admin/department-management/edit-department.usecase.ts";
 import { UpdateDepartmentStatusUseCase } from "../../application/use-cases/admin/department-management/update-department-status.usecase.ts";
 import { GetAllDoctorsController } from "../controllers/admin/get-all-doctors.controller.ts";
-import { MongooseAddressRepository } from "../../infrastructure/repositories/mongoose-address.repository.ts";
-import { MongooseDoctorRepository } from "../../infrastructure/repositories/mongoose-doctor.repository.ts";
-import { MongooseDoctorClinicRepository } from "../../infrastructure/repositories/mongoose-doctor-clinic.repository.ts";
-import { MongooseClinicRepository } from "../../infrastructure/repositories/mongoose-clinic.repository.ts";
-import { MongooseUserRepository } from "../../infrastructure/repositories/mongoose-user.repository.ts";
+import { AddressRepository } from "../../infrastructure/repositories/address.repository.ts";
+import { DoctorRepository } from "../../infrastructure/repositories/doctor.repository.ts";
+import { DoctorClinicRepository } from "../../infrastructure/repositories/doctor-clinic.repository.ts";
+import { ClinicRepository } from "../../infrastructure/repositories/clinic.repository.ts";
+import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
 import { DoctorDetailsService } from "../../application/services/doctor-details.service.ts";
 import { GetAllDoctorsUseCase } from "../../application/use-cases/admin/doctor-management/get-all-doctors.usecase.ts";
 import { ApproveDoctorController } from "../controllers/admin/approve-doctor.controller.ts";
@@ -31,7 +31,7 @@ import { RejectDoctorController } from "../controllers/admin/reject-doctor.contr
 import { RejectDoctorUseCase } from "../../application/use-cases/admin/doctor-management/reject-doctor.usecase.ts";
 import { GetAllPatientsController } from "../controllers/admin/get-all-patients.controller.ts";
 import { GetAllPatientsUseCase } from "../../application/use-cases/admin/patient-management/get-all-patients.usecase.ts";
-import { MongoosePatientRepository } from "../../infrastructure/repositories/mongoose-patient.repository.ts";
+import { PatientRepository } from "../../infrastructure/repositories/patient.repository.ts";
 import { PatientDetailsService } from "../../application/services/patient-details.service.ts";
 import { UpdatePatientStatusController } from "../controllers/admin/update-patient-status.controller.ts";
 import { UpdatePatientStatusUseCase } from "../../application/use-cases/admin/patient-management/update-patient-status.usecase.ts";
@@ -46,13 +46,13 @@ import { updateUserSchema } from "../schemas/shared/shared.schema.ts";
 const router = Router();
 
 // DB Repo's
-const mongooseUserRepository = new MongooseUserRepository();
-const mongoosePatientRepository = new MongoosePatientRepository();
-const mongooseClinicRepository = new MongooseClinicRepository();
-const mongooseDoctorRepository = new MongooseDoctorRepository();
-const mongooseDoctorClinicRepository = new MongooseDoctorClinicRepository();
-const mongooseAddressRepository = new MongooseAddressRepository();
-const mongooseDepartmentRepository = new MongooseDepartmentRepository();
+const mongooseUserRepository = new UserRepository();
+const mongoosePatientRepository = new PatientRepository();
+const mongooseClinicRepository = new ClinicRepository();
+const mongooseDoctorRepository = new DoctorRepository();
+const mongooseDoctorClinicRepository = new DoctorClinicRepository();
+const mongooseAddressRepository = new AddressRepository();
+const mongooseDepartmentRepository = new DepartmentRepository();
 
 // Services
 const nodeMailerService = new NodeMailerService();
@@ -93,7 +93,7 @@ const getDoctorUseCase = new GetDoctorUseCase(
   mongooseDoctorClinicRepository,
   mongooseClinicRepository,
   mongooseAddressRepository,
-  mongooseDepartmentRepository
+  mongooseDepartmentRepository,
 );
 const getAllPatientsUseCase = new GetAllPatientsUseCase(
   mongoosePatientRepository,
@@ -142,9 +142,7 @@ const updateDepartmentStatusController = new UpdateDepartmentStatusController(
 const getAllDoctorsController = new GetAllDoctorsController(
   getAllDoctorsUseCase,
 );
-const getDoctorController = new GetDoctorController(
-  getDoctorUseCase,
-);
+const getDoctorController = new GetDoctorController(getDoctorUseCase);
 const getAllPatientsController = new GetAllPatientsController(
   getAllPatientsUseCase,
 );
@@ -163,8 +161,8 @@ const updateDoctorStatusController = new UpdateDoctorStatusController(
 // Routes
 router.get(
   ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await getDepartmentController.handle(req, res, next);
   },
@@ -172,8 +170,8 @@ router.get(
 
 router.post(
   ADMIN_ENDPOINTS["ADD_DEPARTMENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(createDepartmentSchema),
   async (req, res, next) => {
     await addDepartmentController.handle(req, res, next);
@@ -182,8 +180,8 @@ router.post(
 
 router.put(
   ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(createDepartmentSchema),
   async (req, res, next) => {
     await editDepartmentController.handle(req, res, next);
@@ -192,8 +190,8 @@ router.put(
 
 router.patch(
   ADMIN_ENDPOINTS["FETCH_DEPARTMENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(updateDepartmentSchema),
   async (req, res, next) => {
     await updateDepartmentStatusController.handle(req, res, next);
@@ -202,8 +200,8 @@ router.patch(
 
 router.get(
   ADMIN_ENDPOINTS["FETCH_DOCTORS"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await getAllDoctorsController.handle(req, res, next);
   },
@@ -211,8 +209,8 @@ router.get(
 
 router.get(
   ADMIN_ENDPOINTS["FETCH_DOCTOR"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await getDoctorController.handle(req, res, next);
   },
@@ -220,8 +218,8 @@ router.get(
 
 router.get(
   ADMIN_ENDPOINTS["FETCH_PATIENTS"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await getAllPatientsController.handle(req, res, next);
   },
@@ -229,8 +227,8 @@ router.get(
 
 router.get(
   ADMIN_ENDPOINTS["FETCH_PATIENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await getPatientController.handle(req, res, next);
   },
@@ -238,8 +236,8 @@ router.get(
 
 router.patch(
   ADMIN_ENDPOINTS["APPROVE_DOCTOR"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await approveDoctorController.handle(req, res, next);
   },
@@ -247,8 +245,8 @@ router.patch(
 
 router.delete(
   ADMIN_ENDPOINTS["REJECT_DOCTOR"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   async (req, res, next) => {
     await rejectDoctorController.handle(req, res, next);
   },
@@ -256,8 +254,8 @@ router.delete(
 
 router.patch(
   ADMIN_ENDPOINTS["UPDATE_PATIENT"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(updateUserSchema),
   async (req, res, next) => {
     await updatePatientStatusController.handle(req, res, next);
@@ -266,8 +264,8 @@ router.patch(
 
 router.patch(
   ADMIN_ENDPOINTS["UPDATE_DOCTOR"],
-  authMiddleware,
-  authMiddleware2,
+  authenticateUser,
+  authorizeUser,
   validate(updateUserSchema),
   async (req, res, next) => {
     await updateDoctorStatusController.handle(req, res, next);

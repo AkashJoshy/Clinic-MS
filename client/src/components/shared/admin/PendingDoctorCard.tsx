@@ -1,12 +1,14 @@
 import type { DoctorInfo, DoctorStatusUpdateDto } from "@/types/doctor";
 import {
   Activity,
+  ArrowRight,
   Building2,
   Check,
   Clock,
   FileText,
   MapPin,
   Phone,
+  UserRound,
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -24,133 +26,193 @@ export const PendingDoctorCard = ({
   onReject,
   setPreviewImage,
 }: PendingDoctorCardProps) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const { doctor, clinic, user, address, doctorClinic } = doctorInfo;
 
-  const submittedDate = String(doctor.createdAt).split("T")[0];
+  const submittedDate = doctor?.createdAt
+    ? new Date(doctor.createdAt).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "Not available";
 
+  const handleApprove = () => {
+    if (!doctor?.id) return;
 
+    onApprove({
+      id: doctor.id,
+      reviewMessage: "Your doctor registration has been reviewed and approved.",
+    });
+  };
 
   return (
-    <div className="bg-[#0d1a27] border border-amber-500/20 rounded-2xl p-5 hover:border-amber-500/40 transition-all duration-200">
-      <div className="flex items-start justify-between mb-3">
-        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-          {doctor.profilePicture?.url ? (
-            <img
-              src={doctor.profilePicture.url}
-              alt={doctor.displayName}
-              className="w-full h-full object-cover rounded-xl"
-            />
-          ) : (
-            <Building2 size={18} className="text-amber-400" />
-          )}
-        </div>
+    <div className="group bg-[#0d1a27] border border-amber-500/20 rounded-2xl overflow-hidden hover:border-amber-500/40 transition-all duration-200">
+      <div className="p-5 pb-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {doctor?.profilePicture?.url ? (
+                <img
+                  src={doctor.profilePicture.url}
+                  alt={doctor.displayName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserRound size={20} className="text-amber-400" />
+              )}
+            </div>
 
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400">
-          <Clock size={11} /> {doctor.status}
-        </span>
+            <div className="min-w-0">
+              <h3 className="text-white text-sm font-semibold truncate">
+                {doctor?.displayName ?? "Unnamed Doctor"}
+              </h3>
+
+              <div className="flex items-center gap-1.5 mt-1 text-[#8b9ab0]">
+                <Building2 size={12} />
+
+                <p className="text-xs truncate">
+                  {clinic?.name ?? "Clinic not provided"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold bg-amber-500/15 text-amber-400 flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            Pending
+          </span>
+        </div>
       </div>
 
-      <h3 className="text-white text-sm font-semibold mb-1">
-        {doctor.displayName}
-      </h3>
+      <div className="px-5">
+        <div className="border-t border-white/5" />
 
-      <p className="text-[#8b9ab0] text-xs mb-3">{clinic?.name ?? "--"}</p>
+        <div className="py-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
+              <MapPin size={13} className="text-[#1dc465]" />
+            </div>
 
-      <div className="space-y-1.5 mb-4">
-        <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
-          <MapPin size={12} className="text-[#1dc465]" />
-          {address && address?.city
-            ? `${address.city} ${address.state} ${address.country}`
-            : "-- -- --"}
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+                Location
+              </p>
+
+              <p className="text-xs text-[#c1ccd9] mt-0.5 truncate">
+                {address?.city
+                  ? `${address.city}, ${address.state ?? "-"}, ${address.country ?? "-"}`
+                  : "Location not provided"}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
+              <Activity size={13} className="text-[#1dc465]" />
+            </div>
+
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+                Consultation
+              </p>
+
+              <p className="text-xs text-[#c1ccd9] mt-0.5">
+                {doctorClinic?.type ?? "Not specified"}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
+              <Phone size={13} className="text-[#1dc465]" />
+            </div>
+
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+                Phone
+              </p>
+
+              <p className="text-xs text-[#c1ccd9] mt-0.5">
+                {user?.phone ?? "Not available"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-5 pb-4">
+        <p className="text-[10px] uppercase tracking-wide text-[#607086] mb-2">
+          Documents
         </p>
 
-        <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
-          <Phone size={12} className="text-[#1dc465]" />
-          {user?.phone ?? "--"}
-        </p>
-
-        <p className="flex items-center gap-2 text-[#8b9ab0] text-xs">
-          <Activity size={12} className="text-[#1dc465]" />
-          {doctorClinic?.type ?? "--"}
-        </p>
-
-        <div className="flex items-center gap-3 pt-0.5">
+        <div className="grid grid-cols-3 gap-2">
           <button
-            onClick={() => setPreviewImage(doctor.registrationDoc.url)}
-            className="flex items-center gap-1 text-[#1dc465] text-xs hover:underline"
+            disabled={!doctor?.registrationDoc?.url}
+            onClick={() =>
+              doctor?.registrationDoc?.url &&
+              setPreviewImage(doctor.registrationDoc.url)
+            }
+            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border border-white/8 bg-white/[0.02] text-[#8b9ab0] text-[11px] font-medium hover:border-[#1dc465]/30 hover:text-[#1dc465] hover:bg-[#1dc465]/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <FileText size={11} />
-            <span className="sm:hidden">Reg. Doc</span>
-            <span className="hidden sm:inline">Registration</span>
+            <FileText size={12} />
+            Registration
           </button>
 
-          <span className="text-[#8b9ab0]/40 text-xs">·</span>
-
           <button
-            onClick={() => setPreviewImage(doctor.medicalLicenceDoc.url)}
-            className="flex items-center gap-1 text-[#1dc465] text-xs hover:underline"
+            disabled={!doctor?.medicalLicenceDoc?.url}
+            onClick={() =>
+              doctor?.medicalLicenceDoc?.url &&
+              setPreviewImage(doctor.medicalLicenceDoc.url)
+            }
+            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border border-white/8 bg-white/[0.02] text-[#8b9ab0] text-[11px] font-medium hover:border-[#1dc465]/30 hover:text-[#1dc465] hover:bg-[#1dc465]/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
-            <FileText size={11} />
+            <FileText size={12} />
             Licence
           </button>
 
-          <span className="text-[#8b9ab0]/40 text-xs">·</span>
-
-          <button
-            onClick={() => setPreviewImage(doctor.profilePicture.url)}
-            className="flex items-center gap-1 text-[#1dc465] text-xs hover:underline"
-          >
-            <FileText size={11} />
-            Profile
-          </button>
         </div>
       </div>
 
-      <div className="pt-3 border-t border-white/5">
-      <div className="flex mb-3">
-        <p className="text-[#4a5568] text-[11px]">
-          Submitted: {submittedDate}
-        </p>
+      <div className="px-5 py-4 border-t border-white/5 bg-black/10">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+              Submitted
+            </p>
 
-       <button
-          onClick={() =>
-            navigate(`/admin/doctors/${doctor?.id}`, {
-              state: doctorInfo,
-            })
-          }
-          className="text-xs font-medium text-[#1dc465] hover:underline cursor-pointer ml-auto"
-        >
-          View Details →
-        </button>
+            <p className="text-xs text-[#8b9ab0] mt-0.5">{submittedDate}</p>
+          </div>
 
-      </div>
-
-        <div className="flex gap-2">
           <button
-            onClick={() => {
-              if (doctor.id) {
-                onApprove({
-                  id: doctor.id,
-                  reviewMessage:
-                    "Your doctor registration has been reviewed and approved.",
-                });
-              }
-            }}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl cursor-pointer
-                       bg-[#1dc465]/15 text-[#1dc465] text-xs font-semibold border border-[#1dc465]/25
-                       hover:bg-[#1dc465] hover:text-[#080d14] transition-all duration-150"
+            onClick={() =>
+              navigate(`/admin/doctors/${doctor?.id}`, {
+                state: doctorInfo,
+              })
+            }
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 text-[#c1ccd9] text-xs font-medium hover:bg-white/5 hover:text-white transition-all cursor-pointer"
           >
-            <Check size={13} /> Approve
+            View Details
+            <ArrowRight size={13} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={handleApprove}
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl cursor-pointer bg-[#1dc465]/15 text-[#1dc465] text-xs font-semibold border border-[#1dc465]/25 hover:bg-[#1dc465] hover:text-[#080d14] transition-all duration-150"
+          >
+            <Check size={14} />
+            Approve
           </button>
 
           <button
             onClick={() => onReject(doctorInfo)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl cursor-pointer
-                       bg-rose-500/10 text-rose-400 text-xs font-semibold border border-rose-500/20
-                       hover:bg-rose-500 hover:text-white transition-all duration-150"
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl cursor-pointer bg-rose-500/10 text-rose-400 text-xs font-semibold border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all duration-150"
           >
-            <X size={13} /> Reject
+            <X size={14} />
+            Reject
           </button>
         </div>
       </div>

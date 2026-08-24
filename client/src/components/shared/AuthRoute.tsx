@@ -2,7 +2,7 @@ import { useAuthToken, useAuthStore } from "@/store";
 import type { RouteRoleProps } from "@/types/auth";
 import { Navigate, Outlet } from "react-router-dom";
 import { useEffect, useMemo } from "react";
-import { isTokenExpired } from "./ProtectedRoute";
+import { isAccessTokenExpired } from "./ProtectedRoute";
 
 export const AuthRoute = ({ role }: RouteRoleProps) => {
     let token = useAuthToken(role)
@@ -15,7 +15,7 @@ export const AuthRoute = ({ role }: RouteRoleProps) => {
             admin: "/admin/dashboard"
     }
 
-    const expired = useMemo(() => token ? isTokenExpired(token) : true, [token]);
+    const expired = useMemo(() => token ? isAccessTokenExpired(token) : true, [token]);
 
     useEffect(() => {
         if (token && expired) {

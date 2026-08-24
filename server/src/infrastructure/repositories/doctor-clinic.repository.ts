@@ -3,11 +3,11 @@ import { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
 import DoctorClinicModel, {
   type IDoctorClinic,
 } from "../models/doctor-clinic.model.ts";
-import { MongooseBaseRepository } from "./base/mongoose-base.repository.ts";
+import { BaseRepository } from "./base/base.repository.ts";
 import type { IDoctorClinicRepository } from "../../domain/repositories/IDoctorClinicRepository.ts";
 
-export class MongooseDoctorClinicRepository
-  extends MongooseBaseRepository<DoctorClinic, IDoctorClinic>
+export class DoctorClinicRepository
+  extends BaseRepository<DoctorClinic, IDoctorClinic>
   implements IDoctorClinicRepository
 {
   constructor() {
@@ -87,5 +87,4 @@ export class MongooseDoctorClinicRepository
       ...(entity.updatedAt && { updatedAt: entity.updatedAt }),
     };
   }
-
 }

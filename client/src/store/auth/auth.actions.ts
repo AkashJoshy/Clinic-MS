@@ -1,5 +1,5 @@
 import type { User } from "@/types/user";
-import type { Tokens } from "@/types/auth";
+import type { TokenPair, Tokens } from "@/types/auth";
 import type { PatientProfile } from "@/types/patient";
 import type { DoctorInfo } from "@/types/doctor";
 
@@ -11,6 +11,7 @@ export interface AuthActions {
   setLoading: (isLoading: boolean) => void;
   setUser: (user: User) => void;
   setDoctor: (doctor: DoctorInfo) => void
+  updateToken: (accessToken: string, role: keyof Tokens) => void,
   updateUser: (partial: Partial<User>) => void;
   updateDoctor: (doctor: Partial<DoctorInfo>) => void
   updatePatients: (patient: PatientProfile) => void;

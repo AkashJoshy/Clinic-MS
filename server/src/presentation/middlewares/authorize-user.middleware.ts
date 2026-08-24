@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ResponseStatusCode } from "../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../domain/constants/response.constant.ts";
 
-export const authMiddleware2 = async (
+export const authorizeUser = async (
   req: Request,
   res: Response,
   next: NextFunction,

@@ -17,12 +17,23 @@ export class PatientGoogleLoginController {
 
       const result = await this._googleLogin.execute(req.user as any);
 
-      const { accessToken, role, user, message } = result;
+      const { tokenPair, role, user, message } = result;
       const clientUrl = process.env.CLIENT_ORIGIN || "http://localhost:5173";
 
-      if (accessToken == "" || accessToken == " ") {
+      const { access, refresh } = tokenPair;
+
+      const accessToken = access;
+
+      if (!user || accessToken == "" || accessToken == " " || refresh === "") {
         return res.redirect(`${clientUrl}/login?message=${message}`);
       }
+
+      res.cookie("refreshToken", refresh, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
       return res.redirect(
         `${clientUrl}/login?token=${accessToken}&role=${role}&user=${JSON.stringify(user)}`,

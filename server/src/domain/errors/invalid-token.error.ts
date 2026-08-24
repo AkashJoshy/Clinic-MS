@@ -1,7 +1,8 @@
+import ErrorCode from "../enums/error-code.enums.ts";
 import { AppError } from "./app.errors.js";
 
 export class InvalidTokenError extends AppError {
-  constructor() {
-    super("Invalid token", "INVALID_TOKEN", 401);
+  constructor(message = "Invalid token") {
+    super(message, ErrorCode.INVALID_TOKEN, 401);
   }
 }

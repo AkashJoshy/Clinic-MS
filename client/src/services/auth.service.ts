@@ -1,7 +1,13 @@
 import api from "@/api/interceptors";
-import type { ForgotPasswordDto, GoogleAuthMode, LoginDto, ResendOtpDto, ResetPasswordDto } from "@/types/auth";
+import type {
+  ForgotPasswordDto,
+  GoogleAuthMode,
+  LoginDto,
+  ResendOtpDto,
+  ResetPasswordDto,
+} from "@/types/auth";
 import type { RegisterUserDto } from "@/types/auth";
-import type { VerifyOtpDto } from "@/types/auth"; 
+import type { VerifyOtpDto } from "@/types/auth";
 import { ENDPOINTS } from "./endpoints";
 
 export const registerUser = async (data: RegisterUserDto) => {
@@ -44,7 +50,7 @@ export const verifyEmail = async (data: VerifyOtpDto) => {
     if (error.response) {
       throw error.response.data;
     }
-    
+
     return {
       success: false,
       message: error.message || "Network Error",
@@ -60,32 +66,31 @@ export const resendOtp = async (data: ResendOtpDto) => {
     if (error.response) {
       throw error.response.data;
     }
-    
+
     return {
       success: false,
       message: error.message || "Network Error",
-    };  
+    };
   }
 };
 
 export const loginAdmin = async (data: LoginDto) => {
   try {
     const res = await api.post(ENDPOINTS.AUTH.ADMIN_LOGIN, data, {
-      headers: { 'Content-Type': 'application/json' }
-    })
-    return res.data
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
   } catch (error: any) {
     if (error.response) {
       throw error.response.data;
     }
-    
+
     return {
       success: false,
       message: error.message || "Network Error",
-    };  
-    
+    };
   }
-}
+};
 
 export const forgotPassword = async (data: ForgotPasswordDto) => {
   try {
@@ -180,24 +185,54 @@ export const resetAdminPassword = async (data: ResetPasswordDto) => {
 export const loginDoctor = async (data: LoginDto) => {
   try {
     const res = await api.post(ENDPOINTS.AUTH.DOCTOR_LOGIN, data, {
-      headers: { 'Content-Type': 'application/json' }
-    })
-    return res.data
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
   } catch (error: any) {
     if (error.response) {
       throw error.response.data;
     }
-    
+
     return {
       success: false,
       message: error.message || "Network Error",
-    };  
-    
+    };
   }
-}
+};
+
+export const refreshAccessToken = async () => {
+  try {
+    const res = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN);
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    const res = await api.post(ENDPOINTS.AUTH.LOGOUT);
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
 
 export const initiateGoogleAuth = (mode: GoogleAuthMode) => {
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
   window.location.href = `${apiUrl}${ENDPOINTS.AUTH.GOOGLE}?mode=${mode}`;
 };
-

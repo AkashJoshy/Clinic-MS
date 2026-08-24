@@ -50,7 +50,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+      <div className="bg-white rounded-[7px] shadow-sm border border-gray-100 p-6 md:p-8">
         <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
           <h3 className="text-xl font-semibold text-gray-900">
             Personal Details
@@ -85,7 +85,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                   {
                     position: "bottom-right",
                   },
-                )
+                );
               }
             } catch (e: any) {
               toast.error("Failed to update profile. Please try again.");
@@ -97,55 +97,82 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
             <div className="md:col-span-2">
               <label className={labelClasses}>Full Name</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+
+              {isEditing ? (
+                <>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="h-5 w-5 text-gray-400" />
+                    </div>
+
+                    <input
+                      type="text"
+                      className={`${inputClasses} pl-10`}
+                      placeholder="Enter your full name"
+                      {...register("displayName")}
+                    />
+                  </div>
+
+                  {errors.displayName && (
+                    <p className={errorText}>{errors.displayName.message}</p>
+                  )}
+                </>
+              ) : (
+                <div className={displayClasses}>
+                  {patientProfile.displayName || "Not set"}
                 </div>
-                <input
-                  type="text"
-                  readOnly={!isEditing}
-                  className={`${inputClasses} pl-10`}
-                  placeholder="Enter your full name"
-                  {...register("displayName")}
-                />
-              </div>
-              {errors.displayName && (
-                <p className={errorText}>{errors.displayName.message}</p>
               )}
             </div>
 
             <div>
               <label className={labelClasses}>Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+
+              {isEditing ? (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
+
+                  <input
+                    type="email"
+                    disabled
+                    value={patientProfile.email}
+                    className={`${inputClasses} pl-10 cursor-not-allowed`}
+                  />
                 </div>
-                <input
-                  type="email"
-                  disabled
-                  value={patientProfile.email}
-                  readOnly={!isEditing}
-                  className={`${inputClasses} pl-10 cursor-not-allowed`}
-                />
-              </div>
+              ) : (
+                <div className={displayClasses}>
+                  {patientProfile.email || "Not set"}
+                </div>
+              )}
             </div>
 
             <div>
               <label className={labelClasses}>Phone Number</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400" />
+
+              {isEditing ? (
+                <>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Phone className="h-5 w-5 text-gray-400" />
+                    </div>
+
+                    <input
+                      type="tel"
+                      disabled
+                      value={patientProfile.phone}
+                      className={`${inputClasses} pl-10 cursor-not-allowed`}
+                    />
+                  </div>
+
+                  {errors.phone && (
+                    <p className={errorText}>{errors.phone.message}</p>
+                  )}
+                </>
+              ) : (
+                <div className={displayClasses}>
+                  {patientProfile.phone || "Not set"}
                 </div>
-                <input
-                  disabled
-                  value={patientProfile.phone}
-                  type="tel"
-                  readOnly={!isEditing}
-                  className={`${inputClasses} pl-10 cursor-not-allowed`}
-                />
-              </div>
-              {errors.phone && (
-                <p className={errorText}>{errors.phone.message}</p>
               )}
             </div>
 

@@ -10,6 +10,7 @@ import { AppError } from "../../../../domain/errors/app.errors.js";
 import type { ForgotRolePasswordDto } from "../../../dto/auth.dto.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IForgotPasswordUseCase } from "../../../repositories/auth/IForgotPasswordUseCase.ts";
+import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 
 export class ForgotAdminPasswordUseCase implements IForgotPasswordUseCase {
   constructor(
@@ -23,19 +24,21 @@ export class ForgotAdminPasswordUseCase implements IForgotPasswordUseCase {
     const user = await this._userRepository.findByEmail(email);
 
     if (!user || !user.id) {
-      throw new NotFoundError("User");
+      throw new NotFoundError(
+        "No account is registered with this email address",
+      );
     }
 
-    if (user.role !== "ADMIN") {
-      throw new AppError("Access Denied");
-    }
-
-    if (user.role != role) {
-      throw new AppError("Access Denied");
+    if (user.role !== "ADMIN" || user.role !== role) {
+      throw new ForbiddenError("This email is not registered");
     }
 
     if (!user.isActive) {
-      throw new AppError("User is inactive or blocked");
+      throw new ForbiddenError("Account is currently inactive");
+    }
+
+    if (user.isBlocked) {
+      throw new ForbiddenError("Account is currently blocked");
     }
 
     const resetToken = generateVerificationToken();

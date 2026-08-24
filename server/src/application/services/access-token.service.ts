@@ -1,16 +1,18 @@
 import { InternalServerError } from "../../domain/errors/internal-server.error.ts";
 import type { ITokenService } from "../../domain/services/TokenService.ts";
-import type { PayloadDTO, UserDto } from "../dto/auth.dto.ts";
+import type { AccessPayloadDto, AccessTokenPayloadDto } from "../dto/auth.dto.ts";
 
-export class TokenGenerationService {
+
+export class AccessTokenGenerationService {
   constructor(private _tokenService: ITokenService) {}
-  async generate(user: UserDto): Promise<string | void> {
-    const payload = {
+  async generate(user: AccessPayloadDto): Promise<string | void> {
+    const payload: AccessTokenPayloadDto = {
       userId: user.id!,
       role: user.role,
+      tokenType: "access"
     };
 
-    const accessToken = this._tokenService.generateToken(payload);
+    const accessToken = this._tokenService.generateAccessToken(payload);
 
     if (!accessToken) {
       throw new InternalServerError(

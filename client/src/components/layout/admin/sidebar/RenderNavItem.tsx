@@ -6,6 +6,8 @@ import { useAuthStore } from "@/store";
 import toast from "react-hot-toast";
 import LogoutAlert from "../../LogoutAlert";
 import type { Tokens } from "@/types/auth";
+import { logoutUser } from "@/services/auth.service";
+import { useAuthMutate } from "@/hooks/useAuthMutate";
 
 interface Props {
   item: NavItem;
@@ -24,6 +26,17 @@ const RenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [logoutData, setLogoutData] = useState<LogoutData | null>(null);
   const logout = useAuthStore((s) => s.logout);
+  const { mutate, isPending } = useAuthMutate(logoutUser, {
+    onSuccess: () => {
+      if (logoutData) {
+        setShowLogoutAlert(false);
+        logout(logoutData.logout);
+        toast.success("Logged out");
+        navigate(logoutData.path);
+      }
+    },
+  });
+
   const baseClasses = cn(
     "group relative flex items-center px-3 py-2.5 rounded-xl",
     collapsed ? "justify-center" : "justify-center lg:justify-start",
@@ -75,12 +88,7 @@ const RenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   );
 
   const handleLogoutConfirm = () => {
-    if (logoutData) {
-      setShowLogoutAlert(false);
-      logout(logoutData.logout);
-      toast.success("Logged out");
-      navigate(logoutData.path);
-    }
+    mutate({});
   };
 
   if (item.onClick) {

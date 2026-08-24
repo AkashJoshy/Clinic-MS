@@ -24,3 +24,13 @@ export type AuthProvider = "LOCAL" | "GOOGLE";
 export type Role = "PATIENT" | "ADMIN" | "DOCTOR";
 export type ModeRoleRef = "Patient" | "Admin" | "Doctor" | "Clinic"
 export type EntityType = "Doctor"
+
+export interface CreateRefreshSessionProps {
+  id: string | null;
+  userId: string;
+  tokenId: string;
+  expiresAt: Date;
+  revoked: boolean;
+  createdAt: Date |  null;
+  updatedAt: Date | null;
+}

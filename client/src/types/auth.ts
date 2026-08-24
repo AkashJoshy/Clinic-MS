@@ -18,10 +18,15 @@ export interface LoginDto {
 
 export interface RegisterUserDto extends RegisterUser {}
 
+export interface TokenPair {
+  access: string;
+  refresh: string;
+}
+
 export interface Tokens {
   patient: string | null;
   admin: string | null;
-  doctor:  string | null
+  doctor: string | null
 }
 
 export interface AuthStateDTO {

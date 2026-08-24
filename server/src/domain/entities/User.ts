@@ -1,4 +1,4 @@
-import type { AuthProvider, CreateUserProps } from "../types/user.types.js";
+import type { AuthProvider, CreateUserProps, Role } from "../types/user.types.js";
 import { Email } from "../value-objects/Email.js";
 
 class User {
@@ -8,7 +8,7 @@ class User {
     public phone: string,
     public email: string,
     public password: string,
-    public role: string,
+    public role: Role,
     public provider: AuthProvider,
     public isEmailVerified: boolean = false,
     public isBlocked: boolean = false,

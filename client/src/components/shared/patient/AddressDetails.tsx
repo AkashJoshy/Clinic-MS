@@ -4,15 +4,6 @@ import { Building2, Globe, Hash, Home, Info, MapPin, Pencil } from "lucide-react
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-
-import {
-  City,
-  Country,
-  State,
-  type ICity,
-  type ICountry,
-  type IState,
-} from "country-state-city";
 import { addressSchema, type AddressForm } from "@/schemas/patient/address.schema";
 import { emptyAddress } from "@/constants/patient.constant";
 import { useLocationOptions } from "@/hooks/useLocationOptions";
@@ -43,7 +34,6 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
     handleSubmit,
     register,
     watch,
-    setValue,
     reset,
     formState: { errors },
   } = useForm<AddressForm>({
@@ -78,7 +68,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   const errorText = "text-xs text-red-600 mt-1";
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+    <div className="bg-white rounded-[8px] shadow-sm border border-gray-100 p-6 md:p-8">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
           <MapPin className="w-5 h-5 text-blue-500" />
@@ -148,7 +138,6 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                 </div>
                 <select
                   {...register("country")}
-                  // onChange={handleCountryChange}
                   className={`${inputClasses} pl-10 appearance-none`}
                 >
                   <option value="">Select Country</option>
@@ -172,7 +161,6 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
                 </div>
                 <select
                   {...register("state")}
-                  // onChange={handleStateChange}
                   disabled={!country}
                   className={`${
                     !country ? disabledInputClasses : inputClasses

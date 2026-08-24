@@ -5,8 +5,10 @@ import { LOGIN_FORM_INPUTS } from "@/data/authFormInputs.data";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthMutate } from "@/hooks/useAuthMutate";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { loginFormProps } from "@/types/auth";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
   const navigate = useNavigate();
@@ -28,13 +30,29 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
       ? "/forgot-password"
       : role === "ADMIN"
         ? "/admin/forgot-password"
-          : "/doctor/forgot-password";
+        : "/doctor/forgot-password";
 
   const { isPending, mutateAsync } = useAuthMutate(fn, {
     onSuccess: () => {
       navigate(to);
     },
   });
+
+  const [searchParams] = useSearchParams();
+  const message = searchParams.get("message");
+  useEffect(() => {
+    if (message) {
+      toast.error(message);
+      navigate(window.location.pathname, { replace: true });
+      if (
+        message === "Account not found. Redirecting to signup..." ||
+        message.includes("signup")
+      ) {
+        navigate("/admin");
+      }
+    }
+   
+  }, [message]);
 
   return (
     <div>
