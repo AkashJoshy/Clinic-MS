@@ -21,6 +21,7 @@ import { PendingDoctorCard } from "@/components/shared/admin/PendingDoctorCard";
 import type { DepartmentData } from "@/types/admin";
 import { getAllDepartments } from "@/services/common.service";
 import { useMutate } from "@/hooks/useMutate";
+import { AllDoctorCardSkeleton } from "@/components/shared/admin/AllDoctorCardSkeleton";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -28,6 +29,7 @@ type Tab = "all" | "pending";
 
 export default function DoctorManagementPage() {
   const [activeTab, setActiveTab] = useState<Tab>("all");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [doctorDetails, setDoctorDetails] = useState<DoctorInfo[]>([]);
   const [rejectTarget, setRejectTarget] = useState<DoctorInfo | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -39,10 +41,14 @@ export default function DoctorManagementPage() {
 
   const fetchDoctors = async () => {
     try {
+      setIsLoading(true);
       const getDoctors = await getAllDoctors();
       const data = getDoctors.data;
       if (data) {
+        // setTimeout(() => {
         setDoctorDetails(data);
+        setIsLoading(false);
+        // }, 30000);
       } else {
         setDoctorDetails([]);
       }
@@ -288,7 +294,13 @@ export default function DoctorManagementPage() {
 
       {activeTab === "all" && (
         <>
-          {paginatedAll.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <AllDoctorCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : paginatedAll.length === 0 ? (
             <AllApprovals icon={Stethoscope} name="Doctors" />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -297,6 +309,7 @@ export default function DoctorManagementPage() {
               ))}
             </div>
           )}
+
           {allTotalPages >= 1 && (
             <Pagination
               currentPage={allPage}

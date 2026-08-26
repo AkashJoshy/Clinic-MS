@@ -41,18 +41,15 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
   const doctorStatus = doctor?.status;
 
   const handleBlockToggle = () => {
-    // TODO: Add block/unblock API call
     console.log(isBlocked ? "Unblock doctor" : "Block doctor", doctor?.id);
   };
 
   return (
     <div className="group bg-[#0d1a27] border border-white/8 rounded-2xl overflow-hidden hover:border-[#1dc465]/30 transition-all duration-200">
-      {/* Header */}
       <div className="p-5 pb-4">
         <div className="flex items-start justify-between gap-4">
-          {/* Doctor Profile */}
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-xl bg-[#1dc465]/10 border border-[#1dc465]/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div className="w-12 h-12 rounded-xl bg-[#1dc465]/10 border border-[#1dc465]/20 flex items-center justify-center shrink-0 overflow-hidden">
               {doctor?.profilePicture?.url ? (
                 <img
                   src={doctor.profilePicture.url}
@@ -78,7 +75,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
             </div>
           </div>
 
-          {/* Account Status */}
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold flex-shrink-0 ${
               isBlocked || !isActive
@@ -95,8 +91,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
             {accountStatus}
           </span>
         </div>
-
-        {/* Doctor Approval Status */}
         <div className="mt-4">
           <span
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
@@ -118,12 +112,10 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
         </div>
       </div>
 
-      {/* Doctor Information */}
       <div className="px-5">
         <div className="border-t border-white/5" />
 
         <div className="py-4 space-y-3">
-          {/* Location */}
           <div className="flex items-start gap-3">
             <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
               <MapPin size={13} className="text-[#1dc465]" />
@@ -142,7 +134,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
             </div>
           </div>
 
-          {/* Consultation Type */}
           <div className="flex items-start gap-3">
             <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
               <Activity size={13} className="text-[#1dc465]" />
@@ -159,7 +150,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
             </div>
           </div>
 
-          {/* Phone */}
           <div className="flex items-start gap-3">
             <div className="mt-0.5 w-7 h-7 rounded-lg bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
               <Phone size={13} className="text-[#1dc465]" />
@@ -178,10 +168,8 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="px-5 py-3.5 border-t border-white/5 bg-black/10">
         <div className="flex items-center justify-between gap-3">
-          {/* Consultation Fee */}
           <div className="flex-shrink-0">
             <p className="text-[10px] uppercase tracking-wide text-[#607086]">
               Consultation Fee
@@ -203,9 +191,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* View Details */}
             <button
               onClick={() =>
                 navigate(`/admin/doctors/${doctor?.id}`, {
@@ -218,7 +204,6 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
               <ArrowRight size={13} />
             </button>
 
-            {/* Block / Unblock */}
             <button
               onClick={handleBlockToggle}
               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${

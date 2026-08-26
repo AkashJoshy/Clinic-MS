@@ -22,7 +22,7 @@ export const fieldGenerator = <T extends FieldValues>(
   hidden,
   isValue,
   options,
-  isDisabled
+  isDisabled,
 });
 
 export function createLocationFields<T extends FieldValues>(): FormInputs<T>[] {
@@ -79,7 +79,10 @@ export function createDepartmentFields<
       true,
       false,
       undefined,
-      ["ACTIVE", "INACTIVE"],
+      [
+        { label: "Active", value: "ACTIVE" },
+        { label: "Inactive", value: "INACTIVE" },
+      ],
     ),
     fieldGenerator<T>(
       "Mode",
@@ -89,7 +92,11 @@ export function createDepartmentFields<
       true,
       false,
       undefined,
-      ["ONLINE", "OFFLINE", "BOTH"],
+      [
+        { label: "Online", value: "ONLINE" },
+        { label: "Offline", value: "OFFLINE" },
+        { label: "Both", value: "BOTH" },
+      ],
     ),
   ];
 }

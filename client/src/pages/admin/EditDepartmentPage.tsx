@@ -6,15 +6,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateDepartmentSchema } from "@/schemas/admin/department.schema";
 import type {
-  DepartmentFormData,
   DepartmentUpdateFormData,
 } from "@/schemas/admin/admin.schema";
 import {
-  DEPARTMENT_FORM_INPUTS,
   EDIT_DEPARTMENT_FORM_INPUTS,
 } from "@/data/admin.data";
 import {
-  addDepartment,
   editDepartment,
   getDepartment,
 } from "@/services/admin.service";
@@ -22,11 +19,13 @@ import { useMutate } from "@/hooks/useMutate";
 import toast from "react-hot-toast";
 import type { DepartmentData } from "@/types/admin";
 import NotFound from "@/components/shared/NotFound";
+import EditDepartmentSkeleton from "@/components/shared/admin/EditDepartmentSkeleton";
 
 const EditDepartmentPage: React.FC = () => {
   const navigate = useNavigate();
   const param = useParams();
   const [notFound, setNotFound] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [department, setDepartment] = useState<DepartmentData | null>(null);
   const departmentId = param.deptId;
 
@@ -35,7 +34,6 @@ const EditDepartmentPage: React.FC = () => {
     handleSubmit,
     control,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<DepartmentUpdateFormData>({
     resolver: zodResolver(updateDepartmentSchema),
@@ -45,11 +43,14 @@ const EditDepartmentPage: React.FC = () => {
   useEffect(() => {
     if (!departmentId) return;
     const fetchDepartment = async () => {
+      setIsLoading(true)
       try {
         const dept = await getDepartment(departmentId);
         setDepartment(dept.data);
         reset(dept.data);
+        setIsLoading(false)
       } catch (error) {
+        setIsLoading(false)
         setNotFound(true);
       }
     };
@@ -105,7 +106,11 @@ const EditDepartmentPage: React.FC = () => {
             })}
             className="space-y-6"
           >
-            {!notFound ? (
+            {
+            isLoading ? (
+              <EditDepartmentSkeleton />
+            ) :
+            !notFound ? (
               <FormFields<DepartmentUpdateFormData>
                 fields={EDIT_DEPARTMENT_FORM_INPUTS}
                 register={register}

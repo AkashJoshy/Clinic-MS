@@ -5,17 +5,20 @@ import DeleteConfirmationalModal from "@/components/shared/DeleteConfirmationalM
 import { useMutate } from "@/hooks/useMutate";
 import { updateDepartment } from "@/services/admin.service";
 import { getAllDepartments } from "@/services/common.service";
-import { MdRestoreFromTrash } from "react-icons/md";
 import { AllApprovals } from "@/components/shared/admin/AllApprovals";
 import { Pagination } from "@/components/layout/Pagination";
 import type { DepartmentData, SelectedDept } from "@/types/admin";
 import type { UpdateMethods } from "@/types/common";
+import DepartmentCard from "@/components/shared/admin/DepartmentCard";
+import DepartmentCardSkeleton from "@/components/shared/admin/DepartmentCardSkeleton";
+import toast from "react-hot-toast";
 
 const ITEMS_PER_PAGE = 6;
 
 const DepartmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [allDepartments, setAllDepartments] = useState<DepartmentData[]>([]);
   const [isOpen, setOpen] = useState<boolean>(false);
   const [selectedDept, setSelectedDept] = useState<
@@ -24,9 +27,20 @@ const DepartmentPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
 
   const fetchDepartments = async () => {
-    let response = await getAllDepartments();
-    const data = response.data;
-    setAllDepartments(data);
+    try {
+      setIsLoading(true)
+      let response = await getAllDepartments();
+      const data = response.data;
+      if (data) {
+        setAllDepartments(data);
+        setIsLoading(false)
+      } else {
+        setAllDepartments([]);
+        setIsLoading(false)
+      }
+    } catch (error) {
+      toast.error("Error fetching departments")
+    }
   };
 
   useEffect(() => {
@@ -120,113 +134,37 @@ const DepartmentPage: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredDepartments.map((dept) => {
-          const isActive = dept.status === "ACTIVE";
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {filteredDepartments.map((dept) => (
+          <DepartmentCard department={dept} handleDelete={handleDelete} />
+        ))}
+      </div> */}
 
-          return (
-            <div
-              key={dept.id}
-              className="bg-[#0d1a27] border border-white/8 rounded-2xl p-4 hover:border-white/15 transition-all duration-200 flex flex-col gap-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#1dc465]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[#1dc465] font-semibold text-sm">
-                    {dept.name[0].toUpperCase()}
-                  </span>
-                </div>
-                <h3 className="text-white font-semibold text-sm truncate">
-                  {dept.name}
-                </h3>
-              </div>
-
-              <div className="flex items-center gap-2 flex-wrap">
-                <span
-                  className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
-                    isActive
-                      ? "bg-[#1dc465]/10 text-[#1dc465]"
-                      : "bg-rose-500/10 text-rose-400"
-                  }`}
-                >
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      isActive ? "bg-[#1dc465]" : "bg-rose-400"
-                    }`}
-                  />
-                  {dept.status}
-                </span>
-
-                {dept.mode && (
-                  <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full bg-white/5 text-[#8b9ab0]">
-                    {dept.mode}
-                  </span>
-                )}
-              </div>
-
-              <div className="border-t border-white/8" />
-
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#8b9ab0]">Hospital dept.</span>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() =>
-                      navigate(`/admin/department/edit/${dept.id}`)
-                    }
-                    className="p-1.5 rounded-lg text-[#8b9ab0] hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
-                    aria-label="Edit department"
-                  >
-                    <Pencil size={15} className="cursor-pointer" />
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      if (dept.status === "ACTIVE") {
-                        handleDelete({
-                          id: dept.id,
-                          name: dept.name,
-                          status: dept.status,
-                          action: "BLOCK",
-                        });
-                      } else {
-                        handleDelete({
-                          id: dept.id,
-                          name: dept.name,
-                          status: dept.status,
-                          action: "RESTORE",
-                        });
-                      }
-                    }}
-                    className={`p-1.5 rounded-lg text-[#8b9ab0] ${
-                      isActive
-                        ? "hover:text-rose-400 hover:bg-rose-500/10"
-                        : "hover:text-[#1dc465] hover:bg-[#1dc465]/10"
-                    } transition-colors`}
-                    aria-label={
-                      isActive ? "Delete department" : "Restore department"
-                    }
-                  >
-                    {isActive ? (
-                      <Trash size={15} className="cursor-pointer" />
-                    ) : (
-                      <MdRestoreFromTrash
-                        size={15}
-                        className="cursor-pointer"
-                      />
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {filteredDepartments.length === 0 && (
+      {/* {filteredDepartments.length === 0 && (
         <div className="text-center py-12">
           <h1 className="text-[#8b9ab0]">
             <AllApprovals name="Departments" />
           </h1>
+        </div>
+      )} */}
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <DepartmentCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : filteredDepartments.length === 0 ? (
+        <div className="text-center py-12">
+          <h1 className="text-[#8b9ab0]">
+            <AllApprovals name="Departments" />
+          </h1>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredDepartments.map((dept) => (
+            <DepartmentCard department={dept} handleDelete={handleDelete} />
+          ))}
         </div>
       )}
 

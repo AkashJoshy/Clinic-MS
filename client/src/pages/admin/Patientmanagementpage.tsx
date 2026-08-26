@@ -11,11 +11,13 @@ import {
   PatientFilterModal,
   type PatientFilterState,
 } from "@/components/shared/PatientFilterModal";
+import { PatientListItemSkeleton } from "@/components/shared/PatientListItemSkeleton";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function PatientManagementPage() {
   const [patientDetails, setPatientDetails] = useState<PatientBasicInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<PatientFilterState>(
@@ -25,12 +27,15 @@ export default function PatientManagementPage() {
 
   const fetchPatients = async () => {
     try {
+      setIsLoading(true)
       const getPatients = await getAllPatients();
       const data = getPatients.data;
       if (data) {
         setPatientDetails(data);
+        setIsLoading(false)
       } else {
         setPatientDetails([]);
+        setIsLoading(false)
       }
     } catch (error: any) {
       toast.error(error?.message);
@@ -58,7 +63,11 @@ export default function PatientManagementPage() {
     ) {
       return false;
     }
-    const activeStatus = det.user ? det.user.isActive ? "ACTIVE" : "INACTIVE" : "INACTIVE"
+    const activeStatus = det.user
+      ? det.user.isActive
+        ? "ACTIVE"
+        : "INACTIVE"
+      : "INACTIVE";
 
     if (filters.status !== "ALL" && filters.status !== activeStatus)
       return false;
@@ -153,12 +162,24 @@ export default function PatientManagementPage() {
         }}
       />
 
-      {paginatedPatients.length === 0 ? (
+      {isLoading ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <PatientListItemSkeleton key={i} />
+            ))}
+          </div>
+        </>
+      ) : paginatedPatients.length === 0 ? (
         <AllApprovals icon={Users} name="Patients" />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {paginatedPatients.map((det) => (
-            <PatientListItem key={det.patient?.id} patientInfo={det} setPatientInfo={setPatientDetails} />
+            <PatientListItem
+              key={det.patient?.id}
+              patientInfo={det}
+              setPatientInfo={setPatientDetails}
+            />
           ))}
         </div>
       )}

@@ -10,21 +10,35 @@ export class EditDepartmentUseCase implements IEditDepartmentUseCase {
 
   async execute(departmentData: DepartmentDto): Promise<void> {
     const { id, ...data }: DepartmentDto = departmentData;
-    
+
+    const updatedName = data.name.toLowerCase();
+
     if (!id) {
       throw new NotFoundError("Department");
     }
 
-    const isAlreadyExisted = await this._departmentRepository.findByName(data.name)
+    const department = await this._departmentRepository.findById(id);
 
-    if (isAlreadyExisted) {
-        throw new AlreadyExistsError("Department alreday exists")
+    if (!department || !department.id) {
+      throw new AlreadyExistsError("Department not found!");
     }
 
+    const isDeptExists =
+      await this._departmentRepository.findByName(updatedName);
+
+    if (isDeptExists?.id !== department.id) {
+      throw new AlreadyExistsError("Department name already exists");
+    }
+
+    const updatedData = {
+      name: updatedName,
+      mode: data.mode,
+      status: data.status
+    };
 
     const isUpdated = await this._departmentRepository.findByIdAndUpdate(
       id,
-      data,
+      updatedData,
     );
 
     if (!isUpdated) {
