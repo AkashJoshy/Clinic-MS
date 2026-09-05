@@ -61,8 +61,6 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
 
   const onSubmit = async () => {
     const valid = await step3Form.trigger();
-    console.log(`Errors:- `)
-    console.log(step3Form.formState.errors);
 
     if (!valid) return;
     const payload = {
@@ -82,8 +80,6 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
         formData.append(key, String(value ?? ""));
       }
     });
-
-    console.log(formData);
 
     return formData;
   };

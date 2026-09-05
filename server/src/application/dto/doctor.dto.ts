@@ -1,8 +1,8 @@
-import type { Clinic } from "../../domain/entities/Clinic.ts";
-import type { Department } from "../../domain/entities/Department.ts";
-import type { Doctor } from "../../domain/entities/Doctor.ts";
-import type { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
-import type User from "../../domain/entities/User.ts";
+import type { Clinic } from "../../domain/entities/clinic.ts";
+import type { Department } from "../../domain/entities/department.ts";
+import type { Doctor } from "../../domain/entities/doctor.ts";
+import type { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
+import type User from "../../domain/entities/user.ts";
 import type { DoctorStatus } from "../../domain/types/doctor.types.ts";
 import type {
   Session,
@@ -25,8 +25,8 @@ export interface ClinicDetails {
 }
 
 export interface DoctorStatusUpdateDto {
-  id: string,
-  reviewMessage: string
+  id: string;
+  reviewMessage: string;
 }
 
 export type DoctorInfo = {
@@ -56,7 +56,11 @@ export type DoctorInfo = {
   } & {
     profilePicture: PlainUrl;
   };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & { clinicAddress: BaseAddress | null } | null;
+  clinic:
+    | (Pick<Clinic, "id" | "name" | "about" | "location"> & {
+        clinicAddress: BaseAddress | null;
+      })
+    | null;
   doctorClinic: Pick<
     DoctorClinic,
     | "id"
@@ -66,15 +70,15 @@ export type DoctorInfo = {
     | "slotDuration"
     | "timeZone"
     | "isActive"
-    | "updatedAt" 
+    | "updatedAt"
   > | null;
 } & {
   address: BaseAddress | null;
 } & {
-  department: Pick<Department, "id" | "name"> | null
-}
+  department: Pick<Department, "id" | "name"> | null;
+};
 
-export type DoctorProfileInfo = Omit<DoctorInfo, "user">
+export type DoctorProfileInfo = Omit<DoctorInfo, "user">;
 
 export interface DoctorRegisterDto {
   fullName: string;
@@ -120,7 +124,7 @@ export type DoctorProffesionalDetailsDto = Pick<
   | "specialization"
   | "licenceNumber"
   | "updatedAt"
-> & { userId: string;}
+> & { userId: string };
 
 export type DoctorConsultationDetailsDto = Pick<
   DoctorClinic,
@@ -132,4 +136,4 @@ export type DoctorConsultationDetailsDto = Pick<
   | "type"
   | "slotDuration"
   | "timeZone"
-> & { userId: string, updatedAt: Date | null };
+> & { userId: string; updatedAt: Date | null };

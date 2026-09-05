@@ -1,20 +1,20 @@
-import { Address } from "../../../../domain/entities/Address.ts";
-import { Clinic } from "../../../../domain/entities/Clinic.ts";
-import { Doctor } from "../../../../domain/entities/Doctor.ts";
-import { DoctorClinic } from "../../../../domain/entities/DoctorClinic.ts";
+import { Address } from "../../../../domain/entities/address.ts";
+import { Clinic } from "../../../../domain/entities/clinic.ts";
+import { Doctor } from "../../../../domain/entities/doctor.ts";
+import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
 import { ValidationError } from "../../../../domain/errors/validation.error.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { ModeRoleRef } from "../../../../domain/types/user.types.ts";
 import { uploadToCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorRegisterDto } from "../../../dto/doctor.dto.ts";
-import type { IUserCreationService } from "../../../IService/IUserCreationService.ts";
-import type { IDoctorRegisterUseCase } from "../../../repositories/doctor/IDoctorRegisterUseCase.ts";
+import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
+import type { IDoctorRegisterUseCase } from "../../../repositories/doctor/i-doctor-register.usecase.ts";
 
 export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
   constructor(

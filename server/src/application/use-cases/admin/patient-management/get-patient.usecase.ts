@@ -1,10 +1,10 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { PatientInfoDto } from "../../../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../../../IService/IPatientDetailsService.ts";
-import type { IGetPatientUseCase } from "../../../repositories/admin/IGetPatientUseCase.ts";
+import type { IPatientDetailsService } from "../../../IService/i-patient-details.service.ts";
+import type { IGetPatientUseCase } from "../../../repositories/admin/i-get-patient.usecase.ts";
 
 export class GetPatientUseCase implements IGetPatientUseCase {
   constructor(

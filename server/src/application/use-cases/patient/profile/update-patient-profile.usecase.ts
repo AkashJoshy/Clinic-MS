@@ -1,11 +1,11 @@
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type {
   PatientUpdateFields,
   UpdatePatientDto,
 } from "../../../dto/patient.dto.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
-import type { IUpdatePatientProfileUseCase } from "../../../repositories/patient/IUpdatePatientProfile.UseCase.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import type { IUpdatePatientProfileUseCase } from "../../../repositories/patient/i-update-patient-profile.usecase.ts";
 
 export class UpdatePatientProfileUseCase implements IUpdatePatientProfileUseCase {
   constructor(

@@ -1,5 +1,6 @@
 import { formatDateDisplay, normalizeGender } from "@/helpers/profile.helper";
 import { usePatientProfile } from "@/hooks/usePatientProfile";
+import { useAuthStore } from "@/store";
 import type { PersonalDetailsProps } from "@/types/patient";
 import { Info, Mail, Pencil, Phone, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
   setOriginalProfile,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const user = useAuthStore(state => state.user)
 
   const {
     addAllergy,
@@ -47,6 +49,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
   }, [patientProfile]);
 
   const errorText = "text-xs text-red-600 mt-1";
+
 
   return (
     <>
@@ -159,7 +162,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 
                     <input
                       type="tel"
-                      disabled
+                      disabled={patientProfile.phone !== ""}
                       value={patientProfile.phone}
                       className={`${inputClasses} pl-10 cursor-not-allowed`}
                     />
@@ -182,6 +185,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                 <input
                   {...register("dateOfBirth")}
                   type="date"
+                  max={new Date().toISOString().split("T")[0]}
                   className={inputClasses}
                 />
               ) : (

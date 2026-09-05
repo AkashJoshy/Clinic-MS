@@ -1,5 +1,5 @@
-import type { Doctor } from "../../domain/entities/Doctor.ts";
-import type User from "../../domain/entities/User.ts";
+import type { Doctor } from "../../domain/entities/doctor.ts";
+import type User from "../../domain/entities/user.ts";
 import type {
   ApprovalStatus,
   DayOfWeek,
@@ -34,8 +34,8 @@ export type GetDepartmentDto = Omit<CreateDepartmentDto, "mode" | "name"> & {
 };
 
 export type DepartmentDto = CreateDepartmentDto & {
-  id: string | null
-}
+  id: string | null;
+};
 
 export interface UpdateDoctorStatusDTO {
   doctorId: string;
@@ -56,11 +56,9 @@ export type UserStatusDto = {
   userId: string;
   isActive: boolean;
   isBlocked: boolean;
-} & MessageDto
-
-
+} & MessageDto;
 
 export type DepartmentStatusDto = {
   departmentId: string;
   status: EntityStatus;
-} & MessageDto
+} & MessageDto;

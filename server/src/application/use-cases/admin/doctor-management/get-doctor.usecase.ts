@@ -1,15 +1,15 @@
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
-import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
+import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorInfo } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../IService/IDoctorDetailsService.ts";
-import type { IGetDoctorUseCase } from "../../../repositories/admin/IGetDoctorUseCase.ts";
+import type { IDoctorDetailsService } from "../../../IService/i-doctor-details.service.ts";
+import type { IGetDoctorUseCase } from "../../../repositories/admin/i-get-doctor.usecase.ts";
 
 export class GetDoctorUseCase implements IGetDoctorUseCase {
-  constructor( 
+  constructor(
     private _doctorRepository: IDoctorRepository,
     private _userRepository: IUserRepository,
     private _doctorClinicRepository: IDoctorClinicRepository,
@@ -57,7 +57,7 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
             email: user.email,
             phone: user.phone,
             isActive: user.isActive,
-            isBlocked: user.isBlocked
+            isBlocked: user.isBlocked,
           }
         : null,
 

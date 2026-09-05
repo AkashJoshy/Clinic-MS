@@ -1,4 +1,4 @@
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type {
   AccessPayloadDto,
   GoogleLoginDTO,
@@ -6,9 +6,9 @@ import type {
   RefreshPayloadDto,
   TokenPair,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/IAccessTokenGenerationService.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/IRefreshTokenGenerationService.ts";
-import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/IPatientGoogleAuthUsecase.ts";
+import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
+import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/i-patient-google-auth.usecase.ts";
 
 export class PatientGoogleLoginUseCase implements IPatientGoogleAuthUseCase {
   constructor(
@@ -22,8 +22,8 @@ export class PatientGoogleLoginUseCase implements IPatientGoogleAuthUseCase {
 
     const tokenPair: TokenPair = {
       access: "",
-      refresh: ""
-    }
+      refresh: "",
+    };
 
     if (!isUserExisted) {
       return {
@@ -36,21 +36,21 @@ export class PatientGoogleLoginUseCase implements IPatientGoogleAuthUseCase {
 
     const accessPayload: AccessPayloadDto = {
       id: isUserExisted.id,
-      role: isUserExisted.role
-    }
+      role: isUserExisted.role,
+    };
     const refreshPayload: RefreshPayloadDto = {
       id: isUserExisted.id,
-      tokenId: ""
-    }
+      tokenId: "",
+    };
 
     const accessToken =
-      await this._accessGenerationService.generate(accessPayload)
-      
-      const refreshToken = 
-      await this._refreshGenerationService.generate(refreshPayload)
+      await this._accessGenerationService.generate(accessPayload);
 
-      tokenPair.access = accessToken!
-      tokenPair.refresh = refreshToken!
+    const refreshToken =
+      await this._refreshGenerationService.generate(refreshPayload);
+
+    tokenPair.access = accessToken!;
+    tokenPair.refresh = refreshToken!;
 
     const { password, ...updatedUser } = isUserExisted;
 

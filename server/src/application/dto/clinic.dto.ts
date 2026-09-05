@@ -1,5 +1,8 @@
-import type { Clinic } from "../../domain/entities/Clinic.ts";
-import type { ImageData, ServiceMode } from "../../domain/types/shared.types.ts";
+import type { Clinic } from "../../domain/entities/clinic.ts";
+import type {
+  ImageData,
+  ServiceMode,
+} from "../../domain/types/shared.types.ts";
 import type { BaseAddress } from "./patient.dto.ts";
 import type {
   ClinicDoctorDetails,
@@ -45,17 +48,15 @@ type BaseClinic = Omit<
   | "medicalLicenceUrl"
   | "registrationDocUrl"
 > & {
-  logoUrl: string
+  logoUrl: string;
 } & {
-  idProofUrl: string
+  idProofUrl: string;
 } & {
-  medicalLicenceUrl: string
+  medicalLicenceUrl: string;
 } & {
-  registrationDocUrl: string
+  registrationDocUrl: string;
 };
 
-
-export type ClinicProfile = BaseClinic &  {
+export type ClinicProfile = BaseClinic & {
   address: BaseAddress | null;
-}
-
+};

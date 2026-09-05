@@ -2,7 +2,7 @@ import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.ts";
 import { LockedError } from "../../../../domain/errors/locked.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import type {
   AccessPayloadDto,
@@ -10,11 +10,11 @@ import type {
   LoginResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/IAccessTokenGenerationService.ts";
-import type { IEmailVerificationService } from "../../../IService/IEmailVerificationService.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/IRefreshTokenGenerationService.ts";
-import type { IUserExistenceService } from "../../../IService/IUserExistenceService.ts";
-import type { ILoginUseCase } from "../../../repositories/auth/ILoginUseCase.ts";
+import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
+import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
+import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
 
 export class DoctorLoginUseCase implements ILoginUseCase {
   constructor(

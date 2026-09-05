@@ -1,14 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import type { IUpdateProfilePictureUseCase } from "../../../application/repositories/patient/IUpdateProfilePicture.UseCase.ts";
+import type { IUpdateProfilePictureUseCase } from "../../../application/repositories/patient/i-update-profile-picture.usecase.ts";
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
-import type User from "../../../domain/entities/User.ts";
+import type User from "../../../domain/entities/user.ts";
 
 export class UpdatePatientProfilePictureController {
-  constructor(
-    private _updatePatientPicture: IUpdateProfilePictureUseCase,
-  ) {}
+  constructor(private _updatePatientPicture: IUpdateProfilePictureUseCase) {}
 
   async handle(req: Request, res: Response, next: NextFunction) {
     try {

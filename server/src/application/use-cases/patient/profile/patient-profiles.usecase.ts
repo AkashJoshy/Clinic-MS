@@ -1,7 +1,7 @@
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { PatientProfile } from "../../../dto/patient.dto.ts";
-import type { IPatientProfilesUseCase } from "../../../repositories/patient/IPatientProfilesUseCase.ts";
+import type { IPatientProfilesUseCase } from "../../../repositories/patient/i-patient-profiles.usecase.ts";
 
 export class PatientProfilesUseCase implements IPatientProfilesUseCase {
   constructor(
@@ -11,19 +11,21 @@ export class PatientProfilesUseCase implements IPatientProfilesUseCase {
 
   async execute(userId: string): Promise<PatientProfile[]> {
     const patients = await this._patientRepository.findAllByUserId(userId);
-    
+
     if (!patients) return [];
 
-    const updatedPatients = patients.map(patient => {
+    const updatedPatients = patients.map((patient) => {
       return {
         ...patient,
         imageUrl: {
-          url: patient.imageUrl.url
-        }
-      }
-    })
+          url: patient.imageUrl.url,
+        },
+      };
+    });
 
-    const patientIds = updatedPatients.map((p) => p.id).filter((p) => p !== null);
+    const patientIds = updatedPatients
+      .map((p) => p.id)
+      .filter((p) => p !== null);
     const addressess = await this._addressRepository.findByIds(
       "ownerId",
       patientIds,
@@ -32,24 +34,22 @@ export class PatientProfilesUseCase implements IPatientProfilesUseCase {
     const addressMap = new Map(addressess.map((a) => [a.ownerId, a]));
 
     const response: PatientProfile[] = updatedPatients.map((patient) => {
-      const address = (()=> {
+      const address = (() => {
         const addr = patient && patient.id ? addressMap.get(patient.id) : null;
 
-        if (!addr) return null
+        if (!addr) return null;
 
-        const {
-          createdAt, updatedAt, ownerType, ...rest
-        } = addr
+        const { createdAt, updatedAt, ownerType, ...rest } = addr;
 
-        return rest
-      })()
+        return rest;
+      })();
 
       return {
         address,
-        patient
-      }
-    })
-    
+        patient,
+      };
+    });
+
     return response;
   }
 }

@@ -107,9 +107,9 @@ export const forgotPassword = async (data: ForgotPasswordDto) => {
   }
 };
 
-export const forgotClinicPassword = async (data: ForgotPasswordDto) => {
+export const forgotDoctorPassword = async (data: ForgotPasswordDto) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.FORGOT_CLINIC_PASSWORD, data);
+    const res = await api.post(ENDPOINTS.AUTH.FORGOT_DOCTOR_PASSWORD, data);
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -154,7 +154,7 @@ export const resetPassword = async (data: ResetPasswordDto) => {
 
 export const resetClinicPassword = async (data: ResetPasswordDto) => {
   try {
-    const res = await api.patch(ENDPOINTS.AUTH.RESET_CLINIC_PASSWORD, data);
+    const res = await api.patch(ENDPOINTS.AUTH.RESET_DOCTOR_PASSWORD, data);
     return res.data;
   } catch (error: any) {
     if (error.response) {

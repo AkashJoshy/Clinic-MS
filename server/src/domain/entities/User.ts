@@ -1,5 +1,9 @@
-import type { AuthProvider, CreateUserProps, Role } from "../types/user.types.js";
-import { Email } from "../value-objects/Email.js";
+import type {
+  AuthProvider,
+  CreateUserProps,
+  Role,
+} from "../types/user.types.ts";
+import { Email } from "../value-objects/Email.ts";
 
 class User {
   private constructor(
@@ -21,41 +25,38 @@ class User {
   static create(data: Partial<CreateUserProps>): User {
     return new User(
       data.id ?? null,
-      data.fullName ?? '',
-      data.phone ?? '',
+      data.fullName ?? "",
+      data.phone ?? "",
       Email.create(data.email!).getValue(),
-      data.password ?? '',
+      data.password ?? "",
       data.role!,
-      data.provider ?? 'LOCAL',
+      data.provider ?? "LOCAL",
       data.isEmailVerified ?? false,
       data.isBlocked ?? false,
       data.isActive ?? true,
       data.isTwoFactorenabled ?? false,
       data.createdAt ?? null,
       data.updatedAt ?? null,
-    )
+    );
   }
 
   block() {
-    if (this.isBlocked){
-      throw new Error("User is alreday blocked")
+    if (this.isBlocked) {
+      throw new Error("User is alreday blocked");
     }
 
-    this.isBlocked = true
-    this.isActive = false
+    this.isBlocked = true;
+    this.isActive = false;
   }
 
   unblock() {
-    if (!this.isBlocked){
-      throw new Error("User is alreday unblocked")
+    if (!this.isBlocked) {
+      throw new Error("User is alreday unblocked");
     }
 
-    this.isBlocked = false
-    this.isActive = true
+    this.isBlocked = false;
+    this.isActive = true;
   }
-
-
-
 }
 
 export default User;

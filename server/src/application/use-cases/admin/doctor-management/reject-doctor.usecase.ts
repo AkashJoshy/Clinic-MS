@@ -6,14 +6,14 @@ import {
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { ValidationError } from "../../../../domain/errors/validation.error.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
-import type { IMailService } from "../../../../domain/services/EmailService.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import type { IMailService } from "../../../../domain/services/email.service.ts";
 import { deleteFromCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorStatusUpdateDto } from "../../../dto/doctor.dto.ts";
-import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/IUpdateDoctorStatusUseCase.ts";
+import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/i-update-doctor-status.usecase.ts";
 
 export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
   constructor(
@@ -54,7 +54,7 @@ export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
       reviewedAt: doctor.reviewedAt,
       reviewedMessage: doctor.reviewedMessage,
     });
-    
+
     await Promise.all([
       this._addressRepository.deleteByUserId(user.id),
       this._doctorClinicRepository.delete(doctorClinic.id),
@@ -63,7 +63,7 @@ export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
     ]).catch((error) => {
       throw new InternalServerError(error.message ?? "Internal server error");
     });
-    
+
     await Promise.all([
       deleteFromCloudinary(doctor.registrationDoc.publicId, "raw"),
       deleteFromCloudinary(doctor.medicalLicenceDoc.publicId, "raw"),
@@ -71,7 +71,6 @@ export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
     ]).catch((error) => {
       throw new InternalServerError(error.message ?? "Internal server error");
     });
-
 
     const subject = EMAIL_SUBJECTS.DOCTOR_REJECTED;
     const body = REJECTED_MESSAGE(user.fullName, "Doctor", data.reviewMessage);

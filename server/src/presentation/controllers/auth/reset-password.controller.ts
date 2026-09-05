@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IResetPasswordUseCase } from "../../../application/repositories/auth/IResetPasswordUseCase.ts";
+import type { IResetPasswordUseCase } from "../../../application/repositories/auth/i-reset-password.usecase.ts";
 
 export class ResetPasswordController {
   constructor(private readonly _resetPasswordUseCase: IResetPasswordUseCase) {}

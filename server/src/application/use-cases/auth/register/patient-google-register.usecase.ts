@@ -1,25 +1,28 @@
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type {
   GoogleLoginDTO,
   LoginResponseDTO,
+  RefreshPayloadDto,
   TokenPair,
 } from "../../../dto/auth.dto.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import User from "../../../../domain/entities/User.ts";
-import Patient from "../../../../domain/entities/Patient.ts";
-import { Address } from "../../../../domain/entities/Address.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import User from "../../../../domain/entities/user.ts";
+import Patient from "../../../../domain/entities/patient.ts";
+import { Address } from "../../../../domain/entities/address.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { welcomeTemplate } from "../../../../infrastructure/services/mail/templates/welcome.template.ts";
 import { EMAIL_FOOTER } from "../../../../domain/constants/email.constants.ts";
-import type { IMailService } from "../../../../domain/services/EmailService.ts";
-import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/IPatientGoogleAuthUsecase.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/IAccessTokenGenerationService.ts";
+import type { IMailService } from "../../../../domain/services/email.service.ts";
+import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/i-patient-google-auth.usecase.ts";
+import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
 
 export class PatientGoogleRegisterUseCase implements IPatientGoogleAuthUseCase {
   constructor(
     private _accessTokenGenerationService: IAccessTokenGenerationService,
+    private _refreshtokenGenerationService: IRefreshTokenGenerationService,
     private _userRepository: IUserRepository,
     private _patientRepository: IPatientRepository,
     private _addressRepository: IAddressRepository,
@@ -67,7 +70,7 @@ export class PatientGoogleRegisterUseCase implements IPatientGoogleAuthUseCase {
             ${welcomeTemplate.body.replace("{{NAME}}", newUser.fullName)}
             ${EMAIL_FOOTER.FOOTER1}
           </div>
-        `
+        `;
 
     const [patient, mail] = await Promise.all([
       this._patientRepository.save(
@@ -101,10 +104,19 @@ export class PatientGoogleRegisterUseCase implements IPatientGoogleAuthUseCase {
       ),
     );
 
+    const refreshPayload: RefreshPayloadDto = {
+      id: newUser.id!,
+      tokenId: "",
+    };
+
     const accessToken =
       await this._accessTokenGenerationService.generate(newUser);
 
-    tokenPair.access = accessToken!
+    const refreshToken =
+      await this._refreshtokenGenerationService.generate(refreshPayload);
+
+    tokenPair.access = accessToken!;
+    tokenPair.refresh = refreshToken!;
 
     if (!accessToken || accessToken == "") {
       return {

@@ -1,5 +1,5 @@
 import { Clinic } from "../../domain/entities/Clinic.ts";
-import type { IClinicRepository } from "../../domain/repositories/IClinicRepository.ts";
+import type { IClinicRepository } from "../../domain/repositories/i-clinic.repository.ts";
 import { type IClinic, ClinicModel } from "../models/clinic.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
 

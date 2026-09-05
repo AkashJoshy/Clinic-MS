@@ -1,14 +1,9 @@
 import type { RelationToPatient } from "../../domain/constants/patient.constants.ts";
-import type { Address } from "../../domain/entities/Address.ts";
-import type Patient from "../../domain/entities/Patient.ts";
-import type User from "../../domain/entities/User.ts";
+import type { Address } from "../../domain/entities/address.ts";
+import type Patient from "../../domain/entities/patient.ts";
+import type User from "../../domain/entities/user.ts";
 import type { BasePatient } from "../../domain/types/patient.types.ts";
-import type {
-  AppointmentStatus,
-  DayOfWeek,
-  Gender,
-  ImageData,
-} from "../../domain/types/shared.types.ts";
+import type { Gender, ImageData } from "../../domain/types/shared.types.ts";
 import type {
   AddressOption,
   AdminDoctorDetails,
@@ -71,16 +66,16 @@ export interface PatientUpdateFields {
 }
 
 export interface DeletePatientDto {
-  id: string,
-  method: DeleteMethods
+  id: string;
+  method: DeleteMethods;
 }
 
 export interface UpdateProfilePictureDto {
-  userId: string,
-  ownerId: string,
-  picture: Express.Multer.File
+  userId: string;
+  ownerId: string;
+  picture: Express.Multer.File;
 }
 export interface UpdateProfilePictureResponseDto {
-  ownerId: string,
-  pictureUrl: string
+  ownerId: string;
+  pictureUrl: string;
 }

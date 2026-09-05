@@ -10,18 +10,18 @@ import {
   forgotPasswordSchema,
 } from "@/schemas/auth.schema";
 import { FORGOT_PASSWORD_INPUTS } from "@/data/authFormInputs.data";
-import { forgotAdminPassword, forgotClinicPassword, forgotPassword } from "@/services/auth.service";
+import { forgotAdminPassword, forgotDoctorPassword, forgotPassword } from "@/services/auth.service";
 import { useMutate } from "@/hooks/useMutate";
 import type { Role } from "@/types/auth";
 
 const ForgotPasswordForm = ({ role }: { role: Role }) => {
   const navigate = useNavigate()
-  const forgotPasswordHelper = role === "PATIENT" ? forgotPassword : (role === "ADMIN" ? forgotAdminPassword : forgotClinicPassword)
+  const forgotPasswordHelper = role === "PATIENT" ? forgotPassword : (role === "ADMIN" ? forgotAdminPassword : forgotDoctorPassword)
+  const backtoLoginPage = role === "PATIENT" ? "/login" : (role === "ADMIN" ? "/admin" :  "/doctor")
   const { mutate, isPending } = useMutate(forgotPasswordHelper, {
-    onSuccess: () => navigate("/login")
+    onSuccess: () => navigate(backtoLoginPage)
   });
 
-  const backtoLoginPage = role === "PATIENT" ? "/login" : (role === "ADMIN" ? "/admin" :  "/doctor")
 
   const {
     register,

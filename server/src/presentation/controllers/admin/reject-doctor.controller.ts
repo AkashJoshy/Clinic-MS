@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IUpdateDoctorStatusUseCase } from "../../../application/repositories/admin/IUpdateDoctorStatusUseCase.ts";
+import type { IUpdateDoctorStatusUseCase } from "../../../application/repositories/admin/i-update-doctor-status.usecase.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 
 export class RejectDoctorController {

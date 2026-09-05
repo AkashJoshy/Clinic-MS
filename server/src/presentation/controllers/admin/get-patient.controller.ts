@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import type { IGetPatientUseCase } from "../../../application/repositories/admin/IGetPatientUseCase.ts";
+import type { IGetPatientUseCase } from "../../../application/repositories/admin/i-get-patient.usecase.ts";
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 
 export class GetPatientController {
@@ -9,14 +9,12 @@ export class GetPatientController {
 
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
-
-      let patientId = req.params.patientId
-      patientId = Array.isArray(patientId) ? patientId[0] : patientId
+      let patientId = req.params.patientId;
+      patientId = Array.isArray(patientId) ? patientId[0] : patientId;
 
       if (!patientId) {
-        throw new NotFoundError("Patient")
+        throw new NotFoundError("Patient");
       }
-
 
       const data = await this._getPatient.execute(patientId);
 
@@ -32,7 +30,6 @@ export class GetPatientController {
         message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Doctor"),
         data: data,
       });
-
     } catch (error) {
       return next(error);
     }

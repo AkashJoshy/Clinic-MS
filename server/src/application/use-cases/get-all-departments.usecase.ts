@@ -1,7 +1,6 @@
-import type { Department } from "../../domain/entities/Department.ts";
-import type { IDepartmentRepository } from "../../domain/repositories/IDepartmentRepository.ts";
-import type { IGetAllDepartmentsUseCase } from "../repositories/admin/IGetAllDepartmentsUseCase.ts";
-
+import type { Department } from "../../domain/entities/department.ts";
+import type { IDepartmentRepository } from "../../domain/repositories/i-department.repository.ts";
+import type { IGetAllDepartmentsUseCase } from "../repositories/admin/i-get-all-departments.usecase.ts";
 
 export class GetAllDepartmentsUseCase implements IGetAllDepartmentsUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}

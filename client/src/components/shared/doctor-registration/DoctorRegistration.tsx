@@ -1,8 +1,6 @@
 import BasicInfo from "./BasicInfo";
 import { useMutate } from "@/hooks/useMutate";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getAllDepartments } from "@/services/common.service";
 import RegistrationHeader from "./RegistrationHeader";
 import { useDoctorRegistrationContext } from "@/contexts/useDoctorRegistrationContext";
 import ProfessionalInfo from "./ProfessionalInfo";

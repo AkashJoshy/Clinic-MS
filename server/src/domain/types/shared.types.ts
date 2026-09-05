@@ -17,13 +17,20 @@ export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";
 
-export type AppointmentStatus =
+export type SessionStatus =
+  | "AVAILABLE"
   | "PENDING"
+  | "BOOKED"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "EXPIRED"
+  | "UPCOMING"
+  | "UNAVAILABLE"
+  | "DAY_OFF"
   | "CONFIRMED"
   | "LIVE"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "MISSED";
+  | "MISSED"
+  | "PENDING";
 
 export type ImageData = {
   url: string;

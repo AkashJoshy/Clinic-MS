@@ -1,10 +1,10 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
+import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
 import type {
   DepartmentStatusDto,
   GetDepartmentDto,
 } from "../../../dto/admin.dto.ts";
-import type { IUpdateDepartmentStatusUseCase } from "../../../repositories/admin/IUpdateDepartmentUseCase.ts";
+import type { IUpdateDepartmentStatusUseCase } from "../../../repositories/admin/i-update-department.usecase.ts";
 
 export class UpdateDepartmentStatusUseCase implements IUpdateDepartmentStatusUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}

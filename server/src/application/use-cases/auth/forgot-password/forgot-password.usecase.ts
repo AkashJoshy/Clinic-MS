@@ -1,14 +1,14 @@
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.js";
-import type { ICacheService } from "../../../../domain/services/CacheService.js";
-import type { IMailService } from "../../../../domain/services/EmailService.js";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import type { ICacheService } from "../../../../domain/services/cache.service.ts";
+import type { IMailService } from "../../../../domain/services/email.service.ts";
 import { generateVerificationToken } from "../../../../shared/utils/token.helper.js";
 import {
   EMAIL_BODY,
   EMAIL_SUBJECTS,
 } from "../../../../domain/constants/email.constants.js";
-import type { IForgotPasswordUseCase } from "../../../repositories/auth/IForgotPasswordUseCase.ts";
+import type { IForgotPasswordUseCase } from "../../../repositories/auth/i-forgot-password.usecase.ts";
 import type { ForgotRolePasswordDto } from "../../../dto/auth.dto.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 

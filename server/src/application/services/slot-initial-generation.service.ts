@@ -1,6 +1,6 @@
 import Slot from "../../domain/entities/Slot.ts";
 import { NotFoundError } from "../../domain/errors/not-found.error.ts";
-import type { IDoctorClinicRepository } from "../../domain/repositories/IDoctorClinicRepository.ts";
+import type { IDoctorClinicRepository } from "../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { ISlotRepository } from "../../domain/repositories/ISlotRepository.ts";
 import type { SlotGenerationService } from "./slot-generation.service.ts";
 

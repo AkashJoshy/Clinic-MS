@@ -37,7 +37,6 @@ export const THEMES: Theme[] = [
     dimmed: "#3a5a50",
     label: "#8a9bb0",
   },
-  // ... (rest of themes)
 ];
 
 export function getStyleProps(

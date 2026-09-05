@@ -1,4 +1,4 @@
-import type { RegisterClinicProps } from "../types/clinic.types.js";
+import type { RegisterClinicProps } from "../types/clinic.types.ts";
 import type { ApprovalStatus, ImageData } from "../types/shared.types.ts";
 
 export class Clinic {
@@ -27,12 +27,12 @@ export class Clinic {
       data.about ?? "",
       data.altPhone ?? null,
       data.registrationDoc ?? {
-        publicId: '',
-        url: ''
+        publicId: "",
+        url: "",
       },
       data.establishmentLicenceDoc ?? {
-        publicId: '',
-        url: ''
+        publicId: "",
+        url: "",
       },
       {
         type: data?.location?.type ?? "Point",
@@ -48,11 +48,11 @@ export class Clinic {
   }
 
   static register(data: Partial<Omit<RegisterClinicProps, "status">>): Clinic {
-    return this.create({ ...data, status: "PENDING" })
+    return this.create({ ...data, status: "PENDING" });
   }
 
   approve() {
-    this.status = "APPROVED"
+    this.status = "APPROVED";
   }
 
   isApproved() {

@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IDoctorProfileUseCase } from "../../../application/repositories/doctor/IDoctorProfileUseCase.ts";
+import type { IDoctorProfileUseCase } from "../../../application/repositories/doctor/i-doctor-profile.usecase.ts";
 
 export class DoctorProfileController {
   constructor(private _doctorProfile: IDoctorProfileUseCase) {}

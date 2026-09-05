@@ -1,8 +1,8 @@
 import { BaseRepository } from "./base/base.repository.ts";
-import type { IDoctorRepository } from "../../domain/repositories/IDoctorRepository.ts";
+import type { IDoctorRepository } from "../../domain/repositories/i-doctor.repository.ts";
 import { DoctorModel, type IDoctor } from "../models/doctor.model.ts";
 import CounterModel from "../models/counter.model.ts";
-import { Doctor } from "../../domain/entities/Doctor.ts";
+import { Doctor } from "../../domain/entities/doctor.ts";
 
 export class DoctorRepository
   extends BaseRepository<Doctor, IDoctor>

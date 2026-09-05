@@ -3,7 +3,7 @@ import { createLocationFields, fieldGenerator } from "./base.data";
 import type { RelativeFormData } from "@/schemas/patient/patient.schema";
 import {
   BLOODGROUPS,
-  GENDER,
+  GENDER_WITH_LABEL,
   RELATIONS,
 } from "@/constants/form-fields.constants";
 
@@ -48,7 +48,7 @@ export const RELATIVE_REGISTER_FORM_INPUTS: FormInputs<RelativeFormData>[] = [
     true,
     false,
     undefined,
-    [...GENDER],
+    [...GENDER_WITH_LABEL],
   ),
 
   fieldGenerator(

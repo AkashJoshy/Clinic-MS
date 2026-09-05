@@ -1,9 +1,9 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { UserStatusDto } from "../../../dto/admin.dto.ts";
 import type { DeletePatientDto } from "../../../dto/patient.dto.ts";
-import type { IUpdateStatusUseCase } from "../../../repositories/admin/IUpdateStatusUseCase.ts";
+import type { IUpdateStatusUseCase } from "../../../repositories/admin/i-update-status.usecase.ts";
 
 export class UpdatePatientStatusUseCase implements IUpdateStatusUseCase {
   constructor(
@@ -44,7 +44,7 @@ export class UpdatePatientStatusUseCase implements IUpdateStatusUseCase {
       userId: user.id,
       isActive: user.isActive,
       isBlocked: user.isBlocked,
-      message
-    }
+      message,
+    };
   }
 }

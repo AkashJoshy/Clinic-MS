@@ -1,9 +1,7 @@
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
-import type {
-  PatientBasicInfoDto,
-} from "../../../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../../../IService/IPatientDetailsService.ts";
-import type { IGetAllPatientsBasicUseCase } from "../../../repositories/admin/IGetAllPatientsBasicUseCase.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
+import type { PatientBasicInfoDto } from "../../../dto/shared.dto.ts";
+import type { IPatientDetailsService } from "../../../IService/i-patient-details.service.ts";
+import type { IGetAllPatientsBasicUseCase } from "../../../repositories/admin/i-get-all-patients-basic.usecase.ts";
 
 export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
   constructor(
@@ -28,13 +26,15 @@ export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
           imageUrl: {
             url: res.patient.imageUrl.url,
           },
-          createdAt: res.patient.createdAt
+          createdAt: res.patient.createdAt,
         },
-        user: res.user ? {
-          email: res.user.email,
-          phone: res.user.phone,
-          isActive: res.user.isActive,
-        } : null,
+        user: res.user
+          ? {
+              email: res.user.email,
+              phone: res.user.phone,
+              isActive: res.user.isActive,
+            }
+          : null,
       };
     });
 

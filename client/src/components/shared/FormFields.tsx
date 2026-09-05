@@ -455,6 +455,7 @@ function FormFields<T extends FieldValues>({
                 placeholder={inp.placeHolder}
                 disabled={inp?.isDisabled}
                 defaultValue={inp.isValue as string}
+                 max={inp.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
                 {...register(inp.name as unknown as Path<T>)}
                 className={`${inputClass(name)} ${containerClass} ${inp?.isDisabled ? `cursor-not-allowed` : ''}`}
               />

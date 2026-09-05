@@ -1,11 +1,11 @@
-import type Patient from "../../domain/entities/Patient.ts";
-import type { IAddressRepository } from "../../domain/repositories/IAddressRepository.ts";
-import type { IUserRepository } from "../../domain/repositories/IUserRepository.ts";
+import type Patient from "../../domain/entities/patient.ts";
+import type { IAddressRepository } from "../../domain/repositories/i-address.repository.ts";
+import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type {
   PatientFullDetailsDto,
   PatientInfoDto,
 } from "../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../IService/IPatientDetailsService.ts";
+import type { IPatientDetailsService } from "../IService/i-patient-details.service.ts";
 
 export class PatientDetailsService implements IPatientDetailsService {
   constructor(
@@ -45,23 +45,25 @@ export class PatientDetailsService implements IPatientDetailsService {
       const address = addressMap.get(patient.id!);
 
       return {
-        user: user? {
-          id: user.id,
-          fullName: user.fullName,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          provider: user.provider,
-          isActive: user.isActive,
-          isEmailVerified: user.isEmailVerified,
-          isBlocked: user.isBlocked,
-          isTwoFactorenabled: user.isTwoFactorenabled,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
-        } : null,
+        user: user
+          ? {
+              id: user.id,
+              fullName: user.fullName,
+              email: user.email,
+              phone: user.phone,
+              role: user.role,
+              provider: user.provider,
+              isActive: user.isActive,
+              isEmailVerified: user.isEmailVerified,
+              isBlocked: user.isBlocked,
+              isTwoFactorenabled: user.isTwoFactorenabled,
+              createdAt: user.createdAt,
+              updatedAt: user.updatedAt,
+            }
+          : null,
         patient: patient,
-        address: address ?? null
-      }
+        address: address ?? null,
+      };
     });
 
     return response;

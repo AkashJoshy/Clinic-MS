@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IPatientRegisterUseCase } from "../../../application/repositories/auth/IPatientRegisterUsecase.ts";
+import type { IPatientRegisterUseCase } from "../../../application/repositories/auth/i-patient-register.usecase.ts";
 import type { RegisterUserProps } from "../../../domain/types/user.types.ts";
 
 export class PatientRegisterController {
@@ -10,7 +10,7 @@ export class PatientRegisterController {
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
       const { fullName, email, password, phone, role }: RegisterUserProps =
-        req.body; 
+        req.body;
 
       const result = await this._registerUser.execute({
         id: null,

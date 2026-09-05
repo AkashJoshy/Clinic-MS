@@ -1,5 +1,5 @@
 import Patient from "../../domain/entities/Patient.ts";
-import type { IPatientRepository } from "../../domain/repositories/IPatientRepository.ts";
+import type { IPatientRepository } from "../../domain/repositories/i-patient.repository.ts";
 import PatientModel, { type IPatient } from "../models/patient.model.ts";
 import CounterModel from "../models/counter.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";

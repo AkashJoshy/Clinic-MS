@@ -1,11 +1,11 @@
-import type { Doctor } from "../../domain/entities/Doctor.ts";
-import type { IAddressRepository } from "../../domain/repositories/IAddressRepository.ts";
-import type { IClinicRepository } from "../../domain/repositories/IClinicRepository.ts";
-import type { IDepartmentRepository } from "../../domain/repositories/IDepartmentRepository.ts";
-import type { IDoctorClinicRepository } from "../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IUserRepository } from "../../domain/repositories/IUserRepository.ts";
+import type { Doctor } from "../../domain/entities/doctor.ts";
+import type { IAddressRepository } from "../../domain/repositories/i-address.repository.ts";
+import type { IClinicRepository } from "../../domain/repositories/i-clinic.repository.ts";
+import type { IDepartmentRepository } from "../../domain/repositories/i-department.repository.ts";
+import type { IDoctorClinicRepository } from "../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type { DoctorInfo } from "../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../IService/IDoctorDetailsService.ts";
+import type { IDoctorDetailsService } from "../IService/i-doctor-details.service.ts";
 
 export class DoctorDetailsService implements IDoctorDetailsService {
   constructor(
@@ -83,7 +83,7 @@ export class DoctorDetailsService implements IDoctorDetailsService {
               email: userDetails.email,
               phone: userDetails.phone,
               isActive: userDetails.isActive,
-              isBlocked: userDetails.isBlocked
+              isBlocked: userDetails.isBlocked,
             }
           : null,
         clinic: clinicDetails
@@ -119,6 +119,7 @@ export class DoctorDetailsService implements IDoctorDetailsService {
           languages: doctor.languages,
           gender: doctor.gender,
           departmentId: doctor.departmentId,
+          licenceNumber: doctor.licenceNumber,
           specialization: doctor.specialization,
           qualification: doctor.qualification,
           experienceYears: doctor.experienceYears,
@@ -146,6 +147,7 @@ export class DoctorDetailsService implements IDoctorDetailsService {
               slotDuration: doctorClinicDetails.slotDuration,
               timeZone: doctorClinicDetails.timeZone,
               isActive: doctorClinicDetails.isActive,
+              updatedAt: doctorClinicDetails.updatedAt,
             }
           : null,
         address: doctorAddressDetails

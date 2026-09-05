@@ -1,5 +1,28 @@
 import { z } from "zod";
-import { addressLine, altPhone, bio, city, consultationFee, country, departmentId, email, experienceYears, fullName, gender, latitude, longitude, mode, password, phone, pincode, qualification, registrationNumber, specialization, state } from "../base.schema.ts";
+import {
+  addressLine,
+  altPhone,
+  bio,
+  city,
+  consultationFee,
+  country,
+  departmentId,
+  email,
+  experienceYears,
+  fullName,
+  gender,
+  latitude,
+  licenceNumber,
+  longitude,
+  mode,
+  password,
+  phone,
+  pincode,
+  qualification,
+  registrationNumber,
+  specialization,
+  state,
+} from "../base.schema.ts";
 
 export const doctorRegistrationSchema = z
   .object({
@@ -11,16 +34,17 @@ export const doctorRegistrationSchema = z
     departmentId,
     specialization,
     qualification,
-   experienceYears,
+    experienceYears,
+    licenceNumber,
     password,
     confirmPassword: password,
     clinicName: fullName,
     registrationNumber,
-    about:z
-    .string()
-    .trim()
-    .max(500, "About clinic must not exceed 500 characters")
-    .optional(),
+    about: z
+      .string()
+      .trim()
+      .max(500, "About clinic must not exceed 500 characters")
+      .optional(),
     altPhone,
     addressLine,
     country,
@@ -32,10 +56,7 @@ export const doctorRegistrationSchema = z
     mode,
     consultationFee,
   })
-  .refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    },
-  );
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });

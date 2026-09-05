@@ -1,4 +1,4 @@
-import type { IBaseRepository } from "../../../domain/repositories/IBaseRepository.ts";
+import type { IBaseRepository } from "../../../domain/repositories/i-base.repository.ts";
 import type { Model, Document, UpdateQuery } from "mongoose";
 import type { QueryOptions } from "../../../domain/types/shared.types.ts";
 

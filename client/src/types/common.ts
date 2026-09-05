@@ -125,9 +125,24 @@ export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";
 
+export type SessionStatus =
+  | "AVAILABLE"
+  | "PENDING"
+  | "BOOKED"
+  | "CANCELLED"
+  | "COMPLETED"
+  | "EXPIRED"
+  | "UPCOMING"
+  | "UNAVAILABLE"
+  | "DAY_OFF"
+  | "CONFIRMED"
+  | "LIVE"
+  | "MISSED"
+  | "PENDING";
+
 export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
-export type UpdateMethods = "RESTORE" | "DELETE" | "BLOCK"
+export type UpdateMethods = "RESTORE" | "DELETE" | "BLOCK";
 
 export type StateWithCode = {
   name: string;

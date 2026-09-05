@@ -1,15 +1,30 @@
-export const ALLOWED_DOC_TYPES = ["application/pdf", "image/jpeg", "image/png"] as const
+export const ALLOWED_DOC_TYPES = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+] as const;
 
-export const ALLOWED_IMG_TYPES = ["image/jpeg", "image/png", "image/webp"] as const
+export const ALLOWED_IMG_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
 
-export const ROLES = ["PATIENT", "DOCTOR", "CLINIC", "ADMIN"] as const
+export const ROLES = ["PATIENT", "DOCTOR", "CLINIC", "ADMIN"] as const;
 
 export const GENDER = [
   "MALE",
   "FEMALE",
   "OTHERS",
-  "PREFER NOT TO SAY"
-] as const
+  "PREFER NOT TO SAY",
+] as const;
+
+export const GENDER_WITH_LABEL = [
+  { label: "Male", value: "MALE" },
+  { label: "Female", value: "FEMALE" },
+  { label: "Others", value: "OTHERS" },
+  { label: "Prefer Not To Say", value: "PREFER NOT TO SAY" },
+];
 
 export const RELATIONS = [
   // "",
@@ -46,7 +61,7 @@ export const RELATIONS = [
   "Relative",
   "Friend",
   "Other",
-  "Self"
+  "Self",
 ] as const;
 
-export const BLOODGROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+export const BLOODGROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];

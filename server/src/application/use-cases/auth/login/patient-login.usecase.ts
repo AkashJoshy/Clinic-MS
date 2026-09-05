@@ -6,11 +6,11 @@ import type {
   LoginResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
-import type { IEmailVerificationService } from "../../../IService/IEmailVerificationService.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/IAccessTokenGenerationService.ts";
-import type { IUserExistenceService } from "../../../IService/IUserExistenceService.ts";
-import type { ILoginUseCase } from "../../../repositories/auth/ILoginUseCase.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/IRefreshTokenGenerationService.ts";
+import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
+import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
+import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
+import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
 
 export class PatientLoginUseCase implements ILoginUseCase {
   constructor(
@@ -41,10 +41,9 @@ export class PatientLoginUseCase implements ILoginUseCase {
       role: updatedUser.role,
     };
 
-    
     const refreshPayload: RefreshPayloadDto = {
       id: updatedUser.id!,
-      tokenId: ''
+      tokenId: "",
     };
 
     const accessToken =
@@ -55,8 +54,8 @@ export class PatientLoginUseCase implements ILoginUseCase {
 
     const tokenPair = {
       access: accessToken!,
-      refresh: refreshToken!
-    }
+      refresh: refreshToken!,
+    };
 
     let role = user.role.toLowerCase();
 
@@ -64,7 +63,6 @@ export class PatientLoginUseCase implements ILoginUseCase {
       user: updatedUser,
       tokenPair,
       role,
-    }
-
+    };
   }
 }

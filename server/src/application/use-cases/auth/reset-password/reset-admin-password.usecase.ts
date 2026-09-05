@@ -1,9 +1,9 @@
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.js";
-import type { ICacheService } from "../../../../domain/services/CacheService.js";
-import type { IHashService } from "../../../../domain/services/hashService.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import type { ICacheService } from "../../../../domain/services/cache.service.ts";
+import type { IHashService } from "../../../../domain/services/hash.service.ts";
 import { AppError } from "../../../../domain/errors/app.errors.js";
 import type { ResetPasswordDto } from "../../../dto/auth.dto.ts";
-import type { IResetPasswordUseCase } from "../../../repositories/auth/IResetPasswordUseCase.ts";
+import type { IResetPasswordUseCase } from "../../../repositories/auth/i-reset-password.usecase.ts";
 import { TokenExpiredAppError } from "../../../../domain/errors/token-expired.error.ts";
 
 export class ResetAdminPasswordUseCase implements IResetPasswordUseCase {
@@ -43,7 +43,10 @@ export class ResetAdminPasswordUseCase implements IResetPasswordUseCase {
       throw new AppError("User is inactive or blocked");
     }
 
-    const hashedPassword = await this._passwordService.hash(password, "Password");
+    const hashedPassword = await this._passwordService.hash(
+      password,
+      "Password",
+    );
 
     if (!hashedPassword) {
       throw new AppError("Failed to hash password");

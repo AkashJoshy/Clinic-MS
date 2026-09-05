@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { JWTService } from "../../infrastructure/services/JWTService.ts";
+import { JWTService } from "../../infrastructure/services/jwt.service.ts";
 import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
 import { AuthError } from "../../domain/errors/auth.error.ts";
 
@@ -20,16 +20,15 @@ export const authenticateUser = async (
 
     const token = authHeader.split(" ")[1];
 
-    
     if (!token) {
       throw new AuthError("Unauthorized");
     }
-    
+
     const decoded = jwtService.verifyAccessToken(token) as {
       userId: string;
       role: string;
     };
-    
+
     const user = await mongooseUserRepository.findById(decoded.userId);
 
     if (!user) {

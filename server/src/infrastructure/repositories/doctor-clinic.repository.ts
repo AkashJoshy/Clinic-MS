@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
+import { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
 import DoctorClinicModel, {
   type IDoctorClinic,
 } from "../models/doctor-clinic.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
-import type { IDoctorClinicRepository } from "../../domain/repositories/IDoctorClinicRepository.ts";
+import type { IDoctorClinicRepository } from "../../domain/repositories/i-doctor-clinic.repository.ts";
 
 export class DoctorClinicRepository
   extends BaseRepository<DoctorClinic, IDoctorClinic>

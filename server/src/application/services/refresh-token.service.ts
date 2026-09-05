@@ -1,8 +1,8 @@
-import RefreshSession from "../../domain/entities/RefreshSession.ts";
+import RefreshSession from "../../domain/entities/refresh-session.ts";
 import { InternalServerError } from "../../domain/errors/internal-server.error.ts";
-import type { IRefreshSessionRepository } from "../../domain/repositories/IRefreshSessionRepository.ts";
-import type { IHashService } from "../../domain/services/hashService.ts";
-import type { ITokenService } from "../../domain/services/TokenService.ts";
+import type { IRefreshSessionRepository } from "../../domain/repositories/i-refresh-session.repository.ts";
+import type { IHashService } from "../../domain/services/hash.service.ts";
+import type { ITokenService } from "../../domain/services/token.service.ts";
 import type {
   RefreshPayloadDto,
   RefreshTokenPayloadDto,

@@ -1,9 +1,9 @@
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
-import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
+import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
 import type { DepartmentDto } from "../../../dto/admin.dto.ts";
-import type { IEditDepartmentUseCase } from "../../../repositories/admin/IEditDepartmentUseCase.ts";
+import type { IEditDepartmentUseCase } from "../../../repositories/admin/i-edit-department.usecase.ts";
 
 export class EditDepartmentUseCase implements IEditDepartmentUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}
@@ -26,14 +26,17 @@ export class EditDepartmentUseCase implements IEditDepartmentUseCase {
     const isDeptExists =
       await this._departmentRepository.findByName(updatedName);
 
-    if (isDeptExists?.id !== department.id) {
+    if (
+      isDeptExists &&
+      isDeptExists?.id?.toString() !== department.id.toString()
+    ) {
       throw new AlreadyExistsError("Department name already exists");
     }
 
     const updatedData = {
       name: updatedName,
       mode: data.mode,
-      status: data.status
+      status: data.status,
     };
 
     const isUpdated = await this._departmentRepository.findByIdAndUpdate(

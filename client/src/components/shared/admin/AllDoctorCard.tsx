@@ -204,26 +204,7 @@ export const AllDoctorCard = ({ doctorInfo }: AllDoctorCardProps) => {
               <ArrowRight size={13} />
             </button>
 
-            <button
-              onClick={handleBlockToggle}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                isBlocked
-                  ? "border border-[#1dc465]/20 text-[#1dc465] hover:bg-[#1dc465]/10"
-                  : "border border-red-500/20 text-red-400 hover:bg-red-500/10"
-              }`}
-            >
-              {isBlocked ? (
-                <>
-                  <Unlock size={13} />
-                  Unblock
-                </>
-              ) : (
-                <>
-                  <Ban size={13} />
-                  Block
-                </>
-              )}
-            </button>
+           
           </div>
         </div>
       </div>

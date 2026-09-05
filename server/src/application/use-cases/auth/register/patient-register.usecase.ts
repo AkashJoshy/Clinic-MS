@@ -1,16 +1,16 @@
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type {
   RegisterUserDTO,
   VerificationTokenDto,
 } from "../../../dto/auth.dto.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import { Address } from "../../../../domain/entities/Address.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import { Address } from "../../../../domain/entities/address.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
-import Patient from "../../../../domain/entities/Patient.ts";
-import type { IPatientRegisterUseCase } from "../../../repositories/auth/IPatientRegisterUsecase.ts";
-import type { IUserCreationService } from "../../../IService/IUserCreationService.ts";
-import type { IEmailVerificationService } from "../../../IService/IEmailVerificationService.ts";
+import Patient from "../../../../domain/entities/patient.ts";
+import type { IPatientRegisterUseCase } from "../../../repositories/auth/i-patient-register.usecase.ts";
+import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
+import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 
 export class PatientRegisterUseCase implements IPatientRegisterUseCase {
@@ -60,16 +60,19 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
     }
 
     await this._addressRepository.save(
-      Address.createForOwner({
-        id: null,
-        ownerId: patient.id,
-        addressLine: '',
-        country: '',
-        state: '',
-        city: '',
-        pincode: '',
-      }, "Patient")
-    )
+      Address.createForOwner(
+        {
+          id: null,
+          ownerId: patient.id,
+          addressLine: "",
+          country: "",
+          state: "",
+          city: "",
+          pincode: "",
+        },
+        "Patient",
+      ),
+    );
 
     const token = await this._mailVerficationService.execute(
       newUser.email,

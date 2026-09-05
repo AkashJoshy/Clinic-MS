@@ -1,8 +1,8 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorProffesionalDetailsDto } from "../../../dto/doctor.dto.ts";
-import type { IDoctorProfessionalUseCase } from "../../../repositories/doctor/IDoctorProfessionalUseCase.ts";
+import type { IDoctorProfessionalUseCase } from "../../../repositories/doctor/i-doctor-professional.usecase.ts";
 
 export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfessionalUseCase {
   constructor(
@@ -15,8 +15,8 @@ export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfession
   ): Promise<DoctorProffesionalDetailsDto> {
     const { userId, id, languages, ...profData } = data;
 
-    console.log(`Languages: `)
-    console.log(languages)
+    console.log(`Languages: `);
+    console.log(languages);
 
     const user = await this._userRepository.findById(userId);
 

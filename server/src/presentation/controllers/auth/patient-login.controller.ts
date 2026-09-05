@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { ILoginUseCase } from "../../../application/repositories/auth/ILoginUseCase.ts";
+import type { ILoginUseCase } from "../../../application/repositories/auth/i-login.usecase.ts";
 
 export class PatientLoginController {
   constructor(private _patientLogin: ILoginUseCase) {}
@@ -9,7 +9,7 @@ export class PatientLoginController {
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
-      
+
       const result = await this._patientLogin.execute(data);
 
       const { tokenPair, role, user, message } = result;
@@ -28,7 +28,7 @@ export class PatientLoginController {
         user,
         message,
         accessToken: access,
-      }
+      };
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,

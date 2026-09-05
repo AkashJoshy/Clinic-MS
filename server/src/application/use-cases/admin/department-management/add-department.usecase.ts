@@ -1,9 +1,9 @@
-import { Department } from "../../../../domain/entities/Department.ts";
+import { Department } from "../../../../domain/entities/department.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
-import type { IDepartmentRepository } from "../../../../domain/repositories/IDepartmentRepository.ts";
+import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
 import type { CreateDepartmentDto } from "../../../dto/admin.dto.ts";
-import type { IAddDepartmentUseCase } from "../../../repositories/admin/IAddDepartmentUseCase.ts";
+import type { IAddDepartmentUseCase } from "../../../repositories/admin/i-add-department.usecase.ts";
 
 export class AddDepartmentUseCase implements IAddDepartmentUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}

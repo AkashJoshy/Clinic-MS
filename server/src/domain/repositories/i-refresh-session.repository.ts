@@ -1,5 +1,5 @@
-import type RefreshSession from "../entities/RefreshSession.js";
-import type { IBaseRepository } from "./IBaseRepository.js";
+import type RefreshSession from "../entities/refresh-session.ts";
+import type { IBaseRepository } from "./i-base.repository.ts";
 
 export interface IRefreshSessionRepository extends IBaseRepository<RefreshSession> {
   findByTokenId(tokenId: string): Promise<RefreshSession | null>;

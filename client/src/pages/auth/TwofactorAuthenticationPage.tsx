@@ -7,8 +7,7 @@ const TwofactorAuthenticationPage = () => {
     <div>
       <OTPForm
         otpDetails={TWO_FACTOR_VERIFICATION_DETAILS}
-        className="mt-10 lg:mt-30"
-      />
+        className="mt-10 lg:mt-30" role={"PATIENT"} backRoute={""}      />
     </div>
   );
 };

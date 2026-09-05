@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import type { ILoginUseCase } from "../../../application/repositories/auth/ILoginUseCase.ts";
+import type { ILoginUseCase } from "../../../application/repositories/auth/i-login.usecase.ts";
 
 export class DoctorLoginController {
   constructor(private readonly _doctorLogin: ILoginUseCase) {}

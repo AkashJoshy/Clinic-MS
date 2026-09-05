@@ -1,11 +1,11 @@
-import { DoctorClinic } from "../../../../domain/entities/DoctorClinic.ts";
+import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IClinicRepository } from "../../../../domain/repositories/IClinicRepository.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
+import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorConsultationDetailsDto } from "../../../dto/doctor.dto.ts";
-import type { IDoctorConsultationUseCase } from "../../../repositories/doctor/IDoctorConsultationUseCase.ts";
+import type { IDoctorConsultationUseCase } from "../../../repositories/doctor/i-doctor-consultation.usecase.ts";
 
 export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultationUseCase {
   constructor(

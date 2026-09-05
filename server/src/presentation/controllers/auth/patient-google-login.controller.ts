@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IPatientGoogleAuthUseCase } from "../../../application/repositories/auth/IPatientGoogleAuthUsecase.ts";
+import type { IPatientGoogleAuthUseCase } from "../../../application/repositories/auth/i-patient-google-auth.usecase.ts";
 
 export class PatientGoogleLoginController {
   constructor(private _googleLogin: IPatientGoogleAuthUseCase) {}

@@ -1,8 +1,8 @@
-import User from "../../domain/entities/User.js";
+import User from "../../domain/entities/user.ts";
 import { InternalServerError } from "../../domain/errors/internal-server.error.js";
 import { AlreadyExistsError } from "../../domain/errors/user-already-exists.error.js";
-import type { IUserRepository } from "../../domain/repositories/IUserRepository.js";
-import type { IHashService } from "../../domain/services/hashService.ts";
+import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
+import type { IHashService } from "../../domain/services/hash.service.ts";
 import type { RegisterUserDTO, UserDto } from "../dto/auth.dto.js";
 
 export class UserCreationService {

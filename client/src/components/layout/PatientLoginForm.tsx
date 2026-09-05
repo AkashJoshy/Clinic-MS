@@ -61,7 +61,7 @@ const PatientLoginForm = () => {
       if (token && role && user) {
       const parsedUser =
       typeof user === "string" ? JSON.parse(user) : user;
-        login(token, parsedUser, parsedUser.role)
+        login(token, parsedUser, parsedUser.role.toLowerCase())
       }
   },  [message, user, token])
 

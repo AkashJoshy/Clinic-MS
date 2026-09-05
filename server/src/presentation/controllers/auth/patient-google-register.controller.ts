@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { IPatientGoogleAuthUseCase } from "../../../application/repositories/auth/IPatientGoogleAuthUsecase.ts";
+import type { IPatientGoogleAuthUseCase } from "../../../application/repositories/auth/i-patient-google-auth.usecase.ts";
 
 export class PatientGoogleRegisterController {
   constructor(private _googleRegister: IPatientGoogleAuthUseCase) {}
@@ -20,12 +20,19 @@ export class PatientGoogleRegisterController {
       const { tokenPair, role, user, message } = result;
       const clientUrl = process.env.CLIENT_ORIGIN || "http://localhost:5173";
 
-      const { access, refresh } = tokenPair
+      const { access, refresh } = tokenPair;
 
       if (access == "" || access == " " || refresh === "") {
         return res.redirect(`${clientUrl}/signup?message=${message}`);
       }
-      const accessToken = access
+      const accessToken = access;
+      
+      res.cookie("refreshToken", refresh, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
       return res.redirect(
         `${clientUrl}/login?token=${accessToken}&role=${role}&user=${JSON.stringify(user)}`,

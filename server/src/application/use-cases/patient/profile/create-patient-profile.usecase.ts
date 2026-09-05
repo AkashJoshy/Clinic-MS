@@ -1,11 +1,14 @@
-import type { IPatientRepository } from "../../../../domain/repositories/IPatientRepository.ts";
-import Patient from "../../../../domain/entities/Patient.ts";
+import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
+import Patient from "../../../../domain/entities/patient.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { CreatePatientProfileDto, PatientProfile } from "../../../dto/patient.dto.ts";
-import type { IAddressRepository } from "../../../../domain/repositories/IAddressRepository.ts";
-import { Address } from "../../../../domain/entities/Address.ts";
+import type {
+  CreatePatientProfileDto,
+  PatientProfile,
+} from "../../../dto/patient.dto.ts";
+import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
+import { Address } from "../../../../domain/entities/address.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
-import type { ICreatePatientProfileUseCase } from "../../../repositories/patient/ICreatePatientProfileUseCase.ts";
+import type { ICreatePatientProfileUseCase } from "../../../repositories/patient/i-create-patient-profile.usecase.ts";
 
 export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase {
   constructor(
@@ -87,9 +90,9 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
           chronicConditions: newPatient.medicalInformation.chronicConditions,
         },
         emergencyContact: {
-          name: newPatient.emergencyContact?.name ?? '',
-          phone: newPatient.emergencyContact?.phone ?? '',
-          relationship: newPatient.emergencyContact?.relationship ?? '',
+          name: newPatient.emergencyContact?.name ?? "",
+          phone: newPatient.emergencyContact?.phone ?? "",
+          relationship: newPatient.emergencyContact?.relationship ?? "",
         },
         createdAt: newPatient.createdAt,
         updatedAt: newPatient.updatedAt,

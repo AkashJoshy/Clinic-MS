@@ -1,9 +1,15 @@
-import type { ApprovalStatus, DayOfWeek, ServiceMode } from "./shared.types.ts";
+import type {
+  ApprovalStatus,
+  DayOfWeek,
+  ServiceMode,
+  SessionStatus,
+} from "./shared.types.ts";
 
 export interface Session {
   startTime: string;
   endTime: string;
   isActive: boolean;
+  status: SessionStatus;
   type: ServiceMode;
 }
 
@@ -12,7 +18,7 @@ export interface WeeklySchedule {
   sessions: Session[];
 }
 
-export interface Leave{
+export interface Leave {
   id: string | null;
   startDate: Date;
   endDate: Date;
@@ -21,7 +27,7 @@ export interface Leave{
   startTime: string;
   endTime: string;
   status: ApprovalStatus;
-  createdAt: Date| null;
+  createdAt: Date | null;
 }
 
 export interface AddDoctorClinicProps {
@@ -34,7 +40,40 @@ export interface AddDoctorClinicProps {
   leaves: Leave[];
   slotDuration: number;
   timeZone: string;
-  isActive: boolean,
+  isActive: boolean;
   createdAt: Date | null;
   updatedAt: Date | null;
+}
+
+export interface Shift {
+  id: string;
+  startTime: string;
+  endTime: string; 
+  mode: ServiceMode;
+}
+
+export type ScheduleData = Record<string, Shift[]>;
+
+export interface SlotRules {
+  sessionDuration: number;
+  bufferTime: number;
+  maxSessionsPerDay: number;
+  minAdvanceNotice: number;
+  bookingWindow: number;
+  slotInterval: 'auto' | 'fixed';
+  bookingMode: 'online' | 'offline' | 'both';
+  autoConfirmBookings: boolean;
+  allowReschedule: boolean;
+}
+export interface ExceptionsData {
+  breaks: { id: string; label: string; startTime: string; endTime: string }[];
+  vacations: { id: string; startDate: string; endDate: string }[];
+  blackouts: { id: string; date: string; startTime: string; endTime: string; reason: string }[];
+  holidays: { id: string; date: string; label: string }[];
+  overrides: { id: string; date: string; startTime: string; endTime: string }[];
+}
+
+export interface WeeklyScheduleProps {
+  schedule: ScheduleData;
+  onChange: (updatedSchedule: ScheduleData) => void;
 }

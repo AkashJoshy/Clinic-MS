@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import type { IHashService } from "../../domain/services/hashService.ts";
+import type { IHashService } from "../../domain/services/hash.service.ts";
 
 export class ArgonHashService implements IHashService {
   async hash(value: string, label: string): Promise<string | undefined> {
@@ -31,5 +31,4 @@ export class ArgonHashService implements IHashService {
       throw new Error(`${label} doesn't match`);
     }
   }
-
 }

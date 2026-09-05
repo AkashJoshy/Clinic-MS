@@ -2,14 +2,14 @@ import {
   APPROVED_MESSAGE,
   EMAIL_SUBJECTS,
 } from "../../../../domain/constants/email.constants.ts";
-import { DoctorClinic } from "../../../../domain/entities/DoctorClinic.ts";
+import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/IDoctorClinicRepository.ts";
-import type { IDoctorRepository } from "../../../../domain/repositories/IDoctorRepository.ts";
-import type { IUserRepository } from "../../../../domain/repositories/IUserRepository.ts";
-import type { IMailService } from "../../../../domain/services/EmailService.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import type { IMailService } from "../../../../domain/services/email.service.ts";
 import type { DoctorStatusUpdateDto } from "../../../dto/doctor.dto.ts";
-import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/IUpdateDoctorStatusUseCase.ts";
+import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/i-update-doctor-status.usecase.ts";
 
 export class ApproveDoctorUseCase implements IUpdateDoctorStatusUseCase {
   constructor(
@@ -31,16 +31,16 @@ export class ApproveDoctorUseCase implements IUpdateDoctorStatusUseCase {
     if (!user || !user.id) {
       throw new NotFoundError("Doctor");
     }
-    
+
     const doctorClinic = await this._doctorClinicRepository.findOneBy({
-      doctorId: doctor.id
-    })
+      doctorId: doctor.id,
+    });
 
     if (!doctorClinic || !doctorClinic.id) {
       throw new NotFoundError("Doctor");
     }
 
-    doctorClinic.activate()
+    doctorClinic.activate();
 
     doctor.approve(data.reviewMessage);
 

@@ -8,7 +8,7 @@ import type {
   ImageData,
   PlainUrl,
 } from "./common";
-import type { DoctorClinic } from "./doctor-clinic";
+import type { DoctorClinic, Session, WeeklySchedule } from "./doctor-clinic";
 import type { Clinic } from "./clinic";
 import type { DepartmentData } from "./admin";
 
@@ -67,16 +67,6 @@ type PublicUser = Omit<
 export type DoctorStatus = ApprovalStatus | "SUSPENDED";
 
 export type DoctorClinicType = ServiceMode;
-
-export interface Session {
-  startTime: string;
-  endTime: string;
-}
-
-export interface Schedule {
-  dayOfWeek: DayOfWeek;
-  sessions: Session[];
-}
 
 export interface SubscriptionDetails {
   subscriptionId: string | null;
@@ -252,3 +242,9 @@ export type DoctorConsultationDetails = Pick<
   | "slotDuration"
   | "timeZone"
 > & { userId: string };
+
+
+export interface WeeklyScheduleCalendarProps {
+  weeklySchedule: WeeklySchedule[];
+  onSessionClick?: (session: Session, date: Date) => void;
+}

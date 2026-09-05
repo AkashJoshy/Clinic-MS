@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { IUpdateDepartmentStatusUseCase } from "../../../application/repositories/admin/IUpdateDepartmentUseCase.ts";
+import type { IUpdateDepartmentStatusUseCase } from "../../../application/repositories/admin/i-update-department.usecase.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 
 export class UpdateDepartmentStatusController {
@@ -22,7 +22,7 @@ export class UpdateDepartmentStatusController {
       return res.status(ResponseStatusCode.OK).json({
         success: true,
         message: message,
-        data: departmentData
+        data: departmentData,
       });
     } catch (error) {
       return next(error);

@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { IUpdatePatientProfileUseCase } from "../../../application/repositories/patient/IUpdatePatientProfile.UseCase.ts";
+import type { IUpdatePatientProfileUseCase } from "../../../application/repositories/patient/i-update-patient-profile.usecase.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 

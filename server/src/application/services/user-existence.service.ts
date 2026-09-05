@@ -1,7 +1,7 @@
 import { ForbiddenError } from "../../domain/errors/forbidden.error.ts";
 import { InvalidCredentialsError } from "../../domain/errors/invalid-credentials.error.ts";
-import type { IUserRepository } from "../../domain/repositories/IUserRepository.ts";
-import type { IHashService } from "../../domain/services/hashService.ts";
+import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
+import type { IHashService } from "../../domain/services/hash.service.ts";
 import type { LoginDTO, UserDto } from "../dto/auth.dto.ts";
 
 export class UserExistenceService {
@@ -31,7 +31,7 @@ export class UserExistenceService {
       throw new InvalidCredentialsError("Access denied");
     }
 
-    if (existingUser.isBlocked || !existingUser.isActive) {
+    if (existingUser.isBlocked) {
       throw new ForbiddenError("Account access is currently restricted");
     }
 

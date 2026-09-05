@@ -1,9 +1,9 @@
-import type { Address } from "../../domain/entities/Address.ts";
-import type { Clinic } from "../../domain/entities/Clinic.ts";
-import type { Doctor } from "../../domain/entities/Doctor.ts";
-import type { DoctorClinic } from "../../domain/entities/DoctorClinic.ts";
-import type Patient from "../../domain/entities/Patient.ts";
-import type User from "../../domain/entities/User.ts";
+import type { Address } from "../../domain/entities/address.ts";
+import type { Clinic } from "../../domain/entities/clinic.ts";
+import type { Doctor } from "../../domain/entities/doctor.ts";
+import type { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
+import type Patient from "../../domain/entities/patient.ts";
+import type User from "../../domain/entities/user.ts";
 import type { ImageData } from "../../domain/types/shared.types.ts";
 import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
@@ -72,7 +72,7 @@ export type UpdateAddressDto = BaseAddress;
 
 export type AddressOption = "PRIMARY" | "NEW";
 
-export type DeleteMethods = "RESTORE" | "DELETE" | "BLOCK"
+export type DeleteMethods = "RESTORE" | "DELETE" | "BLOCK";
 
 export type PatientInfoDto = PatientProfile & {
   user: Pick<
@@ -83,9 +83,9 @@ export type PatientInfoDto = PatientProfile & {
 
 export type PatientFullDetailsDto = {
   user: Omit<User, "password" | "block" | "unblock" | "create"> | null;
-  patient: Patient,
-  address: Address | null
-}
+  patient: Patient;
+  address: Address | null;
+};
 
 export type PatientBasicInfoDto = {
   patient: Pick<
@@ -101,9 +101,9 @@ export type PatientBasicInfoDto = {
     imageUrl: Omit<ImageData, "publicId">;
   };
 } & {
-  user: Pick<User, "email" | "phone" | "isActive"> | null
+  user: Pick<User, "email" | "phone" | "isActive"> | null;
 };
 
 export type MessageDto = {
-  message: string
-}
+  message: string;
+};

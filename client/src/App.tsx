@@ -33,6 +33,8 @@ import PatientDetailsPage from "./pages/admin/PatientDetailsPage";
 import MyProfilePage from "./pages/patient/MyProfilePage";
 import PatientManagementPage from "./pages/admin/PatientmanagementPage";
 import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
+import SchedulePage from "./pages/doctor/SchedulePage";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 const router = createBrowserRouter([
   {
@@ -242,13 +244,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/doctor/schedule",
-                element: (
-                  <UnderConstruction
-                    title="Schedule"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                element: <SchedulePage />,
               },
               {
                 path: "/doctor/patients",
@@ -454,8 +450,10 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <div>
+      <TooltipProvider>
       <RouterProvider router={router} />
       <Toaster position="bottom-center" reverseOrder={false} />
+      </TooltipProvider>
     </div>
   );
 };

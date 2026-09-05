@@ -45,10 +45,8 @@ export default function DoctorManagementPage() {
       const getDoctors = await getAllDoctors();
       const data = getDoctors.data;
       if (data) {
-        // setTimeout(() => {
         setDoctorDetails(data);
         setIsLoading(false);
-        // }, 30000);
       } else {
         setDoctorDetails([]);
       }
@@ -381,15 +379,19 @@ export default function DoctorManagementPage() {
               <X size={20} />
             </button>
             <div className="overflow-auto max-h-[85vh] rounded-xl bg-[#080d14]/30">
-              <img
-                src={`${previewImage}`}
-                alt="Document Preview"
-                className="w-full h-auto"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "https://placehold.co/800x600/0d1a27/1dc465?text=Document+Not+Found";
-                }}
-              />
+              {previewImage?.toLowerCase().endsWith(".pdf") ? (
+                <iframe
+                  src={previewImage}
+                  title="Document preview"
+                  className="w-full h-full"
+                />
+              ) : (
+                <img
+                  src={previewImage ?? undefined}
+                  alt="Document preview"
+                  className="w-full h-full object-contain"
+                />
+              )}
             </div>
           </div>
         </div>

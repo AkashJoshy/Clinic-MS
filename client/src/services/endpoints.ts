@@ -1,4 +1,3 @@
-import type { LocationDto } from "@/types/patient";
 
 export const ENDPOINTS = {
   AUTH: {
@@ -9,10 +8,10 @@ export const ENDPOINTS = {
     ADMIN_LOGIN: "/auth/admin/login",
     DOCTOR_LOGIN: "/auth/doctor/login",
     FORGOT_PASSWORD: "/auth/forgot-password",
-    FORGOT_CLINIC_PASSWORD: "/auth/clinic/forgot-password",
+    FORGOT_DOCTOR_PASSWORD: "/auth/doctor/forgot-password",
     FORGOT_ADMIN_PASSWORD: "/auth/admin/forgot-password",
     RESET_PASSWORD: "/auth/reset-password",
-    RESET_CLINIC_PASSWORD: "/auth/clinic/reset-password",
+    RESET_DOCTOR_PASSWORD: "/auth/doctor/reset-password",
     RESET_ADMIN_PASSWORD: "/auth/admin/reset-password",
     REFRESH_TOKEN: "/auth/refresh",
     LOGOUT: "/auth/logout",

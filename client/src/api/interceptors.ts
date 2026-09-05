@@ -112,7 +112,10 @@ api.interceptors.response.use(
       }
     }
 
-    if (status === 401 && code === "REFRESH_SESSION_NOT_FOUND") {
+    if (
+      (status === 401 && code === "REFRESH_SESSION_NOT_FOUND") ||
+      (status === 401 && code === "Invalid token")
+    ) {
       const { user, logout } = useAuthStore.getState();
       const role = user?.role?.toLowerCase();
 

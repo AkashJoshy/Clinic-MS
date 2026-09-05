@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { UserRepository } from "../../infrastructure/repositories/user.repository.ts";
 import { PatientRepository } from "../../infrastructure/repositories/patient.repository.ts";
-import { ArgonHashService } from "../../infrastructure/services/ArgonHashService.ts";
-import { NodeMailerService } from "../../infrastructure/services/mail/NodeMailerService.ts";
-import { RedisCacheService } from "../../infrastructure/services/RedisCacheService.js";
+import { ArgonHashService } from "../../infrastructure/services/argon-hash.service.ts";
+import { NodeMailerService } from "../../infrastructure/services/mail/node-mailer.service.ts";
+import { RedisCacheService } from "../../infrastructure/services/redis-cache.service.ts";
 import { redis } from "../../infrastructure/cache/redis.client.js";
 import { VerifyEmailController } from "../controllers/auth/verify-email.controller.ts";
 import { ResendOtpController } from "../controllers/auth/resend-otp.controller.ts";
 import { AUTH_ENDPOINTS } from "../endpoints/auth.endpoints.js";
-import { JWTService } from "../../infrastructure/services/JWTService.js";
+import { JWTService } from "../../infrastructure/services/jwt.service.ts";
 import { UserCreationService } from "../../application/services/user-creation.service.js";
 import { PatientRegisterController } from "../controllers/auth/patient-register.controller.ts";
 import { AdminLoginController } from "../controllers/auth/admin-login.controller.ts";
@@ -182,12 +182,13 @@ const resetAdminPasswordUseCase = new ResetAdminPasswordUseCase(
 
 const patientGoogleLoginUseCase = new PatientGoogleLoginUseCase(
   accessTokenGenerationService,
-  refreshTokenGenerationService, 
+  refreshTokenGenerationService,
   mongooseUserRepository,
 );
 
 const patientGoogleRegisterUseCase = new PatientGoogleRegisterUseCase(
   accessTokenGenerationService,
+  refreshTokenGenerationService,
   mongooseUserRepository,
   mongoosePatientRepository,
   mongooseAddressRepository,
@@ -346,6 +347,7 @@ router.get(AUTH_ENDPOINTS["GOOGLE"], (req, res, next) => {
     scope: ["profile", "email"],
     session: false,
     state: mode,
+    prompt: "select_account" 
   })(req, res, next);
 });
 

@@ -13,7 +13,6 @@ import { usePatientForm } from "@/hooks/usePatientForm";
 import { createPatientProfile } from "@/services/patient.service";
 import { useLocationOptions } from "@/hooks/useLocationOptions";
 
-
 const AddProfile: React.FC<AddProfileProps> = ({
   isSubmit,
   onClose,
@@ -89,6 +88,12 @@ const AddProfile: React.FC<AddProfileProps> = ({
     !!activePatient.address.pincode;
 
   PATIENT_LOCATION_FIELDS[1].options = countries.map((c) => c.name);
+
+  useEffect(() => {
+    if (!isAddressComplete) {
+      setValue("addressOption", "NEW");
+    }
+  }, [isAddressComplete, setValue]);
 
   const country = watch("country");
   useEffect(() => {
@@ -303,7 +308,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
         )}
 
         {addressOption === "NEW" && (
-          <div className="">
+          <div className="space-y-4">
             <FormFields<RelativeFormData>
               fields={PATIENT_LOCATION_FIELDS}
               register={register}

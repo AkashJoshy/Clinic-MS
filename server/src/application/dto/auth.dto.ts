@@ -1,4 +1,4 @@
-import type User from "../../domain/entities/User.ts";
+import type User from "../../domain/entities/user.ts";
 import type { AuthProvider, Role } from "../../domain/types/user.types.ts";
 
 export interface CacheDTO {
@@ -33,8 +33,8 @@ export type RefreshPayloadDto = Pick<User, "id"> & { tokenId: string };
 export type BaseUserDto = Pick<User, "id" | "role" | "isBlocked" | "isActive">;
 
 export interface TokenPair {
-  access: string,
-  refresh: string
+  access: string;
+  refresh: string;
 }
 
 export interface LoginResponseDTO {
@@ -46,8 +46,8 @@ export interface LoginResponseDTO {
 
 export interface RefreshTokenResponseDto {
   user: BaseUserDto | null;
-  accessToken: string,
-  message?: string
+  accessToken: string;
+  message?: string;
 }
 
 export interface LogoutResponseDto {

@@ -3,7 +3,7 @@ import type { CreateDepartmentDto } from "../../../application/dto/admin.dto.ts"
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import type { IEditDepartmentUseCase } from "../../../application/repositories/admin/IEditDepartmentUseCase.ts";
+import type { IEditDepartmentUseCase } from "../../../application/repositories/admin/i-edit-department.usecase.ts";
 
 export class EditDepartmentController {
   constructor(private readonly _editDepartment: IEditDepartmentUseCase) {}

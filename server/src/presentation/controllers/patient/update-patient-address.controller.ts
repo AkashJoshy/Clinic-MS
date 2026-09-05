@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import type { UpdateAddressDto } from "../../../application/dto/shared.dto.ts";
-import type { IUpdateAddressUseCase } from "../../../application/repositories/patient/IUpdateAddress.UseCase.ts";
+import type { IUpdateAddressUseCase } from "../../../application/repositories/patient/i-update-address.usecase.ts";
 
 export class UpdatePatientAddressController {
   constructor(private _updatePatient: IUpdateAddressUseCase) {}

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
-import type { ILogoutUseCase } from "../../../application/repositories/auth/ILogoutUseCase.ts";
+import type { ILogoutUseCase } from "../../../application/repositories/auth/i-logout.usecase.ts";
 
 export class LogoutController {
   constructor(private _logout: ILogoutUseCase) {}
