@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
+import { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
 import DoctorClinicModel, {
   type IDoctorClinic,
 } from "../models/doctor-clinic.model.ts";

@@ -1,8 +1,8 @@
-import type { Clinic } from "../../domain/entities/clinic.ts";
-import type { Department } from "../../domain/entities/department.ts";
-import type { Doctor } from "../../domain/entities/doctor.ts";
-import type { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
-import type User from "../../domain/entities/user.ts";
+import type { Clinic } from "../../domain/entities/clinic.entity.ts";
+import type { Department } from "../../domain/entities/department.entity.ts";
+import type { Doctor } from "../../domain/entities/doctor.entity.ts";
+import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
+import type User from "../../domain/entities/user.entity.ts";
 import type { DoctorStatus } from "../../domain/types/doctor.types.ts";
 import type {
   Session,

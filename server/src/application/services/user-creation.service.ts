@@ -1,4 +1,4 @@
-import User from "../../domain/entities/user.ts";
+import User from "../../domain/entities/user.entity.ts";
 import { InternalServerError } from "../../domain/errors/internal-server.error.js";
 import { AlreadyExistsError } from "../../domain/errors/user-already-exists.error.js";
 import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";

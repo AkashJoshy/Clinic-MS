@@ -18,15 +18,19 @@ export class VerifyEmailUseCase implements IVerifyEmailUseCase {
     );
 
     if (!data.token) {
-      throw new InvalidCredentialsError("Token is missing");
+      throw new InvalidCredentialsError(
+        "Verification session is missing or invalid",
+      );
     }
 
-    if (data.otp.length < 6) {
-      throw new InvalidCredentialsError("Invalid OTP");
+    if (data.otp.length !== 6) {
+      throw new InvalidCredentialsError("Please enter a valid 6-digit OTP");
     }
 
     if (!storedDetails?.otp) {
-      throw new InvalidCredentialsError("OTP expired");
+      throw new InvalidCredentialsError(
+        "Your OTP has expired. Please request a new OTP",
+      );
     }
 
     let user = await this._userRepository.findByEmail(storedDetails.email);

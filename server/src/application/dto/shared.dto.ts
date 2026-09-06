@@ -1,9 +1,9 @@
-import type { Address } from "../../domain/entities/address.ts";
-import type { Clinic } from "../../domain/entities/clinic.ts";
-import type { Doctor } from "../../domain/entities/doctor.ts";
-import type { DoctorClinic } from "../../domain/entities/doctor-clinic.ts";
-import type Patient from "../../domain/entities/patient.ts";
-import type User from "../../domain/entities/user.ts";
+import type { Address } from "../../domain/entities/address.entity.ts";
+import type { Clinic } from "../../domain/entities/clinic.entity.ts";
+import type { Doctor } from "../../domain/entities/doctor.entity.ts";
+import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
+import type Patient from "../../domain/entities/patient.entity.ts";
+import type User from "../../domain/entities/user.entity.ts";
 import type { ImageData } from "../../domain/types/shared.types.ts";
 import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
@@ -101,7 +101,7 @@ export type PatientBasicInfoDto = {
     imageUrl: Omit<ImageData, "publicId">;
   };
 } & {
-  user: Pick<User, "email" | "phone" | "isActive"> | null;
+  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
 };
 
 export type MessageDto = {

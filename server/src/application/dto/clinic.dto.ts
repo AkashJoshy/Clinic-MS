@@ -1,4 +1,4 @@
-import type { Clinic } from "../../domain/entities/clinic.ts";
+import type { Clinic } from "../../domain/entities/clinic.entity.ts";
 import type {
   ImageData,
   ServiceMode,

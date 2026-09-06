@@ -10,7 +10,15 @@ export class PatientLoginController {
     try {
       const data = req.body;
 
-      const result = await this._patientLogin.execute(data);
+      const result = await this._patientLogin.execute(data)
+
+      if ("token" in result) {
+        return res.status(ResponseStatusCode.OK).json({
+        success: true,
+        message: RESPONSE_MESSAGE.OTP_EMAIL_MESSAGE,
+        data: result,
+      });
+      }
 
       const { tokenPair, role, user, message } = result;
 

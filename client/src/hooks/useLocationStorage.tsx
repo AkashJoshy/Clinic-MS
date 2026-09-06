@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-
 const useLocationStorage = (key: string, initialValue: any) => {
   
     const [value, setValue] = useState(() => {

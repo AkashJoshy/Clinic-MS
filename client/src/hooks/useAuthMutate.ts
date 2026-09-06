@@ -4,6 +4,7 @@ import { useAuthStore } from "@/store/auth/index";
 
 interface UseMutateOptions<TData> {
   onSuccess?: (data: TData) => void;
+  onError?: (data: TData) =>  void
 }
 
 export const useAuthMutate = <TData, TVariables>(
@@ -34,6 +35,7 @@ export const useAuthMutate = <TData, TVariables>(
     },
     onError: (error: any) => {
       setLoading(false);
+      options?.onError?.(error)
       toast.error(error.message);
     },
     onMutate: () => {

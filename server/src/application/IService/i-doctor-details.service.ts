@@ -1,4 +1,4 @@
-import type { Doctor } from "../../domain/entities/doctor.ts";
+import type { Doctor } from "../../domain/entities/doctor.entity.ts";
 import type { DoctorInfo } from "../dto/doctor.dto.ts";
 
 export interface IDoctorDetailsService {

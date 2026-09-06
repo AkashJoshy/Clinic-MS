@@ -4,6 +4,7 @@ import type {
   AccessPayloadDto,
   LoginDTO,
   LoginResponseDTO,
+  LoginVerificationResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
 import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
@@ -20,18 +21,21 @@ export class PatientLoginUseCase implements ILoginUseCase {
     private readonly _mailVerficationService: IEmailVerificationService,
   ) {}
 
-  async execute(data: LoginDTO): Promise<LoginResponseDTO> {
+  async execute(
+    data: LoginDTO,
+  ): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
 
     if (!user.isEmailVerified) {
-      await this._mailVerficationService.execute(
+      const token = await this._mailVerficationService.execute(
         user.email,
         user.fullName,
         user.role as Role,
       );
-      throw new InvalidCredentialsError(
-        "A verification email has been sent. Please check your inbox and verify your account.",
-      );
+
+      return {
+        token,
+      };
     }
 
     const { password, ...updatedUser } = user;

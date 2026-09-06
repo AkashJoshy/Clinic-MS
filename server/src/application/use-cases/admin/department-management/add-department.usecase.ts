@@ -1,4 +1,4 @@
-import { Department } from "../../../../domain/entities/department.ts";
+import { Department } from "../../../../domain/entities/department.entity.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
 import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";

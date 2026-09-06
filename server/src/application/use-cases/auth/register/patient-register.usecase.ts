@@ -4,14 +4,14 @@ import type {
   VerificationTokenDto,
 } from "../../../dto/auth.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
-import { Address } from "../../../../domain/entities/address.ts";
+import { Address } from "../../../../domain/entities/address.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
-import Patient from "../../../../domain/entities/patient.ts";
 import type { IPatientRegisterUseCase } from "../../../repositories/auth/i-patient-register.usecase.ts";
 import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
 import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
+import Patient from "../../../../domain/entities/patient.entity.ts";
 
 export class PatientRegisterUseCase implements IPatientRegisterUseCase {
   constructor(

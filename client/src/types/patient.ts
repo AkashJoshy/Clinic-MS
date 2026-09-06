@@ -162,7 +162,7 @@ export type PatientBasicInfo = {
     imageUrl: Omit<ImageData, "publicId">;
   };
 } & {
-  user: Pick<User, "email" | "phone" | "isActive">;
+  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked">;
 }
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;

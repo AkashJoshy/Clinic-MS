@@ -1,4 +1,4 @@
-import type User from "../../domain/entities/user.ts";
+import type User from "../../domain/entities/user.entity.ts";
 import type { AuthProvider, Role } from "../../domain/types/user.types.ts";
 
 export interface CacheDTO {
@@ -42,6 +42,10 @@ export interface LoginResponseDTO {
   tokenPair: TokenPair;
   role: string;
   message?: string;
+}
+
+export interface LoginVerificationResponseDTO {
+  token: string;
 }
 
 export interface RefreshTokenResponseDto {

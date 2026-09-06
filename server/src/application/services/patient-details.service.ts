@@ -1,4 +1,4 @@
-import type Patient from "../../domain/entities/patient.ts";
+import type Patient from "../../domain/entities/patient.entity.ts";
 import type { IAddressRepository } from "../../domain/repositories/i-address.repository.ts";
 import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type {

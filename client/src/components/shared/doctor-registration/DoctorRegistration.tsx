@@ -11,10 +11,18 @@ import ConsultationInfo from "./ConsultationInfo";
 import VerificationDocs from "./VerificationDocs";
 import { registerDoctor } from "@/services/doctor.service";
 import { useDepartments } from "@/hooks/useDepartments";
+import { useEffect } from "react";
 
 export default function DoctorRegistration() {
   const { step, goNext, goBack, onSubmit } = useDoctorRegistrationContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  }, [step])
 
   const { mutate, isPending } = useMutate(registerDoctor, {
     onSuccess: () => navigate("/doctor"),

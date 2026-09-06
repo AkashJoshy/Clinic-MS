@@ -1,5 +1,5 @@
 import type { RelationToPatient } from "../constants/patient.constants.ts";
-import type Patient from "../entities/patient.ts";
+import type Patient from "../entities/patient.entity.ts";
 import type { Gender, ImageData } from "./shared.types.ts";
 
 export interface RegisterPatientProps {

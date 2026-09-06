@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import RefreshSession from "../../domain/entities/refresh-session.ts";
+import RefreshSession from "../../domain/entities/refresh-session.entity.ts";
 import type { IRefreshSessionRepository } from "../../domain/repositories/i-refresh-session.repository.ts";
 import type { IRefreshSessionDocument } from "../models/refresh-session.model.ts";
 import RefreshSessionModel from "../models/refresh-session.model.ts";

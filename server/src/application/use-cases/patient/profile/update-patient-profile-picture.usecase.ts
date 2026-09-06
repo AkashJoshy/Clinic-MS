@@ -1,4 +1,4 @@
-import Patient from "../../../../domain/entities/patient.ts";
+import Patient from "../../../../domain/entities/patient.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";

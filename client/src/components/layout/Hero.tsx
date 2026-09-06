@@ -1,8 +1,9 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import { Stethoscope } from "lucide-react";
 
-const Hero = ({websiteName}: {websiteName: string }) => {
+const Hero = ({ websiteName }: { websiteName: string }) => {
   return (
     <div>
       <section className="min-h-screen pt-24 sm:pt-30 px-6 sm:px-12 pb-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-15 relative">
@@ -21,19 +22,14 @@ const Hero = ({websiteName}: {websiteName: string }) => {
             Connected <span className="text-primary">Clinics.</span>
           </h1>
           <div className="fade-up fade-up-3 flex gap-3.5 flex-wrap justify-center lg:justify-start">
-            <Link to={"/doctor-registration"}>
+            <Link to="/doctor-registration">
               <Button
-                size={"lg"}
-                className="transition-transform duration-150 hover:-translate-y-0.5"
-                variant="default"
+                size="lg"
+                variant="outline"
+                className="group gap-2 border-primary/40 transition-all bg-primary duration-200 hover:-translate-y-0.5 hover:bg-primary/10 hover:border-primary"
               >
-                Start Free Trial
-              </Button>
-            </Link>
-
-            <Link to={"/signup"}>
-              <Button size={"lg"} variant="main">
-                Sign Up
+                <Stethoscope className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
+                Join as a Doctor
               </Button>
             </Link>
           </div>

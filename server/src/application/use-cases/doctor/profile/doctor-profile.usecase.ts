@@ -5,7 +5,7 @@ import type { IDepartmentRepository } from "../../../../domain/repositories/i-de
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { DoctorInfo, DoctorProfileInfo } from "../../../dto/doctor.dto.ts";
+import type { DoctorProfileInfo } from "../../../dto/doctor.dto.ts";
 import type { IDoctorProfileUseCase } from "../../../repositories/doctor/i-doctor-profile.usecase.ts";
 
 export class DoctorProfileUseCase implements IDoctorProfileUseCase {

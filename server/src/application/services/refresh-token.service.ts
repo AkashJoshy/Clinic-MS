@@ -1,4 +1,4 @@
-import RefreshSession from "../../domain/entities/refresh-session.ts";
+import RefreshSession from "../../domain/entities/refresh-session.entity.ts";
 import { InternalServerError } from "../../domain/errors/internal-server.error.ts";
 import type { IRefreshSessionRepository } from "../../domain/repositories/i-refresh-session.repository.ts";
 import type { IHashService } from "../../domain/services/hash.service.ts";

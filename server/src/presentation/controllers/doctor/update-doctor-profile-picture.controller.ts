@@ -3,7 +3,7 @@ import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import type { IUpdateProfilePictureUseCase } from "../../../application/repositories/patient/i-update-profile-picture.usecase.ts";
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
-import type User from "../../../domain/entities/user.ts";
+import type User from "../../../domain/entities/user.entity.ts";
 
 export class UpdateDoctorProfilePictureController {
   constructor(private _updateDoctorPicture: IUpdateProfilePictureUseCase) {}

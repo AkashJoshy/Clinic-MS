@@ -84,96 +84,124 @@ export const PatientListItem = ({
           <div className=" ">
             <div className="">
               <h3 className="text-white text-base font-semibold truncate xsxs:max-w-20 md:max-w-40">
-                {isPatient?.displayName}
+                {isPatient?.displayName || "Name unavailable"}
               </h3>
 
               <span className="text-[11px] px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[#8b9ab0]">
-                {isPatient?.patientNumber ?? "Patient Number not found"}
+                {isPatient?.patientNumber ?? "Patient ID unavailable"}
               </span>
             </div>
 
-            <div className="mt-3 text-xs text-[#8b9ab0]">
-              <div className="flex gap-1 min-w-0">
-                <Mail size={13} className="text-[#1dc465] shrink-0 mt-0.5" />
-                <span className="truncate xsxs:w-20 xxs:w-40 md:w-30">
-                  {isUser?.email || "Email address unavailable"}
-                </span>
-              </div>
+            {isUser && (
+              <div className="mt-3 text-xs text-[#8b9ab0]">
+                <div className="flex gap-1 min-w-0">
+                  <Mail size={13} className="text-[#1dc465] shrink-0 mt-0.5" />
+                  <span className="truncate xsxs:w-20 xxs:w-40 md:w-30">
+                    {isUser?.email || "Email address unavailable"}
+                  </span>
+                </div>
 
-              <div className="gap-1 flex mt-2 truncate w-30">
-                <Phone size={13} className="text-[#1dc465]" />
-                {isUser?.phone || "Phone unavailable"}
-              </div>
+                <div className="gap-1 flex mt-2 truncate w-30">
+                  <Phone size={13} className="text-[#1dc465]" />
+                  {isUser?.phone || "Phone unavailable"}
+                </div>
 
-              <div className="flex mt-2 xsxs:gap-2 xxs:gap-8 ">
-                {isPatient?.medicalInformation.bloodGroup && (
-                  <div className="flex">
-                    <Droplet size={13} className="text-[#1dc465]" />
-                    {isPatient?.medicalInformation.bloodGroup}
-                  </div>
-                )}
+                <div className="flex mt-2 xsxs:gap-2 xxs:gap-8 ">
+                  {isPatient?.medicalInformation.bloodGroup && (
+                    <div className="flex">
+                      <Droplet size={13} className="text-[#1dc465]" />
+                      {isPatient?.medicalInformation.bloodGroup}
+                    </div>
+                  )}
 
-                <div className="">{isPatient?.gender}</div>
+                  <div className="">{isPatient?.gender}</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row xl:flex-col gap-2 shrink-0">
-          <span
-            className={`xsxs:w-full md:w-35 text-center text-xs font-semibold xsxs:py-2 md:py-3 rounded-lg ${
-              isUser?.isActive
-                ? "bg-[#1dc465]/15 text-[#1dc465]"
-                : "bg-red-500/15 text-red-400"
-            }`}
-          >
-            {isUser?.isActive ? "Active" : "Blocked"}
-          </span>
-
-          <button
-            onClick={() => navigate(`/admin/patients/${isPatient.id}`)}
-            className="xsxs:w-full md:w-35 flex text-xs items-center justify-center gap-2 py-2 rounded-lg border border-white/10 text-[#8b9ab0] hover:text-white hover:border-[#1dc465]/40 transition cursor-pointer"
-          >
-            <Eye size={13} />
-            Details
-          </button>
-
-          {isUser?.isActive ? (
-            <button
-              onClick={() => {
-                setIsOpen(true);
-                if (patientInfo.patient.id)
-                  setSelectedPatient({
-                    id: patientInfo.patient.id,
-                    name: patientInfo.patient.displayName,
-                    action: "BLOCK",
-                    status: "ACTIVE",
-                  });
-              }}
-              className="xsxs:w-full md:w-35 text-xs flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition cursor-pointer"
+        {isUser ? (
+          <div className="flex flex-col sm:flex-row xl:flex-col gap-2 shrink-0">
+            <span
+              className={`xsxs:w-full md:w-35 text-center text-xs font-semibold xsxs:py-2 md:py-3 rounded-lg ${
+                isUser?.isBlocked
+                  ? "bg-red-500/15 text-red-400"
+                  : isUser?.isActive
+                    ? "bg-[#1dc465]/15 text-[#1dc465]"
+                    : "bg-blue-500/15 text-blue-400"
+              }`}
             >
-              <Ban size={12} />
-              Block
-            </button>
-          ) : (
+              {isUser?.isBlocked
+                ? "Blocked"
+                : isUser?.isActive
+                  ? "Active"
+                  : "Inactive"}
+            </span>
+
             <button
-              onClick={() => {
-                setIsOpen(true);
-                if (patientInfo.patient.id)
-                  setSelectedPatient({
-                    id: patientInfo.patient.id,
-                    name: patientInfo.patient.displayName,
-                    action: "RESTORE",
-                    status: "INACTIVE",
-                  });
-              }}
-              className="xsxs:w-full md:w-35 text-xs flex items-center justify-center gap-2 py-2 rounded-lg bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465] hover:bg-[#1dc465] hover:text-black transition cursor-pointer"
+              onClick={() => navigate(`/admin/patients/${isPatient.id}`)}
+              className="xsxs:w-full md:w-35 flex text-xs items-center justify-center gap-2 py-2 rounded-lg border border-white/10 text-[#8b9ab0] hover:text-white hover:border-[#1dc465]/40 transition cursor-pointer"
             >
-              <RotateCcw size={12} />
-              Restore
+              <Eye size={13} />
+              Details
             </button>
-          )}
-        </div>
+            
+
+            {!isUser?.isBlocked && isUser?.isActive ? (
+              <button
+                onClick={() => {
+                  setIsOpen(true);
+                  if (patientInfo.patient.id)
+                    setSelectedPatient({
+                      id: patientInfo.patient.id,
+                      name: patientInfo.patient.displayName,
+                      action: "BLOCK",
+                      status: "ACTIVE",
+                    });
+                }}
+                className="xsxs:w-full md:w-35 text-xs flex items-center justify-center gap-2 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition cursor-pointer"
+              >
+                <Ban size={12} />
+                Block
+              </button>
+            ) : !isUser?.isBlocked && !isUser?.isActive ? "" : (
+              <button
+                onClick={() => {
+                  setIsOpen(true);
+                  if (patientInfo.patient.id)
+                    setSelectedPatient({
+                      id: patientInfo.patient.id,
+                      name: patientInfo.patient.displayName,
+                      action: "RESTORE",
+                      status: "INACTIVE",
+                    });
+                }}
+                className="xsxs:w-full md:w-35 text-xs flex items-center justify-center gap-2 py-2 rounded-lg bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465] hover:bg-[#1dc465] hover:text-black transition cursor-pointer"
+              >
+                <RotateCcw size={12} />
+                Restore
+              </button>
+            )}
+          
+
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-2 px-5 py-3 rounded-xl border border-red-500/20 bg-red-500/5 min-w-35">
+            <div className="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+              <Ban size={15} className="text-red-400" />
+            </div>
+
+            <div className="text-center">
+              <p className="text-xs font-semibold text-red-400">
+                User Details Missing
+              </p>
+              <p className="text-[10px] text-[#8b9ab0] mt-0.5">
+                Account information unavailable
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {isOpen &&

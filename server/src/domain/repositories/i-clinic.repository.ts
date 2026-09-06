@@ -1,5 +1,5 @@
 import type { IBaseRepository } from "./i-base.repository.ts";
-import type { Clinic } from "../entities/clinic.ts";
+import type { Clinic } from "../entities/clinic.entity.ts";
 
 export interface IClinicRepository extends IBaseRepository<Clinic> {
   findByRegistrationNumber(registrationNumber: string): Promise<Clinic | null>;

@@ -34,6 +34,7 @@ export const RESPONSE_MESSAGE = {
 
   OTP_RESENT: "Otp resend successfully",
   OTP_ACCOUNT_VERIFIED: "Account Verified",
+  OTP_EMAIL_MESSAGE: "A verification email has been sent. Please check your inbox and verify your account.",
 
   CLINIC_REGISTERED: "Clinic registered successfully",
 

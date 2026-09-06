@@ -1,4 +1,4 @@
-import type { Department } from "../../domain/entities/department.ts";
+import type { Department } from "../../domain/entities/department.entity.ts";
 import type { IDepartmentRepository } from "../../domain/repositories/i-department.repository.ts";
 import type { IGetAllDepartmentsUseCase } from "../repositories/admin/i-get-all-departments.usecase.ts";
 

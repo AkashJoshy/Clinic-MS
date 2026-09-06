@@ -76,9 +76,7 @@ const OTPForm = ({
         <form onSubmit={handleSubmit(async data => {
           try {
             const token = searchParams.get('token')
-            
-            if (!token) return
-            mutateAsync({ ...data, token })
+            mutateAsync({ ...data, token: token! })
           } catch (error) {
             return
           }
@@ -99,7 +97,7 @@ const OTPForm = ({
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 onPaste={handlePaste}
                 className={`
-                w-9 h-13 min-[375px]:w-11 min-[375px]:h-14 min-[425px]:w-13 min-[425px]:h-14 md:w-12 md:h-14 text-center text-xl font-semibold rounded-xl border-2 outline-none
+                w-9 h-13 xxs:w-11 xxs:h-14 xs:w-13 xs:h-14 md:w-12 md:h-14 text-center text-xl font-semibold rounded-xl border-2 outline-none
                 transition-all duration-200 caret-primary
                 ${
                   digit
@@ -147,7 +145,7 @@ const OTPForm = ({
                     if (!token) return;
                     await resendOtp({ token });
                   }}
-                  className="font-semibold text-primary hover:text-primary-600 underline underline-offset-2 transition-colors duration-200"
+                  className="font-semibold cursor-pointer text-primary hover:text-primary-600 underline underline-offset-2 transition-colors duration-200"
                 >
                   Resend Code
                 </button>

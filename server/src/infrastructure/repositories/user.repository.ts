@@ -1,4 +1,4 @@
-import User from "../../domain/entities/User.ts";
+import User from "../../domain/entities/user.entity.ts";
 import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type { Role } from "../../domain/types/user.types.ts";
 import UserModel, { type UserDocument } from "../models/user.model.ts";

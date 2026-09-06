@@ -1,12 +1,12 @@
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
-import Patient from "../../../../domain/entities/patient.ts";
+import Patient from "../../../../domain/entities/patient.entity.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type {
   CreatePatientProfileDto,
   PatientProfile,
 } from "../../../dto/patient.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
-import { Address } from "../../../../domain/entities/address.ts";
+import { Address } from "../../../../domain/entities/address.entity.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import type { ICreatePatientProfileUseCase } from "../../../repositories/patient/i-create-patient-profile.usecase.ts";
 

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { Department } from "../../domain/entities/Department.ts";
+import { Department } from "../../domain/entities/department.entity.ts";
 import type { IDepartmentRepository } from "../../domain/repositories/i-department.repository.ts";
 import {
   DepartmentModel,

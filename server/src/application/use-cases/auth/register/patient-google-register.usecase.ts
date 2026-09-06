@@ -7,9 +7,9 @@ import type {
 } from "../../../dto/auth.dto.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
-import User from "../../../../domain/entities/user.ts";
-import Patient from "../../../../domain/entities/patient.ts";
-import { Address } from "../../../../domain/entities/address.ts";
+import User from "../../../../domain/entities/user.entity.ts";
+import Patient from "../../../../domain/entities/patient.entity.ts";
+import { Address } from "../../../../domain/entities/address.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { welcomeTemplate } from "../../../../infrastructure/services/mail/templates/welcome.template.ts";

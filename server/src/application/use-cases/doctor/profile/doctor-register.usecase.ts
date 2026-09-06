@@ -1,7 +1,6 @@
-import { Address } from "../../../../domain/entities/address.ts";
-import { Clinic } from "../../../../domain/entities/clinic.ts";
-import { Doctor } from "../../../../domain/entities/doctor.ts";
-import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.ts";
+import { Address } from "../../../../domain/entities/address.entity.ts";
+import { Doctor } from "../../../../domain/entities/doctor.entity.ts";
+import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
@@ -15,6 +14,7 @@ import { uploadToCloudinary } from "../../../../infrastructure/cloudinary/cloudi
 import type { DoctorRegisterDto } from "../../../dto/doctor.dto.ts";
 import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
 import type { IDoctorRegisterUseCase } from "../../../repositories/doctor/i-doctor-register.usecase.ts";
+import { Clinic } from "../../../../domain/entities/clinic.entity.ts";
 
 export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
   constructor(

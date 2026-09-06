@@ -33,6 +33,7 @@ export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
               email: res.user.email,
               phone: res.user.phone,
               isActive: res.user.isActive,
+              isBlocked: res.user.isBlocked
             }
           : null,
       };

@@ -1,5 +1,5 @@
-import type { Doctor } from "../../domain/entities/doctor.ts";
-import type User from "../../domain/entities/user.ts";
+import type { Doctor } from "../../domain/entities/doctor.entity.ts";
+import type User from "../../domain/entities/user.entity.ts";
 import type {
   ApprovalStatus,
   DayOfWeek,

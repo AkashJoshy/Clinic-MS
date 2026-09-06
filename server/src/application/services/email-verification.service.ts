@@ -34,10 +34,6 @@ export class EmailVerificationService {
       <div>
         ${welcomeTemplate.body.replace("{{NAME}}", name)}
         ${otpVerifyTemplate.body
-          .replace(
-            "{{VERIFY_URL}}",
-            `${process.env.CLIENT_ORIGIN}/verify-email?token=${verificationToken}`,
-          )
           .replace("{{OTP}}", otp)}
         ${EMAIL_FOOTER.FOOTER1}
       </div>

@@ -31,9 +31,13 @@ const PatientLoginForm = () => {
   const navigate = useNavigate()
 
   const { mutateAsync, isPending, setLoading } = useAuthMutate(loginUser, {
-    onSuccess: () => {
-      navigate("/patient/dashboard")
-    }
+    onSuccess: (data) => {
+      if (data.data.token) {
+        navigate(`/verify-email?token=${data.data.token}`)
+      } else {
+        navigate("/patient/dashboard")
+      }
+    },
   })
 
   const login = useAuthStore(state => state.login)

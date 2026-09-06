@@ -52,7 +52,7 @@ export default function PatientManagementPage() {
 
       const match =
         det.patient.displayName.toLowerCase().includes(q) ||
-        det.user.email?.toLowerCase().includes(q);
+        det.user?.email?.toLowerCase().includes(q);
 
       if (!match) return false;
     }
@@ -64,7 +64,7 @@ export default function PatientManagementPage() {
       return false;
     }
     const activeStatus = det.user
-      ? det.user.isActive
+      ? det.user?.isActive === true
         ? "ACTIVE"
         : "INACTIVE"
       : "INACTIVE";
