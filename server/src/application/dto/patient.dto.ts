@@ -2,7 +2,7 @@ import type { RelationToPatient } from "../../domain/constants/patient.constants
 import type { Address } from "../../domain/entities/address.entity.ts";
 import type Patient from "../../domain/entities/patient.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
-import type { BasePatient } from "../../domain/types/patient.types.ts";
+import type { BasePatient, EmergencyContact } from "../../domain/types/patient.types.ts";
 import type { Gender, ImageData } from "../../domain/types/shared.types.ts";
 import type {
   AddressOption,
@@ -52,6 +52,9 @@ export type UpdatePatientDto = Pick<
   "displayName" | "id" | "dateOfBirth" | "gender" | "medicalInformation"
 > &
   Pick<User, "email" | "phone">;
+
+export type UpdateEmergencyContactDto = EmergencyContact & { id: string }
+
 
 export type PatientProfile = {
   patient: Omit<BasePatient, "imageUrl"> & {

@@ -9,24 +9,35 @@ import type { IAddressRepository } from "../../../../domain/repositories/i-addre
 import { Address } from "../../../../domain/entities/address.entity.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import type { ICreatePatientProfileUseCase } from "../../../repositories/patient/i-create-patient-profile.usecase.ts";
+import type { Gender } from "../../../../domain/types/shared.types.ts";
+import type { RelationToPatient } from "../../../../domain/constants/patient.constants.ts";
+import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 
 export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase {
   constructor(
     private readonly _patientRepository: IPatientRepository,
     private readonly _addressRepository: IAddressRepository,
+    private readonly _userRepository: IUserRepository
   ) {}
 
   async execute(data: CreatePatientProfileDto): Promise<PatientProfile> {
     const patientCount = await this._patientRepository.getPatientNumber();
     const patientNumber = `${process.env.PATIENT_NUMBER_MODEL || "PAT"}-${patientCount}`;
 
-    const selfPatient = await this._patientRepository.findOneBy({
-      userId: data.userId,
-      relation: "SELF",
-    });
+    const selfPatient = await this._patientRepository.findByUserId(data.userId);
 
-    if (!selfPatient) {
+    if (!selfPatient || !selfPatient.id) {
+      throw new NotFoundError("Patient");
+    }
+    
+    if (!selfPatient.isSelf()) {
       throw new NotFoundError("Profile cant create without Self Patient!");
+    }
+    
+    let user = await this._userRepository.findById(selfPatient.userId)
+    
+    if (!user || !user.id) {
+      throw new NotFoundError("Patient");
     }
 
     const newPatient = await this._patientRepository.save(
@@ -35,9 +46,9 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
           id: null,
           userId: data.userId,
           displayName: data.displayName,
-          relation: data.relation.toUpperCase() as any,
+          relation: data.relation.toUpperCase() as RelationToPatient,
           dateOfBirth: data.dateOfBirth,
-          gender: data.gender.toUpperCase() as any,
+          gender: data.gender.toUpperCase() as Gender,
           medicalInformation: {
             bloodGroup: data.bloodGroup,
             allergies: data.allergies || [],
@@ -45,7 +56,7 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
           },
           emergencyContact: {
             name: selfPatient.displayName,
-            phone: data.phone,
+            phone: user.phone,
             relationship: selfPatient.relation,
           },
         },

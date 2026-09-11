@@ -1,0 +1,18 @@
+import React from "react";
+import OTPForm from "@/components/shared/auth/otp-form.shared";
+import { TWO_FACTOR_VERIFICATION_DETAILS } from "@/data/otp.data";
+
+const TwofactorAuthenticationPage = () => {
+  return (
+    <div>
+      <OTPForm
+        otpDetails={TWO_FACTOR_VERIFICATION_DETAILS}
+        className="mt-10 lg:mt-30"
+        role={"PATIENT"}
+        backRoute={""}
+      />
+    </div>
+  );
+};
+
+export default TwofactorAuthenticationPage;

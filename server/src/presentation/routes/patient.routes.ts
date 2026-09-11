@@ -13,7 +13,8 @@ import {
   updatePersonalProfilePictureSchema,
 } from "../schemas/shared/shared.schema.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
-import { createPatientProfileController, patientProfilesController, updatePatientAddressController, updatePatientProfileController, updatePatientProfilePictureController } from "../../container/index.ts";
+import { createPatientProfileController, patientProfilesController, updatePatientAddressController, updatePatientProfileController, updatePatientProfilePictureController, updatePatientEmergencyContactController } from "../../container/index.ts";
+import { updatePatientEmergencyContactSchema } from "../schemas/patient/profile.schema.ts";
 
 const router = Router();
 
@@ -38,7 +39,7 @@ router.patch(
 );
 
 router.patch(
-  PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE_ADDRESS"],
+  PATIENT_ENDPOINTS["UPDATE_ADDRESS"],
   authenticateUser,
   authorizeUser,
   validate(updateAddressSchema),
@@ -46,9 +47,19 @@ router.patch(
     await updatePatientAddressController.handle(req, res, next);
   },
 );
+ 
+router.patch(
+  PATIENT_ENDPOINTS["UPDATE_EMERGENCY_CONTACT"],
+  authenticateUser,
+  authorizeUser,
+  validate(updatePatientEmergencyContactSchema),
+  async (req, res, next) => {
+    await updatePatientEmergencyContactController.handle(req, res, next);
+  },
+);
 
 router.patch(
-  PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE_PICTURE"],
+  PATIENT_ENDPOINTS["UPDATE_PROFILE_PICTURE"],
   authenticateUser,
   authorizeUser,
   profileupload,

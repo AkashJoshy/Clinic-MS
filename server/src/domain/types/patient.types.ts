@@ -28,6 +28,7 @@ export interface EmergencyContact {
   relationship: RelationToPatient;
 }
 
+
 export type BasePatient = Pick<
   Patient,
   | "id"

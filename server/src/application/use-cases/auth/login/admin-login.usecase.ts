@@ -3,6 +3,7 @@ import type {
   LoginDTO,
   AccessPayloadDto,
   RefreshPayloadDto,
+  LoginVerificationResponseDTO,
 } from "../../../dto/auth.dto.ts";
 import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
 import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
@@ -16,7 +17,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
     private _refreshtokenGenerationService: IRefreshTokenGenerationService,
   ) {}
 
-  async execute(data: LoginDTO): Promise<LoginResponseDTO> {
+  async execute(data: LoginDTO): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
 
     const { password, ...updatedUser } = user;

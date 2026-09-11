@@ -1,5 +1,5 @@
-import { GENDER_API_TO_LABEL } from "@/constants/patient.constant";
-import type { Gender } from "@/types/patient";
+import { GENDER_API_TO_LABEL, RELATION_API_TO_LABEL } from "@/constants/patient.constant";
+import type { Gender, RelationToPatient } from "@/types/patient";
 
 export const formatDateDisplay = (value?: string) => {
   if (!value) return "Not set";
@@ -19,4 +19,11 @@ export const normalizeGender = (value?: Gender): Gender => {
     ("Prefer Not To Say" as Gender)
   );
 };
+
+export const normalizeRelation = (value?: RelationToPatient | undefined): RelationToPatient => {
+  if (!value) return ""
+  return (
+    (RELATION_API_TO_LABEL[value.toUpperCase()] as RelationToPatient ?? "")
+  );
+}
 

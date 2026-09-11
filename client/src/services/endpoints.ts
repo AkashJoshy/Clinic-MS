@@ -35,6 +35,7 @@ export const ENDPOINTS = {
     UPDATE_PROFILE: (patientId: string) => `/patient/profiles/${patientId}`,
     UPDATE_PROFILE_PICTURE: () => `/patient/profiles/picture/p`,
     UPDATE_ADDRESS: (onwerId: string) => `/patient/profiles/addressess/${onwerId}`,
+    UPDATE_EMERGENCY_CONTACT: (patientId: string) => `/patient/profiles/emergency-contact/${patientId}`,
     CREATE_PROFILE: `/patient/profiles`,
   },
   COMMON: {

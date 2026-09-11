@@ -14,7 +14,11 @@ export const useAuthStore = create<AuthStore>()(
         admin: null,
         doctor: null,
       },
-      user: null,
+      users: {
+        admin: null,
+        doctor: null,
+        patient: null,
+      },
       doctor: null,
       isAuthenticated: false,
       isLoading: false,
@@ -28,24 +32,45 @@ export const useAuthStore = create<AuthStore>()(
       login(token, user, role) {
         _set((state) => ({
           tokens: { ...state.tokens, [role]: token },
-          user,
+          users: {
+            ...state.users,
+            [role]: user,
+          },
           isAuthenticated: true,
           error: null,
         }));
       },
       logout(role) {
-        _set((state) => ({
-          tokens: { ...state.tokens, [role]: null },
-          patients: [],
-          activePatient: null,
-          clinic: null,
-          user: Object.entries({ ...state.tokens, [role]: null }).some(
-            ([, t]) => t !== null,
-          )
-            ? state.user
-            : null,
-          isAuthenticated: false,
-        }));
+        _set((state) => {
+          const tokens = {
+            ...state.tokens,
+            [role]: null,
+          };
+
+          const users = {
+            ...state.users,
+            [role]: null,
+          };
+
+          const isAuthenticated = Object.values(tokens).some(
+            (token) => token !== null,
+          );
+
+          return {
+            tokens,
+            users,
+            isAuthenticated,
+
+            ...(role === "patient" && {
+              activePatient: null,
+              patients: [],
+            }),
+
+            ...(role === "doctor" && {
+              doctor: null,
+            }),
+          };
+        });
       },
       updateToken(accessToken, role) {
         _set((state) => ({
@@ -123,7 +148,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
-        user: state.user,
+        users: state.users,
         activePatient: state.activePatient,
         patients: state.patients,
         doctor: state.doctor,

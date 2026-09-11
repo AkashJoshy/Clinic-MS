@@ -2,7 +2,9 @@ import type { Dispatch, SetStateAction } from "react";
 import type { ImageData, UpdateMethods } from "./common";
 import type { Address, User } from "./user";
 import type React from "react";
-import type { PatientFormInstance } from "@/hooks/usePatientForm";
+import type { PatientFormInstance } from "@/hooks/use-patient-form.hook";
+import type { UseFormRegister } from "react-hook-form";
+import type { RELATIONS } from "@/constants/form-fields.constants";
 
 export interface Patient {
   id: null | string;
@@ -67,42 +69,7 @@ export interface BookingData {
   notes: string;
 }
 
-type RelationToPatient =
-  | ""
-  | "Father"
-  | "Mother"
-  | "Parent"
-  | "Husband"
-  | "Wife"
-  | "Spouse"
-  | "Son"
-  | "Daughter"
-  | "Child"
-  | "Brother"
-  | "Sister"
-  | "Sibling"
-  | "Grandfather"
-  | "Grandmother"
-  | "Grandparent"
-  | "Grandson"
-  | "Granddaughter"
-  | "Grandchild"
-  | "Uncle"
-  | "Aunt"
-  | "Nephew"
-  | "Niece"
-  | "Cousin"
-  | "Father_In_Law"
-  | "Mother_In_Law"
-  | "Brother_In_Law"
-  | "Sister_In_Law"
-  | "Son_In_Law"
-  | "Daughter_In_Law"
-  | "Guardian"
-  | "Relative"
-  | "Friend"
-  | "Other"
-  | "Self";
+export type RelationToPatient = (typeof RELATIONS)[number];
 
 export type Gender = "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
 
@@ -144,7 +111,12 @@ export type PatientInfo = {
 } & {
   user: Pick<
     User,
-    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
+    | "email"
+    | "phone"
+    | "createdAt"
+    | "isActive"
+    | "isBlocked"
+    | "isEmailVerified"
   >;
 };
 
@@ -163,7 +135,7 @@ export type PatientBasicInfo = {
   };
 } & {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked">;
-}
+};
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 type FormEvent = React.FormEvent<HTMLElement>;
@@ -179,6 +151,18 @@ export type PersonalDetailsProps = {
   setProfile: (pro: PersonalProfile) => void;
   setOriginalProfile: (pro: PersonalProfile) => void;
 };
+
+export interface EmergencyDetailsProps {
+  handleSave: (details: EmergencyContactDetails) => boolean;
+  handleChange: (e: FormChangeEvent) => void;
+  labelClasses: string;
+  inputClasses: string;
+  displayClasses: string;
+  emergencyContact: EmergencyContactDetails;
+  originalEmergencyContact: EmergencyContactDetails;
+  setEmergencyContact: (det: EmergencyContactDetails) => void;
+  setOriginalEmergencyContact: (det: EmergencyContactDetails) => void;
+}
 
 export type AddressDetailsProps = {
   handleSave: (addr: ProfileAddress) => boolean;
@@ -204,6 +188,8 @@ export interface PersonalProfile {
   chronicConditions: string[];
 }
 
+export type EmergencyContactDetails = EmergencyContact & { id: string };
+
 export interface ProfileAddress {
   ownerId: string;
   addressLine: string;
@@ -212,6 +198,8 @@ export interface ProfileAddress {
   city: string;
   pincode: string;
 }
+
+export type ProfileEmergency = EmergencyContactDetails;
 
 export interface DeletePatientDto {
   id: string;
@@ -236,15 +224,24 @@ type PatientProfCard = Pick<
 export type DoctorProfileCardProps = {
   patient: PatientProfCard;
   isActive: boolean;
+  isBlocked: boolean;
   isEmailVerified: boolean;
 };
 
 export type PatientPersonalInformation = {
-  patient: Pick<Patient, "createdAt" | "updatedAt" | "dateOfBirth" | "medicalInformation" | "emergencyContact" | "gender">,
-  address: BaseAddress | null
-}
+  patient: Pick<
+    Patient,
+    | "createdAt"
+    | "updatedAt"
+    | "dateOfBirth"
+    | "medicalInformation"
+    | "emergencyContact"
+    | "gender"
+  >;
+  address: BaseAddress | null;
+};
 
 export interface PatientListItemProps {
   patientInfo: PatientBasicInfo;
-  setPatientInfo: Dispatch<SetStateAction<PatientBasicInfo[]>>
+  setPatientInfo: Dispatch<SetStateAction<PatientBasicInfo[]>>;
 }

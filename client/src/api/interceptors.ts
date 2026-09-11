@@ -1,4 +1,4 @@
-import axios, {
+import {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
@@ -9,11 +9,10 @@ import { logoutUser, refreshAccessToken } from "@/services/auth.service";
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig<any>) => {
-    const { tokens, user } = useAuthStore.getState();
-    let role = user?.role as keyof typeof tokens;
-    if (role) {
-      role = role.toLowerCase() as keyof Tokens;
-    }
+    const { tokens } = useAuthStore.getState();
+
+    let role = config.authRole
+
     const token = role ? tokens[role] : null;
 
     if (token) {
@@ -63,24 +62,25 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    console.log(`Error Type: ${error.response?.data?.code}`);
+    console.log(`Error Code: ${error.response?.data?.status}`);
+    
     const status = error.response?.status;
     const code = error.response?.data?.code;
-
+    let authRole: "admin" | "patient" | "doctor" = error.config.authRole
     if (status === 401 && code === "TOKEN_EXPIRED") {
-      const originalUser = useAuthStore.getState().user;
-      const originalRole = originalUser?.role?.toLowerCase();
-
+      console.log(`Token Expired`);
+      
       try {
-        const { user, updateToken } = useAuthStore.getState();
-        if (!user) {
+        const { users, updateToken } = useAuthStore.getState();
+
+        
+        if (!authRole) {
           return Promise.reject(error);
         }
 
-        const res = await refreshAccessToken();
+        const res = await refreshAccessToken(authRole);
         const response = res.data;
-
-        console.log(`Error configuration`);
-        console.log(error.config);
 
         const newAccessToken = response?.accessToken;
         const refreshedUser = response?.user;
@@ -91,44 +91,53 @@ api.interceptors.response.use(
 
         const role = refreshedUser.role.toLowerCase();
 
-        if (user.id !== refreshedUser.id) {
+        if (users[authRole]!.id !== refreshedUser.id) {
           throw new Error("User mismatch during token refresh");
         }
+
         updateToken(newAccessToken, role);
         error.config.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return api(error.config);
       } catch (refreshError) {
+        
         const { logout } = useAuthStore.getState();
-        const role = originalRole;
 
-        if (role) {
-          logout(role as keyof Tokens);
+        let authRole;
+        if (error.config.authRole) {
+          authRole = error.config?.authRole.toLowerCase() as keyof Tokens;
+        }
+        if (authRole) {
+          logout(authRole);
         }
 
         const path = error.config.url;
-        redirectToLogin(role, "Session expired. Please login again.", path);
+        redirectToLogin(authRole, "Session expired. Please login again.", path);
         return Promise.reject(refreshError);
       }
     }
+
+    // let authRole;
+    // if (error.config.authRole) {
+    //   authRole = error.config?.authRole.toLowerCase() as keyof Tokens;
+    // }
 
     if (
       (status === 401 && code === "REFRESH_SESSION_NOT_FOUND") ||
       (status === 401 && code === "Invalid token")
     ) {
-      const { user, logout } = useAuthStore.getState();
-      const role = user?.role?.toLowerCase();
+      console.log(`Token is having some issue here`)
+      const { logout } = useAuthStore.getState();
 
-      if (role) {
-        logout(role as keyof Tokens);
+      if (authRole) {
+        logout(authRole);
         const path = error.config.url;
-        redirectToLogin(role, "Session expired. Please login again.", path);
+        redirectToLogin(authRole, "Session expired. Please login again.", path);
       }
     }
 
     if (status === 401) {
-      const { user, logout } = useAuthStore.getState();
-      const role = user?.role?.toLowerCase();
+      const { logout } = useAuthStore.getState();
       const isLogoutRequest = error.config.url?.includes("/logout");
       const isRefreshRequest = error.config.url?.includes("/refresh");
 
@@ -143,13 +152,13 @@ api.interceptors.response.use(
         message = code;
       }
 
-      if (role) {
+      if (authRole) {
         try {
-          await logoutUser();
+          await logoutUser(authRole);
         } finally {
-          logout(role as keyof Tokens);
+          logout(authRole);
           const path = error.config.url;
-          redirectToLogin(role, message, path);
+          redirectToLogin(authRole, message, path);
         }
       }
     }

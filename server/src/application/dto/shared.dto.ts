@@ -77,7 +77,7 @@ export type DeleteMethods = "RESTORE" | "DELETE" | "BLOCK";
 export type PatientInfoDto = PatientProfile & {
   user: Pick<
     User,
-    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified"
+    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified" | "isBlocked"
   >;
 };
 

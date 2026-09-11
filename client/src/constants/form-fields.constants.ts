@@ -1,3 +1,6 @@
+import type { RelationToPatient } from "@/types/patient";
+import { number } from "zod";
+
 export const ALLOWED_DOC_TYPES = [
   "application/pdf",
   "image/jpeg",
@@ -27,7 +30,7 @@ export const GENDER_WITH_LABEL = [
 ];
 
 export const RELATIONS = [
-  // "",
+  "",
   "Father",
   "Mother",
   "Parent",
@@ -63,5 +66,7 @@ export const RELATIONS = [
   "Other",
   "Self",
 ] as const;
+
+export type CapitalRelations = Uppercase<RelationToPatient>;
 
 export const BLOODGROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];

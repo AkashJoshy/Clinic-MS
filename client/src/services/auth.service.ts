@@ -5,10 +5,12 @@ import type {
   LoginDto,
   ResendOtpDto,
   ResetPasswordDto,
+  RouteRoleProps,
 } from "@/types/auth";
 import type { RegisterUserDto } from "@/types/auth";
 import type { VerifyOtpDto } from "@/types/auth";
 import { ENDPOINTS } from "./endpoints";
+import { ROLE_VALUES } from "@/constants/role.constants";
 
 export const registerUser = async (data: RegisterUserDto) => {
   try {
@@ -76,9 +78,7 @@ export const resendOtp = async (data: ResendOtpDto) => {
 
 export const loginAdmin = async (data: LoginDto) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.ADMIN_LOGIN, data, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await api.post(ENDPOINTS.AUTH.ADMIN_LOGIN, data);
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -184,8 +184,24 @@ export const resetAdminPassword = async (data: ResetPasswordDto) => {
 
 export const loginDoctor = async (data: LoginDto) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.DOCTOR_LOGIN, data, {
-      headers: { "Content-Type": "application/json" },
+    const res = await api.post(ENDPOINTS.AUTH.DOCTOR_LOGIN, data);
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const refreshAccessToken = async (role: RouteRoleProps) => {
+  try {
+    const res = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN, {}, {
+      authRole: role
     });
     return res.data;
   } catch (error: any) {
@@ -200,25 +216,13 @@ export const loginDoctor = async (data: LoginDto) => {
   }
 };
 
-export const refreshAccessToken = async () => {
+export const logoutUser = async (role: RouteRoleProps) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN);
-    return res.data;
-  } catch (error: any) {
-    if (error.response) {
-      throw error.response.data;
-    }
-
-    return {
-      success: false,
-      message: error.message || "Network Error",
-    };
-  }
-};
-
-export const logoutUser = async () => {
-  try {
-    const res = await api.post(ENDPOINTS.AUTH.LOGOUT);
+    const res = await api.post(ENDPOINTS.AUTH.LOGOUT, {
+      role
+    }, {
+      authRole: role
+    })
     return res.data;
   } catch (error: any) {
     if (error.response) {

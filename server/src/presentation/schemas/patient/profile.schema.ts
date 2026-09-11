@@ -48,3 +48,8 @@ export const updatePersonalDetailsSchema = z.object({
   chronicConditions,
 });
 
+export const updatePatientEmergencyContactSchema = z.object({
+  name: fullName,
+  phone,
+  relationship: relation
+})

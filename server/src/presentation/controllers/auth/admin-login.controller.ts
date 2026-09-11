@@ -11,11 +11,29 @@ export class AdminLoginController {
       const data = req.body;
       const result = await this._adminLogin.execute(data);
 
+      if ("token" in result) {
+        return res.status(ResponseStatusCode.OK).json({
+          success: true,
+          message: RESPONSE_MESSAGE.OTP_EMAIL_MESSAGE,
+          data: result,
+        });
+      }
+
       const { tokenPair, role, user, message } = result;
 
       const { access, refresh } = tokenPair;
 
-      res.cookie("refreshToken", refresh, {
+      const updatedRole = role.toLowerCase();
+      const refreshTokenRole =
+        updatedRole === "patient"
+          ? "patientRefreshToken"
+          : updatedRole === "admin"
+            ? "adminRefreshToken"
+            : updatedRole === "doctor"
+              ? "doctorRefreshToken"
+              : "";
+
+      res.cookie(refreshTokenRole, refresh, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

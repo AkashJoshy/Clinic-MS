@@ -30,3 +30,5 @@ export interface DepartmentCardProps {
     data: SelectedDept & { action: UpdateMethods },
   ) => void;
 }
+
+export type PatientDetailsTab = "overview" | "appointments" | "medical-records" | "reviews";

@@ -74,5 +74,9 @@ export default class Patient {
   updateProfilePicture(imageUrl: ImageData) {
     return this.imageUrl = imageUrl
   }
+  
+  updateEmergencyContact(emergencyContact: EmergencyContact) {
+    this.emergencyContact = emergencyContact;
+  }
 
 }

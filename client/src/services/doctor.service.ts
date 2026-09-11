@@ -2,13 +2,15 @@ import type { DoctorConsultationDetails, DoctorProffesionalDetails } from "@/typ
 import api from "../api/interceptors";
 import { ENDPOINTS } from "./endpoints";
 import type { ProfileAddress } from "@/types/patient";
+import { ROLE_VALUES } from "@/constants/role.constants";
 
 export const registerDoctor = async (doctorData: FormData) => {
   try {
     const res = await api.post(ENDPOINTS.DOCTOR.REGISTER, doctorData, {
         headers: {
             "Content-Type": "multipart/form-data"
-        }
+        },
+        authRole: ROLE_VALUES.lower.DOCTOR
     });
     return res.data;
   } catch (error: any) {
@@ -25,7 +27,9 @@ export const registerDoctor = async (doctorData: FormData) => {
 
 export const fetchDoctorProfile = async (userId: string) => {
   try {
-    const res = await api.get(ENDPOINTS.DOCTOR.PROFILE(userId));
+    const res = await api.get(ENDPOINTS.DOCTOR.PROFILE(userId), {
+      authRole: ROLE_VALUES.lower.DOCTOR
+    });
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -42,7 +46,9 @@ export const fetchDoctorProfile = async (userId: string) => {
 export const updateDoctorProfessionalDetails = async(doctorData: DoctorProffesionalDetails) => {
   try {
     const { userId, ...data } = doctorData
-    const res = await api.put(ENDPOINTS.DOCTOR.PROFESSIONAL_DETAILS(userId), data);
+    const res = await api.put(ENDPOINTS.DOCTOR.PROFESSIONAL_DETAILS(userId), data, {
+      authRole: ROLE_VALUES.lower.DOCTOR
+    });
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -59,7 +65,9 @@ export const updateDoctorProfessionalDetails = async(doctorData: DoctorProffesio
 export const updateDoctorConsultationDetails = async(doctorClinicData: DoctorConsultationDetails) => {
   try {
     const { userId, ...data } = doctorClinicData
-    const res = await api.put(ENDPOINTS.DOCTOR.CONSULTATION_DETAILS(userId), data);
+    const res = await api.put(ENDPOINTS.DOCTOR.CONSULTATION_DETAILS(userId), data, {
+      authRole: ROLE_VALUES.lower.DOCTOR
+    });
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -79,6 +87,9 @@ export const updateDoctorAddress = async (addressData: ProfileAddress) => {
     const res = await api.put(
       ENDPOINTS.DOCTOR.UPDATE_ADDRESS(ownerId),
       data,
+      {
+        authRole: ROLE_VALUES.lower.DOCTOR
+      }
     );
     return res.data;
   } catch (error: any) {
@@ -102,6 +113,7 @@ export const updateDoctorProfilePicture = async (personalData: FormData) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        authRole: ROLE_VALUES.lower.DOCTOR
       },
     );
     return res.data;

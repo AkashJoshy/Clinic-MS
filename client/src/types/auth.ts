@@ -2,14 +2,13 @@ import type { ClipboardEvent, KeyboardEvent, RefObject } from "react";
 import type { PatientProfile } from "./patient";
 import type { RegisterUser, User } from "./user";
 import type { Doctor, DoctorInfo } from "./doctor";
+import type { ROLE_VALUES } from "@/constants/role.constants";
 
-
-export type AuthProvider = "LOCAL" | "GOOGLE"
-export type GoogleAuthMode = "signup" | "login"
+export type AuthProvider = "LOCAL" | "GOOGLE";
+export type GoogleAuthMode = "signup" | "login";
 export type Role = "PATIENT" | "DOCTOR" | "ADMIN";
-export interface RouteRoleProps {
-  role: "patient" | "doctor" | "admin";
-}
+export type RouteRoleProps =
+  (typeof ROLE_VALUES.lower)[keyof typeof ROLE_VALUES.lower];
 
 export interface LoginDto {
   email: string;
@@ -26,12 +25,18 @@ export interface TokenPair {
 export interface Tokens {
   patient: string | null;
   admin: string | null;
-  doctor: string | null
+  doctor: string | null;
+}
+
+export interface Users {
+  patient: User | null;
+  admin: User | null;
+  doctor: User | null;
 }
 
 export interface AuthStateDTO {
   tokens: Tokens;
-  user: User | null;
+  users: Users;
   doctor: DoctorInfo | null;
   patients: PatientProfile[] | [];
   activePatient: PatientProfile | null;
@@ -42,11 +47,11 @@ export interface AuthStateDTO {
 }
 
 export type EmailDto = {
-    email: string;
-}
+  email: string;
+};
 export type ForgotPasswordDto = EmailDto & {
-  role: Role
-}
+  role: Role;
+};
 
 export interface otpDetails {
   backRoute: string;
@@ -67,21 +72,18 @@ export interface useOtpdetails {
   isComplete: boolean;
 }
 
-export type OtpDto = { token: string }
-export type ResendOtpDto = OtpDto
-export type VerifyOtpDto = OtpDto & { otp: string }
+export type OtpDto = { token: string };
+export type ResendOtpDto = OtpDto;
+export type VerifyOtpDto = OtpDto & { otp: string };
 export type ResetPasswordDto = OtpDto & {
-  confirmPassword: string
-  password: string,
-  role: Role
-}
+  confirmPassword: string;
+  password: string;
+  role: Role;
+};
 
 export type loginFormProps = {
   portal: "Admin" | "Clinic" | "Doctor";
   role: "ADMIN" | "CLINIC" | "DOCTOR" | "PATIENT";
   fn: (data: LoginDto) => Promise<any>;
-  to: string
+  to: string;
 };
-
-
-

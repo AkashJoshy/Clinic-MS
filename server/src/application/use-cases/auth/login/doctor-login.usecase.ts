@@ -8,6 +8,7 @@ import type {
   AccessPayloadDto,
   LoginDTO,
   LoginResponseDTO,
+  LoginVerificationResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
 import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
@@ -25,7 +26,7 @@ export class DoctorLoginUseCase implements ILoginUseCase {
     private _refreshtokenGenerationService: IRefreshTokenGenerationService,
   ) {}
 
-  async execute(data: LoginDTO): Promise<LoginResponseDTO> {
+  async execute(data: LoginDTO): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
 
     if (!user || !user.id) {

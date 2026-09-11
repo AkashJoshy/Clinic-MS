@@ -1,40 +1,40 @@
-import Homepage from "./pages/auth/Homepage";
-import PatientLogin from "./pages/auth/PatientLoginPage";
-import OTPVerification from "./pages/auth/OTPVerificationPage";
-import PatientRegisterPage from "./pages/auth/PatientRegisterPage";
+import PatientLogin from "./pages/auth/patient-login.page";
+import OTPVerification from "./pages/auth/otp-verification.page";
+import PatientRegisterPage from "./pages/auth/patient-register.page";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginForm from "./components/shared/auth/LoginForm";
-import TwofactorAuthenticationPage from "./pages/auth/TwofactorAuthenticationPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ChangePasswordPage from "./pages/auth/ChangePasswordPage";
+import LoginForm from "./components/shared/auth/login-form.shared";
+import TwofactorAuthenticationPage from "./pages/auth/two-factor-authentication.page";
+import ForgotPasswordPage from "./pages/auth/forgot-password.page";
+import ChangePasswordPage from "./pages/auth/change-password.page";
 import { Toaster } from "react-hot-toast";
-import Dashboard from "./pages/patient/Dashboard";
-import PatientDashboardLayout from "./components/layout/patient/PatientDashboardLayout";
-import ToastLayout from "./components/layout/ToastLayout";
+import Dashboard from "./pages/patient/dashboard.page";
+import PatientDashboardLayout from "./components/layout/patient/dashboard.layout";
+import ToastLayout from "./components/layout/toast.layout";
 
 // Admin layout + pages
-import AdminDashboardLayout from "./components/layout/AdminDashboardLayout";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminDashboardLayout from "./components/layout/admin/dashboard.layout";
+import AdminDashboardPage from "./pages/admin/dashboard.page";
 import { loginAdmin, loginDoctor } from "./services/auth.service";
 
 // Clinic layout + pages
 import { ProtectedRoute } from "./components/shared/ProtectedRoute";
-import { AuthRoute } from "./components/shared/AuthRoute";
-import NotFoundPage from "./pages/NotFoundPage";
-import DoctorDashboardLayout from "./components/layout/DoctorDashboardLayout";
-import UnderConstruction from "./components/layout/UnderConstruction";
-import DepartmentPage from "./pages/admin/DepartmentPage";
-import AddDepartmentPage from "./pages/admin/AddDepartmentPage";
-import EditDepartmentPage from "./pages/admin/EditDepartmentPage";
-import DoctorRegistrationPage from "./pages/DoctorRegistrationPage";
-import DoctorManagementPage from "./pages/admin/DoctorManagementPage";
-import DoctorDetailsPage from "./pages/admin/DoctorDetailsPage";
-import PatientDetailsPage from "./pages/admin/PatientDetailsPage";
-import MyProfilePage from "./pages/patient/MyProfilePage";
-import PatientManagementPage from "./pages/admin/PatientmanagementPage";
-import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
-import SchedulePage from "./pages/doctor/SchedulePage";
+import { AuthRoute } from "./components/shared/auth-route.shared";
+import NotFoundPage from "./pages/not-found.page";
+import DoctorDashboardLayout from "./components/layout/doctor/dashboard.layout";
+import UnderConstruction from "./components/layout/under-construction.layout";
+import DepartmentPage from "./pages/admin/departments/department.page";
+import AddDepartmentPage from "./pages/admin/departments/add-department.page";
+import EditDepartmentPage from "./pages/admin/departments/edit-department.page";
+import DoctorRegistrationPage from "./pages/doctor-registration.page";
+import DoctorManagementPage from "./pages/admin/doctors/doctor-management.page";
+import DoctorDetailsPage from "./pages/admin/doctors/doctor-details.page";
+import PatientDetailsPage from "./pages/admin/patients/patient-details.page";
+import MyProfilePage from "./pages/patient/my-profile.page";
+import PatientManagementPage from "./pages/admin/patients/patient-management.page";
+import DoctorProfilePage from "./pages/doctor/profile.page";
+import SchedulePage from "./pages/doctor/schedule.page";
 import { TooltipProvider } from "./components/ui/tooltip";
+import Homepage from "./pages/auth/home.page";
 
 const router = createBrowserRouter([
   {
@@ -116,9 +116,7 @@ const router = createBrowserRouter([
       { path: "/two-factor", element: <TwofactorAuthenticationPage /> },
       {
         path: "/doctor-registration",
-        element: (
-          <DoctorRegistrationPage />
-        ),
+        element: <DoctorRegistrationPage />,
       },
 
       {
@@ -298,7 +296,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/doctor/my-profile",
-                element: <DoctorProfilePage />
+                element: <DoctorProfilePage />,
               },
               {
                 path: "/doctor/settings",
@@ -327,9 +325,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/admin/doctors",
-                element: (
-                  <DoctorManagementPage />
-                ),
+                element: <DoctorManagementPage />,
               },
               {
                 path: "/admin/doctors/:doctorId",
@@ -345,15 +341,15 @@ const router = createBrowserRouter([
               },
               {
                 path: "/admin/departments",
-                element: (<DepartmentPage />),
+                element: <DepartmentPage />,
               },
               {
                 path: "/admin/department/add",
-                element: (<AddDepartmentPage />),
+                element: <AddDepartmentPage />,
               },
               {
                 path: "/admin/department/edit/:deptId",
-                element: (<EditDepartmentPage />),
+                element: <EditDepartmentPage />,
               },
               {
                 path: "/admin/subscriptions",
@@ -451,8 +447,8 @@ const App = () => {
   return (
     <div>
       <TooltipProvider>
-      <RouterProvider router={router} />
-      <Toaster position="bottom-center" reverseOrder={false} />
+        <RouterProvider router={router} />
+        <Toaster position="bottom-center" reverseOrder={false} />
       </TooltipProvider>
     </div>
   );

@@ -2,7 +2,6 @@ import { useAuthToken, useAuthStore } from "@/store";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import type { RouteRoleProps } from "@/types/auth";
 import { useEffect, useMemo, useState } from "react";
-import { refreshAccessToken } from "@/services/auth.service";
 
 export const isAccessTokenExpired = (token: string): boolean => {
   try {
@@ -16,9 +15,9 @@ export const isAccessTokenExpired = (token: string): boolean => {
   }
 };
 
-export const ProtectedRoute = ({ role }: RouteRoleProps) => {
+export const ProtectedRoute = ({ role }: { role: RouteRoleProps}) => {
   const token = useAuthToken(role);
-  const { _hasHydrated, logout, user, updateToken } = useAuthStore();
+  const { _hasHydrated, logout, users, updateToken } = useAuthStore();
   const location = useLocation();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const accessexpired = useMemo(
@@ -34,7 +33,7 @@ export const ProtectedRoute = ({ role }: RouteRoleProps) => {
 
   useEffect(() => {
     const checkExpiration = async () => {
-      if (!token || !user) return;
+      if (!token ) return;
 
       const expired = isAccessTokenExpired(token);
 

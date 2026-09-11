@@ -7,10 +7,23 @@ export class LogoutController {
 
   async handle(req: Request, res: Response, next: NextFunction) {
     try {
-      const refreshToken = req.cookies.refreshToken;
+      const role = req.body.role;
+      const refreshTokenRole =
+        role === "patient"
+          ? "patientRefreshToken"
+          : role === "admin"
+            ? "adminRefreshToken"
+            : role === "doctor"
+              ? "doctorRefreshToken"
+              : "";
+      const refreshToken = req.cookies[refreshTokenRole]
+
+      console.log(`Refresh Token of ${role}`);
+      console.log(refreshToken);
+
       const result = await this._logout.execute(refreshToken);
 
-      res.clearCookie("refreshToken", {
+      res.clearCookie(refreshTokenRole, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

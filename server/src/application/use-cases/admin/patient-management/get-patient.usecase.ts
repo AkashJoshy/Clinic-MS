@@ -3,7 +3,6 @@ import type { IAddressRepository } from "../../../../domain/repositories/i-addre
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { PatientInfoDto } from "../../../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../../../IService/i-patient-details.service.ts";
 import type { IGetPatientUseCase } from "../../../repositories/admin/i-get-patient.usecase.ts";
 
 export class GetPatientUseCase implements IGetPatientUseCase {
@@ -63,6 +62,7 @@ export class GetPatientUseCase implements IGetPatientUseCase {
         phone: user?.phone ?? "",
         createdAt: user?.createdAt ?? null,
         isActive: user?.isActive ?? false,
+        isBlocked: user?.isBlocked ?? false,
         isEmailVerified: user?.isEmailVerified ?? false,
       },
     };
