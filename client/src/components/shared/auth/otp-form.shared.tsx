@@ -12,12 +12,13 @@ import { useAuthMutate } from "@/hooks/use-auth-mutate.hook";
 
 const OTPForm = ({
   otpDetails,
+  otpEmail,
   className,
   role,
   backRoute,
 }: {
   otpDetails: otpDetails;
-  otpEmail?: string;
+  otpEmail: string;
   className?: string;
   role: Role;
   backRoute: string;
@@ -33,7 +34,7 @@ const OTPForm = ({
     resolver: zodResolver(otpSchema),
     mode: "onChange",
   });
-
+  
   const { mutateAsync, isPending } = useAuthMutate(verifyEmail, {
     onSuccess: () => navigate(backRoute),
   });
@@ -48,7 +49,7 @@ const OTPForm = ({
     otp,
     otpValue,
     resendCooldown,
-  } = useOtp(6);
+  } = useOtp(6, otpEmail, role);
 
   useEffect(() => {
     setValue("otp", otpValue, { shouldValidate: true });

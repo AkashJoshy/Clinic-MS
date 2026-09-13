@@ -18,17 +18,17 @@ import {
 import { AllDoctorCard } from "@/components/shared/admin/all-doctor-card.shared";
 import { PendingApproval } from "@/components/shared/admin/pending-approval.shared";
 import { PendingDoctorCard } from "@/components/shared/admin/doctors/pending-card.shared";
-import type { DepartmentData } from "@/types/admin";
+import type { DepartmentData, DoctorManagementTab } from "@/types/admin";
 import { getAllDepartments } from "@/services/common.service";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { AllDoctorCardSkeleton } from "@/components/shared/skeletons/all-doctor-card.skeleton";
+import { doctorTabs } from "@/constants/admin.constant";
 
 const ITEMS_PER_PAGE = 6;
 
-type Tab = "all" | "pending";
 
 export default function DoctorManagementPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("all");
+  const [activeTab, setActiveTab] = useState<DoctorManagementTab>("all");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [doctorDetails, setDoctorDetails] = useState<DoctorInfo[]>([]);
   const [rejectTarget, setRejectTarget] = useState<DoctorInfo | null>(null);
@@ -78,7 +78,6 @@ export default function DoctorManagementPage() {
   const [pendingPage, setPendingPage] = useState<number>(1);
 
   const filteredDoctors = doctorDetails.filter((det) => {
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
 
@@ -194,6 +193,13 @@ export default function DoctorManagementPage() {
     setRejectTarget(null);
   };
 
+  const doctorTabsWithCount = doctorTabs.map(tab => {
+    return({
+      ...tab,
+      count: tab.key === "all" ? approvedDoctors.length : pendingDoctors.length
+    })
+  })
+
   return (
     <div className="min-h-full p-6 lg:p-8 space-y-6 relative border border-white/10 bg-white/2 shadow-2xs">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 ">
@@ -230,20 +236,7 @@ export default function DoctorManagementPage() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-1 bg-[#0d1a27] border border-white/8 rounded-xl p-1.5 shadow-inner overflow-x-auto no-scrollbar scroll-smooth">
-          {(
-            [
-              {
-                key: "all",
-                label: "All Doctors",
-                count: approvedDoctors.length,
-              },
-              {
-                key: "pending",
-                label: "Pending Approval",
-                count: pendingDoctors.length,
-              },
-            ] as { key: Tab; label: string; count: number }[]
-          ).map((tab) => (
+          {doctorTabsWithCount.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}

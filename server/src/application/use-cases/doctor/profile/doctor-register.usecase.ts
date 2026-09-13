@@ -9,12 +9,14 @@ import type { IAddressRepository } from "../../../../domain/repositories/i-addre
 import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
-import type { ModeRoleRef } from "../../../../domain/types/user.types.ts";
+import type { ModeRoleRef, Role } from "../../../../domain/types/user.types.ts";
 import { uploadToCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorRegisterDto } from "../../../dto/doctor.dto.ts";
 import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
 import type { IDoctorRegisterUseCase } from "../../../repositories/doctor/i-doctor-register.usecase.ts";
 import { Clinic } from "../../../../domain/entities/clinic.entity.ts";
+import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
+import type { LoginVerificationResponseDTO } from "../../../dto/auth.dto.ts";
 
 export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
   constructor(
@@ -23,9 +25,12 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
     readonly _clinicRepository: IClinicRepository,
     readonly _addressRepository: IAddressRepository,
     readonly _userCreationService: IUserCreationService,
+    readonly _mailVerficationService: IEmailVerificationService,
   ) {}
 
-  async execute(data: DoctorRegisterDto): Promise<void> {
+  async execute(
+    data: DoctorRegisterDto,
+  ): Promise<LoginVerificationResponseDTO> {
     const {
       fullName,
       email,
@@ -208,5 +213,17 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
         Address.createForOwner(doctorAddressToUpdate, "Doctor"),
       ),
     ]);
+
+    const token = await this._mailVerficationService.execute(
+      user.email,
+      user.fullName,
+      user.role as Role,
+    );
+
+    return {
+      token,
+      email: user.email,
+      role: user.role,
+    };
   }
 }

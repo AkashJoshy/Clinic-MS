@@ -10,7 +10,6 @@ import type {
 import type { RegisterUserDto } from "@/types/auth";
 import type { VerifyOtpDto } from "@/types/auth";
 import { ENDPOINTS } from "./endpoints";
-import { ROLE_VALUES } from "@/constants/role.constants";
 
 export const registerUser = async (data: RegisterUserDto) => {
   try {

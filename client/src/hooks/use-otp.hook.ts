@@ -1,4 +1,4 @@
-import type { useOtpdetails } from "@/types/auth";
+import type { Role, useOtpdetails } from "@/types/auth";
 import {
   useEffect,
   useRef,
@@ -9,11 +9,15 @@ import {
 
 function useOtp(
   length: number = 6,
+  otpEmail: string,
+  role: Role,
   initialCooldown: number = 60,
 ): useOtpdetails {
   const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
   const [resendCooldown, setResendCooldown] = useState<number>(() => {
-    const expiryTime = localStorage.getItem("otpResendExpiry");
+    const expiryTime = localStorage.getItem(
+      `otpResendExpiry_${role}_${otpEmail}`,
+    );
 
     if (!expiryTime) return initialCooldown;
 
@@ -43,7 +47,6 @@ function useOtp(
 
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    console.log(e.clipboardData.getData("text").replace(/\D/g, ""));
     const pasted = e.clipboardData
       .getData("text")
       .replace(/\D/g, "")

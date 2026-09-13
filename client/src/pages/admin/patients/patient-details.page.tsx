@@ -106,6 +106,11 @@ export default function PatientDetailsPage() {
 
   const { patient, address, user } = patientData;
 
+  const patientTabsWithCount = patientTabs.map(tab => ({
+    ...tab,
+    count: tab.key === "appointments" ? 12 : tab.key === "medical-records" ? 8 : tab.key === "overview" ? undefined : 12
+  }))
+
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-350 mx-auto border border-white/10 bg-white/2 shadow-2xs">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -148,7 +153,7 @@ export default function PatientDetailsPage() {
 
       <div className="w-full overflow-x-auto no-scrollbar">
         <div className="flex min-w-max items-center gap-1 rounded-xl border border-white/8 bg-[#0d1a27] p-1.5 shadow-inner">
-          {patientTabs.map((tab) => {
+          {patientTabsWithCount.map((tab) => {
             const isActive = activeTab === tab.key;
 
             return (

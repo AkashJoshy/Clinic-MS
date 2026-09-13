@@ -1,8 +1,7 @@
 import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
-import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.ts";
-import { LockedError } from "../../../../domain/errors/locked.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { RestrictionStatus } from "../../../../domain/types/shared.types.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import type {
   AccessPayloadDto,
@@ -15,9 +14,9 @@ import type { IAccessTokenGenerationService } from "../../../IService/i-access-t
 import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
 import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
 import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
-import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
+import type { IDoctorLoginUseCase } from "../../../repositories/auth/i-doctor-login.usecase.ts";
 
-export class DoctorLoginUseCase implements ILoginUseCase {
+export class DoctorLoginUseCase implements IDoctorLoginUseCase {
   constructor(
     private _userExistenceService: IUserExistenceService,
     private readonly _mailVerficationService: IEmailVerificationService,
@@ -26,9 +25,14 @@ export class DoctorLoginUseCase implements ILoginUseCase {
     private _refreshtokenGenerationService: IRefreshTokenGenerationService,
   ) {}
 
-  async execute(data: LoginDTO): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
+  async execute(
+    data: LoginDTO,
+  ): Promise<
+    LoginResponseDTO | LoginVerificationResponseDTO | RestrictionStatus
+  > {
     const user = await this._userExistenceService.execute(data);
 
+    let status: RestrictionStatus | null = null;
     if (!user || !user.id) {
       throw new NotFoundError("doctor");
     }
@@ -40,24 +44,25 @@ export class DoctorLoginUseCase implements ILoginUseCase {
     }
 
     if (doctor.status === "PENDING") {
-      throw new LockedError(
-        "Your doctor is under review. An admin needs to approve it.",
-      );
+      status = "PENDING";
+      return status;
     } else if (doctor?.status === "REJECTED") {
-      throw new ForbiddenError(
-        "Your clinic has been rejected. Please apply again.",
-      );
+      status = "REJECTED";
+      return status;
     }
 
     if (!user.isEmailVerified) {
-      await this._mailVerficationService.execute(
+      const token = await this._mailVerficationService.execute(
         user.email,
         user.fullName,
         user.role as Role,
-      );
-      throw new InvalidCredentialsError(
-        "A verification email has been sent. Please check your inbox and verify your account.",
-      );
+      )
+
+      return {
+        token,
+        email: user.email,
+        role: user.role
+      };
     }
 
     const { password, ...updatedUser } = user;

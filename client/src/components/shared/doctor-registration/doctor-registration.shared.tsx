@@ -25,7 +25,19 @@ export default function DoctorRegistration() {
   }, [step]);
 
   const { mutate, isPending } = useMutate(registerDoctor, {
-    onSuccess: () => navigate("/doctor"),
+    onSuccess: (data) => {
+      const expiryTime =
+          Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
+        localStorage.setItem(
+          `otpResendExpiry_${data.data.role}_${data.data.email}`,
+          expiryTime.toString(),
+        );
+        navigate(`/doctor/verify-email?token=${data.data?.token}`, {
+          state: {
+            email: data?.data?.email,
+          },
+        })
+    }
   });
 
   const { activeDepartments } = useDepartments();

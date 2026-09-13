@@ -13,6 +13,8 @@ export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
 export type EntityStatus = "ACTIVE" | "INACTIVE";
 
+export type RestrictionStatus = "PENDING" | "REJECTED"
+
 export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";

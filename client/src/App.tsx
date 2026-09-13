@@ -35,6 +35,9 @@ import DoctorProfilePage from "./pages/doctor/profile.page";
 import SchedulePage from "./pages/doctor/schedule.page";
 import { TooltipProvider } from "./components/ui/tooltip";
 import Homepage from "./pages/auth/home.page";
+import DoctorHomepage from "./pages/auth/doctor-home.page";
+import DoctorRegistrationPendingPage from "./pages/auth/doctor-registration-pending.page";
+import DoctorRegistrationRejectedPage from "./pages/auth/doctor-registration-rejected.page";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +90,7 @@ const router = createBrowserRouter([
       {
         element: <AuthRoute role="doctor" />,
         children: [
+          { path: "/doctor-home", element: <DoctorHomepage /> },
           {
             path: "/doctor",
             element: (
@@ -117,6 +121,14 @@ const router = createBrowserRouter([
       {
         path: "/doctor-registration",
         element: <DoctorRegistrationPage />,
+      },
+      {
+        path: "/doctor-registration-pending",
+        element: <DoctorRegistrationPendingPage />,
+      },
+      {
+        path: "/doctor-registration-rejected",
+        element: <DoctorRegistrationRejectedPage />,
       },
 
       {

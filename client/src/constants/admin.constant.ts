@@ -1,4 +1,4 @@
-import type { PatientDetailsTab } from "@/types/admin";
+import type { DoctorManagementTab, PatientDetailsTab } from "@/types/admin";
 
 export const patientTabs = [
   {
@@ -8,16 +8,24 @@ export const patientTabs = [
   {
     key: "appointments",
     label: "Appointments",
-    count: 5,
   },
   {
     key: "medical-records",
     label: "Medical Records",
-    count: 5,
   },
   {
     key: "reviews",
     label: "Reviews",
-    count: 12,
   },
-] satisfies { key: PatientDetailsTab; label: string; count?: number }[];
+] satisfies { key: PatientDetailsTab; label: string; }[];
+
+export const doctorTabs = [
+  {
+    key: "all",
+    label: "All Doctors",
+  },
+  {
+    key: "pending",
+    label: "Pending Approval",
+  },
+] satisfies { key: DoctorManagementTab; label: string }[];

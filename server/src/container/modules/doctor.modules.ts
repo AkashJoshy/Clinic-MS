@@ -18,7 +18,7 @@ import {
   mongooseDoctorClinicRepository,
   mongooseDoctorRepository,
   mongooseUserRepository,
-  argonHashService
+  argonHashService,
 } from "../index.ts";
 
 // Service-Usecase

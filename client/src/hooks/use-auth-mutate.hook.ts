@@ -5,17 +5,17 @@ import type { RouteRoleProps } from "@/types/auth";
 
 interface UseMutateOptions<TData> {
   onSuccess?: (data: TData) => void;
-  onError?: (data: TData) =>  void
+  onError?: (data: TData) => void;
 }
 
 export const useAuthMutate = <TData, TVariables>(
   service: (data: TVariables) => Promise<TData>,
   options?: UseMutateOptions<TData>,
 ) => {
-  const login = useAuthStore(state => state.login);
-  const setLoading = useAuthStore(state => state.setLoading);
-  const user = useAuthStore(state => state.users);
-  const updateToken = useAuthStore(state => state.updateToken)
+  const login = useAuthStore((state) => state.login);
+  const setLoading = useAuthStore((state) => state.setLoading);
+  const user = useAuthStore((state) => state.users);
+  const updateToken = useAuthStore((state) => state.updateToken);
 
   const { mutate, mutateAsync, isPending } = useMutation({
     mutationFn: service,
@@ -23,22 +23,25 @@ export const useAuthMutate = <TData, TVariables>(
       setLoading(false);
       if (data.message) toast.success(data.message);
       if (data?.data?.accessToken && data?.data?.user) {
-        const updatedRole = data?.data?.user?.role.toLowerCase()
+        const updatedRole = data?.data?.user?.role.toLowerCase();
         if (!user[updatedRole as RouteRoleProps]) {
           login(data.data.accessToken, data.data.user, data.data.role);
         } else {
           if (data.data?.user) {
-            const role = data.data.user.role.toLowerCase()
-            updateToken(data.data.accessToken, role)
+            const role = data.data.user.role.toLowerCase();
+            updateToken(data.data.accessToken, role);
           }
         }
       }
       options?.onSuccess?.(data);
     },
     onError: (error: any) => {
+      const restrictedMessage = ["rejected", "reapply", "reviewed", "submitted"].some((word) =>
+        error?.message.toLowerCase().includes(word),
+      );
       setLoading(false);
-      options?.onError?.(error)
-      toast.error(error.message);
+      options?.onError?.(error);
+      if (!restrictedMessage) toast.error(error.message);
     },
     onMutate: () => {
       setLoading(true);

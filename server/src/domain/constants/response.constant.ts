@@ -31,12 +31,12 @@ export const RESPONSE_MESSAGE = {
     "Slot reserved successfully. Complete payment within 5 minutes",
 
   DOCTOR_REGISTERED: "Doctor registered successfully",
+  DOCTOR_PENDING: "Your doctor registration has been submitted successfully and is currently being reviewed by our admin team. We'll notify you once your application has been reviewed.",
+  DOCTOR_REJECTED: "Your doctor registration has not been approved. Please check your email for the rejection details and instructions on how to reapply.",
 
   OTP_RESENT: "Otp resend successfully",
   OTP_ACCOUNT_VERIFIED: "Account Verified",
   OTP_EMAIL_MESSAGE: "A verification email has been sent. Please check your inbox and verify your account.",
-
-  CLINIC_REGISTERED: "Clinic registered successfully",
 
   DEPARTMENT_CREATED: "Department created successfully",
 

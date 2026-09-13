@@ -53,7 +53,6 @@ import { RefreshTokenController } from "../controllers/auth/refresh-token.contro
 import { RefreshTokenUseCase } from "../../application/use-cases/auth/refresh-token/refresh-token.usecase.ts";
 import { LogoutController } from "../controllers/auth/logout.controller.ts";
 import { LogoutUseCase } from "../../application/use-cases/auth/logout/logout.usecase.ts";
-import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 
 const router = Router();
 

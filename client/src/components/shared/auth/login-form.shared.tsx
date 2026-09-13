@@ -33,8 +33,40 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
         : "/doctor/forgot-password";
 
   const { isPending, mutateAsync } = useAuthMutate(fn, {
-    onSuccess: () => {
-      navigate(to);
+    onSuccess: (data) => {
+      if (role === "DOCTOR" && data?.data?.token) {
+        const expiryTime =
+          Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
+        localStorage.setItem(
+          `otpResendExpiry_${data.data.role}_${data.data.email}`,
+          expiryTime.toString(),
+        );
+        navigate(`/doctor/verify-email?token=${data.data?.token}`, {
+          state: {
+            email: data?.data?.email,
+          },
+        })
+      } else {
+        navigate(to);
+      }
+    },
+    onError: (error: any) => {
+      if (role === "DOCTOR") {
+        const status = error.data?.status?.toLowerCase() || "";
+        const message = error.message?.toLowerCase() || "";
+
+        if (status === "pending" || message.includes("under review")) {
+          toast.dismiss();
+          navigate("/doctor-registration-pending");
+          return;
+        }
+
+        if (status === "rejected" || message.includes("rejected")) {
+          toast.dismiss();
+          navigate("/doctor-registration-rejected");
+          return;
+        }
+      }
     },
   });
 

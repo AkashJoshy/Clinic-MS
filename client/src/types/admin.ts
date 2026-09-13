@@ -32,3 +32,5 @@ export interface DepartmentCardProps {
 }
 
 export type PatientDetailsTab = "overview" | "appointments" | "medical-records" | "reviews";
+
+export type DoctorManagementTab = "all" | "pending";

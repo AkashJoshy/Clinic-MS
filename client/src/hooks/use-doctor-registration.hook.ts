@@ -2,8 +2,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { UseFormReturn } from "react-hook-form";
-import type { DoctorRegisterStep1FormData, DoctorRegisterStep2FormData, DoctorRegisterStep3FormData } from "@/schemas/doctor/doctor.schema";
-import { doctorRegisterStep1Schema, doctorRegisterStep2Schema, doctorRegisterStep3Schema } from "@/schemas/doctor/register.schema";
+import type {
+  DoctorRegisterStep1FormData,
+  DoctorRegisterStep2FormData,
+  DoctorRegisterStep3FormData,
+} from "@/schemas/doctor/doctor.schema";
+import {
+  doctorRegisterStep1Schema,
+  doctorRegisterStep2Schema,
+  doctorRegisterStep3Schema,
+} from "@/schemas/doctor/register.schema";
 
 export interface UseDoctorRegistrationReturn {
   step: 1 | 2 | 3;
@@ -12,34 +20,35 @@ export interface UseDoctorRegistrationReturn {
   onSubmit: () => Promise<FormData | void>;
   step1Form: UseFormReturn<DoctorRegisterStep1FormData>;
   step2Form: UseFormReturn<DoctorRegisterStep2FormData>;
-  step3Form: UseFormReturn<DoctorRegisterStep3FormData>
+  step3Form: UseFormReturn<DoctorRegisterStep3FormData>;
 }
 
 export function useDoctorRegistration(): UseDoctorRegistrationReturn {
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const step1Form = useForm<DoctorRegisterStep1FormData>({
-      mode:"onChange",
-      resolver: zodResolver(doctorRegisterStep1Schema),
-      defaultValues:{
-        gender: "",
-      }
-  })
+    mode: "onChange",
+    resolver: zodResolver(doctorRegisterStep1Schema),
+    defaultValues: {
+      gender: "",
+    },
+  });
 
   const step2Form = useForm<DoctorRegisterStep2FormData>({
-      mode:"onChange",
-      resolver: zodResolver(doctorRegisterStep2Schema),
-      defaultValues:{country: "",
-          state: "",
-          city: "",
-          departmentId: ""
-      }
-    })
+    mode: "onChange",
+    resolver: zodResolver(doctorRegisterStep2Schema),
+    defaultValues: {
+      country: "",
+      state: "",
+      city: "",
+      departmentId: "",
+    },
+  });
 
   const step3Form = useForm<DoctorRegisterStep3FormData>({
-      mode:"onChange",
-      resolver: zodResolver(doctorRegisterStep3Schema)
-    })
+    mode: "onChange",
+    resolver: zodResolver(doctorRegisterStep3Schema),
+  });
 
   const goNext = async (s: number) => {
     if (s === 1) {
@@ -57,7 +66,7 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
     } else if (s === 2) {
       setStep(1);
     }
-  }
+  };
 
   const onSubmit = async () => {
     const valid = await step3Form.trigger();
@@ -66,11 +75,11 @@ export function useDoctorRegistration(): UseDoctorRegistrationReturn {
     const payload = {
       ...step1Form.getValues(),
       ...step2Form.getValues(),
-      ...step3Form.getValues()
+      ...step3Form.getValues(),
     };
 
     const formData = new FormData();
-    
+
     Object.entries(payload).forEach(([key, value]) => {
       if (value instanceof File) {
         formData.append(key, value);

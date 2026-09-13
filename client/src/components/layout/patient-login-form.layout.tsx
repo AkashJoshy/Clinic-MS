@@ -36,8 +36,15 @@ const PatientLoginForm = () => {
 
   const { mutateAsync, isPending, setLoading } = useAuthMutate(loginUser, {
     onSuccess: (data) => {
-      if (data.data.token) {
-        navigate(`/verify-email?token=${data.data.token}`);
+      if (data.data.token && data.data.role && data.data.email) {
+        const expiryTime =
+                  Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
+        localStorage.setItem(`otpResendExpiry_${data.data.role}_${data.data.email}`, expiryTime.toString())
+        navigate(`/verify-email?token=${data.data.token}`,{
+          state: {
+            email: data.data.email
+          }
+        });
       } else {
         navigate("/patient/dashboard");
       }

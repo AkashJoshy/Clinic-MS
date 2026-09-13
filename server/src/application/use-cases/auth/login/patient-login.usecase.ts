@@ -35,6 +35,8 @@ export class PatientLoginUseCase implements ILoginUseCase {
 
       return {
         token,
+        email: user.email,
+        role: user.role
       };
     }
 

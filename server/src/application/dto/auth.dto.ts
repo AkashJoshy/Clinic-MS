@@ -46,6 +46,8 @@ export interface LoginResponseDTO {
 
 export interface LoginVerificationResponseDTO {
   token: string;
+  email: string
+  role: Role
 }
 
 export interface RefreshTokenResponseDto {

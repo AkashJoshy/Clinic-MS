@@ -17,6 +17,10 @@ export class VerifyEmailUseCase implements IVerifyEmailUseCase {
       `verify:${data.token}`,
     );
 
+    if (!storedDetails) {
+      throw new InvalidCredentialsError("Invalid token");
+    }
+
     if (!data.token) {
       throw new InvalidCredentialsError(
         "Verification session is missing or invalid",

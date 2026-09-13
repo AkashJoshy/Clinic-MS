@@ -8,7 +8,6 @@ const Hero = ({ websiteName }: { websiteName: string }) => {
     <div>
       <section className="min-h-screen pt-24 sm:pt-30 px-6 sm:px-12 pb-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-15 relative">
         <div />
-        <div className="absolute bottom-15 left-[40%] w-50 h-50 rounded-full pointer-events-none" />
 
         <div className="w-full lg:flex-[0_0_55%] lg:max-w-145 flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
           <p className="text-primary fade-up fade-up-1 uppercase tracking-[0.15em] font-semibold text-xs mb-3.5">

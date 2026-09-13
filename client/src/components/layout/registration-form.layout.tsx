@@ -71,7 +71,7 @@ const RegistrationForm = () => {
               if (res.data.token) {
                 const expiryTime =
                   Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
-                localStorage.setItem("otpResendExpiry", expiryTime.toString());
+                localStorage.setItem(`otpResendExpiry_${role}_${email}`, expiryTime.toString());
                 navigate(`/verify-email?token=${res.data.token}`);
               }
             } catch {
