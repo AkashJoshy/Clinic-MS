@@ -6,9 +6,9 @@ import type {
   LoginVerificationResponseDTO,
 } from "../../../dto/auth.dto.ts";
 import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
-import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../i-service/i-user-existence.service.ts";
+import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
 
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(
@@ -17,7 +17,9 @@ export class AdminLoginUseCase implements ILoginUseCase {
     private _refreshtokenGenerationService: IRefreshTokenGenerationService,
   ) {}
 
-  async execute(data: LoginDTO): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
+  async execute(
+    data: LoginDTO,
+  ): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
 
     const { password, ...updatedUser } = user;

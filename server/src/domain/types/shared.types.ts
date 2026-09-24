@@ -39,10 +39,19 @@ export type ImageData = {
   publicId: string;
 };
 
+export type VerifyImageData = ImageData & {
+  status: ApprovalStatus
+}
+
 export interface QueryOptions {
   select?: string;
 }
 
 export type PlainUrl = {
   url: string;
+};
+
+export type ApprovalPlainUrl = {
+  url: string;
+  status: ApprovalStatus
 };

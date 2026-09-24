@@ -8,3 +8,8 @@ export interface registerDepartment {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export type RegistrationDocumentField = "registrationDoc"
+export type DoctorDocumentField = RegistrationDocumentField | "medicalLicenceDoc"
+export type ClinicDocumentField = RegistrationDocumentField | "establishmentLicenceDoc"
+export type DocumentField = RegistrationDocumentField | "medicalLicenceDoc" | "establishmentLicenceDoc"

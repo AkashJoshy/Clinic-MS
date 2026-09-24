@@ -1,41 +1,61 @@
-import type { AddressProps } from "../types/address.types.ts";
+import type { AddressProps, BaseAddressProps } from "../types/address.types.ts";
 import type { ModeRoleRef, Role } from "../types/user.types.ts";
 
 export class Address {
-    constructor(
-        public id: string | null,
-        public ownerId: string | null,
-        public ownerType: ModeRoleRef,
-        public addressLine: string,
-        public country: string,
-        public state: string,
-        public city: string,
-        public pincode: string,
-        public createdAt: Date | null,
-        public updatedAt: Date | null,
-    ) { }
-    
-    static create(data: Partial<AddressProps>): Address {
-        return new Address(
-            data.id ?? null,
-            data.ownerId!,
-            data.ownerType!,
-            data.addressLine ?? '',
-            data.country ?? '',
-            data.state ?? '',
-            data.city ?? '',
-            data.pincode ?? '',
-            data.createdAt ?? null,
-            data.updatedAt ?? null
-        )
-    }
+  constructor(
+    public id: string | null,
+    public ownerId: string | null,
+    public ownerType: ModeRoleRef,
+    public addressLine: string,
+    public country: string,
+    public state: string,
+    public city: string,
+    public pincode: string,
+    public createdAt: Date | null,
+    public updatedAt: Date | null,
+  ) {}
 
-    static createForOwner(data: Partial<Omit<AddressProps, "ownerType">>, ownerType: ModeRoleRef): Address {
-        return this.create({
-            ...data,
-            ownerType
-        })
-    }
+  static create(data: Partial<AddressProps>): Address {
+    return new Address(
+      data.id ?? null,
+      data.ownerId!,
+      data.ownerType!,
+      data.addressLine ?? "",
+      data.country ?? "",
+      data.state ?? "",
+      data.city ?? "",
+      data.pincode ?? "",
+      data.createdAt ?? null,
+      data.updatedAt ?? null,
+    );
+  }
 
+  static createForOwner(
+    data: Partial<Omit<AddressProps, "ownerType">>,
+    ownerType: ModeRoleRef,
+  ): Address {
+    return this.create({
+      ...data,
+      ownerType,
+    });
+  }
+
+  update(data: BaseAddressProps) {
+    if (data.addressLine !== undefined) {
+      this.addressLine = data.addressLine.trim();
+    }
+    if (data.country !== undefined) {
+      this.country = data.country.trim();
+    }
+    if (data.state !== undefined) {
+      this.state = data.state.trim();
+    }
+    if (data.city !== undefined) {
+      this.city = data.city.trim();
+    }
+    if (data.pincode !== undefined) {
+      this.pincode = data.pincode.trim();
+    }
+  }
+  
 }
-

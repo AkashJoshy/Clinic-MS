@@ -5,7 +5,7 @@ import type {
   PatientFullDetailsDto,
   PatientInfoDto,
 } from "../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../IService/i-patient-details.service.ts";
+import type { IPatientDetailsService } from "../i-service/i-patient-details.service.ts";
 
 export class PatientDetailsService implements IPatientDetailsService {
   constructor(

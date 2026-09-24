@@ -34,3 +34,10 @@ export interface CreateRefreshSessionProps {
   createdAt: Date |  null;
   updatedAt: Date | null;
 }
+
+export type ResourceType = "image" | "video" | "raw" | "auto";
+
+export interface CloudinaryUploadResult {
+  url: string;
+  publicId: string;
+}

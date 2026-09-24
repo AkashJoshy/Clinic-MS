@@ -23,7 +23,7 @@ export interface GoogleLoginDTO {
   provider: AuthProvider;
 }
 
-export type SafeUser = Omit<User, "password" | "block" | "unblock">;
+export type SafeUser = Omit<User, "password" | "block" | "unblock" | "updateName" | "updatePhone">;
 
 export type UserDto = User;
 
@@ -50,6 +50,8 @@ export interface LoginVerificationResponseDTO {
   role: Role
 }
 
+export type VerificationResponseDto = LoginVerificationResponseDTO
+
 export interface RefreshTokenResponseDto {
   user: BaseUserDto | null;
   accessToken: string;
@@ -65,6 +67,11 @@ type TokenPayload = {
   tokenType: "access" | "refresh";
 };
 
+type ActionTokenPayload = {
+  id: string;
+  tokenType: "doctor-reapplication";
+};
+
 export type AccessTokenPayloadDto = {
   role: Role;
 } & TokenPayload;
@@ -72,6 +79,10 @@ export type AccessTokenPayloadDto = {
 export type RefreshTokenPayloadDto = {
   tokenId: string;
 } & TokenPayload;
+
+export type ActionTokenPayloadDto = {
+  tokenId: string;
+} & ActionTokenPayload;
 
 export type LoginDTO = Omit<RegisterUserDTO, "id" | "fullName" | "phone">;
 

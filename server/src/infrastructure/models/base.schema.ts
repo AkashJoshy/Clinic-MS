@@ -1,8 +1,19 @@
 import { Schema } from "mongoose";
-import type { ImageData } from "../../domain/types/shared.types.ts";
-import type { Subscription, SubscriptionDetails } from "../../domain/types/doctor.types.ts";
-import type { Leave, Session, WeeklySchedule } from "../../domain/types/doctorClinic.types.ts";
+import type {
+  ImageData,
+  VerifyImageData,
+} from "../../domain/types/shared.types.ts";
+import type {
+  Subscription,
+  SubscriptionDetails,
+} from "../../domain/types/doctor.types.ts";
+import type {
+  Leave,
+  Session,
+  WeeklySchedule,
+} from "../../domain/types/doctor-clinic.types.ts";
 import { DAYS } from "../../domain/constants/doctor.constants.ts";
+import { APPROVAL_STATUS } from "../../domain/constants/status.constants.ts";
 
 export const ImageDataSchema = new Schema<ImageData>(
   {
@@ -20,36 +31,57 @@ export const ImageDataSchema = new Schema<ImageData>(
   },
 );
 
-const ISubscriptionDetailsSchema = new Schema<SubscriptionDetails>({
-    subscriptionId: {
-        type: String,
-        default: null
+export const VerifyImageDataSchema = new Schema<VerifyImageData>(
+  {
+    url: {
+      type: String,
+      required: true,
     },
-    startedAt: {
-        type: Date,
-        required: true,
-    },
-    expiredAt: {
-        type: Date,
-        required: true,
+    publicId: {
+      type: String,
+      required: true,
     },
     status: {
-        type: Boolean,
-        required: true
-    }
-})
+      type: String,
+      enum: APPROVAL_STATUS,
+      required: true,
+      default: "PENDING",
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
+const ISubscriptionDetailsSchema = new Schema<SubscriptionDetails>({
+  subscriptionId: {
+    type: String,
+    default: null,
+  },
+  startedAt: {
+    type: Date,
+    required: true,
+  },
+  expiredAt: {
+    type: Date,
+    required: true,
+  },
+  status: {
+    type: Boolean,
+    required: true,
+  },
+});
 
 export const ISubscriptionSchema = new Schema<Subscription>({
-    current: {
-        type: ISubscriptionDetailsSchema,
-        default: null
-    },
-    history: {
-        type: [ISubscriptionDetailsSchema],
-        default: []
-    }
-})
-
+  current: {
+    type: ISubscriptionDetailsSchema,
+    default: null,
+  },
+  history: {
+    type: [ISubscriptionDetailsSchema],
+    default: [],
+  },
+});
 
 export const SessionSchema = new Schema<Session>(
   {
@@ -73,7 +105,6 @@ export const SessionSchema = new Schema<Session>(
   },
   { _id: false },
 );
-
 
 export const LeaveSchema = new Schema<Leave>(
   {

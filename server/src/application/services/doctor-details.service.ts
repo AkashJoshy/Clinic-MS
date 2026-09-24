@@ -5,7 +5,7 @@ import type { IDepartmentRepository } from "../../domain/repositories/i-departme
 import type { IDoctorClinicRepository } from "../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type { DoctorInfo } from "../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../IService/i-doctor-details.service.ts";
+import type { IDoctorDetailsService } from "../i-service/i-doctor-details.service.ts";
 
 export class DoctorDetailsService implements IDoctorDetailsService {
   constructor(
@@ -63,7 +63,7 @@ export class DoctorDetailsService implements IDoctorDetailsService {
     );
     const departmentMap = new Map(departments.map((d) => [d.id, d]));
 
-    const response = doctors.map((doctor) => {
+    const response: DoctorInfo[] = doctors.map((doctor) => {
       const doctorClinicDetails = clinicDoctorMap.get(doctor.id) ?? null;
       const userDetails = userMap.get(doctor?.userId) ?? null;
       const clinicDetails = doctorClinicDetails
@@ -91,12 +91,21 @@ export class DoctorDetailsService implements IDoctorDetailsService {
               id: clinicDetails.id,
               name: clinicDetails.name,
               about: clinicDetails.about,
+              status: clinicDetails.status,
               location: {
                 type: clinicDetails.location.type,
                 coordinates: clinicDetails.location.coordinates as [
                   number,
                   number,
                 ],
+              },
+              establishmentLicenceDoc: {
+                url: clinicDetails.establishmentLicenceDoc.url,
+                status: clinicDetails.establishmentLicenceDoc.status,
+              },
+              registrationDoc: {
+                url: clinicDetails.registrationDoc.url,
+                status: clinicDetails.registrationDoc.status,
               },
               clinicAddress: clinicAddressDetails
                 ? {
@@ -127,14 +136,19 @@ export class DoctorDetailsService implements IDoctorDetailsService {
           totalReviews: doctor.totalReviews,
           registrationDoc: {
             url: doctor.registrationDoc.url,
+            status: doctor.registrationDoc.status,
           },
           medicalLicenceDoc: {
             url: doctor.medicalLicenceDoc.url,
+            status: doctor.medicalLicenceDoc.status,
           },
           profilePicture: {
             url: doctor.profilePicture.url,
           },
           status: doctor.status,
+          reviewedAt: doctor.reviewedAt,
+          reviewedMessage: doctor.reviewedMessage,
+          reviewedReason: doctor.reviewedReason,
           createdAt: doctor.createdAt ?? null,
           updatedAt: doctor.updatedAt ?? null,
         },

@@ -11,6 +11,7 @@ import type {
 } from "react-hook-form";
 import type { Role } from "./auth";
 import type { DoctorClinic } from "./doctor-clinic";
+import type { LucideIcon } from "lucide-react";
 
 export type UnderConstructionProps = {
   title: string;
@@ -144,6 +145,8 @@ export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
 export type UpdateMethods = "RESTORE" | "DELETE" | "BLOCK";
 
+export type FileUpdateMethods = "VERIFY" | "REJECT"
+
 export type StateWithCode = {
   name: string;
   state_code: string;
@@ -165,4 +168,14 @@ export type ImageData = {
 
 export type PlainUrl = {
   url: string;
+};
+
+export type VerifyPlainUrl = PlainUrl & {
+  status: ApprovalStatus
+}
+
+export type StatusTickerProps = {
+  icon?: LucideIcon;
+  message: string;
+  variant?: "error" | "warning" | "success" | "info";
 };

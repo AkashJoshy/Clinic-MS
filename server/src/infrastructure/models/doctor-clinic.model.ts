@@ -2,9 +2,13 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import type {
   Leave,
   WeeklySchedule,
-} from "../../domain/types/doctorClinic.types.ts";
+} from "../../domain/types/doctor-clinic.types.ts";
 import type { ServiceMode } from "../../domain/types/shared.types.ts";
-import { LeaveSchema, SessionSchema, WeeklyScheduleSchema } from "./base.schema.ts";
+import {
+  LeaveSchema,
+  SessionSchema,
+  WeeklyScheduleSchema,
+} from "./base.schema.ts";
 import { DAYS } from "../../domain/constants/doctor.constants.ts";
 
 export interface IDoctorClinic extends Document {
@@ -20,7 +24,6 @@ export interface IDoctorClinic extends Document {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
-
 
 const DoctorClinicSchema = new Schema<IDoctorClinic>(
   {
@@ -72,7 +75,6 @@ const DoctorClinicSchema = new Schema<IDoctorClinic>(
     timestamps: true,
   },
 );
-
 
 DoctorClinicSchema.index({ doctorId: 1 });
 

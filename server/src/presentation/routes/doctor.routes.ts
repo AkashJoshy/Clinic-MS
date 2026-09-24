@@ -14,7 +14,7 @@ import {
 } from "../schemas/doctor/doctor.schema.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
 import { updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
-import { doctorProfileController, doctorRegisterController, updateDoctorAddressController, updateDoctorConsultationDetailsController, updateDoctorProfessionalDetailsController, updateDoctorProfilePictureController } from "../../container/index.ts";
+import { doctorProfileController, doctorRegisterController, getDoctorReapplicationController, updateDoctorAddressController, updateDoctorConsultationDetailsController, updateDoctorProfessionalDetailsController, updateDoctorProfilePictureController, updateDoctorReapplicationController } from "../../container/index.ts";
 
 const router = Router();
 
@@ -34,6 +34,24 @@ router.post(
   validate(doctorRegistrationSchema),
   async (req, res, next) => {
     await doctorRegisterController.handle(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["reapplication_details"],
+  // doctorUpload,
+  // validate(doctorRegistrationSchema),
+  async (req, res, next) => {
+    await getDoctorReapplicationController.handle(req, res, next);
+  },
+);
+
+router.patch(
+  DOCTOR_ENDPOINTS["reapplication_details"],
+  doctorUpload,
+  // validate(doctorRegistrationSchema),
+  async (req, res, next) => {
+    await updateDoctorReapplicationController.handle(req, res, next);
   },
 );
 

@@ -1,9 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-import type { Gender, ImageData } from "../../domain/types/shared.types.ts";
+import type { Gender, ImageData, VerifyImageData } from "../../domain/types/shared.types.ts";
 import { GENDER } from "../../domain/constants/patient.constants.ts";
 import { DOCTOR_STATUS } from "../../domain/constants/status.constants.ts";
-import { ImageDataSchema, ISubscriptionSchema } from "./base.schema.ts";
+import { ImageDataSchema, ISubscriptionSchema, VerifyImageDataSchema } from "./base.schema.ts";
 import type { DoctorStatus, Subscription } from "../../domain/types/doctor.types.ts";
 
 
@@ -22,12 +22,14 @@ export interface IDoctor extends Document {
   licenceNumber: string;
   averageRating: number;
   totalReviews: number;
-  registrationDoc: ImageData;
-  medicalLicenceDoc: ImageData;
+  registrationDoc: VerifyImageData;
+  medicalLicenceDoc: VerifyImageData;
   status: DoctorStatus;
   subscription: Subscription
   reviewedAt: Date | null;
   reviewedMessage: string | null;
+  reviewedReason: string | null;
+  fieldsToReupload: string[],
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,11 +102,11 @@ const DoctorSchema = new Schema<IDoctor>(
       min: 0,
     },
     registrationDoc: {
-      type: ImageDataSchema,
+      type: VerifyImageDataSchema,
       required: true,
     },
     medicalLicenceDoc: {
-      type: ImageDataSchema,
+      type: VerifyImageDataSchema,
       required: true,
     },
     status: {
@@ -122,6 +124,14 @@ const DoctorSchema = new Schema<IDoctor>(
       type: String,
       default: null,
     },
+    reviewedReason: {
+      type: String,
+      default: null
+    },
+    fieldsToReupload: {
+      type: [String],
+      default: []
+    }
   },
   {
     timestamps: true,

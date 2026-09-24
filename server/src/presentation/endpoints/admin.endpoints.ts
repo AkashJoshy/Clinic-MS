@@ -11,4 +11,6 @@ export const ADMIN_ENDPOINTS = {
     REJECT_DOCTOR: "/doctors/:doctorId/reject",
     FETCH_DEPARTMENT: "/departments/:departmentId",
     UPDATE_DOCTOR: "/doctors/:doctorId",
-}
+    VERIFY_DOCTOR_DOCUMENT: "/doctors/:doctorId/verify",
+    VERIFY_CLINIC_DOCUMENT: "/clinic/:clinicId/verify",
+}

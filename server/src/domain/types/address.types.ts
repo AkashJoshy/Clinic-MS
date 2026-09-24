@@ -12,3 +12,5 @@ export interface AddressProps {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export type BaseAddressProps = Partial<Omit<AddressProps, "id" | "createdAt" | "updatedAt" | "id" | "ownerId" | "ownerType">>

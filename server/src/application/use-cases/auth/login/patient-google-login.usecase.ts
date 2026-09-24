@@ -6,8 +6,8 @@ import type {
   RefreshPayloadDto,
   TokenPair,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
+import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
 import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/i-patient-google-auth.usecase.ts";
 
 export class PatientGoogleLoginUseCase implements IPatientGoogleAuthUseCase {

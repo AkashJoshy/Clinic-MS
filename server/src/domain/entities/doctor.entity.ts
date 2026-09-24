@@ -1,9 +1,15 @@
+import type { DoctorDocumentField } from "../types/admin.types.ts";
 import type {
   AddDoctorProps,
   DoctorStatus,
   SubscriptionDetails,
+  UpdateDoctorProps,
 } from "../types/doctor.types.ts";
-import type { Gender, ImageData } from "../types/shared.types.ts";
+import type {
+  Gender,
+  ImageData,
+  VerifyImageData,
+} from "../types/shared.types.ts";
 
 export class Doctor {
   constructor(
@@ -22,8 +28,8 @@ export class Doctor {
     public licenceNumber: string,
     public averageRating: number,
     public totalReviews: number,
-    public registrationDoc: ImageData,
-    public medicalLicenceDoc: ImageData,
+    public registrationDoc: VerifyImageData,
+    public medicalLicenceDoc: VerifyImageData,
     public status: DoctorStatus,
     public subscription: {
       current: SubscriptionDetails | null;
@@ -31,6 +37,8 @@ export class Doctor {
     },
     public reviewedAt: Date | null,
     public reviewedMessage: string | null,
+    public reviewedReason: string | null,
+    public fieldsToReupload: string[],
     public readonly createdAt: Date | null,
     public updatedAt: Date | null,
   ) {}
@@ -58,10 +66,12 @@ export class Doctor {
       data.registrationDoc ?? {
         publicId: "",
         url: "",
+        status: "PENDING",
       },
       data.medicalLicenceDoc ?? {
         publicId: "",
         url: "",
+        status: "PENDING",
       },
       data.status ?? "PENDING",
       data.subscription ?? {
@@ -70,6 +80,8 @@ export class Doctor {
       },
       data.reviewedAt ?? null,
       data.reviewedMessage ?? null,
+      data.reviewedReason ?? null,
+      data.fieldsToReupload ?? [],
       data.createdAt ?? null,
       data.updatedAt ?? null,
     );
@@ -77,6 +89,10 @@ export class Doctor {
 
   static register(data: Partial<Omit<AddDoctorProps, "status">>): Doctor {
     return this.create({ ...data, status: "PENDING" });
+  }
+
+  isPending() {
+    return this.status === "PENDING";
   }
 
   approve(reviewMessage: string) {
@@ -89,7 +105,11 @@ export class Doctor {
     this.reviewedAt = new Date();
   }
 
-  reject(reviewMessage: string) {
+  reject(
+    reviewMessage: string,
+    reviewedReason: string,
+    fieldsToReupload: string[],
+  ) {
     if (this.status !== "PENDING") {
       throw new Error("Only pending doctors can be rejected.");
     }
@@ -97,6 +117,8 @@ export class Doctor {
     this.status = "REJECTED";
     this.reviewedMessage = reviewMessage;
     this.reviewedAt = new Date();
+    this.reviewedReason = reviewedReason;
+    this.fieldsToReupload = fieldsToReupload;
   }
 
   addLanguages(languages: string[]): string[] {
@@ -125,7 +147,109 @@ export class Doctor {
   }
 
   updateProfilePicture(profilePicture: ImageData) {
-    return this.profilePicture = profilePicture
+    return (this.profilePicture = profilePicture);
   }
 
+  isDocumentMatch(documentField: DoctorDocumentField, url: string) {
+    if (this[documentField].url === url) {
+      return true;
+    }
+
+    return false;
+  }
+
+  verifyDocument(documentField: DoctorDocumentField, url: string) {
+    const isMatched = this.isDocumentMatch(documentField, url);
+
+    if (!isMatched) {
+      throw new Error("Document doesn't exist");
+    }
+
+    if (this[documentField].status === "APPROVED") {
+      throw new Error("Document is already Approved");
+    }
+
+    this[documentField].status = "APPROVED";
+  }
+
+  rejectDocument(documentField: DoctorDocumentField, url: string) {
+    const isMatched = this.isDocumentMatch(documentField, url);
+
+    if (!isMatched) {
+      throw new Error("Document doesn't exist");
+    }
+
+    if (this[documentField].status === "REJECTED") {
+      throw new Error("Document is already Rejected");
+    }
+    this[documentField].status = "REJECTED";
+  }
+
+  update(
+    data: UpdateDoctorProps
+  ) {
+    if (data.displayName !== undefined) {
+      this.displayName = data.displayName;
+    }
+
+    if (data.bio !== undefined) {
+      this.bio = data.bio;
+    }
+
+    if (data.languages !== undefined) {
+      this.languages = data.languages;
+    }
+
+    if (data.gender !== undefined) {
+      this.gender = data.gender;
+    }
+
+    if (data.departmentId !== undefined) {
+      this.departmentId = data.departmentId;
+    }
+
+    if (data.specialization !== undefined) {
+      this.specialization = data.specialization;
+    }
+
+    if (data.qualification !== undefined) {
+      this.qualification = data.qualification;
+    }
+
+    if (data.experienceYears !== undefined) {
+      this.experienceYears = data.experienceYears;
+    }
+
+    if (data.licenceNumber !== undefined) {
+      this.licenceNumber = data.licenceNumber;
+    }
+
+    if (data.profilePicture !== undefined) {
+      this.profilePicture = data.profilePicture;
+    }
+
+    if (data.registrationDoc !== undefined) {
+      const registrationDocument = {
+        ...data.registrationDoc,
+        status: "PENDING",
+      };
+      this.registrationDoc = registrationDocument as VerifyImageData;
+    }
+
+    if (data.medicalLicenceDoc !== undefined) {
+      const medicalLicenceDocument = {
+        ...data.medicalLicenceDoc,
+        status: "PENDING",
+      } as VerifyImageData;
+      this.medicalLicenceDoc = medicalLicenceDocument;
+    }
+
+    if (data.fieldsToReupload !== undefined) {
+      this.fieldsToReupload = data.fieldsToReupload;
+    }
+  }
+
+  submit() {
+    this.status = "PENDING";
+  }
 }

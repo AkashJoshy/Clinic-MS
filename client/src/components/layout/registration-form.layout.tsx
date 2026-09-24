@@ -12,9 +12,9 @@ import type { RegisterUserDto } from "@/types/auth";
 import { FcGoogle } from "react-icons/fc";
 import type { GoogleAuthMode } from "@/types/auth";
 import toast from "react-hot-toast";
+import { useMutate } from "@/hooks/use-mutate.hook";
 
 const RegistrationForm = () => {
-  const [isPending, setIsPending] = useState<boolean>(false);
   const navigate = useNavigate();
   const {
     register,
@@ -32,6 +32,26 @@ const RegistrationForm = () => {
   const handleGoogleSignup = async (mode: GoogleAuthMode) => {
     initiateGoogleAuth(mode);
   };
+
+  const { mutate, isPending } = useMutate(registerUser, {
+    onSuccess: (data) => {
+      if (data.data.token && data.data.role && data.data.email) {
+        const expiryTime =
+          Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
+        localStorage.setItem(
+          `otpResendExpiry_${data.data.role}_${data.data.email}`,
+          expiryTime.toString(),
+        );
+        navigate(`/verify-email?token=${data.data.token}`, {
+          state: {
+            email: data.data.email,
+          },
+        });
+      } else {
+        toast.error("Something went wrong!!!")
+      }
+    },
+  });
 
   const [searchParams] = useSearchParams();
   const message = searchParams.get("message");
@@ -57,10 +77,9 @@ const RegistrationForm = () => {
         <form
           onSubmit={handleSubmit(async (data) => {
             try {
-              setIsPending(true);
               const { email, fullName, password, phone, role } =
                 data as RegisterUserDto;
-              const res = await registerUser({
+              mutate({
                 email,
                 fullName,
                 password,
@@ -68,12 +87,6 @@ const RegistrationForm = () => {
                 role,
                 provider: "LOCAL",
               });
-              if (res.data.token) {
-                const expiryTime =
-                  Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
-                localStorage.setItem(`otpResendExpiry_${role}_${email}`, expiryTime.toString());
-                navigate(`/verify-email?token=${res.data.token}`);
-              }
             } catch {
               return;
             }

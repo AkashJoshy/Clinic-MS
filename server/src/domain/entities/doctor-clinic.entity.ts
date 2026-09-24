@@ -3,7 +3,7 @@ import type {
   AddDoctorClinicProps,
   Leave,
   WeeklySchedule,
-} from "../types/doctorClinic.types.ts";
+} from "../types/doctor-clinic.types.ts";
 
 export class DoctorClinic {
   constructor(
@@ -67,7 +67,7 @@ export class DoctorClinic {
   }
 
   activeStatus() {
-    return this.isActive
+    return this.isActive;
   }
 
   addLeave(leave: Leave) {
@@ -86,11 +86,14 @@ export class DoctorClinic {
     this.schedule = schedule;
   }
 
-  updateConsultationDetails(data: Pick<DoctorClinic, "consultationFee" | "slotDuration" | "type" | "timeZone">) {
-    this.consultationFee = Number(data.consultationFee)
-    this.slotDuration = Number(data.slotDuration)
-    this.type = data.type,
-    this.timeZone = data.timeZone
+  updateConsultationDetails(
+    data: Pick<
+      DoctorClinic,
+      "consultationFee" | "slotDuration" | "type" | "timeZone"
+    >,
+  ) {
+    this.consultationFee = Number(data.consultationFee);
+    this.slotDuration = Number(data.slotDuration);
+    ((this.type = data.type), (this.timeZone = data.timeZone));
   }
-  
 }

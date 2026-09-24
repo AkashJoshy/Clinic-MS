@@ -1,5 +1,6 @@
 import type { Doctor } from "../../domain/entities/doctor.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
+import type { DocumentField } from "../../domain/types/admin.types.ts";
 import type {
   ApprovalStatus,
   DayOfWeek,
@@ -62,3 +63,12 @@ export type DepartmentStatusDto = {
   departmentId: string;
   status: EntityStatus;
 } & MessageDto;
+
+
+export interface VerifyDocumentDto {
+  id: string;
+  action: "VERIFY" | "REJECT";
+  documentField: DocumentField;
+  url: string;
+}
+

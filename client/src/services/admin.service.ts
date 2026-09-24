@@ -1,8 +1,9 @@
 import api from "@/api/interceptors";
 import type { DepartmentData, DepartmentDto } from "@/types/admin";
 import type {
+  DoctorRejectDto,
   DoctorStatusUpdateDto,
-  UpdateDoctorStatusDto,
+  DocumentDto,
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
 import type { DeletePatientDto } from "@/types/patient";
@@ -131,13 +132,10 @@ export const approveDoctor = async (data: DoctorStatusUpdateDto) => {
   }
 };
 
-export const rejectDoctor = async (data: DoctorStatusUpdateDto) => {
+export const rejectDoctor = async (doctorData: DoctorRejectDto) => {
   try {
-    const { id, reviewMessage } = data;
-    const res = await api.delete(ENDPOINTS.ADMIN.REJECT_DOCTOR(id), {
-      data: {
-        reviewMessage,
-      },
+    const { doctorId, ...data } = doctorData;
+    const res = await api.patch(ENDPOINTS.ADMIN.REJECT_DOCTOR(doctorId), data, {
       authRole: ROLE_VALUES.lower.ADMIN,
     });
     return res.data;
@@ -255,3 +253,49 @@ export const updatePatient = async (data: DeletePatientDto) => {
     };
   }
 };
+
+export const verifyDoctorDocument = async (doctorData: DocumentDto) => {
+  try {
+    const {
+      id,
+      ...data
+    } = doctorData as DocumentDto   
+    const res = await api.patch(ENDPOINTS.ADMIN.VERIFY_DOCTOR_DOCUMENT(id), data, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const verifyClinicDocument = async (clinicData: DocumentDto) => {
+  try {
+    const {
+      id,
+      ...data
+    } = clinicData as DocumentDto
+    const res = await api.patch(ENDPOINTS.ADMIN.VERIFY_CLINIC_DOCUMENT(id),
+      data, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+

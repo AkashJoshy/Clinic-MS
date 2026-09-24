@@ -7,7 +7,7 @@ import type User from "../../domain/entities/user.entity.ts";
 import type { ImageData } from "../../domain/types/shared.types.ts";
 import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
-import type { PatientProfile } from "./patient.dto.ts";
+import type { PatientProfile, UpdateAddress } from "./patient.dto.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -63,9 +63,11 @@ export interface ClinicWithDetailsDto {
   address: Address | null;
 }
 
+export type SafeAddress = Pick<Address, "update">
+
 type BaseAddress = Omit<
   Address,
-  "updatedAt" | "createdAt" | "id" | "ownerType"
+  "updatedAt" | "createdAt" | "id" | "ownerType" | "update"
 >;
 
 export type UpdateAddressDto = BaseAddress;
@@ -82,9 +84,9 @@ export type PatientInfoDto = PatientProfile & {
 };
 
 export type PatientFullDetailsDto = {
-  user: Omit<User, "password" | "block" | "unblock" | "create"> | null;
+  user: Omit<User, "password" | "block" | "unblock" | "create" | "updateName" | "updatePhone"> | null;
   patient: Patient;
-  address: Address | null;
+  address: SafeAddress | null;
 };
 
 export type PatientBasicInfoDto = {
@@ -107,3 +109,8 @@ export type PatientBasicInfoDto = {
 export type MessageDto = {
   message: string;
 };
+
+export interface UpdateAddressEntityDto {
+  address: Address, 
+  updates: Partial<UpdateAddress>
+}

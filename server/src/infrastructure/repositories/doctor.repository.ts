@@ -52,12 +52,14 @@ export class DoctorRepository
       status: doc.status,
       reviewedAt: doc.reviewedAt,
       reviewedMessage: doc.reviewedMessage,
-      createdAt: doc.createdAt ?? null,
-      updatedAt: doc.updatedAt ?? null,
       subscription: {
         current: doc.subscription.current,
         history: doc.subscription.history,
       },
+      reviewedReason: doc.reviewedMessage ?? null,
+      fieldsToReupload: doc.fieldsToReupload ?? [],
+      createdAt: doc.createdAt ?? null,
+      updatedAt: doc.updatedAt ?? null,
     });
   }
 
@@ -86,6 +88,8 @@ export class DoctorRepository
       },
       reviewedAt: entity.reviewedAt,
       reviewedMessage: entity.reviewedMessage,
+      reviewedReason: entity.reviewedMessage ?? null,
+      fieldsToReupload: entity.fieldsToReupload ?? [],
     };
   }
 }

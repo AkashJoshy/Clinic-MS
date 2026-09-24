@@ -97,3 +97,7 @@ export const doctorRegisterStep3Schema = z.object({
     5,
   ),
 });
+
+export const doctorReapplicationSchema = doctorRegisterStep1Schema
+  .safeExtend(doctorRegisterStep2Schema.shape)
+  .safeExtend(doctorRegisterStep3Schema.shape)

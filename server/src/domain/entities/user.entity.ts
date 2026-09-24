@@ -57,6 +57,21 @@ class User {
     this.isBlocked = false;
     this.isActive = true;
   }
+
+  updateName(name: string) {
+    const trimmedName = name.trim();
+    this.fullName = trimmedName;
+  }
+
+  updatePhone(phone: string) {
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedPhone) {
+      throw new Error("Phone cannot be empty");
+    }
+
+    this.phone = trimmedPhone;
+  }
 }
 
 export default User;

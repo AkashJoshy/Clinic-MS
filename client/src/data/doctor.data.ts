@@ -97,7 +97,7 @@ export const DOCTOR_STEP2_INPUTS: FormInputs<DoctorRegisterStep2FormData>[] = [
     false,
   ),
   fieldGenerator<DoctorRegisterStep2FormData>(
-    "Address",
+    "Address Line",
     "text",
     "Enter clinic address",
     "addressLine",

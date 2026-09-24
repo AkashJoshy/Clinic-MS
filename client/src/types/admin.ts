@@ -1,4 +1,4 @@
-import type { EntityStatus, ServiceMode, UpdateMethods } from "./common"
+import type { ApprovalStatus, EntityStatus, FileUpdateMethods, ServiceMode, UpdateMethods } from "./common"
 
 export interface DepartmentData {
     id: string
@@ -18,6 +18,13 @@ export type AllApprovalsProps = {
 
 export type SelectedDept = Omit<DepartmentData, "mode">;
 
+export type SelectedDocument = {
+    id: string,
+    name: string,
+    action: FileUpdateMethods,
+    status: ApprovalStatus,
+}
+
 export type NotFoundProps = {
     name: string;
     description: string;
@@ -33,4 +40,4 @@ export interface DepartmentCardProps {
 
 export type PatientDetailsTab = "overview" | "appointments" | "medical-records" | "reviews";
 
-export type DoctorManagementTab = "all" | "pending";
+export type DoctorManagementTab = "all" | "pending" | "rejected";

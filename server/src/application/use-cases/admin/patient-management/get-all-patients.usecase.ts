@@ -1,6 +1,6 @@
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { PatientBasicInfoDto } from "../../../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../../../IService/i-patient-details.service.ts";
+import type { IPatientDetailsService } from "../../../i-service/i-patient-details.service.ts";
 import type { IGetAllPatientsBasicUseCase } from "../../../repositories/admin/i-get-all-patients-basic.usecase.ts";
 
 export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
@@ -33,7 +33,7 @@ export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
               email: res.user.email,
               phone: res.user.phone,
               isActive: res.user.isActive,
-              isBlocked: res.user.isBlocked
+              isBlocked: res.user.isBlocked,
             }
           : null,
       };

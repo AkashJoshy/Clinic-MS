@@ -32,8 +32,10 @@ type PatientDetails = Pick<Patient, "id" | "relation" | "displayName">;
 
 export type BaseAddress = Omit<
   Address,
-  "createdAt" | "updatedAt" | "ownerType" | "id"
->;
+  "createdAt" | "updatedAt" | "ownerType" | "update"
+>
+
+export type UpdateAddress = Omit<BaseAddress, "ownerId" | "id">
 
 export type CreatePatientProfileDto = {
   userId: string;

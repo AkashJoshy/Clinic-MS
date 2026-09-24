@@ -5,7 +5,6 @@ import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorInfo } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../IService/i-doctor-details.service.ts";
 import type { IGetDoctorUseCase } from "../../../repositories/admin/i-get-doctor.usecase.ts";
 
 export class GetDoctorUseCase implements IGetDoctorUseCase {
@@ -51,7 +50,7 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
       ? await this._departmentRepository.findById(doctor.departmentId)
       : null;
 
-    return {
+    const response: DoctorInfo = {
       user: user
         ? {
             email: user.email,
@@ -60,18 +59,27 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
             isBlocked: user.isBlocked,
           }
         : null,
-
       clinic: clinic
         ? {
             id: clinic.id,
             name: clinic.name,
             about: clinic.about,
+            status: clinic.status,
             location: {
               type: clinic.location.type,
               coordinates: clinic.location.coordinates as [number, number],
             },
+            establishmentLicenceDoc: {
+              url: clinic.establishmentLicenceDoc.url,
+              status: clinic.establishmentLicenceDoc.status,
+            },
+            registrationDoc: {
+              url: clinic.registrationDoc.url,
+              status: clinic.registrationDoc.status,
+            },
             clinicAddress: clinicAddress
               ? {
+                  id: clinicAddress.id,
                   addressLine: clinicAddress.addressLine,
                   country: clinicAddress.country,
                   state: clinicAddress.state,
@@ -82,7 +90,6 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
               : null,
           }
         : null,
-
       doctor: {
         id: doctor.id,
         displayName: doctor.displayName,
@@ -96,20 +103,25 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
         experienceYears: doctor.experienceYears,
         averageRating: doctor.averageRating,
         totalReviews: doctor.totalReviews,
+        licenceNumber: doctor.licenceNumber,
         registrationDoc: {
           url: doctor.registrationDoc.url,
+          status: doctor.registrationDoc.status,
         },
         medicalLicenceDoc: {
           url: doctor.medicalLicenceDoc.url,
+          status: doctor.medicalLicenceDoc.status,
         },
         profilePicture: {
           url: doctor.profilePicture.url,
         },
         status: doctor.status,
+        reviewedAt: doctor.reviewedAt,
+        reviewedMessage: doctor.reviewedMessage,
+        reviewedReason: doctor.reviewedReason,
         createdAt: doctor.createdAt,
         updatedAt: doctor.updatedAt,
       },
-
       doctorClinic: doctorClinic
         ? {
             id: doctorClinic.id,
@@ -119,11 +131,12 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
             slotDuration: doctorClinic.slotDuration,
             timeZone: doctorClinic.timeZone,
             isActive: doctorClinic.isActive,
+            updatedAt: doctorClinic.updatedAt,
           }
         : null,
-
       address: doctorAddress
         ? {
+            id: doctorAddress.id,
             addressLine: doctorAddress.addressLine,
             country: doctorAddress.country,
             state: doctorAddress.state,
@@ -140,5 +153,7 @@ export class GetDoctorUseCase implements IGetDoctorUseCase {
           }
         : null,
     };
+
+    return response;
   }
 }

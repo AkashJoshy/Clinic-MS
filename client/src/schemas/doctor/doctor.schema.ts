@@ -1,5 +1,6 @@
 import * as z from "zod";
 import {
+  doctorReapplicationSchema,
   doctorRegisterStep1Schema,
   doctorRegisterStep2Schema,
   doctorRegisterStep3Schema,
@@ -22,3 +23,4 @@ export type ProffessionalDetailsSchema = z.input<
 export type ConsulationDetailsSchema = z.input<
   typeof consultationDetailsSchema
 >;
+export type DoctorReapplicationSchemaFormData = z.input<typeof doctorReapplicationSchema>

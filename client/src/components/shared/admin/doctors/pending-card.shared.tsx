@@ -4,14 +4,15 @@ import {
   ArrowRight,
   Building2,
   Check,
-  Clock,
   FileText,
   MapPin,
   Phone,
   UserRound,
   X,
 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DocumentVerificationModal from "../../document-verification-modal.shared";
 
 interface PendingDoctorCardProps {
   doctorInfo: DoctorInfo;
@@ -27,7 +28,13 @@ export const PendingDoctorCard = ({
   setPreviewImage,
 }: PendingDoctorCardProps) => {
   const navigate = useNavigate();
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<{
+    name: string;
+    action: "VERIFY" | "REJECT";
+    id: string;
+    documentRelatedTo: "CLINIC" | "DOCTOR";
+  } | null>(null);
   const { doctor, clinic, user, address, doctorClinic } = doctorInfo;
 
   const submittedDate = doctor?.createdAt
@@ -46,6 +53,18 @@ export const PendingDoctorCard = ({
       reviewMessage: "Your doctor registration has been reviewed and approved.",
     });
   };
+
+  const onUpdateDocument = () => {
+    console.log(`On Update Document Data: `);
+    console.log(selectedDocument);
+    setSelectedDocument(null);
+  };
+
+  let isDocVerifyPending =
+    doctor.medicalLicenceDoc.status === "PENDING" ||
+    doctor.registrationDoc.status === "PENDING" ||
+    clinic.establishmentLicenceDoc.status == "PENDING" ||
+    clinic.registrationDoc.status === "PENDING";
 
   return (
     <div className="group bg-[#0d1a27] border border-amber-500/20 rounded-2xl overflow-hidden hover:border-amber-500/40 transition-all duration-200">
@@ -144,35 +163,107 @@ export const PendingDoctorCard = ({
 
       <div className="px-5 pb-4">
         <p className="text-[10px] uppercase tracking-wide text-[#607086] mb-2">
-          Documents
+          Doctor's Documents
         </p>
 
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            disabled={!doctor?.registrationDoc?.url}
-            onClick={() =>
-              doctor?.registrationDoc?.url &&
-              setPreviewImage(doctor.registrationDoc.url)
-            }
-            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border border-white/8 bg-white/[0.02] text-[#8b9ab0] text-[11px] font-medium hover:border-[#1dc465]/30 hover:text-[#1dc465] hover:bg-[#1dc465]/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-          >
-            <FileText size={12} />
-            Registration
-          </button>
+        <div className="space-y-1.5">
+          {/* Registration Document */}
+          <div className="flex flex-wrap items-center gap-1">
+            <button
+              disabled={!doctor?.registrationDoc?.url}
+              onClick={() =>
+                doctor?.registrationDoc?.url &&
+                setPreviewImage(doctor.registrationDoc.url)
+              }
+              className="group flex min-w-[110px] flex-1 items-center gap-1.5 h-8 px-2.5 rounded-md border border-white/10 bg-white/[0.03] text-[#9aa9bb] text-[11px] font-medium transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <FileText
+                size={13}
+                strokeWidth={1.8}
+                className="shrink-0 transition-colors group-hover:text-[#1dc465]"
+              />
+              <span className="truncate">Registration</span>
+            </button>
+          </div>
 
-          <button
-            disabled={!doctor?.medicalLicenceDoc?.url}
-            onClick={() =>
-              doctor?.medicalLicenceDoc?.url &&
-              setPreviewImage(doctor.medicalLicenceDoc.url)
-            }
-            className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg border border-white/8 bg-white/[0.02] text-[#8b9ab0] text-[11px] font-medium hover:border-[#1dc465]/30 hover:text-[#1dc465] hover:bg-[#1dc465]/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-          >
-            <FileText size={12} />
-            Licence
-          </button>
+          {/* Medical Licence */}
+          <div className="flex flex-wrap items-center gap-1">
+            <button
+              disabled={!doctor?.medicalLicenceDoc?.url}
+              onClick={() =>
+                doctor?.medicalLicenceDoc?.url &&
+                setPreviewImage(doctor.medicalLicenceDoc.url)
+              }
+              className="group flex min-w-[110px] flex-1 items-center gap-1.5 h-8 px-2.5 rounded-md border border-white/10 bg-white/[0.03] text-[#9aa9bb] text-[11px] font-medium transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <FileText
+                size={13}
+                strokeWidth={1.8}
+                className="shrink-0 transition-colors group-hover:text-[#1dc465]"
+              />
+              <span className="truncate">Licence</span>
+            </button>
+          </div>
 
+          <p className="mt-5 mb-2 text-[10px] uppercase tracking-wide text-[#607086]">
+            Clinic's Documents
+          </p>
+
+          {/* Clinic Registration */}
+          <div className="flex flex-wrap items-center gap-1">
+            <button
+              disabled={!clinic?.registrationDoc?.url}
+              onClick={() =>
+                clinic?.registrationDoc?.url &&
+                setPreviewImage(clinic.registrationDoc.url)
+              }
+              className="group flex min-w-[110px] flex-1 items-center gap-1.5 h-8 px-2.5 rounded-md border border-white/10 bg-white/[0.03] text-[#9aa9bb] text-[11px] font-medium transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <FileText
+                size={13}
+                strokeWidth={1.8}
+                className="shrink-0 transition-colors group-hover:text-[#1dc465]"
+              />
+              <span className="truncate">Registration</span>
+            </button>
+          </div>
+
+          {/* Establishment Licence */}
+          <div className="flex flex-wrap items-center gap-1">
+            <button
+              disabled={!clinic?.establishmentLicenceDoc?.url}
+              onClick={() =>
+                clinic?.establishmentLicenceDoc?.url &&
+                setPreviewImage(clinic.establishmentLicenceDoc.url)
+              }
+              className="group flex min-w-[110px] flex-1 items-center gap-1.5 h-8 px-2.5 rounded-md border border-white/10 bg-white/[0.03] text-[#9aa9bb] text-[11px] font-medium transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <FileText
+                size={13}
+                strokeWidth={1.8}
+                className="shrink-0 transition-colors group-hover:text-[#1dc465]"
+              />
+              <span className="truncate">Licence</span>
+            </button>
+          </div>
         </div>
+
+        {isDocVerifyPending && (
+          <button
+            onClick={() =>
+              navigate(`/admin/doctors/${doctor?.id}`, { state: doctorInfo })
+            }
+            className="group mt-3 relative inline-flex cursor-pointer items-center gap-2 overflow-hidden rounded-lg border border-[#f5b942]/40 bg-gradient-to-r from-[#f5b942]/10 via-[#ffd873]/15 to-[#f5b942]/10 px-4 py-2 text-xs font-semibold text-[#f5b942] shadow-[0_0_0_rgba(245,185,66,0)] transition-all duration-300 hover:border-[#f5b942]/70 hover:text-white hover:shadow-[0_0_18px_rgba(245,185,66,0.45)]"
+          >
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+
+            <span className="relative z-10">Verify Now</span>
+            <ArrowRight
+              size={14}
+              className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </button>
+        )}
       </div>
 
       <div className="px-5 py-4 border-t border-white/5 bg-black/10">
@@ -185,17 +276,19 @@ export const PendingDoctorCard = ({
             <p className="text-xs text-[#8b9ab0] mt-0.5">{submittedDate}</p>
           </div>
 
-          <button
-            onClick={() =>
-              navigate(`/admin/doctors/${doctor?.id}`, {
-                state: doctorInfo,
-              })
-            }
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 text-[#c1ccd9] text-xs font-medium hover:bg-white/5 hover:text-white transition-all cursor-pointer"
-          >
-            View Details
-            <ArrowRight size={13} />
-          </button>
+          {!isDocVerifyPending && (
+            <button
+              onClick={() =>
+                navigate(`/admin/doctors/${doctor?.id}`, {
+                  state: doctorInfo,
+                })
+              }
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 text-[#c1ccd9] text-xs font-medium hover:bg-white/5 hover:text-white transition-all cursor-pointer"
+            >
+              View Details
+              <ArrowRight size={13} />
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -216,6 +309,17 @@ export const PendingDoctorCard = ({
           </button>
         </div>
       </div>
+
+      {isOpen &&
+        (selectedDocument ? (
+          <DocumentVerificationModal
+            documentName={selectedDocument.name}
+            action={selectedDocument.action}
+            service={onUpdateDocument}
+            onClose={() => setSelectedDocument(null)}
+            isLoading={false}
+          />
+        ) : null)}
     </div>
   );
 };

@@ -16,8 +16,8 @@ import { welcomeTemplate } from "../../../../infrastructure/services/mail/templa
 import { EMAIL_FOOTER } from "../../../../domain/constants/email.constants.ts";
 import type { IMailService } from "../../../../domain/services/email.service.ts";
 import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/i-patient-google-auth.usecase.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
+import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
 
 export class PatientGoogleRegisterUseCase implements IPatientGoogleAuthUseCase {
   constructor(

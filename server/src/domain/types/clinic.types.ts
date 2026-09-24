@@ -1,4 +1,4 @@
-import type { ApprovalStatus, ImageData } from "./shared.types.ts";
+import type { ApprovalStatus, ImageData, VerifyImageData } from "./shared.types.ts";
 
 export interface LocationType {
   type: "Point";
@@ -13,10 +13,20 @@ export interface RegisterClinicProps {
   registrationNumber: string;
   about: string;
   altPhone: string | null,
-  registrationDoc: ImageData;
-  establishmentLicenceDoc: ImageData;
+  registrationDoc: VerifyImageData;
+  establishmentLicenceDoc: VerifyImageData;
   location: LocationType;
   status: ClinicStatus;
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export type UpdateClinicProps = Partial<
+  Omit<
+    RegisterClinicProps,
+    "registrationDoc" | "establishmentLicenceDoc"
+  > & {
+    registrationDoc?: ImageData;
+    establishmentLicenceDoc?: ImageData;
+  }
+>

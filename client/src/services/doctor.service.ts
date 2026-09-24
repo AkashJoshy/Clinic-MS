@@ -43,6 +43,46 @@ export const fetchDoctorProfile = async (userId: string) => {
   }
 };
 
+export const fetchDoctorReapplication = async (token: string) => {
+  try {
+    const res = await api.get(ENDPOINTS.DOCTOR.REAPPLICATION_DETAILS(token));
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const UpdateDoctorReapplication = async (data: { formData: FormData, token: string }) => {
+  try {
+    const {
+      formData,
+      token
+    } =  data
+    const res = await api.patch(ENDPOINTS.DOCTOR.REAPPLICATION_DETAILS(token), formData, {
+      "headers": {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
 export const updateDoctorProfessionalDetails = async(doctorData: DoctorProffesionalDetails) => {
   try {
     const { userId, ...data } = doctorData

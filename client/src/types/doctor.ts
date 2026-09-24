@@ -7,6 +7,7 @@ import type {
   ServiceMode,
   ImageData,
   PlainUrl,
+  VerifyPlainUrl,
 } from "./common";
 import type { DoctorClinic, Session, WeeklySchedule } from "./doctor-clinic";
 import type { Clinic } from "./clinic";
@@ -17,7 +18,7 @@ export interface Doctor {
   userId: string | null;
   displayName: string;
   doctorCode: string;
-  profilePicture: ImageData;
+  profilePicture: PlainUrl;
   bio: string | null;
   languages: string[];
   gender: Gender;
@@ -28,12 +29,14 @@ export interface Doctor {
   licenceNumber: string;
   averageRating: number;
   totalReviews: number;
-  registrationDoc: ImageData;
-  medicalLicenceDoc: ImageData;
+  registrationDoc: VerifyPlainUrl;
+  medicalLicenceDoc: VerifyPlainUrl;
   status: DoctorStatus;
   subscription: Subscription;
   reviewedAt: Date | null;
   reviewedMessage: string | null;
+  reviewedReason: string | null;
+  fieldsToReupload: string[];
   createdAt: string | null;
   updatedAt: string | null;
 }
@@ -48,6 +51,11 @@ export interface UpdateDoctorStatusDto {
   status: ApprovalStatus | AccountStatus;
   reviewedAt: Date;
   reviewMessage?: string;
+}
+
+export interface RejectedDoctor
+  extends Omit<Doctor, "userId" | "subscription"> {
+  reviewedReason: string | null;
 }
 
 type PublicUser = Omit<
@@ -123,21 +131,22 @@ export type DoctorInfo = {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
     Doctor,
-    | "reviewedAt"
-    | "reviewedMessage"
     | "registrationDoc"
     | "medicalLicenceDoc"
     | "profilePicture"
-    | "subscription"
   > & {
-    registrationDoc: PlainUrl;
+    registrationDoc: VerifyPlainUrl;
   } & {
-    medicalLicenceDoc: PlainUrl;
+    medicalLicenceDoc: VerifyPlainUrl;
   } & {
     profilePicture: PlainUrl;
   };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location"> & {
+  clinic: Pick<Clinic, "id" | "name" | "about" | "location" | "status"> & {
     clinicAddress: BaseAddress | null;
+  } & {
+    establishmentLicenceDoc: VerifyPlainUrl;
+  } & {
+    registrationDoc: VerifyPlainUrl;
   };
   doctorClinic: Pick<
     DoctorClinic,
@@ -159,6 +168,13 @@ export type DoctorInfo = {
 export interface DoctorStatusUpdateDto {
   id: string;
   reviewMessage: string;
+}
+
+export interface DoctorRejectDto {
+  doctorId: string;
+  rejectedReason: string;
+  rejectedMessage: string;
+  fields: string[];
 }
 
 type DoctorProfCard = Pick<
@@ -183,29 +199,45 @@ export interface DoctorProfileCardProps {
 
 type DoctorQualificationCard = Pick<
   Doctor,
+  | "id"
+  | "status"
   | "specialization"
   | "qualification"
   | "experienceYears"
   | "gender"
   | "createdAt"
 > & {
-  registrationDoc: {
-    url: string;
-  };
+  registrationDoc: VerifyPlainUrl;
 } & {
-  medicalLicenceDoc: {
-    url: string;
-  };
+  medicalLicenceDoc: VerifyPlainUrl;
 };
 
 export interface DoctorQualificationsCardProps {
   doctor: DoctorQualificationCard;
   onViewDocument: (url: string) => void;
   formatDate: (date: any) => string;
+  onDocumentAction?: (
+    name: string,
+    status: "VERIFY" | "REJECT",
+    id: string,
+    documentRelatedTo: "CLINIC" | "DOCTOR",
+    documentField:
+      | "registrationDoc"
+      | "medicalLicenceDoc"
+      | "establishmentLicenceDoc",
+    url: string,
+  ) => void;
 }
 
-type ClinicCard = Pick<Clinic, "name" | "about"> & {
+type ClinicCard = Pick<
+  Clinic,
+  "name" | "about" | "id" | "location" | "status"
+> & {
   clinicAddress: BaseAddress | null;
+} & {
+  establishmentLicenceDoc: VerifyPlainUrl;
+} & {
+  registrationDoc: VerifyPlainUrl;
 };
 
 type DoctorClinicCard = Pick<
@@ -213,10 +245,45 @@ type DoctorClinicCard = Pick<
   "consultationFee" | "slotDuration" | "type" | "isActive"
 >;
 
+export interface DocumentDto {
+  id: string;
+  name: string;
+  action: "VERIFY" | "REJECT";
+  documentRelatedTo: "CLINIC" | "DOCTOR";
+  documentField:
+    | "registrationDoc"
+    | "medicalLicenceDoc"
+    | "establishmentLicenceDoc";
+  url: string;
+}
+
 export interface DoctorClinicCardProps {
   clinic: ClinicCard;
+  doctor: Omit<
+    Doctor,
+    | "registrationDoc"
+    | "medicalLicenceDoc"
+    | "profilePicture"
+  > & {
+    registrationDoc: VerifyPlainUrl;
+  } & {
+    medicalLicenceDoc: VerifyPlainUrl;
+  } & {
+    profilePicture: PlainUrl;
+  };
+  onViewDocument: (url: string) => void;
   doctorClinic: DoctorClinicCard;
-  address: BaseAddress | null;
+  onDocumentAction?: (
+    name: string,
+    action: "VERIFY" | "REJECT",
+    id: string,
+    documentRelatedTo: "CLINIC" | "DOCTOR",
+    documentField:
+      | "registrationDoc"
+      | "medicalLicenceDoc"
+      | "establishmentLicenceDoc",
+    url: string,
+  ) => void;
 }
 
 export type DoctorProffesionalDetails = Pick<
@@ -243,8 +310,57 @@ export type DoctorConsultationDetails = Pick<
   | "timeZone"
 > & { userId: string };
 
-
 export interface WeeklyScheduleCalendarProps {
   weeklySchedule: WeeklySchedule[];
   onSessionClick?: (session: Session, date: Date) => void;
+}
+
+export type DoctorReapplicationStatus =
+  | "PENDING"
+  | "SUBMITTED"
+  | "APPROVED"
+  | "REJECTED"
+  | "EXPIRED";
+
+export interface DoctorReapplication {
+  id: string | null;
+  doctorId: string | null;
+  tokenHash: string;
+  tokenExpiresAt: Date;
+  status: DoctorReapplicationStatus;
+  fieldsToReupload: string[];
+  reviewMessage: string | null;
+  reviewedReason: string | null;
+  submittedAt: Date | null;
+  reviewedAt: Date | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+}
+
+export interface GetReapplicationDetails {
+  doctor: Doctor;
+  clinicAddress: BaseAddress;
+  fieldsToReupload: DoctorReapplication["fieldsToReupload"];
+  reviewMessage: string | null;
+  rejectionReason: string | null;
+}
+
+export interface FieldConfig {
+  name: string;
+  label: string;
+  description?: string;
+  type?: string;
+  placeholder: string;
+  accept?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  required?: boolean;
+}
+
+export interface FormState {
+  fullName?: string;
+  licenseNumber?: string;
+  specialty?: string;
+  email?: string;
+  phone?: string;
+  reason?: string;
 }

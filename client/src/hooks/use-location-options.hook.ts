@@ -33,7 +33,6 @@ export const useLocationOptions = () => {
   };
 
   const handleStateChange = (
-    
     countryName: string,
     stateName: string,
   ) => {

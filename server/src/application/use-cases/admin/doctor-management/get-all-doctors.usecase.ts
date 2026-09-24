@@ -1,6 +1,6 @@
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { DoctorInfo } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../IService/i-doctor-details.service.ts";
+import type { IDoctorDetailsService } from "../../../i-service/i-doctor-details.service.ts";
 import type { IGetAllDoctorsUseCase } from "../../../repositories/admin/i-get-all-doctors.usecase.ts";
 
 export class GetAllDoctorsUseCase implements IGetAllDoctorsUseCase {
@@ -13,6 +13,7 @@ export class GetAllDoctorsUseCase implements IGetAllDoctorsUseCase {
     const doctors = await this._doctorRepository.find();
 
     const response = await this._doctorDetailsService.execute(doctors);
+
     return response;
   }
 }

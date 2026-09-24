@@ -1,4 +1,4 @@
-import type { ApprovalStatus, ImageData } from "./common";
+import type { ApprovalStatus, VerifyPlainUrl } from "./common";
 
 export interface LocationType {
   type: "Point";
@@ -14,8 +14,8 @@ export interface Clinic {
   about: string;
   altPhone: string | null,
   yearOfEstablished: number;
-  registrationDoc: ImageData;
-  establishmentLicenceDoc: ImageData;
+  registrationDoc: VerifyPlainUrl;
+  establishmentLicenceDoc: VerifyPlainUrl;
   location: LocationType;
   status: ClinicStatus;
   createdAt: Date | null;

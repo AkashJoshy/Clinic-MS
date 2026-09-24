@@ -1,5 +1,6 @@
 import type { SessionStatus } from "@/types/common";
-import type { DoctorProfileData } from "@/types/doctor";
+import type { DoctorProfileData, FieldConfig } from "@/types/doctor";
+import { Briefcase, Building2, FileBadge, FileText, GraduationCap, IdCard, ImageIcon, Info, MapPin, Phone, Stethoscope, User } from "lucide-react";
 
 export const initialData: DoctorProfileData = {
   address: {
@@ -129,3 +130,150 @@ export const STATUS_STYLES: Record<SessionStatus, string> = {
   MISSED:
     "bg-rose-500/10 border-rose-500/20 text-rose-400",
 };
+
+
+export const FIELDS: FieldConfig[] = [
+  {
+    name: "fullName",
+    label: "Full name",
+    placeholder: "Dr. Jane Smith",
+    icon: User,
+  },
+  {
+    name: "phone",
+    label: "Phone",
+    type: "tel",
+    placeholder: "+91 98765 43210",
+    icon: Phone,
+    required: false,
+  },
+  {
+    name: "bio",
+    label: "Bio",
+    placeholder: "Tell us about yourself",
+    icon: FileText,
+    type: "textarea",
+  },
+  {
+    name: "gender",
+    label: "Gender",
+    placeholder: "Select gender",
+    icon: User,
+    type: "select",
+  },
+  {
+    name: "specialization",
+    label: "Specialization",
+    placeholder: "Cardiology",
+    icon: Stethoscope,
+  },
+  {
+    name: "qualification",
+    label: "Qualification",
+    placeholder: "MBBS, MD",
+    icon: GraduationCap,
+  },
+  {
+    name: "experienceYears",
+    label: "Years of experience",
+    placeholder: "5",
+    icon: Briefcase,
+    type: "number",
+  },
+  {
+    name: "licenceNumber",
+    label: "License number",
+    placeholder: "KL-102938",
+    icon: IdCard,
+  },
+  {
+    name: "registrationNumber",
+    label: "Registration number",
+    placeholder: "REG-102938",
+    icon: FileBadge,
+  },
+  {
+    name: "clinicName",
+    label: "Clinic name",
+    placeholder: "City Care Clinic",
+    icon: Building2,
+  },
+  {
+    name: "about",
+    label: "About",
+    placeholder: "Describe your professional background",
+    icon: Info,
+    type: "textarea",
+  },
+  {
+    name: "altPhone",
+    label: "Alternative phone",
+    type: "tel",
+    placeholder: "+91 98765 43210",
+    icon: Phone,
+    required: false,
+  },
+  {
+    name: "addressLine",
+    label: "Address",
+    placeholder: "Street address",
+    icon: MapPin,
+  },
+  {
+    name: "city",
+    label: "City",
+    placeholder: "Kochi",
+    icon: MapPin,
+  },
+  {
+    name: "pincode",
+    label: "Pincode",
+    placeholder: "682001",
+    icon: MapPin,
+  },
+  {
+    name: "doctorProfilePicture",
+    label: "Doctor Profile Picture",
+    description: "Upload your profile picture.",
+    icon: ImageIcon,
+    type: "file",
+    placeholder: "upload the doctor profile picture",
+    accept: "image/png,image/jpeg,image/jpg",
+  },
+  {
+    name: "clinicRegistrationDoc",
+    label: "Clinic Registration Document",
+    description: "Upload the official clinic registration document.",
+    icon: FileText,
+    type: "file",
+    placeholder: "upload the Clinic Registration Document",
+    accept: ".pdf,image/png,image/jpeg",
+  },
+  {
+    name: "establishmentLicenceDoc",
+    label: "Establishment Licence Document",
+    description: "Upload the clinic establishment licence.",
+    icon: FileText,
+    type: "file",
+    placeholder: "upload the Establishment Licence Document",
+    accept: ".pdf,image/png,image/jpeg",
+  },
+  {
+    name: "medicalLicenceDoc",
+    label: "Medical Licence Document",
+    description: "Upload your medical licence document.",
+    icon: FileText,
+    type: "file",
+    placeholder: "upload the Medical Licence Document",
+    accept: ".pdf,image/png,image/jpeg",
+  },
+  {
+    name: "doctorRegistrationDoc",
+    label: "Doctor Registration Document",
+    description: "Upload your doctor registration certificate.",
+    icon: FileText,
+    type: "file",
+    placeholder: "upload the doctor Registration Document",
+    accept: ".pdf,image/png,image/jpeg",
+  },
+];

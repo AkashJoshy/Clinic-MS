@@ -115,11 +115,11 @@ export const bloodGroup = z.enum(BLOODGROUPS, {
   message: "Select the blood group",
 });
 
-export const state = z.string().min(1, "Please select a state");
+export const state = z.string("State is required").min(1, "Please select a state");
 
-export const city = z.string().min(1, "Please select a city");
+export const city = z.string("City is required").min(1, "Please select a city");
 
-export const district = z.string().trim().min(1, "District is required ");
+export const district = z.string("District is required").trim().min(1, "District is required ");
 
 export const pincode = z
   .string()
@@ -182,7 +182,7 @@ export const specialization = z
   .max(100, "Specialization must not exceed 100 characters");
 
 export const experienceYears = z.preprocess(
-  (value) => (value === "" ? undefined : value),
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
   z.coerce
     .number("Please enter your years of experience")
     .min(0, "Experience cannot be negative")

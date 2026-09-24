@@ -8,7 +8,22 @@ import {
 } from "../schemas/admin/admin.schema.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import { updateUserSchema } from "../schemas/shared/shared.schema.ts";
-import { addDepartmentController, approveDoctorController, editDepartmentController, getAllDoctorsController, getAllPatientsController, getDepartmentController, getDoctorController, getPatientController, rejectDoctorController, updateDepartmentStatusController, updateDoctorStatusController, updatePatientStatusController } from "../../container/index.ts";
+import {
+  addDepartmentController,
+  approveDoctorController,
+  editDepartmentController,
+  getAllDoctorsController,
+  getAllPatientsController,
+  getDepartmentController,
+  getDoctorController,
+  getPatientController,
+  rejectDoctorController,
+  updateDepartmentStatusController,
+  updateDoctorStatusController,
+  updatePatientStatusController,
+  verifyDoctorDocumentController,
+  verifyClinicDocumentController,
+} from "../../container/index.ts";
 
 const router = Router();
 
@@ -97,7 +112,7 @@ router.patch(
   },
 );
 
-router.delete(
+router.patch(
   ADMIN_ENDPOINTS["REJECT_DOCTOR"],
   authenticateUser,
   authorizeUser,
@@ -123,6 +138,24 @@ router.patch(
   validate(updateUserSchema),
   async (req, res, next) => {
     await updateDoctorStatusController.handle(req, res, next);
+  },
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["VERIFY_DOCTOR_DOCUMENT"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await verifyDoctorDocumentController.handle(req, res, next);
+  },
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["VERIFY_CLINIC_DOCUMENT"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await verifyClinicDocumentController.handle(req, res, next);
   },
 );
 

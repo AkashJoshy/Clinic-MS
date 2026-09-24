@@ -1,4 +1,3 @@
-import { AuthError } from "../../domain/errors/auth.error.ts";
 import { InternalServerError } from "../../domain/errors/internal-server.error.ts";
 import type { ITokenService } from "../../domain/services/token.service.ts";
 import jwt, { type JwtPayload } from "jsonwebtoken";
@@ -8,6 +7,7 @@ import {
 } from "../../shared/utils/token.helper.ts";
 import type {
   AccessTokenPayloadDto,
+  ActionTokenPayloadDto,
   RefreshTokenPayloadDto,
 } from "../../application/dto/auth.dto.ts";
 import { TokenExpiredAppError } from "../../domain/errors/token-expired.error.ts";
@@ -17,13 +17,20 @@ import { InvalidTokenError } from "../../domain/errors/invalid-token.error.ts";
 const secret = process.env.JWT_SECRET;
 const accessTokenexpiresIn = process.env.JWT_ACCESS_TOKEN_EXPIRES_IN;
 const refreshTokenexpiresIn = process.env.JWT_REFRESH_TOKEN_EXPIRES_IN;
+const actionTokenexpiresIn = process.env.JWT_ACTION_TOKEN_EXPIRES_IN;
 
-if (!secret || !accessTokenexpiresIn || !refreshTokenexpiresIn) {
+if (
+  !secret ||
+  !accessTokenexpiresIn ||
+  !refreshTokenexpiresIn ||
+  !actionTokenexpiresIn
+) {
   throw new InternalServerError("Error in the Authetication");
 }
 
 const accessNarrowedExpiresIn = narrowedExpiresIn(accessTokenexpiresIn);
 const refreshNarrowedExpiresIn = narrowedExpiresIn(refreshTokenexpiresIn);
+const actionNarrowedExpiresIn = narrowedExpiresIn(actionTokenexpiresIn);
 
 export class JWTService implements ITokenService {
   private readonly secret: string = secret as string;
@@ -37,6 +44,11 @@ export class JWTService implements ITokenService {
   generateRefreshToken(payload: RefreshTokenPayloadDto): string {
     const options = tokenSignInOptions(refreshNarrowedExpiresIn);
 
+    return jwt.sign(payload, this.secret, options);
+  }
+
+  generateActionToken(payload: ActionTokenPayloadDto): string {
+    const options = tokenSignInOptions(actionNarrowedExpiresIn);
     return jwt.sign(payload, this.secret, options);
   }
 
@@ -66,4 +78,18 @@ export class JWTService implements ITokenService {
       throw new InvalidTokenError(ErrorCode.INVALID_TOKEN);
     }
   }
+
+  verifyActionToken(token: string): ActionTokenPayloadDto {
+    try {
+      const decoded = jwt.verify(token, this.secret) as JwtPayload;
+      return decoded as ActionTokenPayloadDto;
+    } catch (error) {
+      if ((error as any).name === "TokenExpiredError") {
+        throw new TokenExpiredAppError(ErrorCode.REFRESH_TOKEN_EXPIRED);
+      }
+
+      throw new InvalidTokenError(ErrorCode.INVALID_TOKEN);
+    }
+  }
+  
 }

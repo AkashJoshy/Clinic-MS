@@ -34,6 +34,16 @@ export interface RegisterClinicDto {
   };
 }
 
+export type SafeClinic = Omit<
+  Clinic,
+  | "approve"
+  | "isApproved"
+  | "isDocumentMatch"
+  | "verifyDocument"
+  | "rejectDocument"
+  | "update"
+>;
+
 export interface ClinicDoctorProfileResponseDto extends DoctorProfileResponseDto {
   doctor: ClinicDoctorDetails;
 }
@@ -60,3 +70,15 @@ type BaseClinic = Omit<
 export type ClinicProfile = BaseClinic & {
   address: BaseAddress | null;
 };
+
+export type UpdateClinicDto = Partial<
+  Pick<SafeClinic, "about" | "altPhone" | "name" | "registrationNumber">
+> & {
+  clinicRegistrationDoc?: Express.Multer.File[] | undefined;
+  establishmentLicenceDoc?: Express.Multer.File[] | undefined;
+};
+
+export interface UpdateClinicEntityDto {
+  clinic: Clinic, 
+  updates: UpdateClinicDto
+}

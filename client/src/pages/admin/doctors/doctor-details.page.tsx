@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -7,27 +7,37 @@ import {
   UserCheck,
   ShieldAlert,
   X,
+  AlertCircle,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   getDoctor,
   approveDoctor,
   rejectDoctor,
   updateDoctorStatus,
+  verifyDoctorDocument,
+  verifyClinicDocument,
 } from "@/services/admin.service";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import toast from "react-hot-toast";
-import type { DoctorInfo, DoctorStatusUpdateDto } from "@/types/doctor";
+import type {
+  DoctorInfo,
+  DoctorRejectDto,
+  DoctorStatusUpdateDto,
+  DocumentDto,
+} from "@/types/doctor";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
 import { RejectModal } from "@/components/layout/reject-modal.layout";
-
-// Subcomponents
 import { DoctorProfileCard } from "@/components/shared/admin/doctors/profile-card.shared";
 import { DoctorContactCard } from "@/components/shared/admin/doctors/contact-card.shared";
 import { DoctorQualificationsCard } from "@/components/shared/admin/doctors/qualifications-card.shared";
 import { DoctorClinicCard } from "@/components/shared/admin/doctors/clinic-card.shared";
 import { DoctorScheduleCard } from "@/components/shared/admin/doctors/schedule-card.shared";
+import DocumentVerificationModal from "@/components/shared/document-verification-modal.shared";
 import type { User } from "@/types/user";
 import type { UpdateMethods } from "@/types/common";
+import StatusTicker from "@/components/shared/status-ticker.shared";
+import { process } from "zod/v4/core";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useParams<{ doctorId: string }>();
@@ -38,6 +48,9 @@ export default function DoctorDetailsPage() {
   const [actionType, setActionType] = useState<UpdateMethods | null>(null);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<DocumentDto | null>(
+    null,
+  );
 
   const fetchDoctorDetails = async () => {
     if (!doctorId) return;
@@ -80,6 +93,40 @@ export default function DoctorDetailsPage() {
     },
   });
 
+  const { mutate: mutateVerifyDoctorDoc, isPending: isVerifyingDoctorDoc } =
+    useMutate(verifyDoctorDocument, {
+      onSuccess: () => {
+        setSelectedDocument(null);
+        fetchDoctorDetails();
+      },
+    });
+
+  const { mutate: mutateVerifyClinicDoc, isPending: isVerifyingClinicDoc } =
+    useMutate(verifyClinicDocument, {
+      onSuccess: () => {
+        setSelectedDocument(null);
+        fetchDoctorDetails();
+      },
+    });
+
+  const handleDocumentAction = () => {
+    if (!selectedDocument) return;
+    const dto: DocumentDto = {
+      id: selectedDocument.id,
+      name: selectedDocument.name,
+      action: selectedDocument.action,
+      documentRelatedTo: selectedDocument.documentRelatedTo,
+      documentField: selectedDocument.documentField,
+      url: selectedDocument.url,
+    };
+
+    if (selectedDocument.documentRelatedTo === "DOCTOR") {
+      mutateVerifyDoctorDoc(dto);
+    } else {
+      mutateVerifyClinicDoc(dto);
+    }
+  };
+
   const handleBlockToggle = () => {
     if (!doctorData?.doctor?.id || !actionType) return;
     mutateStatus({
@@ -96,7 +143,7 @@ export default function DoctorDetailsPage() {
     });
   };
 
-  const handleRejectConfirm = (reason: string) => {
+  const handleRejectConfirm = (data: any) => {
     setIsRejectOpen(false);
   };
 
@@ -218,6 +265,18 @@ export default function DoctorDetailsPage() {
         </div>
       </div>
 
+      {doctor.status === "REJECTED" && (
+        <StatusTicker
+          message={`${import.meta.env.VITE_DOCTOR_REJECTION_MESSAGE} ${
+            doctor.reviewedMessage
+              ? `Admin message: ${doctor.reviewedMessage}`
+              : ""
+          }`}
+          icon={AlertCircle}
+          variant="error"
+        />
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <div className="lg:col-span-4 space-y-6">
           <DoctorProfileCard
@@ -229,6 +288,7 @@ export default function DoctorDetailsPage() {
             email={user?.email}
             phone={user?.phone}
             languages={doctor.languages}
+            address={address}
           />
         </div>
 
@@ -237,15 +297,60 @@ export default function DoctorDetailsPage() {
             doctor={doctor}
             onViewDocument={setPreviewImage}
             formatDate={formatDate}
+            onDocumentAction={(
+              name,
+              action,
+              id,
+              documentRelatedTo,
+              documentField,
+              url,
+            ) => {
+              setSelectedDocument({
+                name,
+                action,
+                id,
+                documentRelatedTo,
+                documentField,
+                url,
+              });
+            }}
           />
           <DoctorClinicCard
             clinic={clinic}
+            doctor={doctor}
+            onViewDocument={setPreviewImage}
             doctorClinic={doctorClinic}
-            address={address}
+            onDocumentAction={(
+              name,
+              action,
+              id,
+              documentRelatedTo,
+              documentField,
+              url,
+            ) =>
+              setSelectedDocument({
+                name,
+                action,
+                id,
+                documentRelatedTo,
+                documentField,
+                url,
+              })
+            }
           />
           <DoctorScheduleCard schedule={doctorClinic.schedule} />
         </div>
       </div>
+
+      {selectedDocument && (
+        <DocumentVerificationModal
+          documentName={selectedDocument.name}
+          action={selectedDocument.action}
+          service={handleDocumentAction}
+          onClose={() => setSelectedDocument(null)}
+          isLoading={isVerifyingDoctorDoc || isVerifyingClinicDoc}
+        />
+      )}
 
       {isConfirmOpen && (
         <DeleteConfirmationalModal
@@ -260,7 +365,7 @@ export default function DoctorDetailsPage() {
       )}
 
       {isRejectOpen && (
-        <RejectModal<DoctorStatusUpdateDto>
+        <RejectModal<DoctorRejectDto>
           id={doctorId || ""}
           name={doctor.displayName}
           onConfirm={handleRejectConfirm}

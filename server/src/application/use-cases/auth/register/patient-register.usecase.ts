@@ -1,15 +1,15 @@
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type {
   RegisterUserDTO,
-  VerificationTokenDto,
+  VerificationResponseDto,
 } from "../../../dto/auth.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import { Address } from "../../../../domain/entities/address.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import type { IPatientRegisterUseCase } from "../../../repositories/auth/i-patient-register.usecase.ts";
-import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
-import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
+import type { IUserCreationService } from "../../../i-service/i-user-creation.service.ts";
+import type { IEmailVerificationService } from "../../../i-service/i-email-verification.service.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import Patient from "../../../../domain/entities/patient.entity.ts";
 
@@ -21,7 +21,7 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
     private readonly _addressRepository: IAddressRepository,
   ) {}
 
-  async execute(data: RegisterUserDTO): Promise<VerificationTokenDto> {
+  async execute(data: RegisterUserDTO): Promise<VerificationResponseDto> {
     const message = "User Already Exists";
     let newUser = await this._userCreation.execute(data, message);
 
@@ -79,6 +79,6 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
       newUser.fullName,
       newUser.role as Role,
     );
-    return { token };
+    return { token, email: newUser.email, role: newUser.role };
   }
 }

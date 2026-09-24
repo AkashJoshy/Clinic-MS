@@ -14,7 +14,7 @@ import DeleteConfirmationalModal from "@/components/shared/delete-confirmational
 import { PatientProfileCard } from "@/components/shared/admin/patients/PatientProfileCard";
 import { PatientContactCard } from "@/components/shared/admin/patients/PatientContactCard";
 import { PersonalInformation } from "@/components/shared/admin/patients/PersonalInformation";
-import { patientTabs } from "@/constants/admin.constant";
+import { PATIENT_TABS } from "@/constants/admin.constant";
 import { cn } from "@/lib/utils";
 import type { PatientDetailsTab } from "@/types/admin";
 
@@ -106,7 +106,7 @@ export default function PatientDetailsPage() {
 
   const { patient, address, user } = patientData;
 
-  const patientTabsWithCount = patientTabs.map(tab => ({
+  const patientTabsWithCount = PATIENT_TABS.map(tab => ({
     ...tab,
     count: tab.key === "appointments" ? 12 : tab.key === "medical-records" ? 8 : tab.key === "overview" ? undefined : 12
   }))

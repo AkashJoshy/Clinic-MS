@@ -3,21 +3,22 @@ import type { Department } from "../../domain/entities/department.entity.ts";
 import type { Doctor } from "../../domain/entities/doctor.entity.ts";
 import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
-import type { DoctorStatus } from "../../domain/types/doctor.types.ts";
+import type { DoctorReapplicationFiles } from "../../domain/types/doctor.types.ts";
 import type {
-  Session,
-  WeeklySchedule,
-} from "../../domain/types/doctorClinic.types.ts";
-import type {
-  ApprovalStatus,
-  DayOfWeek,
-  EntityStatus,
+  ApprovalPlainUrl,
   Gender,
   ImageData,
   PlainUrl,
   ServiceMode,
 } from "../../domain/types/shared.types.ts";
 import type { BaseAddress } from "./patient.dto.ts";
+import type { DoctorReapplication } from "../../domain/entities/doctor-reapplication.entity.ts";
+import type { SafeUser } from "./auth.dto.ts";
+import { omit } from "zod/mini";
+import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
+import type { SafeClinic } from "./clinic.dto.ts";
+import type { Address } from "../../domain/entities/address.entity.ts";
+import type { SafeAddress } from "./shared.dto.ts";
 
 export interface ClinicDetails {
   id: string;
@@ -26,43 +27,54 @@ export interface ClinicDetails {
 
 export interface DoctorStatusUpdateDto {
   id: string;
-  reviewMessage: string;
+  rejectedReason: string;
+  rejectedMessage: string;
+  fields: string[];
 }
+
+export type SafeDoctor = Omit<
+  Doctor,
+  | "create"
+  | "isPending"
+  | "approve"
+  | "register"
+  | "reject"
+  | "addLanguages"
+  | "updateProfessionalDetails"
+  | "updateProfilePicture"
+  | "isDocumentMatch"
+  | "verifyDocument"
+  | "rejectDocument"
+  | "update"
+  | "submit"
+>;
 
 export type DoctorInfo = {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
-  doctor: Pick<
-    Doctor,
-    | "id"
-    | "displayName"
-    | "doctorCode"
-    | "bio"
-    | "languages"
-    | "gender"
-    | "licenceNumber"
-    | "departmentId"
-    | "specialization"
-    | "qualification"
-    | "experienceYears"
-    | "averageRating"
-    | "totalReviews"
-    | "status"
-    | "createdAt"
-    | "updatedAt"
+  doctor: Omit<
+    SafeDoctor,
+    | "userId"
+    | "profilePicture"
+    | "registrationDoc"
+    | "medicalLicenceDoc"
+    | "fieldsToReupload"
+    | "subscription"
   > & {
-    registrationDoc: PlainUrl;
+    registrationDoc: ApprovalPlainUrl;
   } & {
-    medicalLicenceDoc: PlainUrl;
+    medicalLicenceDoc: ApprovalPlainUrl;
   } & {
     profilePicture: PlainUrl;
   };
   clinic:
-    | (Pick<Clinic, "id" | "name" | "about" | "location"> & {
+    | (Pick<Clinic, "id" | "name" | "about" | "location" | "status"> & {
         clinicAddress: BaseAddress | null;
+        registrationDoc: ApprovalPlainUrl;
+        establishmentLicenceDoc: ApprovalPlainUrl;
       })
     | null;
   doctorClinic: Pick<
-    DoctorClinic,
+    SafeDoctorClinic,
     | "id"
     | "type"
     | "consultationFee"
@@ -76,6 +88,18 @@ export type DoctorInfo = {
   address: BaseAddress | null;
 } & {
   department: Pick<Department, "id" | "name"> | null;
+};
+
+export type DoctorDetailsDto = {
+  user: User;
+  doctor: Doctor;
+  doctorClinic: SafeDoctorClinic;
+  clinic: Clinic;
+  address: Address;
+};
+
+export type DoctorReapplicationResponseDto = {
+  reapplication: DoctorReapplication
 };
 
 export type DoctorProfileInfo = Omit<DoctorInfo, "user">;
@@ -114,7 +138,7 @@ export interface DoctorRegisterDto {
 }
 
 export type DoctorProffesionalDetailsDto = Pick<
-  Doctor,
+  SafeDoctor,
   | "id"
   | "bio"
   | "gender"
@@ -125,6 +149,30 @@ export type DoctorProffesionalDetailsDto = Pick<
   | "licenceNumber"
   | "updatedAt"
 > & { userId: string };
+
+export type UpdateDoctorDto = Partial<
+  Pick<
+    SafeDoctor,
+    | "bio"
+    | "displayName"
+    | "experienceYears"
+    | "gender"
+    | "licenceNumber"
+    | "qualification"
+    | "specialization"
+  >
+> & {
+  id?: string | undefined;
+  phone?: string;
+  profilePicture?: Express.Multer.File[] | undefined;
+  doctorRegistrationDoc?: Express.Multer.File[] | undefined;
+  medicalLicenceDoc?: Express.Multer.File[] | undefined;
+};
+
+export type UpdateDoctorResponseDto = {
+  doctor: Doctor;
+  user: User;
+};
 
 export type DoctorConsultationDetailsDto = Pick<
   DoctorClinic,
@@ -137,3 +185,25 @@ export type DoctorConsultationDetailsDto = Pick<
   | "slotDuration"
   | "timeZone"
 > & { userId: string; updatedAt: Date | null };
+
+export interface GetReapplicationDetailsResponseDto {
+  doctor: SafeDoctor;
+  clinicAddress: BaseAddress;
+  fieldsToReupload: DoctorReapplication["fieldsToReupload"];
+  reviewMessage: string | null;
+  rejectionReason: string | null;
+}
+
+type ReapplicationData = Partial<DoctorRegisterDto>;
+
+export interface DoctorUpdateReapplicationDto {
+  data: ReapplicationData;
+  files: DoctorReapplicationFiles;
+  token: string;
+}
+
+export interface UpdateDoctorEntityDto {
+  doctor: Doctor;
+  user: User;
+  updates: UpdateDoctorDto;
+}

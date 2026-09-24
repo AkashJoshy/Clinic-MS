@@ -16,7 +16,7 @@ import AdminDashboardLayout from "./components/layout/admin/dashboard.layout";
 import AdminDashboardPage from "./pages/admin/dashboard.page";
 import { loginAdmin, loginDoctor } from "./services/auth.service";
 
-// Clinic layout + pages
+// Doctor layout + pages
 import { ProtectedRoute } from "./components/shared/ProtectedRoute";
 import { AuthRoute } from "./components/shared/auth-route.shared";
 import NotFoundPage from "./pages/not-found.page";
@@ -38,6 +38,7 @@ import Homepage from "./pages/auth/home.page";
 import DoctorHomepage from "./pages/auth/doctor-home.page";
 import DoctorRegistrationPendingPage from "./pages/auth/doctor-registration-pending.page";
 import DoctorRegistrationRejectedPage from "./pages/auth/doctor-registration-rejected.page";
+import DoctorReapplication from "./pages/doctor-reapplication.page";
 
 const router = createBrowserRouter([
   {
@@ -91,6 +92,7 @@ const router = createBrowserRouter([
         element: <AuthRoute role="doctor" />,
         children: [
           { path: "/doctor-home", element: <DoctorHomepage /> },
+          { path: "/doctor/reapplication", element: <DoctorReapplication /> },
           {
             path: "/doctor",
             element: (

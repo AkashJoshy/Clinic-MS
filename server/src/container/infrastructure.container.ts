@@ -1,8 +1,10 @@
+import { EmailVerificationService } from "../application/services/email-verification.service.ts";
 import { redis } from "../infrastructure/cache/redis.client.ts";
 import { AddressRepository } from "../infrastructure/repositories/address.repository.ts";
 import { ClinicRepository } from "../infrastructure/repositories/clinic.repository.ts";
 import { DepartmentRepository } from "../infrastructure/repositories/department.repository.ts";
 import { DoctorClinicRepository } from "../infrastructure/repositories/doctor-clinic.repository.ts";
+import { DoctorReapplicationRepository } from "../infrastructure/repositories/doctor-reapplication.repository.ts";
 import { DoctorRepository } from "../infrastructure/repositories/doctor.repository.ts";
 import { PatientRepository } from "../infrastructure/repositories/patient.repository.ts";
 import { RefreshSessionRepository } from "../infrastructure/repositories/refresh-session.repository.ts";
@@ -21,9 +23,16 @@ export const mongooseRefreshSessionRepository = new RefreshSessionRepository();
 export const mongooseDepartmentRepository = new DepartmentRepository();
 export const mongooseClinicRepository = new ClinicRepository();
 export const mongooseDoctorClinicRepository = new DoctorClinicRepository();
+export const mongooseDoctorReapplicationRepository = new DoctorReapplicationRepository();
 
 // Services
 export const argonHashService = new ArgonHashService();
 export const redisService = new RedisCacheService(redis);
 export const nodeMailService = new NodeMailerService();
 export const jwtService = new JWTService();
+
+// UseCase-Service
+export const emailVerificationService = new EmailVerificationService(
+  nodeMailService,
+  redisService,
+);

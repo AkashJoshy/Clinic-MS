@@ -1,12 +1,7 @@
 import type { UploadApiResponse } from "cloudinary";
 import cloudinary from "./cloudinary.config.ts";
+import type { CloudinaryUploadResult, ResourceType } from "../../domain/types/user.types.ts";
 
-type ResourceType = "image" | "video" | "raw" | "auto";
-
-export interface CloudinaryUploadResult {
-  url: string;
-  publicId: string;
-}
 
 export const uploadToCloudinary = (
   buffer: Buffer,

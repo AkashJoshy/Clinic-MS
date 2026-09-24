@@ -12,11 +12,12 @@ import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor
 import type { ModeRoleRef, Role } from "../../../../domain/types/user.types.ts";
 import { uploadToCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorRegisterDto } from "../../../dto/doctor.dto.ts";
-import type { IUserCreationService } from "../../../IService/i-user-creation.service.ts";
+import type { IUserCreationService } from "../../../i-service/i-user-creation.service.ts";
 import type { IDoctorRegisterUseCase } from "../../../repositories/doctor/i-doctor-register.usecase.ts";
 import { Clinic } from "../../../../domain/entities/clinic.entity.ts";
-import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
+import type { IEmailVerificationService } from "../../../i-service/i-email-verification.service.ts";
 import type { LoginVerificationResponseDTO } from "../../../dto/auth.dto.ts";
+import type { ApprovalStatus } from "../../../../domain/types/shared.types.ts";
 
 export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
   constructor(
@@ -136,8 +137,14 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
         registrationNumber,
         about: about ?? "",
         altPhone: altPhone ?? null,
-        registrationDoc: clinicRegistrationDocResult,
-        establishmentLicenceDoc: establishmentLicenceDocResult,
+        registrationDoc: {
+          ...clinicRegistrationDocResult,
+          status: "PENDING" as ApprovalStatus,
+        },
+        establishmentLicenceDoc: {
+          ...establishmentLicenceDocResult,
+          status: "PENDING" as ApprovalStatus,
+        },
         location: {
           type: "Point" as const,
           coordinates: [longitude, latitude] as [number, number],
@@ -179,8 +186,14 @@ export class DoctorRegisterUseCase implements IDoctorRegisterUseCase {
       qualification,
       experienceYears,
       licenceNumber,
-      registrationDoc: doctorRegistrationDocResult,
-      medicalLicenceDoc: medicalLicenceDocResult,
+      registrationDoc: {
+        ...doctorRegistrationDocResult,
+        status: "PENDING" as ApprovalStatus,
+      },
+      medicalLicenceDoc: {
+        ...medicalLicenceDocResult,
+        status: "PENDING" as ApprovalStatus,
+      },
     };
 
     const createDoctor = await this._doctorRepository.save(

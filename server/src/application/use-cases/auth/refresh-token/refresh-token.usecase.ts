@@ -4,7 +4,7 @@ import type {
   RefreshTokenPayloadDto,
   BaseUserDto,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
+import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
 import type { IRefreshUseCase } from "../../../repositories/auth/i-refresh.usecase.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import { AuthError } from "../../../../domain/errors/auth.error.ts";

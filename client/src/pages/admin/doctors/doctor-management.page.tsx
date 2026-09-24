@@ -9,7 +9,11 @@ import toast from "react-hot-toast";
 import { AllApprovals } from "@/components/shared/admin/all-approvals.shared";
 import { Pagination } from "@/components/layout/pagination.layout";
 import { RejectModal } from "@/components/layout/reject-modal.layout";
-import type { DoctorInfo, DoctorStatusUpdateDto } from "@/types/doctor";
+import type {
+  DoctorInfo,
+  DoctorRejectDto,
+  DoctorStatusUpdateDto,
+} from "@/types/doctor";
 import {
   defaultDoctorFilters,
   DoctorFilterModal,
@@ -22,10 +26,11 @@ import type { DepartmentData, DoctorManagementTab } from "@/types/admin";
 import { getAllDepartments } from "@/services/common.service";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { AllDoctorCardSkeleton } from "@/components/shared/skeletons/all-doctor-card.skeleton";
-import { doctorTabs } from "@/constants/admin.constant";
+import { DOCTOR_TABS } from "@/constants/admin.constant";
+import { RejectedApprovals } from "@/components/shared/admin/rejected-approvals.shared";
+import { RejectedDoctorCard } from "@/components/shared/admin/doctors/rejected-card.shared";
 
 const ITEMS_PER_PAGE = 6;
-
 
 export default function DoctorManagementPage() {
   const [activeTab, setActiveTab] = useState<DoctorManagementTab>("all");
@@ -76,6 +81,7 @@ export default function DoctorManagementPage() {
 
   const [allPage, setAllPage] = useState<number>(1);
   const [pendingPage, setPendingPage] = useState<number>(1);
+  const [rejectedPage, setRejectedPage] = useState<number>(1);
 
   const filteredDoctors = doctorDetails.filter((det) => {
     if (searchQuery.trim()) {
@@ -126,6 +132,9 @@ export default function DoctorManagementPage() {
     return 0;
   });
 
+  const rejectedDoctors = filteredDoctors.filter(
+    (det) => det.doctor?.status === "REJECTED",
+  );
   const pendingDoctors = filteredDoctors.filter(
     (det) => det.doctor?.status === "PENDING",
   );
@@ -145,14 +154,44 @@ export default function DoctorManagementPage() {
     pendingPage * ITEMS_PER_PAGE,
   );
 
+  const rejectedTotalPages = Math.ceil(rejectedDoctors.length / ITEMS_PER_PAGE);
+  const paginatedRejected = rejectedDoctors.slice(
+    (rejectedPage - 1) * ITEMS_PER_PAGE,
+    rejectedPage * ITEMS_PER_PAGE,
+  );
+
   const { mutate, isPending } = useMutate(approveDoctor);
-  const { mutate: rejectHandler, isPending: rejectIsPending } =
-    useMutate(rejectDoctor);
+  const { mutate: rejectHandler, isPending: rejectIsPending } = useMutate(
+    rejectDoctor,
+    {
+      onSuccess: () => {
+        setDoctorDetails((prev) =>
+          prev.map((c) =>
+            c.doctor?.id === rejectTarget?.doctor.id
+              ? { ...c, doctor: { ...c.doctor, status: "REJECTED" } }
+              : c,
+          ),
+        );
+
+        const newPendingCount = pendingDoctors.length - 1;
+        const newTotalPages = Math.ceil(newPendingCount / ITEMS_PER_PAGE);
+        if (pendingPage > newTotalPages && newTotalPages > 0) {
+          setPendingPage(newTotalPages);
+        }
+
+        const newRejectedCount = rejectedDoctors.length + 1;
+        const newRejectedTotalPages = Math.ceil(
+          newRejectedCount / ITEMS_PER_PAGE,
+        );
+        setRejectedPage(newRejectedTotalPages);
+        console.log(rejectedDoctors.length);
+        console.log(newRejectedCount);
+      },
+    },
+  );
 
   const handleApprove = (data: DoctorStatusUpdateDto) => {
     mutate(data);
-    console.log(`Data from the Approval`);
-    console.log(data);
     setDoctorDetails((prev) =>
       prev.map((c) =>
         c.doctor?.id === data.id
@@ -168,37 +207,39 @@ export default function DoctorManagementPage() {
     }
   };
 
-  const handleRejectConfirm = (reason: string) => {
+  const handleRejectConfirm = () => {
     if (!rejectTarget) return;
-    console.log(rejectTarget);
-    console.log(
-      `Rejected Doctor ${rejectTarget.doctor?.displayName}. Reason: ${reason}`,
-    );
+
+    const doctorId = rejectTarget.doctor.id;
+
     setDoctorDetails((prev) =>
-      prev.filter((c) => c.doctor?.id !== rejectTarget.doctor?.id),
+      prev.map((c) =>
+        c.doctor?.id === doctorId
+          ? {
+              ...c,
+              doctor: {
+                ...c.doctor,
+                status: "REJECTED",
+              },
+            }
+          : c,
+      ),
     );
-
-    const newPendingCount = pendingDoctors.length - 1;
-    const newPendingTotalPages = Math.ceil(newPendingCount / ITEMS_PER_PAGE);
-    if (pendingPage > newPendingTotalPages && newPendingTotalPages > 0) {
-      setPendingPage(newPendingTotalPages);
-    }
-
-    const newAllCount = approvedDoctors.length - 1;
-    const newAllTotalPages = Math.ceil(newAllCount / ITEMS_PER_PAGE);
-    if (allPage > newAllTotalPages && newAllTotalPages > 0) {
-      setAllPage(newAllTotalPages);
-    }
 
     setRejectTarget(null);
   };
 
-  const doctorTabsWithCount = doctorTabs.map(tab => {
-    return({
+  const doctorTabsWithCount = DOCTOR_TABS.map((tab) => {
+    return {
       ...tab,
-      count: tab.key === "all" ? approvedDoctors.length : pendingDoctors.length
-    })
-  })
+      count:
+        tab.key === "all"
+          ? approvedDoctors.length
+          : tab.key === "rejected"
+            ? rejectedDoctors.length
+            : pendingDoctors.length,
+    };
+  });
 
   return (
     <div className="min-h-full p-6 lg:p-8 space-y-6 relative border border-white/10 bg-white/2 shadow-2xs">
@@ -253,7 +294,11 @@ export default function DoctorManagementPage() {
                     ? "bg-white/20 text-white"
                     : tab.key === "pending" && tab.count > 0
                       ? "bg-amber-500/20 text-amber-400"
-                      : "bg-white/8 text-[#8b9ab0]"
+                      : tab.key === "rejected" && tab.count > 0
+                        ? "bg-red-500/20 text-red-400"
+                        : tab.key === "all" && tab.count > 0
+                          ? "bg-primary text-primary-900"
+                          : "bg-white/8 text-[#8b9ab0]"
                 }`}
               >
                 {tab.count}
@@ -346,8 +391,38 @@ export default function DoctorManagementPage() {
         </>
       )}
 
+      {activeTab === "rejected" && (
+        <>
+          {rejectedDoctors.length === 0 ? (
+            <RejectedApprovals />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {paginatedRejected.map((det) => (
+                  <RejectedDoctorCard
+                    key={det.doctor.id}
+                    doctorInfo={det}
+                    setPreviewImage={setPreviewImage}
+                  />
+                ))}
+              </div>
+              {rejectedTotalPages >= 1 && (
+                <Pagination
+                  currentPage={pendingPage}
+                  totalPages={pendingTotalPages}
+                  totalItems={pendingDoctors.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setRejectedPage}
+                  colorCode="WHITE"
+                />
+              )}
+            </>
+          )}
+        </>
+      )}
+
       {rejectTarget && (
-        <RejectModal<DoctorStatusUpdateDto>
+        <RejectModal<DoctorRejectDto>
           id={rejectTarget.doctor?.id!}
           name={rejectTarget.doctor.displayName}
           onConfirm={handleRejectConfirm}

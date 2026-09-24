@@ -1,19 +1,18 @@
-import mongoose, { Schema, model, type Document } from "mongoose";
+import { Schema, model, type Document } from "mongoose";
 import type {
   ApprovalStatus,
-  ImageData,
-  ServiceMode,
+  VerifyImageData,
 } from "../../domain/types/shared.types.ts";
 import { APPROVAL_STATUS } from "../../domain/constants/status.constants.ts";
-import { ImageDataSchema } from "./base.schema.ts";
+import { VerifyImageDataSchema } from "./base.schema.ts";
 
 export interface IClinic extends Document {
   name: string;
   registrationNumber: string;
   about: string;
   altPhone: string | null;
-  registrationDoc: ImageData;
-  establishmentLicenceDoc: ImageData;
+  registrationDoc: VerifyImageData;
+  establishmentLicenceDoc: VerifyImageData;
   location: {
     type: "Point";
     coordinates: [number, number];
@@ -43,8 +42,8 @@ const clinicSchema = new Schema<IClinic>(
       type: String,
       default: null,
     },
-    registrationDoc: ImageDataSchema,
-    establishmentLicenceDoc: ImageDataSchema,
+    registrationDoc: VerifyImageDataSchema,
+    establishmentLicenceDoc: VerifyImageDataSchema,
     location: {
       type: {
         type: String,

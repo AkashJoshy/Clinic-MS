@@ -10,10 +10,10 @@ import type {
   LoginVerificationResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../IService/i-access-token-generation.service.ts";
-import type { IEmailVerificationService } from "../../../IService/i-email-verification.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../IService/i-refresh-token-generation.service.ts";
-import type { IUserExistenceService } from "../../../IService/i-user-existence.service.ts";
+import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
+import type { IEmailVerificationService } from "../../../i-service/i-email-verification.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../i-service/i-user-existence.service.ts";
 import type { IDoctorLoginUseCase } from "../../../repositories/auth/i-doctor-login.usecase.ts";
 
 export class DoctorLoginUseCase implements IDoctorLoginUseCase {
@@ -56,12 +56,12 @@ export class DoctorLoginUseCase implements IDoctorLoginUseCase {
         user.email,
         user.fullName,
         user.role as Role,
-      )
+      );
 
       return {
         token,
         email: user.email,
-        role: user.role
+        role: user.role,
       };
     }
 
