@@ -127,27 +127,18 @@ export type DoctorProfileData = {
   >;
 };
 
-export type DoctorInfo = {
+
+export type BasicDoctorInfo = {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
     Doctor,
+    | "userId"
+    | "profilePicture"
     | "registrationDoc"
     | "medicalLicenceDoc"
-    | "profilePicture"
-  > & {
-    registrationDoc: VerifyPlainUrl;
-  } & {
-    medicalLicenceDoc: VerifyPlainUrl;
-  } & {
-    profilePicture: PlainUrl;
-  };
-  clinic: Pick<Clinic, "id" | "name" | "about" | "location" | "status"> & {
-    clinicAddress: BaseAddress | null;
-  } & {
-    establishmentLicenceDoc: VerifyPlainUrl;
-  } & {
-    registrationDoc: VerifyPlainUrl;
-  };
+    | "fieldsToReupload"
+    | "subscription"
+  >;
   doctorClinic: Pick<
     DoctorClinic,
     | "id"
@@ -158,12 +149,78 @@ export type DoctorInfo = {
     | "timeZone"
     | "isActive"
     | "updatedAt"
-  >;
-} & {
-  address: BaseAddress | null;
-} & {
+  >[];
   department: Pick<DepartmentData, "id" | "name"> | null;
 };
+
+export type DoctorInfo = Omit<BasicDoctorInfo, "doctorClinic"> & {
+  doctor: BasicDoctorInfo["doctor"] & {
+    profilePicture: PlainUrl;
+  };
+  doctorClinicDetails: (BasicDoctorInfo["doctorClinic"][number] & {
+    clinic: Pick<
+      Clinic,
+      "id" | "name" | "about" | "location" | "status"
+    > | null;
+    clinicAddress: BaseAddress | null;
+  })[];
+};
+
+export type DoctorDetailsCardInfo = {
+  user: BasicDoctorInfo["user"] | null;
+  department: AdminDoctorInfo["department"] | null;
+  doctor: Pick<
+    AdminDoctorInfo["doctor"],
+    | "status"
+    | "displayName"
+    | "doctorCode"
+    | "gender"
+    | "createdAt"
+    | "reviewedAt"
+    | "reviewedMessage"
+    | "departmentId"
+    | "id"
+    | "profilePicture"
+    | "medicalLicenceDoc"
+    | "registrationDoc"
+  >;
+  doctorClinicDetails: Pick<
+    AdminDoctorInfo["doctorClinicDetails"][number],
+    | "id"
+    | "isActive"
+    | "clinic"
+    | "clinicAddress"
+    | "consultationFee"
+    | "timeZone"
+    | "type"
+  >[];
+  address: AdminDoctorInfo["address"] | null;
+};
+
+export type AdminDoctorInfo = Omit<
+  DoctorInfo,
+  "doctorClinicDetails" | "doctor"
+> & {
+  doctor: DoctorInfo["doctor"] & {
+    registrationDoc: VerifyPlainUrl;
+    medicalLicenceDoc: VerifyPlainUrl;
+  };
+  doctorClinicDetails: (Omit<
+    DoctorInfo["doctorClinicDetails"][number],
+    "clinic" | "clinicAddress"
+  > & {
+    clinic:
+      | (NonNullable<DoctorInfo["doctorClinicDetails"][number]["clinic"]> & {
+          registrationDoc: VerifyPlainUrl;
+          establishmentLicenceDoc: VerifyPlainUrl;
+        })
+      | null;
+    clinicAddress: BaseAddress | null;
+  })[];
+  address: BaseAddress | null
+};
+
+export type DoctorCompleteInfo = AdminDoctorInfo
 
 export interface DoctorStatusUpdateDto {
   id: string;

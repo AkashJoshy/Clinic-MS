@@ -29,8 +29,6 @@ export class UpdateReapplicationDetailsUseCase implements IDoctorUpdateReapplica
   async execute(doctorData: DoctorUpdateReapplicationDto): Promise<void> {
     const { data, files, token } = doctorData;
 
-    console.log(doctorData);
-
     const { reapplication } =
       await this._verifyDoctorReapplicationService.execute(token);
 

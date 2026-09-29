@@ -39,6 +39,7 @@ export const ENDPOINTS = {
     UPDATE_ADDRESS: (onwerId: string) => `/patient/profiles/addressess/${onwerId}`,
     UPDATE_EMERGENCY_CONTACT: (patientId: string) => `/patient/profiles/emergency-contact/${patientId}`,
     CREATE_PROFILE: `/patient/profiles`,
+    DOCTORS: `/patient/doctors`,
   },
   COMMON: {
     DEPARTMENTS: `/common/departments`,

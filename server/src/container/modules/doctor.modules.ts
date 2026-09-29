@@ -32,6 +32,7 @@ import {
   mongooseDoctorReapplicationRepository,
   jwtService,
   redisService,
+  doctorDetailsService,
 } from "../index.ts";
 
 // Service-Usecase
@@ -58,12 +59,8 @@ const getDoctorDetailsContextService = new GetDoctorDetailsContextService(
 
 // Use-cases
 const doctorProfileUseCase = new DoctorProfileUseCase(
-  mongooseUserRepository,
   mongooseDoctorRepository,
-  mongooseDoctorClinicRepository,
-  mongooseClinicRepository,
-  mongooseAddressRepository,
-  mongooseDepartmentRepository,
+  doctorDetailsService
 );
 
 const doctorRegisterUseCase = new DoctorRegisterUseCase(

@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Camera, Calendar, Activity, Clock, ShieldCheck } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useAuthStore } from "@/store";
 import type {
-  EmergencyContact,
   EmergencyContactDetails,
-  Patient,
   PatientProfile,
   PersonalProfile,
   ProfileAddress,
@@ -31,7 +29,8 @@ import {
 } from "@/constants/patient.constant";
 import PatientInfo from "@/components/shared/patient/profile/patient-info.shared";
 import EmergencyDetails from "@/components/shared/patient/profile/emergency-details.shared";
-import type { CapitalRelations } from "@/constants/form-fields.constants";
+import ProfileHeader from "@/components/shared/patient/profile/profile-header.shared";
+import { disabledInputClasses, displayClasses, inputClasses, labelClasses } from "@/data/shared.data";
 
 const toDateInputValue = (value?: string) => {
   if (!value) return "";
@@ -301,39 +300,24 @@ const MyProfilePage: React.FC = () => {
     await profilePictureMutate(formData);
   };
 
-  const inputClasses = `w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 ${
-    isEditing
-      ? "border-blue-200 bg-white text-gray-900 shadow-sm ring-1 ring-blue-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300"
-      : "border-gray-100 bg-gray-50 text-gray-700 cursor-default"
-  }`;
-
-  const displayClasses =
-    "w-full px-4 py-2.5 rounded-lg border border-transparent bg-transparent text-gray-700";
-  const labelClasses = "block text-sm font-medium text-gray-600 mb-1.5";
-
-  const disabledInputClasses =
-    "w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed opacity-100";
-
-  const avatarSrc =
+    const avatarSrc =
     avatarPreview ||
     activePatient?.patient?.imageUrl?.url ||
     "/" + import.meta.env.VITE_DEFAULT_USER_PROFILE_IMAGE;
 
+    const inputClass = inputClasses(isEditing)
+
   return (
     <div className="min-h-screen">
       <div className="space-y-6 bg-white p-6 border border-gray-200 shadow-sm">
-        <div className="mb-8">
-          <h1 className="text-2xl font-extrabold text-slate-800">My Profile</h1>
-          <p className="text-gray-500 mt-2">
-            Manage your personal information and account settings.
-          </p>
-        </div>
+       <ProfileHeader />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
           <div className="lg:col-span-1 space-y-6">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="bg-white rounded-[5px] shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center"
+              className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 flex flex-col items-center text-center"
             >
               <input
                 type="file"
@@ -395,7 +379,7 @@ const MyProfilePage: React.FC = () => {
               handleSave={handleProfileSave}
               handleChange={handleChange}
               displayClasses={displayClasses}
-              inputClasses={inputClasses}
+              inputClasses={inputClass}
               labelClasses={labelClasses}
               patientProfile={profile}
               setProfile={setProfile}
@@ -407,7 +391,7 @@ const MyProfilePage: React.FC = () => {
               handleChange={handleChange}
               handleSave={handleEmergencySave}
               displayClasses={displayClasses}
-              inputClasses={inputClasses}
+              inputClasses={inputClass}
               labelClasses={labelClasses}
               emergencyContact={emergencyContact}
               setEmergencyContact={setEmergencyContact}
@@ -419,7 +403,7 @@ const MyProfilePage: React.FC = () => {
               address={address}
               handleSave={handleAddressSave}
               disabledInputClasses={disabledInputClasses}
-              inputClasses={inputClasses}
+              inputClasses={inputClass}
               labelClasses={labelClasses}
               handleChange={handleChange}
               originalAddress={originalAddress}

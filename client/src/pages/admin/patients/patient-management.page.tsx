@@ -12,6 +12,7 @@ import {
   type PatientFilterState,
 } from "@/components/shared/admin/patients/patient-filter-modal";
 import { PatientListItemSkeleton } from "@/components/shared/skeletons/patient-list-item.skeleton";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -173,15 +174,65 @@ export default function PatientManagementPage() {
       ) : paginatedPatients.length === 0 ? (
         <AllApprovals icon={Users} name="Patients" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {paginatedPatients.map((det) => (
-            <PatientListItem
-              key={det.patient?.id}
-              patientInfo={det}
-              setPatientInfo={setPatientDetails}
-            />
-          ))}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={page}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.06,
+                },
+              },
+              exit: {
+                transition: {
+                  staggerChildren: 0.03,
+                  staggerDirection: -1,
+                },
+              },
+            }}
+            className="space-y-3"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {paginatedPatients.map((det) => (
+                <motion.div
+                  key={det.patient?.id}
+                  variants={{
+                    hidden: {
+                      opacity: 0,
+                      x: 12,
+                    },
+                    visible: {
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        duration: 0.25,
+                        ease: "easeOut",
+                      },
+                    },
+                    exit: {
+                      opacity: 0,
+                      x: -8,
+                      transition: {
+                        duration: 0.15,
+                        ease: "easeIn",
+                      },
+                    },
+                  }}
+                >
+                  <PatientListItem
+                    key={det.patient?.id}
+                    patientInfo={det}
+                    setPatientInfo={setPatientDetails}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {totalPages >= 1 && (

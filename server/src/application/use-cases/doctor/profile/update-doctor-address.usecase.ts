@@ -13,8 +13,6 @@ export class UpdateDoctorAddressUseCase implements IUpdateAddressUseCase {
   async execute(data: UpdateAddressDto): Promise<UpdateAddressDto> {
     const doctor = await this._doctorRepository.findById(data.ownerId!);
 
-    console.log(data.ownerId);
-
     if (!doctor || !doctor.id) {
       throw new NotFoundError("Doctor");
     }

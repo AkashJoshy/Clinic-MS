@@ -1,6 +1,6 @@
 import type { EntityStatus, ServiceMode } from "./shared.types.ts";
 
-export interface registerDepartment {
+export interface RegisterDepartment {
   id: string | null;
   name: string;
   status: EntityStatus;
@@ -13,3 +13,5 @@ export type RegistrationDocumentField = "registrationDoc"
 export type DoctorDocumentField = RegistrationDocumentField | "medicalLicenceDoc"
 export type ClinicDocumentField = RegistrationDocumentField | "establishmentLicenceDoc"
 export type DocumentField = RegistrationDocumentField | "medicalLicenceDoc" | "establishmentLicenceDoc"
+
+export type SafeDepartment = RegisterDepartment

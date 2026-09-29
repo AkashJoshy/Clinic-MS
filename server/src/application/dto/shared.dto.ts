@@ -8,6 +8,9 @@ import type { ImageData } from "../../domain/types/shared.types.ts";
 import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
 import type { PatientProfile, UpdateAddress } from "./patient.dto.ts";
+import type { SafeClinic } from "./clinic.dto.ts";
+import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
+import type { SafeDepartment } from "../../domain/types/admin.types.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -63,7 +66,7 @@ export interface ClinicWithDetailsDto {
   address: Address | null;
 }
 
-export type SafeAddress = Pick<Address, "update">
+export type SafeAddress = Omit<Address, "update">
 
 type BaseAddress = Omit<
   Address,
@@ -113,4 +116,29 @@ export type MessageDto = {
 export interface UpdateAddressEntityDto {
   address: Address, 
   updates: Partial<UpdateAddress>
+}
+
+export type ClinicDetailsResponseDto = {
+  clinics: SafeClinic[];
+  clinicMap: Map<string | null, SafeClinic>;
+};
+
+export type AddressDetailsResponseDto = {
+  addressess: SafeAddress[];
+  addressMap: Map<string | null, SafeAddress>;
+}
+
+export type DepartmentDetailsResponseDto = {
+  departments: SafeDepartment[];
+  departmentMap: Map<string | null, SafeDepartment>;
+}
+
+export type DoctorClinicContextDto = SafeDoctorClinic & {
+  clinic: SafeClinic | null,
+  clinicAddress: SafeAddress | null
+}
+
+export type DoctorClinicDetailsDto = {
+  doctorClinics: DoctorClinic[],
+  doctorClinicMap: Map<string | null, DoctorClinic[]>
 }

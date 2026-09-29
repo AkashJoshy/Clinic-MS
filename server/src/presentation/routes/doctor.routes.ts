@@ -39,8 +39,6 @@ router.post(
 
 router.get(
   DOCTOR_ENDPOINTS["reapplication_details"],
-  // doctorUpload,
-  // validate(doctorRegistrationSchema),
   async (req, res, next) => {
     await getDoctorReapplicationController.handle(req, res, next);
   },

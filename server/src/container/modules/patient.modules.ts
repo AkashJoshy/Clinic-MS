@@ -1,3 +1,4 @@
+import { GetAllDoctorsUsecase } from "../../application/use-cases/patient/doctors/get-all-doctors.usecase.ts";
 import { CreatePatientProfileUseCase } from "../../application/use-cases/patient/profile/create-patient-profile.usecase.ts";
 import { PatientProfilesUseCase } from "../../application/use-cases/patient/profile/patient-profiles.usecase.ts";
 import { UpdatePatientAddressUseCase } from "../../application/use-cases/patient/profile/update-patient-address.usecase.ts";
@@ -5,6 +6,7 @@ import { UpdatePatientEmergencyContactUseCase } from "../../application/use-case
 import { UpdatePatientProfilePictureUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-picture.usecase.ts";
 import { UpdatePatientProfileUseCase } from "../../application/use-cases/patient/profile/update-patient-profile.usecase.ts";
 import { CreatePatientProfileController } from "../../presentation/controllers/patient/create-patient-profile.controller.ts";
+import { GetAllDoctorsController } from "../../presentation/controllers/patient/get-all-doctors.controller.ts";
 import { PatientProfilesController } from "../../presentation/controllers/patient/patient-profiles.controller.ts";
 import { UpdatePatientAddressController } from "../../presentation/controllers/patient/update-patient-address.controller.ts";
 import { UpdatePatientEmergencyContactController } from "../../presentation/controllers/patient/update-patient-emergency-contact.controller.ts";
@@ -13,7 +15,9 @@ import { UpdatePatientProfileController } from "../../presentation/controllers/p
 import {
   mongooseAddressRepository,
   mongooseUserRepository,
-  mongoosePatientRepository
+  mongoosePatientRepository,
+  mongooseDoctorRepository,
+  doctorDetailsService
 } from "../index.ts";
 
 // Service-Usecase
@@ -48,6 +52,10 @@ const createPatientProfileUseCase = new CreatePatientProfileUseCase(
   mongooseAddressRepository,
   mongooseUserRepository
 );
+const getAllDoctorsUseCase = new GetAllDoctorsUsecase(
+  mongooseDoctorRepository,
+  doctorDetailsService,
+);
 
 // Controllers
 export const patientProfilesController = new PatientProfilesController(
@@ -71,4 +79,8 @@ export const updatePatientEmergencyContactController = new UpdatePatientEmergenc
 
 export const createPatientProfileController = new CreatePatientProfileController(
   createPatientProfileUseCase,
+);
+
+export const getAllDoctorsController = new GetAllDoctorsController(
+  getAllDoctorsUseCase,
 );

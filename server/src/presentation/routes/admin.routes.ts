@@ -12,7 +12,6 @@ import {
   addDepartmentController,
   approveDoctorController,
   editDepartmentController,
-  getAllDoctorsController,
   getAllPatientsController,
   getDepartmentController,
   getDoctorController,
@@ -23,6 +22,7 @@ import {
   updatePatientStatusController,
   verifyDoctorDocumentController,
   verifyClinicDocumentController,
+  getAllDoctorsAdminController,
 } from "../../container/index.ts";
 
 const router = Router();
@@ -72,7 +72,7 @@ router.get(
   authenticateUser,
   authorizeUser,
   async (req, res, next) => {
-    await getAllDoctorsController.handle(req, res, next);
+    await getAllDoctorsAdminController.handle(req, res, next);
   },
 );
 

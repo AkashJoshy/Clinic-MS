@@ -14,11 +14,8 @@ import type {
 import type { BaseAddress } from "./patient.dto.ts";
 import type { DoctorReapplication } from "../../domain/entities/doctor-reapplication.entity.ts";
 import type { SafeUser } from "./auth.dto.ts";
-import { omit } from "zod/mini";
 import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
-import type { SafeClinic } from "./clinic.dto.ts";
 import type { Address } from "../../domain/entities/address.entity.ts";
-import type { SafeAddress } from "./shared.dto.ts";
 
 export interface ClinicDetails {
   id: string;
@@ -49,8 +46,8 @@ export type SafeDoctor = Omit<
   | "submit"
 >;
 
-export type DoctorInfo = {
-  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
+export type BasicDoctorInfo = {
+  user: Pick<SafeUser, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
     SafeDoctor,
     | "userId"
@@ -59,20 +56,7 @@ export type DoctorInfo = {
     | "medicalLicenceDoc"
     | "fieldsToReupload"
     | "subscription"
-  > & {
-    registrationDoc: ApprovalPlainUrl;
-  } & {
-    medicalLicenceDoc: ApprovalPlainUrl;
-  } & {
-    profilePicture: PlainUrl;
-  };
-  clinic:
-    | (Pick<Clinic, "id" | "name" | "about" | "location" | "status"> & {
-        clinicAddress: BaseAddress | null;
-        registrationDoc: ApprovalPlainUrl;
-        establishmentLicenceDoc: ApprovalPlainUrl;
-      })
-    | null;
+  >;
   doctorClinic: Pick<
     SafeDoctorClinic,
     | "id"
@@ -83,12 +67,90 @@ export type DoctorInfo = {
     | "timeZone"
     | "isActive"
     | "updatedAt"
-  > | null;
-} & {
-  address: BaseAddress | null;
-} & {
+  >[];
   department: Pick<Department, "id" | "name"> | null;
 };
+
+export type DoctorInfo = Omit<BasicDoctorInfo, "doctorClinic"> & {
+  doctor: BasicDoctorInfo["doctor"] & {
+    profilePicture: PlainUrl;
+  };
+  doctorClinicDetails: (BasicDoctorInfo["doctorClinic"][number] & {
+    clinic: Pick<
+      Clinic,
+      "id" | "name" | "about" | "location" | "status"
+    > | null;
+    clinicAddress: BaseAddress | null;
+  })[];
+};
+
+export type AdminDoctorInfo = Omit<
+  DoctorInfo,
+  "doctorClinicDetails" | "doctor"
+> & {
+  doctor: DoctorInfo["doctor"] & {
+    registrationDoc: ApprovalPlainUrl;
+    medicalLicenceDoc: ApprovalPlainUrl;
+  };
+  doctorClinicDetails: (Omit<
+    DoctorInfo["doctorClinicDetails"][number],
+    "clinic" | "clinicAddress"
+  > & {
+    clinic:
+      | (NonNullable<DoctorInfo["doctorClinicDetails"][number]["clinic"]> & {
+          registrationDoc: ApprovalPlainUrl;
+          establishmentLicenceDoc: ApprovalPlainUrl;
+        })
+      | null;
+    clinicAddress: BaseAddress | null;
+  })[];
+  address: BaseAddress | null
+};
+
+export type DoctorDetailsCardDto = {
+  user: BasicDoctorInfo["user"] | null;
+  department: AdminDoctorInfo["department"] | null;
+  doctor: Pick<
+    AdminDoctorInfo["doctor"],
+    | "status"
+    | "displayName"
+    | "doctorCode"
+    | "gender"
+    | "createdAt"
+    | "reviewedAt"
+    | "reviewedMessage"
+    | "departmentId"
+    | "id"
+    | "profilePicture"
+    | "medicalLicenceDoc"
+    | "registrationDoc"
+  >;
+  doctorClinicDetails: Pick<
+    AdminDoctorInfo["doctorClinicDetails"][number],
+    | "id"
+    | "isActive"
+    | "clinic"
+    | "clinicAddress"
+    | "consultationFee"
+    | "timeZone"
+    | "type"
+  >[];
+  address: AdminDoctorInfo["address"] | null;
+};
+
+export type PatientDoctorDetailsCardDto = {
+  doctor: (Pick<AdminDoctorInfo["doctor"], "averageRating" | "displayName" | "totalReviews" | "profilePicture" | "experienceYears" | "gender" | "status" | "id">),
+  doctorClinicDetails: (Pick<AdminDoctorInfo["doctorClinicDetails"][number], "id" | "consultationFee" | "isActive" | "timeZone"  | "type" | "schedule"> & {
+    clinic: Pick<
+  NonNullable<
+    AdminDoctorInfo["doctorClinicDetails"][number]["clinic"]
+  >,
+  "name" | "id" | "status"
+> | null,
+  })[]
+  address: AdminDoctorInfo["address"] | null;
+  department: BasicDoctorInfo["department"]
+}
 
 export type DoctorDetailsDto = {
   user: User;
@@ -99,10 +161,10 @@ export type DoctorDetailsDto = {
 };
 
 export type DoctorReapplicationResponseDto = {
-  reapplication: DoctorReapplication
+  reapplication: DoctorReapplication;
 };
 
-export type DoctorProfileInfo = Omit<DoctorInfo, "user">;
+export type DoctorProfileInfo = Omit<AdminDoctorInfo, "user">;
 
 export interface DoctorRegisterDto {
   fullName: string;

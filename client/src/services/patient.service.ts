@@ -125,3 +125,18 @@ export const createPatientProfile = async (profileData: ProfileDto) => {
     };
   }
 };
+
+export const fetchDoctors = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.PATIENT.DOCTORS, {
+      authRole: "patient"
+    });
+    return res.data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message || error.message || "Network Error",
+    };
+  }
+};

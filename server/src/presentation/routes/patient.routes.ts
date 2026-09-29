@@ -15,6 +15,7 @@ import {
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
 import { createPatientProfileController, patientProfilesController, updatePatientAddressController, updatePatientProfileController, updatePatientProfilePictureController, updatePatientEmergencyContactController } from "../../container/index.ts";
 import { updatePatientEmergencyContactSchema } from "../schemas/patient/profile.schema.ts";
+import { getAllDoctorsController } from "../../container/modules/patient.modules.ts";
 
 const router = Router();
 
@@ -76,6 +77,15 @@ router.post(
   validate(createPatientProfileSchema),
   async (req, res, next) => {
     await createPatientProfileController.handle(req, res, next);
+  },
+);
+
+router.get(
+  PATIENT_ENDPOINTS["FETCH_ALL_DOCTORS"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await getAllDoctorsController.handle(req, res, next);
   },
 );
 

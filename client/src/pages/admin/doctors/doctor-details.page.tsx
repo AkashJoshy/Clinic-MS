@@ -9,7 +9,6 @@ import {
   X,
   AlertCircle,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import {
   getDoctor,
   approveDoctor,
@@ -21,9 +20,8 @@ import {
 import { useMutate } from "@/hooks/use-mutate.hook";
 import toast from "react-hot-toast";
 import type {
-  DoctorInfo,
+  AdminDoctorInfo,
   DoctorRejectDto,
-  DoctorStatusUpdateDto,
   DocumentDto,
 } from "@/types/doctor";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
@@ -37,12 +35,11 @@ import DocumentVerificationModal from "@/components/shared/document-verification
 import type { User } from "@/types/user";
 import type { UpdateMethods } from "@/types/common";
 import StatusTicker from "@/components/shared/status-ticker.shared";
-import { process } from "zod/v4/core";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useParams<{ doctorId: string }>();
   const navigate = useNavigate();
-  const [doctorData, setDoctorData] = useState<DoctorInfo | null>(null);
+  const [doctorData, setDoctorData] = useState<AdminDoctorInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [actionType, setActionType] = useState<UpdateMethods | null>(null);
@@ -143,7 +140,7 @@ export default function DoctorDetailsPage() {
     });
   };
 
-  const handleRejectConfirm = (data: any) => {
+  const handleRejectConfirm = () => {
     setIsRejectOpen(false);
   };
 
@@ -199,7 +196,7 @@ export default function DoctorDetailsPage() {
     );
   }
 
-  const { doctor, clinic, doctorClinic, address, user, department } =
+  const { user, doctor, address, department, doctorClinicDetails } =
     doctorData;
 
   const isBlocked =
@@ -316,10 +313,8 @@ export default function DoctorDetailsPage() {
             }}
           />
           <DoctorClinicCard
-            clinic={clinic}
-            doctor={doctor}
             onViewDocument={setPreviewImage}
-            doctorClinic={doctorClinic}
+            doctorClinicDetails={doctorClinicDetails}
             onDocumentAction={(
               name,
               action,
@@ -338,7 +333,7 @@ export default function DoctorDetailsPage() {
               })
             }
           />
-          <DoctorScheduleCard schedule={doctorClinic.schedule} />
+
         </div>
       </div>
 

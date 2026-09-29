@@ -28,7 +28,6 @@ export class EmailVerificationService {
     let verificationToken = generateVerificationToken();
 
     const pathToRoleRoute = role !== "PATIENT" ? "/" + roleRoute : "";
-    console.log(pathToRoleRoute);
 
     const body = `
       <div>

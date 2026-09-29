@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react"
 import type { ApprovalStatus, EntityStatus, FileUpdateMethods, ServiceMode, UpdateMethods } from "./common"
 
 export interface DepartmentData {
@@ -41,3 +42,14 @@ export interface DepartmentCardProps {
 export type PatientDetailsTab = "overview" | "appointments" | "medical-records" | "reviews";
 
 export type DoctorManagementTab = "all" | "pending" | "rejected";
+
+export interface AdminPageHeaderProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+export interface DocumentPreviewModalProps {
+  previewImage: string | null;
+  onClose: () => void;
+}

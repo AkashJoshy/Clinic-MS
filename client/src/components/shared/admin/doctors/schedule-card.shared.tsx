@@ -7,7 +7,7 @@ interface DoctorScheduleCardProps {
 
 export const DoctorScheduleCard = ({ schedule }: DoctorScheduleCardProps) => {
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">
+    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6 m-4">
       <h3 className="text-white text-base font-semibold border-b border-white/5 pb-3 mb-4 flex items-center gap-2">
         <Clock size={18} className="text-[#1dc465]" />
         Weekly Consulting Hours

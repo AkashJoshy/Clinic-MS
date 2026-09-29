@@ -1,4 +1,4 @@
-import type { registerDepartment } from "../types/admin.types.ts";
+import type { RegisterDepartment } from "../types/admin.types.ts";
 import type { EntityStatus, ServiceMode } from "../types/shared.types.ts";
 
 export class Department {
@@ -11,7 +11,7 @@ export class Department {
     public updatedAt: Date | null,
   ) {}
 
-  static create(data: Partial<registerDepartment>): Department {
+  static create(data: Partial<RegisterDepartment>): Department {
     return new Department(
       data.id ?? null,
       data.name?.trim() ?? "",

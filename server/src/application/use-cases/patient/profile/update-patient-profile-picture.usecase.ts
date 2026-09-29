@@ -45,8 +45,6 @@ export class UpdatePatientProfilePictureUseCase implements IUpdateProfilePicture
         "image",
       );
 
-      console.log(`Image Deleted`);
-
       if (!isDeleted) {
         patient.updateProfilePicture(existingImageUrl);
         throw new InternalServerError(

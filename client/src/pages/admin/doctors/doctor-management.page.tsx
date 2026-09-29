@@ -10,6 +10,8 @@ import { AllApprovals } from "@/components/shared/admin/all-approvals.shared";
 import { Pagination } from "@/components/layout/pagination.layout";
 import { RejectModal } from "@/components/layout/reject-modal.layout";
 import type {
+  AdminDoctorInfo,
+  DoctorDetailsCardInfo,
   DoctorInfo,
   DoctorRejectDto,
   DoctorStatusUpdateDto,
@@ -29,14 +31,17 @@ import { AllDoctorCardSkeleton } from "@/components/shared/skeletons/all-doctor-
 import { DOCTOR_TABS } from "@/constants/admin.constant";
 import { RejectedApprovals } from "@/components/shared/admin/rejected-approvals.shared";
 import { RejectedDoctorCard } from "@/components/shared/admin/doctors/rejected-card.shared";
+import { AnimatePresence, motion } from "framer-motion";
+import AdminPageHeader from "@/components/shared/admin/admin-page-header.shared";
+import DocumentPreviewModal from "@/components/shared/admin/doctors/document-preview-modal.shared";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function DoctorManagementPage() {
   const [activeTab, setActiveTab] = useState<DoctorManagementTab>("all");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [doctorDetails, setDoctorDetails] = useState<DoctorInfo[]>([]);
-  const [rejectTarget, setRejectTarget] = useState<DoctorInfo | null>(null);
+  const [doctorDetails, setDoctorDetails] = useState<DoctorDetailsCardInfo[]>([]);
+  const [rejectTarget, setRejectTarget] = useState<DoctorDetailsCardInfo | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -50,6 +55,8 @@ export default function DoctorManagementPage() {
       const getDoctors = await getAllDoctors();
       const data = getDoctors.data;
       if (data) {
+        console.log(`Data: `)
+        console.log(data)
         setDoctorDetails(data);
         setIsLoading(false);
       } else {
@@ -87,8 +94,7 @@ export default function DoctorManagementPage() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
 
-      const match =
-        det.clinic.name.toLowerCase().includes(q) ||
+      const match = det.doctorClinicDetails.filter(dc => dc.clinic?.name.toLowerCase()?.includes(q)) ||
         det.doctor.displayName.toLowerCase().includes(q);
 
       if (!match) return false;
@@ -244,19 +250,11 @@ export default function DoctorManagementPage() {
   return (
     <div className="min-h-full p-6 lg:p-8 space-y-6 relative border border-white/10 bg-white/2 shadow-2xs">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 ">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#1dc465]/15 border border-[#1dc465]/25 flex items-center justify-center shrink-0">
-            <Stethoscope size={24} className="text-[#1dc465]" />
-          </div>
-          <div>
-            <h1 className="text-white text-2xl font-bold tracking-tight">
-              Doctor Management
-            </h1>
-            <p className="text-[#8b9ab0] text-sm mt-0.5">
-              Monitor and manage all registered doctors
-            </p>
-          </div>
-        </div>
+        <AdminPageHeader
+          icon={Stethoscope}
+          title="Patient Management"
+          description="Monitor and manage all registered patients"
+        />
 
         <div className="relative group w-full lg:max-w-md">
           <Search
@@ -339,11 +337,60 @@ export default function DoctorManagementPage() {
           ) : paginatedAll.length === 0 ? (
             <AllApprovals icon={Stethoscope} name="Doctors" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {paginatedAll.map((det) => (
-                <AllDoctorCard key={det.doctor?.id} doctorInfo={det} />
-              ))}
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={allPage}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.06,
+                    },
+                  },
+                  exit: {
+                    transition: {
+                      staggerChildren: 0.03,
+                      staggerDirection: -1,
+                    },
+                  },
+                }}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {paginatedAll.map((det) => (
+                    <motion.div
+                      key={det.doctor?.id}
+                      variants={{
+                        hidden: {
+                          opacity: 0,
+                          x: 12,
+                        },
+                        visible: {
+                          opacity: 1,
+                          x: 0,
+                          transition: {
+                            duration: 0.25,
+                            ease: "easeOut",
+                          },
+                        },
+                        exit: {
+                          opacity: 0,
+                          x: -8,
+                          transition: {
+                            duration: 0.15,
+                            ease: "easeIn",
+                          },
+                        },
+                      }}
+                    >
+                      <AllDoctorCard key={det.doctor?.id} doctorInfo={det} />
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           )}
 
           {allTotalPages >= 1 && (
@@ -365,17 +412,67 @@ export default function DoctorManagementPage() {
             <PendingApproval name={"Doctor"} />
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {paginatedPending.map((det) => (
-                  <PendingDoctorCard
-                    key={det.clinic.id}
-                    doctorInfo={det}
-                    onApprove={handleApprove}
-                    onReject={(c) => setRejectTarget(c)}
-                    setPreviewImage={setPreviewImage}
-                  />
-                ))}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={allPage}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.06,
+                      },
+                    },
+                    exit: {
+                      transition: {
+                        staggerChildren: 0.03,
+                        staggerDirection: -1,
+                      },
+                    },
+                  }}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {paginatedPending.map((det) => (
+                      <motion.div
+                        key={det.doctor?.id}
+                        variants={{
+                          hidden: {
+                            opacity: 0,
+                            x: 12,
+                          },
+                          visible: {
+                            opacity: 1,
+                            x: 0,
+                            transition: {
+                              duration: 0.25,
+                              ease: "easeOut",
+                            },
+                          },
+                          exit: {
+                            opacity: 0,
+                            x: -8,
+                            transition: {
+                              duration: 0.15,
+                              ease: "easeIn",
+                            },
+                          },
+                        }}
+                      >
+                        <PendingDoctorCard
+                          key={det.doctor.id}
+                          doctorInfo={det}
+                          onApprove={handleApprove}
+                          onReject={(c) => setRejectTarget(c)}
+                          setPreviewImage={setPreviewImage}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
               {pendingTotalPages >= 1 && (
                 <Pagination
                   currentPage={pendingPage}
@@ -397,15 +494,65 @@ export default function DoctorManagementPage() {
             <RejectedApprovals />
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                {paginatedRejected.map((det) => (
-                  <RejectedDoctorCard
-                    key={det.doctor.id}
-                    doctorInfo={det}
-                    setPreviewImage={setPreviewImage}
-                  />
-                ))}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={allPage}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    hidden: {},
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.06,
+                      },
+                    },
+                    exit: {
+                      transition: {
+                        staggerChildren: 0.03,
+                        staggerDirection: -1,
+                      },
+                    },
+                  }}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {paginatedRejected.map((det) => (
+                      <motion.div
+                        key={det.doctor?.id}
+                        variants={{
+                          hidden: {
+                            opacity: 0,
+                            x: 12,
+                          },
+                          visible: {
+                            opacity: 1,
+                            x: 0,
+                            transition: {
+                              duration: 0.25,
+                              ease: "easeOut",
+                            },
+                          },
+                          exit: {
+                            opacity: 0,
+                            x: -8,
+                            transition: {
+                              duration: 0.15,
+                              ease: "easeIn",
+                            },
+                          },
+                        }}
+                      >
+                        <RejectedDoctorCard
+                          key={det.doctor.id}
+                          doctorInfo={det}
+                          setPreviewImage={setPreviewImage}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
               {rejectedTotalPages >= 1 && (
                 <Pagination
                   currentPage={pendingPage}
@@ -431,39 +578,10 @@ export default function DoctorManagementPage() {
         />
       )}
 
-      {previewImage && (
-        <div
-          className="fixed inset-0 bg-[#080d14]/90 backdrop-blur-md flex items-center justify-center z-100 p-4 sm:p-8"
-          onClick={() => setPreviewImage(null)}
-        >
-          <div
-            className="bg-[#0d1a27] border border-white/8 p-2 rounded-2xl relative max-w-4xl w-full shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setPreviewImage(null)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#080d14]/50 backdrop-blur-md flex items-center justify-center text-white hover:bg-rose-500 transition-all z-10"
-            >
-              <X size={20} />
-            </button>
-            <div className="overflow-auto max-h-[85vh] rounded-xl bg-[#080d14]/30">
-              {previewImage?.toLowerCase().endsWith(".pdf") ? (
-                <iframe
-                  src={previewImage}
-                  title="Document preview"
-                  className="w-full h-full"
-                />
-              ) : (
-                <img
-                  src={previewImage ?? undefined}
-                  alt="Document preview"
-                  className="w-full h-full object-contain"
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <DocumentPreviewModal
+        onClose={() => setPreviewImage(null)}
+        previewImage={previewImage}
+      />
     </div>
   );
 }

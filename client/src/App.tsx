@@ -8,6 +8,7 @@ import ForgotPasswordPage from "./pages/auth/forgot-password.page";
 import ChangePasswordPage from "./pages/auth/change-password.page";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./pages/patient/dashboard.page";
+import SearchDoctorsPage from "./pages/patient/search-doctors.page";
 import PatientDashboardLayout from "./components/layout/patient/dashboard.layout";
 import ToastLayout from "./components/layout/toast.layout";
 
@@ -142,13 +143,7 @@ const router = createBrowserRouter([
               { path: "/patient/dashboard", element: <Dashboard /> },
               {
                 path: "/patient/find-doctors",
-                element: (
-                  <UnderConstruction
-                    title="Find Doctors"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                element: <SearchDoctorsPage />,
               },
               {
                 path: "/patient/book-appointment",

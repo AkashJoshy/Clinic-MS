@@ -12,6 +12,7 @@ import type { UpdateMethods } from "@/types/common";
 import DepartmentCard from "@/components/shared/admin/departments/department-card.shared";
 import DepartmentCardSkeleton from "@/components/shared/skeletons/department-card.skeleton";
 import toast from "react-hot-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -134,20 +135,6 @@ const DepartmentPage: React.FC = () => {
         />
       </div>
 
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredDepartments.map((dept) => (
-          <DepartmentCard department={dept} handleDelete={handleDelete} />
-        ))}
-      </div> */}
-
-      {/* {filteredDepartments.length === 0 && (
-        <div className="text-center py-12">
-          <h1 className="text-[#8b9ab0]">
-            <AllApprovals name="Departments" />
-          </h1>
-        </div>
-      )} */}
-
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -161,11 +148,22 @@ const DepartmentPage: React.FC = () => {
           </h1>
         </div>
       ) : (
+        <AnimatePresence mode="wait">
+         <motion.div
+            key={page}
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -15 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="space-y-3"
+            >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredDepartments.map((dept) => (
             <DepartmentCard department={dept} handleDelete={handleDelete} />
           ))}
         </div>
+         </motion.div>
+        </AnimatePresence>
       )}
 
       {isOpen &&
@@ -191,6 +189,7 @@ const DepartmentPage: React.FC = () => {
         onPageChange={setPage}
         colorCode="WHITE"
       />
+
     </div>
   );
 };

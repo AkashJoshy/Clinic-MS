@@ -54,8 +54,6 @@ export class LogoutUseCase implements ILogoutUseCase {
     }
 
     if (!refreshSession || !refreshSession.id) {
-      console.log(`Refresh Session Issue ?`);
-      console.log(refreshSession);
       throw new InvalidTokenError("Invalid token");
     }
 

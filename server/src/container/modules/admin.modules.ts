@@ -29,7 +29,12 @@ import { UpdatePatientStatusController } from "../../presentation/controllers/ad
 import { VerifyDoctorDocumentController } from "../../presentation/controllers/admin/verify-doctor-document.controller.ts";
 import { VerifyClinicDocumentController } from "../../presentation/controllers/admin/verify-clinic-document.controller.ts";
 import {
+  addressDetailsService,
   argonHashService,
+  clinicDetailsService,
+  departmentDetailsService,
+  doctorClinicDetailsService,
+  doctorDetailsService,
   jwtService,
   mongooseAddressRepository,
   mongooseClinicRepository,
@@ -42,15 +47,10 @@ import {
   nodeMailService,
 } from "../index.ts";
 import { ActionTokenGenerationService } from "../../application/services/action-token.service.ts";
+import { DoctorClinicContextService } from "../../application/services/doctor-clinic-context.service.ts";
 
 // Service-Usecase
-const doctorDetailsService = new DoctorDetailsService(
-  mongooseUserRepository,
-  mongooseDoctorClinicRepository,
-  mongooseClinicRepository,
-  mongooseAddressRepository,
-  mongooseDepartmentRepository,
-);
+
 const patientDetailsService = new PatientDetailsService(
   mongooseUserRepository,
   mongooseAddressRepository,
@@ -59,8 +59,8 @@ const patientDetailsService = new PatientDetailsService(
 const actionTokenGenerationService = new ActionTokenGenerationService(
   jwtService,
   mongooseDoctorReapplicationRepository,
-  argonHashService
-)
+  argonHashService,
+);
 
 // Use-cases
 const getDepartmentUseCase = new GetDepartmentUseCase(
@@ -81,11 +81,7 @@ const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
 );
 const getDoctorUseCase = new GetDoctorUseCase(
   mongooseDoctorRepository,
-  mongooseUserRepository,
-  mongooseDoctorClinicRepository,
-  mongooseClinicRepository,
-  mongooseAddressRepository,
-  mongooseDepartmentRepository,
+  doctorDetailsService
 );
 const getAllPatientsUseCase = new GetAllPatientsUseCase(
   mongoosePatientRepository,
@@ -111,7 +107,7 @@ const rejectDoctorUseCase = new RejectDoctorUseCase(
   mongooseAddressRepository,
   mongooseDoctorReapplicationRepository,
   nodeMailService,
-  actionTokenGenerationService
+  actionTokenGenerationService,
 );
 const updatePatientStatusUseCase = new UpdatePatientStatusUseCase(
   mongoosePatientRepository,
@@ -127,6 +123,10 @@ const verifyDoctorDocumentUseCase = new VerifyDoctorDocumentUseCase(
 const verifyClinicDocumentUseCase = new VerifyClinicDocumentUseCase(
   mongooseClinicRepository,
 );
+// const searchDoctorsUsecase = new SearchDoctorsUsecase(
+//   mongooseUserRepository,
+//   mongooseDoctorRepository,
+// );
 
 // Controllers
 export const getDepartmentController = new GetDepartmentController(
@@ -141,11 +141,10 @@ export const editDepartmentController = new EditDepartmentController(
   editDepartmentUseCase,
 );
 
-export const updateDepartmentStatusController = new UpdateDepartmentStatusController(
-  updateDepartmentStatusUseCase,
-);
+export const updateDepartmentStatusController =
+  new UpdateDepartmentStatusController(updateDepartmentStatusUseCase);
 
-export const getAllDoctorsController = new GetAllDoctorsController(
+export const getAllDoctorsAdminController = new GetAllDoctorsController(
   getAllDoctorsUseCase,
 );
 
@@ -161,7 +160,9 @@ export const approveDoctorController = new ApproveDoctorController(
   approveDoctorUseCase,
 );
 
-export const rejectDoctorController = new RejectDoctorController(rejectDoctorUseCase);
+export const rejectDoctorController = new RejectDoctorController(
+  rejectDoctorUseCase,
+);
 
 export const updatePatientStatusController = new UpdatePatientStatusController(
   updatePatientStatusUseCase,
@@ -171,10 +172,8 @@ export const updateDoctorStatusController = new UpdateDoctorStatusController(
   updateDoctorStatusUseCase,
 );
 
-export const verifyDoctorDocumentController = new VerifyDoctorDocumentController(
-  verifyDoctorDocumentUseCase,
-);
+export const verifyDoctorDocumentController =
+  new VerifyDoctorDocumentController(verifyDoctorDocumentUseCase);
 
-export const verifyClinicDocumentController = new VerifyClinicDocumentController(
-  verifyClinicDocumentUseCase,
-);
+export const verifyClinicDocumentController =
+  new VerifyClinicDocumentController(verifyClinicDocumentUseCase);

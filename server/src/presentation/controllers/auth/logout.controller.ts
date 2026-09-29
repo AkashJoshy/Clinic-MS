@@ -18,9 +18,6 @@ export class LogoutController {
               : "";
       const refreshToken = req.cookies[refreshTokenRole]
 
-      console.log(`Refresh Token of ${role}`);
-      console.log(refreshToken);
-
       const result = await this._logout.execute(refreshToken);
 
       res.clearCookie(refreshTokenRole, {

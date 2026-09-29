@@ -4,6 +4,7 @@
 @import url(
   "https://fonts.google.com/share?selection.family=Archivo+Black|Black+Ops+One|Fjalla+One|Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800"
   );
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap");
 
 @import "tailwindcss";
 @import "tw-animate-css";

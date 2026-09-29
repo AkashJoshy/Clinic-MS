@@ -57,7 +57,7 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
   const UPDATED_RELATIONS = RELATIONS.filter((r) => r !== "");
 
   return (
-    <div className="bg-white rounded-[7px] shadow-sm border border-gray-100 p-6 md:p-8">
+    <div className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 md:p-8">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-900">
           EmergencyDetails
@@ -106,7 +106,7 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
           },
         )}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
           <div className="md:col-span-2">
             <label className={labelClasses}>Full Name</label>
 

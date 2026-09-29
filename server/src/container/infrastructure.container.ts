@@ -1,3 +1,9 @@
+import { AddressDetailsService } from "../application/services/address-details.service.ts";
+import { ClinicDetailsService } from "../application/services/clinic-details.service.ts";
+import { DepartmentDetailsService } from "../application/services/department-details.service.ts";
+import { DoctorClinicContextService } from "../application/services/doctor-clinic-context.service.ts";
+import { DoctorClinicDetailsService } from "../application/services/doctor-clinic-details.service.ts";
+import { DoctorDetailsService } from "../application/services/doctor-details.service.ts";
 import { EmailVerificationService } from "../application/services/email-verification.service.ts";
 import { redis } from "../infrastructure/cache/redis.client.ts";
 import { AddressRepository } from "../infrastructure/repositories/address.repository.ts";
@@ -35,4 +41,31 @@ export const jwtService = new JWTService();
 export const emailVerificationService = new EmailVerificationService(
   nodeMailService,
   redisService,
+);
+export const addressDetailsService = new AddressDetailsService(
+  mongooseAddressRepository
+)
+export const clinicDetailsService = new ClinicDetailsService(
+  mongooseClinicRepository
+)
+export const doctorClinicDetailsService = new DoctorClinicDetailsService(
+  mongooseDoctorClinicRepository
+)
+export const departmentDetailsService = new DepartmentDetailsService(
+  mongooseDepartmentRepository
+)
+export const doctorClinicContextService = new DoctorClinicContextService(
+  addressDetailsService,
+  clinicDetailsService,
+  doctorClinicDetailsService
+)
+export const doctorDetailsService = new DoctorDetailsService(
+  mongooseUserRepository,
+  mongooseDoctorClinicRepository,
+  mongooseClinicRepository,
+  mongooseAddressRepository,
+  mongooseDepartmentRepository,
+  addressDetailsService,
+  departmentDetailsService,
+  doctorClinicContextService,
 );

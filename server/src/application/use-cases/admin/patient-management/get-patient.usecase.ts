@@ -65,6 +65,7 @@ export class GetPatientUseCase implements IGetPatientUseCase {
         isBlocked: user?.isBlocked ?? false,
         isEmailVerified: user?.isEmailVerified ?? false,
       },
-    };
+    } as PatientInfoDto
+    
   }
 }

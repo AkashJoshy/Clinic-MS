@@ -71,7 +71,7 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   const errorText = "text-xs text-red-600 mt-1";
 
   return (
-    <div className="bg-white rounded-[7px] shadow-sm border border-gray-100 p-6 md:p-8">
+    <div className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 md:p-8">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
           <MapPin className="w-5 h-5 text-blue-500" />

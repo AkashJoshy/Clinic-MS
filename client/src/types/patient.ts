@@ -5,6 +5,7 @@ import type React from "react";
 import type { PatientFormInstance } from "@/hooks/use-patient-form.hook";
 import type { UseFormRegister } from "react-hook-form";
 import type { RELATIONS } from "@/constants/form-fields.constants";
+import type { AdminDoctorInfo, BasicDoctorInfo } from "./doctor";
 
 export interface Patient {
   id: null | string;
@@ -244,4 +245,18 @@ export type PatientPersonalInformation = {
 export interface PatientListItemProps {
   patientInfo: PatientBasicInfo;
   setPatientInfo: Dispatch<SetStateAction<PatientBasicInfo[]>>;
+}
+
+export type PatientDoctorDetailsCard = {
+  doctor: (Pick<AdminDoctorInfo["doctor"], "averageRating" | "displayName" | "totalReviews" | "profilePicture" | "experienceYears" | "gender" | "status" | "id">),
+  doctorClinicDetails: (Pick<AdminDoctorInfo["doctorClinicDetails"][number], "id" | "consultationFee" | "isActive" | "timeZone"  | "type" | "schedule"> & {
+    clinic: Pick<
+  NonNullable<
+    AdminDoctorInfo["doctorClinicDetails"][number]["clinic"]
+  >,
+  "name" | "id" | "status"
+> | null,
+  })[]
+  address: AdminDoctorInfo["address"] | null;
+  department: BasicDoctorInfo["department"]
 }

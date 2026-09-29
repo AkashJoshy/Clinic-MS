@@ -1,6 +1,6 @@
 import type { DepartmentData } from "./admin";
-import type { ModeRoleRef, User } from "./user";
-import type { Doctor } from "./doctor";
+import type { Address, ModeRoleRef, User } from "./user";
+import type { Doctor, DoctorInfo } from "./doctor";
 import type {
   UseFormRegister,
   FieldErrors,
@@ -12,6 +12,8 @@ import type {
 import type { Role } from "./auth";
 import type { DoctorClinic } from "./doctor-clinic";
 import type { LucideIcon } from "lucide-react";
+import type { Clinic } from "./clinic";
+import type { BaseAddress } from "./patient";
 
 export type UnderConstructionProps = {
   title: string;
@@ -145,7 +147,7 @@ export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
 export type UpdateMethods = "RESTORE" | "DELETE" | "BLOCK";
 
-export type FileUpdateMethods = "VERIFY" | "REJECT"
+export type FileUpdateMethods = "VERIFY" | "REJECT";
 
 export type StateWithCode = {
   name: string;
@@ -171,11 +173,26 @@ export type PlainUrl = {
 };
 
 export type VerifyPlainUrl = PlainUrl & {
-  status: ApprovalStatus
-}
+  status: ApprovalStatus;
+};
 
 export type StatusTickerProps = {
   icon?: LucideIcon;
   message: string;
   variant?: "error" | "warning" | "success" | "info";
+};
+
+type CardDoctorClinicDetail = Omit<
+  DoctorClinic,
+  "leaves" | "createdAt" | "doctorId" | "clinicId"
+>;
+
+export type DoctorClinicContextDto = CardDoctorClinicDetail & {
+  clinic:
+    | (NonNullable<DoctorInfo["doctorClinicDetails"][number]["clinic"]> & {
+        registrationDoc: VerifyPlainUrl;
+        establishmentLicenceDoc: VerifyPlainUrl;
+      })
+    | null;
+  clinicAddress: BaseAddress | null;
 };

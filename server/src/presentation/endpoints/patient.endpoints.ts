@@ -7,9 +7,9 @@ export const PATIENT_ENDPOINTS = {
     UPDATE_EMERGENCY_CONTACT: "/profiles/emergency-contact/:patientId",
     UPDATE_PROFILE_PICTURE: "/profiles/picture/p",
     FETCH_NEARBY_DOCTORS: "/doctors/nearby",
-    FETCH_ALL_DOCTORS: "/doctors/all/available",
+    FETCH_ALL_DOCTORS: "/doctors",
     FETCH_DOCTOR_ALL_SLOTS: "/doctors/:doctorClinicId/slots",
     BOOK_SLOT: "/doctors/:doctorClinicId/slots/:slotId",
     FETCH_APPOINTMENTS: "/appointments",
-    HOLD_SLOT: "/slot/:slotId/held"
+    HOLD_SLOT: "/slot/:slotId/held",
 }
