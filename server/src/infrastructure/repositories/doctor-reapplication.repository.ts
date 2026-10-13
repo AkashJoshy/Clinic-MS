@@ -1,12 +1,12 @@
+import { Types } from "mongoose";
 import { BaseRepository } from "./base/base.repository.ts";
 import type { IDoctorReapplicationRepository } from "../../domain/repositories/i-doctor-reapplication.repository.ts";
 import {
   DoctorReapplicationModel,
-  type IDoctorReapplication,
-} from "../models/doctor-reapplication.model.ts";
+} from "../models/doctor-reapplication/doctor-reapplication.model.ts";
 
 import { DoctorReapplication } from "../../domain/entities/doctor-reapplication.entity.ts";
-import mongoose, { Types } from "mongoose";
+import type { IDoctorReapplication } from "../models/doctor-reapplication/doctor-reapplication.types.ts";
 
 export class DoctorReapplicationRepository
   extends BaseRepository<DoctorReapplication, IDoctorReapplication>
@@ -16,24 +16,22 @@ export class DoctorReapplicationRepository
     super(DoctorReapplicationModel);
   }
 
-async findByDoctorId(
-  doctorId: string,
-): Promise<DoctorReapplication | null> {
-  const document = await DoctorReapplicationModel.findOne({
-    doctorId: new Types.ObjectId(doctorId),
-    status: {
-      $in: ["PENDING", "SUBMITTED"],
-    },
-  }).sort({
-    createdAt: -1,
-  });
+  async findByDoctorId(doctorId: string): Promise<DoctorReapplication | null> {
+    const document = await DoctorReapplicationModel.findOne({
+      doctorId: new Types.ObjectId(doctorId),
+      status: {
+        $in: ["PENDING", "SUBMITTED"],
+      },
+    }).sort({
+      createdAt: -1,
+    });
 
-  if (!document) {
-    return null;
+    if (!document) {
+      return null;
+    }
+
+    return this.toDomain(document);
   }
-
-  return this.toDomain(document);
-}
 
   async findByTokenHash(
     tokenHash: string,
@@ -49,9 +47,7 @@ async findByDoctorId(
     return this.toDomain(document);
   }
 
-  protected toDomain(
-    doc: IDoctorReapplication,
-  ): DoctorReapplication {
+  protected toDomain(doc: IDoctorReapplication): DoctorReapplication {
     return DoctorReapplication.create({
       id: doc._id.toString(),
       doctorId: doc.doctorId ? doc.doctorId.toString() : null,

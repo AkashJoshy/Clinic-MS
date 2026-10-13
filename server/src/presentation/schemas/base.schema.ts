@@ -8,6 +8,7 @@ import {
   GENDER,
   RELATIONSTOSCHEMA,
 } from "../../domain/constants/patient.constants.ts";
+import { SERVICE_MODE } from "../../domain/constants/shared.constants.ts";
 
 export const email = z
   .email("Please enter a valid email address.")
@@ -177,7 +178,7 @@ export const consultationFee = z.coerce
   .min(200, "Consultation fee must be at least ₹200")
   .max(1000, "Consultation fee must not exceed ₹1000");
 
-  export const experienceYears = z.preprocess(
+export const experienceYears = z.preprocess(
   (value) => (value === "" ? undefined : value),
   z.coerce
     .number("Please enter your years of experience")
@@ -203,7 +204,6 @@ export const licenceNumber = z
   .min(3, "License number must be at least 3 characters")
   .max(50, "License number must not exceed 50 characters");
 
-
 export const slotDuration = z.preprocess(
   (value) => (value === "" ? undefined : value),
   z.coerce
@@ -211,3 +211,17 @@ export const slotDuration = z.preprocess(
     .min(15, "Experience cannot be negative")
     .max(90, "Experience cannot exceed 60 years"),
 );
+
+export const shiftSchema = z.object({
+  id: z.string(),
+  startTime: z
+    .string()
+    .regex(
+      /^([01]\d|2[0-3]):[0-5]\d$/,
+      "Invalid start time. Use HH:mm format.",
+    ),
+  endTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid end time. Use HH:mm format."),
+  mode: z.enum(SERVICE_MODE),
+});

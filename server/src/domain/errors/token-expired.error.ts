@@ -1,4 +1,4 @@
-import ErrorCode from "../enums/error-code.enums.ts";
+import ErrorCode from "../enums/error-code.enum.ts";
 import { AppError } from "./app.errors.js";
 
 export class TokenExpiredAppError extends AppError {

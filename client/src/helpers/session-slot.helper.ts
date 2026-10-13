@@ -20,6 +20,7 @@ export const formatTime = (time: string) => {
   });
 };
 
+export const dateKey = (d: Date | string) => new Date(d).toLocaleDateString("en-CA");
 
 export const addDays = (date: Date, days: number) => {
   const result = new Date(date);
@@ -51,7 +52,6 @@ export const getMonday = (date: Date) => {
   const result = new Date(date);
   const day = result.getDay();
 
-  // Sunday = 0, Monday = 1
   const diff = day === 0 ? -6 : 1 - day;
 
   result.setDate(result.getDate() + diff);

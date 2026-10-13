@@ -55,3 +55,52 @@ export type ApprovalPlainUrl = {
   url: string;
   status: ApprovalStatus
 };
+
+export interface BulkWriteInsertOne<T> {
+  insertOne: {
+    document: T;
+  };
+}
+
+export interface BulkWriteUpdateOne<T> {
+  updateOne: {
+    filter: Record<string, unknown>;
+    update: Partial<T>;
+    upsert: boolean
+  };
+}
+
+export interface BulkWriteUpdateMany<T> {
+  updateMany: {
+    filter: Record<string, unknown>;
+    update: Partial<T>;
+    upsert: boolean
+  };
+}
+
+export interface BulkWriteReplaceOne<T> {
+  replaceOne: {
+    filter: Record<string, unknown>;
+    replacement: T;
+  };
+}
+
+export interface BulkWriteDeleteOne {
+  deleteOne: {
+    filter: Record<string, unknown>;
+  };
+}
+
+export interface BulkWriteDeleteMany {
+  deleteMany: {
+    filter: Record<string, unknown>;
+  };
+}
+
+export type BulkWriteOperation<T> =
+  | BulkWriteInsertOne<T>
+  | BulkWriteUpdateOne<T>
+  | BulkWriteUpdateMany<T>
+  | BulkWriteReplaceOne<T>
+  | BulkWriteDeleteOne
+  | BulkWriteDeleteMany;

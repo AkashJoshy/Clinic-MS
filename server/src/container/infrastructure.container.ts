@@ -1,9 +1,11 @@
 import { AddressDetailsService } from "../application/services/address-details.service.ts";
+import { BulkWriteGenerationService } from "../application/services/bulk-write-generation.service.ts";
 import { ClinicDetailsService } from "../application/services/clinic-details.service.ts";
 import { DepartmentDetailsService } from "../application/services/department-details.service.ts";
 import { DoctorClinicContextService } from "../application/services/doctor-clinic-context.service.ts";
 import { DoctorClinicDetailsService } from "../application/services/doctor-clinic-details.service.ts";
 import { DoctorDetailsService } from "../application/services/doctor-details.service.ts";
+import { DoctorExistsService } from "../application/services/doctor-exists.service.ts";
 import { EmailVerificationService } from "../application/services/email-verification.service.ts";
 import { redis } from "../infrastructure/cache/redis.client.ts";
 import { AddressRepository } from "../infrastructure/repositories/address.repository.ts";
@@ -14,6 +16,7 @@ import { DoctorReapplicationRepository } from "../infrastructure/repositories/do
 import { DoctorRepository } from "../infrastructure/repositories/doctor.repository.ts";
 import { PatientRepository } from "../infrastructure/repositories/patient.repository.ts";
 import { RefreshSessionRepository } from "../infrastructure/repositories/refresh-session.repository.ts";
+import { SlotRepository } from "../infrastructure/repositories/slot.repository.ts";
 import { UserRepository } from "../infrastructure/repositories/user.repository.ts";
 import { ArgonHashService } from "../infrastructure/services/argon-hash.service.ts";
 import { JWTService } from "../infrastructure/services/jwt.service.ts";
@@ -30,6 +33,7 @@ export const mongooseDepartmentRepository = new DepartmentRepository();
 export const mongooseClinicRepository = new ClinicRepository();
 export const mongooseDoctorClinicRepository = new DoctorClinicRepository();
 export const mongooseDoctorReapplicationRepository = new DoctorReapplicationRepository();
+export const mongooseSlotRepository = new SlotRepository()
 
 // Services
 export const argonHashService = new ArgonHashService();
@@ -48,8 +52,9 @@ export const addressDetailsService = new AddressDetailsService(
 export const clinicDetailsService = new ClinicDetailsService(
   mongooseClinicRepository
 )
+export const bulkWriteGenerationService = new BulkWriteGenerationService()
 export const doctorClinicDetailsService = new DoctorClinicDetailsService(
-  mongooseDoctorClinicRepository
+  mongooseDoctorClinicRepository,
 )
 export const departmentDetailsService = new DepartmentDetailsService(
   mongooseDepartmentRepository
@@ -61,11 +66,14 @@ export const doctorClinicContextService = new DoctorClinicContextService(
 )
 export const doctorDetailsService = new DoctorDetailsService(
   mongooseUserRepository,
-  mongooseDoctorClinicRepository,
-  mongooseClinicRepository,
-  mongooseAddressRepository,
   mongooseDepartmentRepository,
   addressDetailsService,
   departmentDetailsService,
   doctorClinicContextService,
 );
+export const doctorExistsService = new DoctorExistsService(
+  mongooseUserRepository,
+  mongooseDoctorRepository,
+  mongooseDoctorClinicRepository,
+  mongooseClinicRepository
+)

@@ -9,23 +9,19 @@ export class AddDepartmentUseCase implements IAddDepartmentUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}
 
   async execute(data: CreateDepartmentDto): Promise<void> {
-    try {
-      let name = data.name.trim().toLowerCase();
-      let dept = await this._departmentRepository.findByName(name);
+    let name = data.name.trim().toLowerCase();
+    let dept = await this._departmentRepository.findByName(name);
 
-      if (dept) {
-        throw new AlreadyExistsError("Department already exists");
-      }
+    if (dept) {
+      throw new AlreadyExistsError("Department already exists");
+    }
 
-      let newDepartment = await this._departmentRepository.save(
-        Department.create({ ...data, name: name }),
-      );
+    let newDepartment = await this._departmentRepository.save(
+      Department.create({ ...data, name: name }),
+    );
 
-      if (!newDepartment) {
-        throw new DatabaseError();
-      }
-    } catch (error: any) {
-      throw new Error(error.message);
+    if (!newDepartment) {
+      throw new DatabaseError();
     }
   }
 }

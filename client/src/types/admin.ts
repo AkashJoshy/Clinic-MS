@@ -43,7 +43,7 @@ export type PatientDetailsTab = "overview" | "appointments" | "medical-records" 
 
 export type DoctorManagementTab = "all" | "pending" | "rejected";
 
-export interface AdminPageHeaderProps {
+export interface PageHeaderProps {
   icon: LucideIcon;
   title: string;
   description: string;

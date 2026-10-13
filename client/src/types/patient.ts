@@ -249,7 +249,7 @@ export interface PatientListItemProps {
 
 export type PatientDoctorDetailsCard = {
   doctor: (Pick<AdminDoctorInfo["doctor"], "averageRating" | "displayName" | "totalReviews" | "profilePicture" | "experienceYears" | "gender" | "status" | "id">),
-  doctorClinicDetails: (Pick<AdminDoctorInfo["doctorClinicDetails"][number], "id" | "consultationFee" | "isActive" | "timeZone"  | "type" | "schedule"> & {
+  doctorClinicDetails: (Pick<AdminDoctorInfo["doctorClinicDetails"][number], "id" | "consultationFee" | "isActive" | "timeZone"  | "type" | "weeklySchedule"> & {
     clinic: Pick<
   NonNullable<
     AdminDoctorInfo["doctorClinicDetails"][number]["clinic"]

@@ -6,7 +6,7 @@ import {
 import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.js";
 import type { ICacheService } from "../../../../domain/services/cache.service.ts";
 import type { IMailService } from "../../../../domain/services/email.service.ts";
-import { generateOTP } from "../../../../shared/utils/otp.helper.js";
+import { generateOTP } from "../../../../shared/utils/otp.util.ts";
 import type { CacheDTO, VerificationTokenDto } from "../../../dto/auth.dto.js";
 import type { IResendOtpUseCase } from "../../../repositories/auth/i-resend-otp.usecase.ts";
 

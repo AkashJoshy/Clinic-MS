@@ -1,11 +1,12 @@
 import User from "../../domain/entities/user.entity.ts";
 import type { IUserRepository } from "../../domain/repositories/i-user.repository.ts";
 import type { Role } from "../../domain/types/user.types.ts";
-import UserModel, { type UserDocument } from "../models/user.model.ts";
+import UserModel from "../models/user/user.model.ts";
+import type { IUserDocument } from "../models/user/user.types.ts";
 import { BaseRepository } from "./base/base.repository.ts";
 
 export class UserRepository
-  extends BaseRepository<User, UserDocument>
+  extends BaseRepository<User, IUserDocument>
   implements IUserRepository
 {
   constructor() {
@@ -18,7 +19,7 @@ export class UserRepository
     return this.toDomain(userDoc);
   }
 
-  protected toDomain(doc: UserDocument): User {
+  protected toDomain(doc: IUserDocument): User {
     return User.create({
       id: doc._id.toString(),
       fullName: doc.fullName,
@@ -36,7 +37,7 @@ export class UserRepository
     });
   }
 
-  protected toPersistence(user: User): Partial<UserDocument> {
+  protected toPersistence(user: User): Partial<IUserDocument> {
     return {
       fullName: user.fullName,
       phone: user.phone,

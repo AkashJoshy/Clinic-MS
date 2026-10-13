@@ -32,7 +32,7 @@ import { DOCTOR_TABS } from "@/constants/admin.constant";
 import { RejectedApprovals } from "@/components/shared/admin/rejected-approvals.shared";
 import { RejectedDoctorCard } from "@/components/shared/admin/doctors/rejected-card.shared";
 import { AnimatePresence, motion } from "framer-motion";
-import AdminPageHeader from "@/components/shared/admin/admin-page-header.shared";
+import AdminPageHeader from "@/components/shared/page-header.shared";
 import DocumentPreviewModal from "@/components/shared/admin/doctors/document-preview-modal.shared";
 
 const ITEMS_PER_PAGE = 6;

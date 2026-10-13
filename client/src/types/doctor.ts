@@ -9,7 +9,7 @@ import type {
   PlainUrl,
   VerifyPlainUrl,
 } from "./common";
-import type { DoctorClinic, Session, WeeklySchedule } from "./doctor-clinic";
+import type { DoctorClinic, ExceptionsData, Session, SlotRules, WeeklySchedule } from "./doctor-clinic";
 import type { Clinic } from "./clinic";
 import type { DepartmentData } from "./admin";
 
@@ -120,8 +120,10 @@ export type DoctorProfileData = {
     | "id"
     | "type"
     | "consultationFee"
-    | "schedule"
-    | "slotDuration"
+    | "weeklySchedule"
+    | "exceptions"
+    | "updatedAt"
+    | "slotRules"
     | "timeZone"
     | "isActive"
   >;
@@ -144,8 +146,9 @@ export type BasicDoctorInfo = {
     | "id"
     | "type"
     | "consultationFee"
-    | "schedule"
-    | "slotDuration"
+    | "weeklySchedule"
+    | "slotRules"
+    | "exceptions"
     | "timeZone"
     | "isActive"
     | "updatedAt"
@@ -160,7 +163,7 @@ export type DoctorInfo = Omit<BasicDoctorInfo, "doctorClinic"> & {
   doctorClinicDetails: (BasicDoctorInfo["doctorClinic"][number] & {
     clinic: Pick<
       Clinic,
-      "id" | "name" | "about" | "location" | "status"
+      "id" | "name" | "about" | "location" | "status" | "establishmentLicenceDoc" | "registrationDoc"
     > | null;
     clinicAddress: BaseAddress | null;
   })[];
@@ -299,7 +302,7 @@ type ClinicCard = Pick<
 
 type DoctorClinicCard = Pick<
   DoctorClinic,
-  "consultationFee" | "slotDuration" | "type" | "isActive"
+  "consultationFee" | "type" | "isActive"
 >;
 
 export interface DocumentDto {
@@ -363,7 +366,6 @@ export type DoctorConsultationDetails = Pick<
   | "id"
   | "doctorId"
   | "type"
-  | "slotDuration"
   | "timeZone"
 > & { userId: string };
 
@@ -421,3 +423,4 @@ export interface FormState {
   phone?: string;
   reason?: string;
 }
+

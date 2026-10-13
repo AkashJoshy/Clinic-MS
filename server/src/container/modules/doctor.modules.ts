@@ -1,3 +1,4 @@
+import { GenerateSlotsService } from "../../application/services/generate-slots.service.ts";
 import { GetDoctorDetailsContextService } from "../../application/services/get-doctor-details-context.service.ts";
 import { UpdateAddressService } from "../../application/services/update-address.service.ts";
 import { UpdateClinicService } from "../../application/services/update-clinic.service.ts";
@@ -6,14 +7,18 @@ import { UserCreationService } from "../../application/services/user-creation.se
 import { VerifyDoctorReapplicationTokenService } from "../../application/services/verify-doctor-reapplication-token.service.ts";
 import { GetReapplicationDetailsUseCase } from "../../application/use-cases/admin/doctor-management/get-doctor-reapplication.use-case.ts";
 import { UpdateReapplicationDetailsUseCase } from "../../application/use-cases/admin/doctor-management/update-doctor-reapplication.use-case.ts";
+import { ConfirmSlotsUseCase } from "../../application/use-cases/doctor/profile/confirm-slots.usecase.ts";
 import { DoctorProfileUseCase } from "../../application/use-cases/doctor/profile/doctor-profile.usecase.ts";
 import { DoctorRegisterUseCase } from "../../application/use-cases/doctor/profile/doctor-register.usecase.ts";
+import { GenerateSlotsUseCase } from "../../application/use-cases/doctor/profile/generate-slots.usecase.ts";
 import { UpdateDoctorAddressUseCase } from "../../application/use-cases/doctor/profile/update-doctor-address.usecase.ts";
-import { UpdateDoctorConsultationDetailsUseCase } from "../../application/use-cases/doctor/profile/update-doctor-consultation-details.useCase.ts";
-import { UpdateDoctorProfessionalDetailsUseCase } from "../../application/use-cases/doctor/profile/update-doctor-professional-details.useCase.ts";
+import { UpdateDoctorConsultationDetailsUseCase } from "../../application/use-cases/doctor/profile/update-doctor-consultation-details.usecase.ts";
+import { UpdateDoctorProfessionalDetailsUseCase } from "../../application/use-cases/doctor/profile/update-doctor-professional-details.usecase.ts";
 import { UpdateDoctorProfilePictureUseCase } from "../../application/use-cases/doctor/profile/update-doctor-profile-picture.usecase.ts";
+import { ConfirmSlotsController } from "../../presentation/controllers/doctor/confirm-slots.controller.ts";
 import { DoctorProfileController } from "../../presentation/controllers/doctor/doctor-profile.controller.ts";
 import { DoctorRegisterController } from "../../presentation/controllers/doctor/doctor-register.controller.ts";
+import { GenerateSlotsController } from "../../presentation/controllers/doctor/generate-slots.controller.ts";
 import { GetDoctorReapplicationController } from "../../presentation/controllers/doctor/get-doctor-reapplication.controller.ts";
 import { UpdateDoctorAddressController } from "../../presentation/controllers/doctor/update-doctor-address.controller.ts";
 import { UpdateDoctorConsultationDetailsController } from "../../presentation/controllers/doctor/update-doctor-consultation-details.controller.ts";
@@ -33,6 +38,8 @@ import {
   jwtService,
   redisService,
   doctorDetailsService,
+  doctorExistsService,
+  mongooseSlotRepository,
 } from "../index.ts";
 
 // Service-Usecase
@@ -43,6 +50,7 @@ const userCreationService = new UserCreationService(
 const updateDoctorService = new UpdateDoctorService();
 const updateClinicService = new UpdateClinicService();
 const updateAddressService = new UpdateAddressService();
+const generateSlotsService = new GenerateSlotsService()
 const verifyDoctorReapplicationService =
   new VerifyDoctorReapplicationTokenService(
     mongooseDoctorReapplicationRepository,
@@ -60,7 +68,7 @@ const getDoctorDetailsContextService = new GetDoctorDetailsContextService(
 // Use-cases
 const doctorProfileUseCase = new DoctorProfileUseCase(
   mongooseDoctorRepository,
-  doctorDetailsService
+  doctorDetailsService,
 );
 
 const doctorRegisterUseCase = new DoctorRegisterUseCase(
@@ -114,6 +122,17 @@ const updateDoctorProfilePictureUseCase = new UpdateDoctorProfilePictureUseCase(
   mongooseDoctorRepository,
 );
 
+const generateSlotsUseCase = new GenerateSlotsUseCase(
+  mongooseDoctorClinicRepository,
+  generateSlotsService,
+  doctorExistsService
+);
+const confirmSlotsUseCase = new ConfirmSlotsUseCase(
+  mongooseDoctorClinicRepository,
+  doctorExistsService,
+  mongooseSlotRepository
+);
+
 // Controllers
 export const doctorProfileController = new DoctorProfileController(
   doctorProfileUseCase,
@@ -144,4 +163,12 @@ export const updateDoctorAddressController = new UpdateDoctorAddressController(
 );
 
 export const updateDoctorProfilePictureController =
-  new UpdateDoctorProfilePictureController(updateDoctorProfilePictureUseCase);
+new UpdateDoctorProfilePictureController(updateDoctorProfilePictureUseCase);
+
+export const generateSlotsController = new GenerateSlotsController(
+  generateSlotsUseCase
+);
+
+export const confirmSlotsController = new ConfirmSlotsController(
+  confirmSlotsUseCase
+);

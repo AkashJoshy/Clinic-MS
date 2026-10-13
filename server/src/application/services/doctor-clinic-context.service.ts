@@ -15,23 +15,22 @@ export class DoctorClinicContextService implements IDoctorClinicContextService {
     const doctorClinic = await this._doctorClinicDetailsService.executeOne(
       doctorId!,
     );
-
     const clinicIds = doctorClinic
-      .map((dc) => dc.clinicId)
-      .filter((id) => id !== null);
-
+    .map((dc) => dc.clinicId)
+    .filter((id) => id !== null);
+    
     const { clinicMap } =
-      await this._clinicDetailsService.executeMany(clinicIds);
-
+    await this._clinicDetailsService.executeMany(clinicIds);
+    
     const { addressMap } = await this._addressDetailsService.executeMany(
       "Clinic",
       clinicIds,
     );
-
+    
     const response: DoctorClinicContextDto[] = doctorClinic.map((dc) => {
       const clinic = clinicMap.get(dc.clinicId) ?? null;
       const address = addressMap.get(dc.clinicId) ?? null;
-
+      
       return {
         ...dc,
         clinic,

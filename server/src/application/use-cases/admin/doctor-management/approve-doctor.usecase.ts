@@ -2,8 +2,6 @@ import {
   APPROVED_MESSAGE,
   EMAIL_SUBJECTS,
 } from "../../../../domain/constants/email.constants.ts";
-import { Clinic } from "../../../../domain/entities/clinic.entity.ts";
-import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.entity.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";

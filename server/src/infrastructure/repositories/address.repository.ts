@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import type { IAddressRepository } from "../../domain/repositories/i-address.repository.ts";
-import { AddressModel, type IAddress } from "../models/address.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
 import { Address } from "../../domain/entities/address.entity.ts";
+import type { IAddress } from "../models/address/address.types.ts";
+import { AddressModel } from "../models/address/address.model.ts";
 
 export class AddressRepository
   extends BaseRepository<Address, IAddress>

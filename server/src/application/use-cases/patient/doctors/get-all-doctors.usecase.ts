@@ -1,6 +1,10 @@
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
-import type { PatientDoctorDetailsCardDto } from "../../../dto/doctor.dto.ts";
+import type {
+  DoctorClinicDetailsBasicResponseDto,
+  PatientDoctorDetailsCardDto,
+} from "../../../dto/doctor.dto.ts";
 import type { IDoctorDetailsService } from "../../../i-service/i-doctor-details.service.ts";
+import { DoctorMapper } from "../../../mappers/patient/doctor.mapper.ts";
 import type { IGetAllDoctorsUseCase } from "../../../repositories/patient/i-get-all-doctors.usecase.ts";
 
 export class GetAllDoctorsUsecase implements IGetAllDoctorsUseCase {
@@ -24,41 +28,20 @@ export class GetAllDoctorsUsecase implements IGetAllDoctorsUseCase {
       .map((res) => {
         const { user, address, department, doctor, doctorClinicDetails } = res;
 
-        const updatedDoctorClinicDetails = doctorClinicDetails
-          .filter((dc) => dc.clinic)
-          .map((dc) => {
-            return {
-              id: dc.id,
-              consultationFee: dc.consultationFee,
-              isActive: dc.isActive,
-              timeZone: dc.timeZone,
-              type: dc.type,
-              schedule: dc.schedule,
-              clinic: dc.clinic
-                ? {
-                    id: dc.clinic.id,
-                    name: dc.clinic.name,
-                    status: dc.clinic.status,
-                  }
-                : null,
-            };
-          });
+        const updatedDoctorClinicDetails: DoctorClinicDetailsBasicResponseDto[] =
+          doctorClinicDetails
+            .filter((dc) => dc.clinic)
+            .map((dc) => {
+              return DoctorMapper.toDoctorClinicDetailsBasic(dc);
+            });
 
-        return {
-          doctor: {
-            id: doctor.id,
-            gender: doctor.gender,
-            averageRating: doctor.averageRating,
-            totalReviews: doctor.totalReviews,
-            experienceYears: doctor.experienceYears,
-            displayName: doctor.displayName,
-            profilePicture: doctor.profilePicture,
-            status: doctor.status,
-          },
+        return DoctorMapper.toPatientDoctorDetailsCard({
+          user,
+          doctor,
           doctorClinicDetails: updatedDoctorClinicDetails,
-          department: department ? department : null,
-          address: address ? address : null,
-        };
+          address,
+          department,
+        });
       });
 
     return updatedResponse;

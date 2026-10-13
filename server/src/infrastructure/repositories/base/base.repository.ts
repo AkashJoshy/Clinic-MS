@@ -1,6 +1,14 @@
 import type { IBaseRepository } from "../../../domain/repositories/i-base.repository.ts";
-import type { Model, Document, UpdateQuery } from "mongoose";
-import type { QueryOptions } from "../../../domain/types/shared.types.ts";
+import type {
+  Model,
+  Document,
+  UpdateQuery,
+  AnyBulkWriteOperation,
+} from "mongoose";
+import type {
+  BulkWriteOperation,
+  QueryOptions,
+} from "../../../domain/types/shared.types.ts";
 
 export abstract class BaseRepository<
   TEntity,
@@ -15,7 +23,7 @@ export abstract class BaseRepository<
     const doc = await this.model.findByIdAndUpdate(
       id,
       { $set: data as any },
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!doc) return null;
     return this.toDomain(doc);
@@ -85,6 +93,57 @@ export abstract class BaseRepository<
   ): Promise<void> {
     const query = typeof filter === "string" ? { _id: filter } : filter;
     await this.model.updateMany(query as Record<string, any>, update);
+  }
+
+  async bulkWrite(operations: BulkWriteOperation<TDocument>[]): Promise<void> {
+    if (!operations.length) return;
+
+    const mongoOperations = operations.map(
+      (operation): AnyBulkWriteOperation<any> => {
+        if ("insertOne" in operation) {
+          return { insertOne: { document: operation.insertOne.document } };
+        }
+
+        if ("updateOne" in operation) {
+          const { filter, update, upsert } = operation.updateOne;
+          return {
+            updateOne: {
+              filter,
+              update: { $set: update },
+              ...(upsert !== undefined && { upsert }),
+            },
+          };
+        }
+
+        if ("updateMany" in operation) {
+          const { filter, update, upsert } = operation.updateMany;
+          return {
+            updateMany: {
+              filter,
+              update: { $set: update },
+              ...(upsert !== undefined && { upsert }),
+            },
+          };
+        }
+
+        if ("replaceOne" in operation) {
+          return {
+            replaceOne: {
+              filter: operation.replaceOne.filter,
+              replacement: operation.replaceOne.replacement,
+            },
+          };
+        }
+
+        if ("deleteOne" in operation) {
+          return { deleteOne: { filter: operation.deleteOne.filter } };
+        }
+
+        return { deleteMany: { filter: operation.deleteMany.filter } };
+      },
+    );
+
+    await this.model.bulkWrite(mongoOperations);
   }
 
   async delete(id: string): Promise<void> {

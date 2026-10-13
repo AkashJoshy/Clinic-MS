@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import type { ILoginUseCase } from "../../../application/repositories/auth/i-login.usecase.ts";
 

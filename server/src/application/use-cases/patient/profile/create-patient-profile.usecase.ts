@@ -12,12 +12,13 @@ import type { ICreatePatientProfileUseCase } from "../../../repositories/patient
 import type { Gender } from "../../../../domain/types/shared.types.ts";
 import type { RelationToPatient } from "../../../../domain/constants/patient.constants.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
+import { PatientMapper } from "../../../mappers/patient/patient.mapper.ts";
 
 export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase {
   constructor(
     private readonly _patientRepository: IPatientRepository,
     private readonly _addressRepository: IAddressRepository,
-    private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserRepository,
   ) {}
 
   async execute(data: CreatePatientProfileDto): Promise<PatientProfile> {
@@ -29,16 +30,29 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
     if (!selfPatient || !selfPatient.id) {
       throw new NotFoundError("Patient");
     }
-    
+
     if (!selfPatient.isSelf()) {
       throw new NotFoundError("Profile cant create without Self Patient!");
     }
-    
-    let user = await this._userRepository.findById(selfPatient.userId)
-    
+
+    let user = await this._userRepository.findById(selfPatient.userId);
+
     if (!user || !user.id) {
       throw new NotFoundError("Patient");
     }
+
+    const {
+      addressLine,
+      allergies,
+      bloodGroup,
+      chronicConditions,
+      city,
+      country,
+      phone,
+      pincode,
+      state,
+      ...rest
+    } = data;
 
     const newPatient = await this._patientRepository.save(
       Patient.createDependent(
@@ -83,41 +97,10 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
       ),
     );
 
-    const response = {
-      patient: {
-        id: newPatient.id,
-        userId: newPatient.userId,
-        displayName: newPatient.displayName,
-        patientNumber: newPatient.patientNumber,
-        relation: newPatient.relation,
-        gender: newPatient.gender,
-        dateOfBirth: newPatient.dateOfBirth,
-        imageUrl: {
-          url: newPatient.imageUrl.url,
-        },
-        medicalInformation: {
-          bloodGroup: newPatient.medicalInformation.bloodGroup,
-          allergies: newPatient.medicalInformation.allergies,
-          chronicConditions: newPatient.medicalInformation.chronicConditions,
-        },
-        emergencyContact: {
-          name: newPatient.emergencyContact?.name ?? "",
-          phone: newPatient.emergencyContact?.phone ?? "",
-          relationship: newPatient.emergencyContact?.relationship ?? "",
-        },
-        createdAt: newPatient.createdAt,
-        updatedAt: newPatient.updatedAt,
-      },
-      address: {
-        id: address.id!,
-        ownerId: address.ownerId,
-        addressLine: address.addressLine,
-        city: address.city,
-        state: address.state,
-        country: address.country,
-        pincode: address.pincode,
-      },
-    };
+    const response = PatientMapper.toNewPatientProfile({
+      patient: newPatient,
+      address,
+    });
 
     return response;
   }

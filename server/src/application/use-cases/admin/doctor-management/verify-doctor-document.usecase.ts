@@ -8,8 +8,7 @@ export class VerifyDoctorDocumentUseCase implements IVerifyDoctorDocumentUseCase
   constructor(private readonly _doctorRepository: IDoctorRepository) {}
 
   async execute(data: VerifyDocumentDto): Promise<void> {
-
-    const { id, action, documentField, url } = data
+    const { id, action, documentField, url } = data;
     const doctor = await this._doctorRepository.findById(id);
 
     if (!doctor || !doctor.id) {
@@ -17,15 +16,14 @@ export class VerifyDoctorDocumentUseCase implements IVerifyDoctorDocumentUseCase
     }
 
     if (action === "VERIFY") {
-      doctor.verifyDocument(documentField as DoctorDocumentField, url)
+      doctor.verifyDocument(documentField as DoctorDocumentField, url);
     } else if (action === "REJECT") {
-      doctor.rejectDocument(documentField as DoctorDocumentField, url)
+      doctor.rejectDocument(documentField as DoctorDocumentField, url);
     }
-    const fieldToUpdate = doctor[documentField as DoctorDocumentField]
+    const fieldToUpdate = doctor[documentField as DoctorDocumentField];
 
     await this._doctorRepository.findByIdAndUpdate(doctor.id, {
-      [documentField]: fieldToUpdate
-    })
-
+      [documentField]: fieldToUpdate,
+    });
   }
 }

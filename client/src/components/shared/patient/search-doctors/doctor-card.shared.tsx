@@ -65,7 +65,7 @@ function ConsultationInfo({
 }) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      {modes.includes("ONLINE") && (
+      {(modes.includes("ONLINE") || modes.includes("BOTH")) && (
         <span className="flex items-center gap-1 text-xs text-gray-500">
           <Video
             size={12}
@@ -75,7 +75,7 @@ function ConsultationInfo({
         </span>
       )}
 
-      {modes.includes("OFFLINE") && (
+      {(modes.includes("OFFLINE") || modes.includes("BOTH")) && (
         <span className="flex items-center gap-1 text-xs text-gray-500">
           <Building2
             size={12}
@@ -143,11 +143,22 @@ function ClinicFees({
                 size={13}
                 className="text-primary shrink-0"
               />
-            ) : (
+            ) : clinic.type === "OFFLINE" ? (
               <Building2
-                size={13}
-                className="text-primary shrink-0"
+              size={13}
+              className="text-primary shrink-0"
               />
+            ) : (
+              <div>
+                <Video
+                  size={13}
+                  className="text-primary shrink-0"
+                />
+                <Building2
+                  size={13}
+                  className="text-primary shrink-0"
+                />
+              </div>
             )}
 
             <div className="min-w-0">
@@ -158,7 +169,9 @@ function ClinicFees({
               <p className="text-[10px] text-gray-400">
                 {clinic.type === "ONLINE"
                   ? "Online consultation"
-                  : "In-clinic consultation"}
+                  : clinic.type === "OFFLINE"
+                  ? "In-clinic consultation"
+                  : "Online & in-person consultation"}
               </p>
             </div>
           </div>

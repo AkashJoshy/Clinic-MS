@@ -33,13 +33,18 @@ export class UpdateDepartmentStatusUseCase implements IUpdateDepartmentStatusUse
     if (!updatedDepartment || !updatedDepartment.id)
       throw new NotFoundError("Error while updating department");
 
-    return {
-      departmentId: updatedDepartment.id,
-      status: updatedDepartment.status,
-      message:
-        updatedDepartment.status === "ACTIVE"
-          ? `${updatedDepartment.name} restored successfully`
-          : `${updatedDepartment.name} blocked successfully`,
-    };
+    if (updatedDepartment.status === "ACTIVE") {
+      return {
+        departmentId: updatedDepartment.id,
+        status: updatedDepartment.status,
+        message: `${updatedDepartment.name} restored successfully`,
+      };
+    } else {
+      return {
+        departmentId: updatedDepartment.id,
+        status: updatedDepartment.status,
+        message: `${updatedDepartment.name} blocked successfully`,
+      };
+    }
   }
 }

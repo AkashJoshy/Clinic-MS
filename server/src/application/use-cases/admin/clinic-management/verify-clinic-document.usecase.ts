@@ -9,7 +9,7 @@ export class VerifyClinicDocumentUseCase implements IVerifyClinicDocumentUseCase
 
   async execute(data: VerifyDocumentDto): Promise<void> {
     const { id, action, documentField, url } = data;
-    const clinic = await this._clinicRepository.findById(data.id);
+    const clinic = await this._clinicRepository.findById(id);
 
     if (!clinic || !clinic.id) {
       throw new NotFoundError("Clinic");

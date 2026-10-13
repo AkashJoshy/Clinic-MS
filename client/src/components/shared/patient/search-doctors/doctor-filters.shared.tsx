@@ -12,7 +12,7 @@ import {
   type AvailabilityType,
   type ConsultationMode,
 } from "../../../../mocks/mockDoctors";
-import type { FilterState } from "@/hooks/useDoctorSearch";
+import type { FilterState } from "@/hooks/use-doctor-search.hook";
 
 interface DoctorFiltersProps {
   filters: FilterState;

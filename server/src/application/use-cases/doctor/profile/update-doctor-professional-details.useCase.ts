@@ -2,6 +2,7 @@ import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorProffesionalDetailsDto } from "../../../dto/doctor.dto.ts";
+import { DoctorProfessionalMapper } from "../../../mappers/doctor/professional.mapper.ts";
 import type { IDoctorProfessionalUseCase } from "../../../repositories/doctor/i-doctor-professional.usecase.ts";
 
 export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfessionalUseCase {
@@ -14,9 +15,6 @@ export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfession
     data: DoctorProffesionalDetailsDto,
   ): Promise<DoctorProffesionalDetailsDto> {
     const { userId, id, languages, ...profData } = data;
-
-    console.log(`Languages: `);
-    console.log(languages);
 
     const user = await this._userRepository.findById(userId);
 
@@ -31,24 +29,10 @@ export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfession
     }
 
     doctor.addLanguages(data.languages);
-
     doctor.updateProfessionalDetails(profData);
 
     await this._doctorRepository.findByIdAndUpdate(doctor.id, doctor);
 
-    const response: DoctorProffesionalDetailsDto = {
-      id,
-      bio: doctor.bio,
-      experienceYears: doctor.experienceYears,
-      gender: doctor.gender,
-      languages: doctor.languages,
-      licenceNumber: doctor.licenceNumber,
-      qualification: doctor.qualification,
-      specialization: doctor.specialization,
-      userId,
-      updatedAt: doctor.updatedAt,
-    };
-
-    return response;
+    return DoctorProfessionalMapper.toDoctorProffesionalDetails(doctor, userId)
   }
 }

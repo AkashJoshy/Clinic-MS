@@ -7,7 +7,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { SORT_OPTIONS } from "../../../../mocks/mockDoctors";
-import type { SortState } from "@/hooks/useDoctorSearch";
+import type { SortState } from "@/hooks/use-doctor-search.hook";
 
 interface DoctorResultsHeaderProps {
   count: number;

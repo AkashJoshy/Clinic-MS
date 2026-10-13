@@ -2,6 +2,8 @@ export const RESPONSE_MESSAGE = {
   SUCCESS: "Request completed successfully",
   CREATED: "Resource created successfully",
   UPDATED: "Resource updated successfully",
+  GENERATED: "Resource generated successfully",
+  CONFIRMED: "Resource confirmed successfully",
   DELETED: "Resource deleted successfully",
   FETCHED: "Resource fetched successfully",
   APPROVED: "Resource approved successfully",

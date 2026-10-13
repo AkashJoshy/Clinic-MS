@@ -1,4 +1,3 @@
-import { DoctorDetailsService } from "../../application/services/doctor-details.service.ts";
 import { PatientDetailsService } from "../../application/services/patient-details.service.ts";
 import { AddDepartmentUseCase } from "../../application/use-cases/admin/department-management/add-department.usecase.ts";
 import { EditDepartmentUseCase } from "../../application/use-cases/admin/department-management/edit-department.usecase.ts";
@@ -12,7 +11,7 @@ import { VerifyDoctorDocumentUseCase } from "../../application/use-cases/admin/d
 import { VerifyClinicDocumentUseCase } from "../../application/use-cases/admin/clinic-management/verify-clinic-document.usecase.ts";
 import { GetAllPatientsUseCase } from "../../application/use-cases/admin/patient-management/get-all-patients.usecase.ts";
 import { GetPatientUseCase } from "../../application/use-cases/admin/patient-management/get-patient.usecase.ts";
-import { UpdateDoctorStatusUseCase } from "../../application/use-cases/admin/patient-management/update-doctor-status.usecase.ts";
+import { UpdateDoctorStatusUseCase } from "../../application/use-cases/admin/doctor-management/update-doctor-status.usecase.ts";
 import { UpdatePatientStatusUseCase } from "../../application/use-cases/admin/patient-management/update-patient-status.usecase.ts";
 import { AddDepartmentController } from "../../presentation/controllers/admin/add-department.controller.ts";
 import { ApproveDoctorController } from "../../presentation/controllers/admin/approve-doctor.controller.ts";

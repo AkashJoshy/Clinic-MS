@@ -53,5 +53,7 @@ export const ENDPOINTS = {
     UPDATE_ADDRESS: (onwerId: string) => `/doctor/addressess/${onwerId}`,
     UPDATE_PROFILE_PICTURE: () => `/doctor/profile-picture`,
     REAPPLICATION_DETAILS: (token: string) =>  `/doctor/reapplications/token/${token}`,
+    GENERATE_SLOTS: (doctorClinicId: string) => `/doctor/clinics/${doctorClinicId}/slots/generate`,
+    CONFIRM_SLOTS: (doctorClinicId: string) => `/doctor/clinics/${doctorClinicId}/slots/confirm`
   },
 };

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import type { IDoctorUpdateReapplicationUseCase } from "../../../application/repositories/doctor/i-doctor-update-reapplication.usecase.ts";
 import type { DoctorReapplicationFiles } from "../../../domain/types/doctor.types.ts";
 
@@ -26,7 +26,7 @@ export class UpdateDoctorReapplicationController {
         data: req.body,
         files: req.files as DoctorReapplicationFiles,
         token: token,
-      }
+      };
 
       const result = await this._updatedoctorReapplication.execute(doctorData);
 

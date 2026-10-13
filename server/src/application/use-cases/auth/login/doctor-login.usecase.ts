@@ -32,17 +32,20 @@ export class DoctorLoginUseCase implements IDoctorLoginUseCase {
   > {
     const user = await this._userExistenceService.execute(data);
 
+    console.log(`Reaching...1`)
     let status: RestrictionStatus | null = null;
     if (!user || !user.id) {
       throw new NotFoundError("doctor");
     }
 
     const doctor = await this._doctorRepository.findOneBy({ userId: user.id });
-
+    console.log(`Doctor details: `)
+    console.log(doctor)
     if (!doctor || !doctor.id) {
       throw new NotFoundError("doctor");
     }
-
+    console.log(`Reaching...4`)
+    
     if (doctor.status === "PENDING") {
       status = "PENDING";
       return status;
@@ -50,7 +53,8 @@ export class DoctorLoginUseCase implements IDoctorLoginUseCase {
       status = "REJECTED";
       return status;
     }
-
+    
+    console.log(`Reaching...4`)
     if (!user.isEmailVerified) {
       const token = await this._mailVerficationService.execute(
         user.email,

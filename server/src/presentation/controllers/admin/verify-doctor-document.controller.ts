@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import type { IVerifyDoctorDocumentUseCase } from "../../../application/repositories/admin/i-verify-doctor-document.usecase.ts";
 
@@ -19,7 +19,10 @@ export class VerifyDoctorDocumentController {
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,
-        message: RESPONSE_MESSAGE.UPDATED.replace("Resource", "Doctor document"),
+        message: RESPONSE_MESSAGE.UPDATED.replace(
+          "Resource",
+          "Doctor document",
+        ),
       });
     } catch (error) {
       return next(error);

@@ -1,3 +1,4 @@
+import type { Department } from "../entities/department.entity.ts";
 import type { EntityStatus, ServiceMode } from "./shared.types.ts";
 
 export interface RegisterDepartment {
@@ -14,4 +15,4 @@ export type DoctorDocumentField = RegistrationDocumentField | "medicalLicenceDoc
 export type ClinicDocumentField = RegistrationDocumentField | "establishmentLicenceDoc"
 export type DocumentField = RegistrationDocumentField | "medicalLicenceDoc" | "establishmentLicenceDoc"
 
-export type SafeDepartment = RegisterDepartment
+export type SafeDepartment = Omit<Department, "block" | "unblock">

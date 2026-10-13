@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
 import RefreshSession from "../../domain/entities/refresh-session.entity.ts";
 import type { IRefreshSessionRepository } from "../../domain/repositories/i-refresh-session.repository.ts";
-import type { IRefreshSessionDocument } from "../models/refresh-session.model.ts";
-import RefreshSessionModel from "../models/refresh-session.model.ts";
+import { RefreshSessionModel } from "../models/refresh-session/refresh-session.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
+import type { IRefreshSessionDocument } from "../models/refresh-session/refresh-session.types.ts";
 
 export class RefreshSessionRepository
   extends BaseRepository<RefreshSession, IRefreshSessionDocument>

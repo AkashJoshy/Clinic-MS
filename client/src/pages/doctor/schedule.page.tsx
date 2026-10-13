@@ -1,475 +1,254 @@
-import { Exceptions } from "@/components/shared/doctor/slot-schedules/exceptions.shared";
+import { CalendarClock, ChevronDown, CircleHelp, MapPin } from "lucide-react";
 import { PreviewGeneratedSlots } from "@/components/shared/doctor/slot-schedules/preview-generated-slots.shared";
 import { SlotRulesPreferences } from "@/components/shared/doctor/slot-schedules/rules-preferences.shared";
 import { WeeklySchedule } from "@/components/shared/doctor/slot-schedules/weekly-schedule.shared";
-import WeeklyScheduleCalendar from "@/components/shared/doctor/slot-schedules/weekly-schedule-calendar.shared";
-import { useAuthStore } from "@/store";
+import DoctorPageHeader from "@/components/shared/page-header.shared";
+import { Exceptions } from "@/components/shared/doctor/slot-schedules/exceptions.shared";
+import { useScheduleForm } from "@/hooks/use-schedule-form.hook";
+import { confirmSlots, generateSlots } from "@/services/doctor.service";
 import type {
-  ExceptionsData,
-  ScheduleData,
-  SlotRules,
-  WeeklySchedule as WeeklyScheduleType,
+  ConfirmedSlots,
+  GenerateSlotsData,
+  SlotsWithDate,
 } from "@/types/doctor-clinic";
-import { CircleHelp } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useMutate } from "@/hooks/use-mutate.hook";
 
 const SchedulePage = () => {
-  const doctorDetails = useAuthStore((state) => state.doctor);
+  const [previewSlots, setPreviewSlots] = useState<SlotsWithDate[]>([]);
 
-  const scheduleData: ScheduleData = {
-    monday: [
-      {
-        id: "shift-1",
-        startTime: "09:00",
-        endTime: "13:00",
-        mode: "OFFLINE",
-      },
-      {
-        id: "shift-2",
-        startTime: "14:00",
-        endTime: "18:00",
-        mode: "ONLINE",
-      },
-    ],
-    tuesday: [
-      {
-        id: "shift-3",
-        startTime: "09:00",
-        endTime: "13:00",
-        mode: "OFFLINE",
-      },
-    ],
-    wednesday: [
-      {
-        id: "shift-4",
-        startTime: "10:00",
-        endTime: "14:00",
-        mode: "ONLINE",
-      },
-    ],
-    thursday: [
-      {
-        id: "shift-5",
-        startTime: "09:00",
-        endTime: "12:00",
-        mode: "ONLINE",
-      },
-      {
-        id: "shift-6",
-        startTime: "15:00",
-        endTime: "19:00",
-        mode: "OFFLINE",
-      },
-    ],
-    friday: [
-      {
-        id: "shift-7",
-        startTime: "09:00",
-        endTime: "13:00",
-        mode: "OFFLINE",
-      },
-    ],
-    saturday: [
-      {
-        id: "shift-8",
-        startTime: "10:00",
-        endTime: "14:00",
-        mode: "ONLINE",
-      },
-    ],
-    sunday: [],
-  };
-
-  const DEFAULT_SLOT_RULES: SlotRules = {
-    sessionDuration: 30,
-    bufferTime: 10,
-    maxSessionsPerDay: 20,
-    minAdvanceNotice: 2,
-    bookingWindow: 30,
-    slotInterval: "auto",
-    bookingMode: "both",
-    autoConfirmBookings: true,
-    allowReschedule: true,
-  };
-
-  const DEFAULT_EXCEPTIONS_DATA: ExceptionsData = {
-    breaks: [],
-    vacations: [],
-    blackouts: [],
-    holidays: [],
-    overrides: [],
-  };
-
-  const [schedule, setSchedule] = useState(scheduleData);
-  const [slotRules, setSlotRules] = useState(DEFAULT_SLOT_RULES);
-  const [exceptions, setExceptions] = useState(DEFAULT_EXCEPTIONS_DATA);
-  const scheduleLength = useMemo(() => {
-    const len = Object.keys(schedule).reduce((curr, elem) => {
-      return curr + schedule[elem].length;
-    }, 0);
-    return len;
-  }, [schedule]);
-
-  const dummyWeeklySchedule: WeeklyScheduleType[] = [
-    {
-      dayOfWeek: "MONDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "10:00",
-          isActive: true,
-          type: "ONLINE",
-          status: "AVAILABLE",
-        },
-        {
-          startTime: "10:15",
-          endTime: "11:15",
-          isActive: true,
-          type: "ONLINE",
-          status: "UPCOMING",
-        },
-        {
-          startTime: "11:30",
-          endTime: "12:30",
-          isActive: true,
-          type: "OFFLINE",
-          status: "BOOKED",
-        },
-        {
-          startTime: "12:45",
-          endTime: "13:45",
-          isActive: false,
-          type: "ONLINE",
-          status: "EXPIRED",
-        },
-        {
-          startTime: "14:00",
-          endTime: "15:00",
-          isActive: true,
-          type: "OFFLINE",
-          status: "PENDING",
-        },
-        {
-          startTime: "15:15",
-          endTime: "16:15",
-          isActive: true,
-          type: "ONLINE",
-          status: "CONFIRMED",
-        },
-      ],
+  const { mutate, isPending } = useMutate(generateSlots, {
+    onSuccess(data) {
+      console.log(`Data iam getting from API`);
+      console.log(data.data.generatedSlots);
+      console.log(data.data.generatedSlots.length);
+      if (data.data) {
+        setSchedule(data.data.weeklySchedule);
+        setSlotRules(data.data.slotRules);
+        setExceptions(data.data.exceptions);
+        setPreviewSlots(data.data.generatedSlots);
+      }
     },
+  });
 
-    {
-      dayOfWeek: "TUESDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "10:00",
-          isActive: true,
-          type: "ONLINE",
-          status: "LIVE",
-        },
-        {
-          startTime: "10:15",
-          endTime: "11:15",
-          isActive: true,
-          type: "OFFLINE",
-          status: "COMPLETED",
-        },
-        {
-          startTime: "11:30",
-          endTime: "12:30",
-          isActive: false,
-          type: "ONLINE",
-          status: "CANCELLED",
-        },
-        {
-          startTime: "12:45",
-          endTime: "13:45",
-          isActive: false,
-          type: "ONLINE",
-          status: "MISSED",
-        },
-        {
-          startTime: "14:00",
-          endTime: "15:00",
-          isActive: false,
-          type: "OFFLINE",
-          status: "UNAVAILABLE",
-        },
-      ],
-    },
+  const { mutate: confirmSlotMutate, isPending: confirmSlotIsPending } =
+    useMutate(confirmSlots, {
+      onSuccess(data) {},
+    });
 
-    {
-      dayOfWeek: "WEDNESDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "18:00",
-          isActive: false,
-          type: "ONLINE",
-          status: "DAY_OFF",
-        },
-      ],
-    },
+  const {
+    exceptions,
+    handleClinicChange,
+    schedule,
+    scheduleLength,
+    setExceptions,
+    setSchedule,
+    setSlotRules,
+    slotRules,
+    selectedClinicId,
+    doctorDetails,
+    selectedClinic,
+    errors,
+    handleSubmit,
+    register,
+    setValue,
+    isSubmitted,
+    watch,
+    trigger,
+    handleGenerateSlots,
+  } = useScheduleForm<GenerateSlotsData>(mutate);
 
-    {
-      dayOfWeek: "THURSDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "10:00",
-          isActive: true,
-          type: "ONLINE",
-          status: "AVAILABLE",
-        },
-        {
-          startTime: "10:15",
-          endTime: "11:15",
-          isActive: true,
-          type: "OFFLINE",
-          status: "PENDING",
-        },
-        {
-          startTime: "11:30",
-          endTime: "12:30",
-          isActive: true,
-          type: "ONLINE",
-          status: "CONFIRMED",
-        },
-        {
-          startTime: "12:45",
-          endTime: "13:45",
-          isActive: true,
-          type: "ONLINE",
-          status: "LIVE",
-        },
-        {
-          startTime: "14:00",
-          endTime: "15:00",
-          isActive: false,
-          type: "OFFLINE",
-          status: "COMPLETED",
-        },
-      ],
-    },
-
-    {
-      dayOfWeek: "FRIDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "10:00",
-          isActive: true,
-          type: "ONLINE",
-          status: "UPCOMING",
-        },
-        {
-          startTime: "10:15",
-          endTime: "11:15",
-          isActive: true,
-          type: "OFFLINE",
-          status: "BOOKED",
-        },
-        {
-          startTime: "11:30",
-          endTime: "12:30",
-          isActive: false,
-          type: "ONLINE",
-          status: "EXPIRED",
-        },
-        {
-          startTime: "12:45",
-          endTime: "13:45",
-          isActive: false,
-          type: "ONLINE",
-          status: "CANCELLED",
-        },
-        {
-          startTime: "14:00",
-          endTime: "15:00",
-          isActive: false,
-          type: "OFFLINE",
-          status: "MISSED",
-        },
-      ],
-    },
-
-    {
-      dayOfWeek: "SATURDAY",
-      sessions: [
-        {
-          startTime: "09:00",
-          endTime: "10:00",
-          isActive: true,
-          type: "ONLINE",
-          status: "AVAILABLE",
-        },
-        {
-          startTime: "10:15",
-          endTime: "11:15",
-          isActive: false,
-          type: "OFFLINE",
-          status: "UNAVAILABLE",
-        },
-        {
-          startTime: "11:30",
-          endTime: "12:30",
-          isActive: false,
-          type: "ONLINE",
-          status: "COMPLETED",
-        },
-        {
-          startTime: "12:45",
-          endTime: "13:45",
-          isActive: true,
-          type: "ONLINE",
-          status: "BOOKED",
-        },
-      ],
-    },
-
-    {
-      dayOfWeek: "SUNDAY",
-      sessions: [],
-    },
-  ];
+  useEffect(() => {
+    return () => {
+      setPreviewSlots([]);
+    };
+  }, []);
 
   return (
-    <div className="min-h-full p-6 lg:p-8 space-y-6 relative border border-white/10 bg-white/2 shadow-2xs">
-      <WeeklyScheduleCalendar
-        weeklySchedule={dummyWeeklySchedule}
-        onSessionClick={(session, date) => {
-          console.log("Clicked session:", session);
-          console.log("Date:", date);
-        }}
+    <div className="relative min-h-full space-y-6 border border-white/10 bg-white/[0.02] p-6 shadow-2xs lg:p-8">
+      <DoctorPageHeader
+        icon={CalendarClock}
+        title="Session Management"
+        description="Manage your weekly appointment slots"
       />
 
-      <div className="flex mt-15 items-center">
-        <h1 className="text-white font-bold text-[25px]">Session Schedule</h1>
+      <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="mb-1 flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-white">
+              {" "}
+              Session Schedule{" "}
+            </h2>
 
-        <CircleHelp className="ml-2 h-5 w-5 text-white/60 cursor-help" />
+            <CircleHelp className="h-5 w-5 cursor-help text-white/40 transition-colors hover:text-white/70" />
+          </div>
+
+          <p className="text-[15px] text-white/50">
+            Configure appointment availability for your clinic.
+          </p>
+        </div>
+
+        <div className=" flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
+          {" "}
+          <div className="w-full sm:w-[240px]">
+            {" "}
+            <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/40">
+              {" "}
+              Managing clinic{" "}
+            </label>{" "}
+            <div className="group relative">
+              {" "}
+              <select
+                value={selectedClinicId ?? ""}
+                onChange={(e) => handleClinicChange(e.target.value)}
+                className=" h-10 w-full appearance-none rounded-lg border border-white/10 bg-white/[0.04] pl-10 pr-9 text-sm font-medium text-white outline-none transition-all hover:border-white/20 focus:border-[#1DC465]/50 focus:ring-2 focus:ring-[#1DC465]/10 "
+              >
+                {" "}
+                {doctorDetails?.doctorClinicDetails
+                  .filter((dc) => dc.clinic !== null)
+                  .map((dc) => (
+                    <option
+                      key={dc?.clinic?.id}
+                      value={dc?.clinic?.id!}
+                      className="bg-[#0d1a27] text-white"
+                    >
+                      {" "}
+                      {dc?.clinic?.name}{" "}
+                    </option>
+                  ))}{" "}
+              </select>{" "}
+              <MapPin className=" pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1DC465] " />{" "}
+              <ChevronDown className=" pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40 transition-transform group-focus-within:rotate-180 " />{" "}
+            </div>{" "}
+            {selectedClinic && (
+              <p className="mt-1 truncate px-1 text-[11px] text-white/35">
+                {" "}
+                {selectedClinic.clinicAddress?.country}
+                {", "}
+                {selectedClinic.clinicAddress?.city}{" "}
+              </p>
+            )}{" "}
+          </div>{" "}
+        </div>
       </div>
 
-      <div className="grid w-full min-w-0 grid-cols-1 gap-4 md:grid-cols-2 ">
+      {selectedClinic && (
+        <div className="flex items-center gap-3 rounded-xl border border-[#1DC465]/10 bg-[#1DC465]/[0.04] px-4 py-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1DC465]/10">
+            <MapPin className="h-4 w-4 text-[#1DC465]" />
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-xs text-white/40">Currently configuring</p>
+
+            <p className="truncate text-sm font-semibold text-white">
+              {selectedClinic.clinic?.name}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid w-full min-w-0 grid-cols-1 gap-5 2xl:grid-cols-2">
         <div className="min-w-0">
-          <WeeklySchedule
-            schedule={schedule}
-            onChange={(e) => {
-              setSchedule(e);
-            }}
-          />
+          {selectedClinic && schedule && selectedClinicId && (
+            <WeeklySchedule
+              schedule={schedule}
+              scheduleLength={scheduleLength}
+              selectedClinicId={selectedClinicId}
+              onChange={async (value) => {
+                const updatedSchedule = schedule.map((sc) =>
+                  sc.dayOfWeek === value.dayOfWeek
+                    ? { ...sc, shifts: value.shifts }
+                    : sc,
+                );
+
+                setSchedule(updatedSchedule);
+
+                setValue("weeklySchedule", updatedSchedule, {
+                  shouldValidate: isSubmitted,
+                });
+
+                if (isSubmitted) {
+                  await trigger("weeklySchedule");
+                }
+              }}
+              error={errors.weeklySchedule}
+            />
+          )}
         </div>
 
         <div className="min-w-0">
-          <SlotRulesPreferences
-            rules={slotRules}
-            onChange={(e) => {
-              setSlotRules(e);
-            }}
-            disabled={scheduleLength === 0}
-          />
+          {slotRules && (
+            <SlotRulesPreferences
+              rules={slotRules}
+              onChange={(value) => {
+                setSlotRules(value);
+                setValue("slotRules", value, {
+                  shouldDirty: true,
+                  shouldValidate: isSubmitted,
+                });
+              }}
+              disabled={scheduleLength === 0}
+              error={errors.slotRules}
+            />
+          )}
         </div>
 
         <div className="min-w-0">
-          <Exceptions
-            exceptions={exceptions}
-            onChange={(e) => {
-                setExceptions(e)
-            }}
-            disabled={scheduleLength === 0}
-          />
+          {exceptions && (
+            <Exceptions
+              exceptions={exceptions}
+              onChange={(value) => {
+                setExceptions(value);
+                setValue("exceptions", value);
+              }}
+              generateSlots={handleGenerateSlots}
+              disabled={scheduleLength === 0}
+            />
+          )}
         </div>
 
         <div className="min-w-0">
-          <PreviewGeneratedSlots
-            schedule={{
-              weeklySchedule: [],
-            }}
-            rules={{
-              sessionDuration: 30,
-              bufferTime: 10,
-              maxSessionsPerDay: 20,
-              minAdvanceNotice: 60,
-              bookingWindow: 30,
-              slotInterval: "auto",
-              bookingMode: "both",
-              autoConfirmBookings: true,
-              allowReschedule: true,
-            }}
-            exceptions={{
-              breaks: [
-                {
-                  id: "break-1",
-                  label: "Lunch Break",
-                  startTime: "13:00",
-                  endTime: "14:00",
-                },
-              ],
-              vacations: [
-                {
-                  id: "vacation-1",
-                  startDate: "2026-09-14",
-                  endDate: "2026-09-16",
-                },
-              ],
-              blackouts: [
-                {
-                  id: "blackout-1",
-                  date: "2026-09-10",
-                  startTime: "11:00",
-                  endTime: "12:30",
-                  reason: "Doctor unavailable",
-                },
-              ],
-              holidays: [
-                {
-                  id: "holiday-1",
-                  date: "2026-09-01",
-                  label: "Onam",
-                },
-              ],
-              overrides: [
-                {
-                  id: "override-1",
-                  date: "2026-09-05",
-                  startTime: "10:00",
-                  endTime: "14:00",
-                },
-              ],
-            }}
-            previewDate={new Date("2026-09-03")}
-            onDateChange={(newDate: Date) => {
-              console.log("Preview date:", newDate);
-            }}
-            onConfirm={() => {
-              console.log("Slots confirmed");
-            }}
-            disabled={false}
-            onUnlock={() => {
-              console.log("Unlock schedule");
-            }}
-            existingBookings={[
-              {
-                slotId: "slot-1",
-                date: "2026-09-03",
-                startTime: "09:30",
-                patientName: "Arjun Menon",
-              },
-              {
-                slotId: "slot-2",
-                date: "2026-09-03",
-                startTime: "11:10",
-                patientName: "Meera Nair",
-              },
-              {
-                slotId: "slot-3",
-                date: "2026-09-03",
-                startTime: "14:00",
-                patientName: "Rahul Kumar",
-              },
-            ]}
-          />
+          {schedule && slotRules && exceptions && (
+            <PreviewGeneratedSlots
+              schedule={schedule}
+              rules={slotRules}
+              previewSlots={previewSlots}
+              exceptions={exceptions}
+              isPending={confirmSlotIsPending}
+              previewDate={new Date("2026-09-03")}
+              onDateChange={(newDate) => {
+                console.log("Preview date:", newDate);
+              }}
+              onConfirm={() => {
+                console.log(`All Confirmed Slots: `);
+                console.log(previewSlots);
+                const doctorClinic =
+                  doctorDetails?.doctorClinicDetails.find(
+                    (dc) => dc.clinic?.id === selectedClinicId,
+                  ) ?? null;
+                if (!doctorDetails?.doctor?.id || !doctorClinic?.clinic?.id || !doctorClinic.id) {
+                  toast.error("Doctor or clinic details are missing");
+                  return
+                }
+
+                if (doctorClinic && previewSlots.length > 0 && doctorDetails) {
+                  const data: ConfirmedSlots = {
+                    doctorId: doctorDetails?.doctor?.id!,
+                    clinicId: doctorClinic?.clinic?.id!,
+                    doctorClinicId: doctorClinic.id!,
+                    generatedSlots: previewSlots,
+                  };
+                  confirmSlotMutate(data);
+                }
+              }}
+              disabled={false}
+              onUnlock={() => {
+                console.log("Unlock schedule");
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -8,8 +8,8 @@ import type { IMailService } from "../../domain/services/email.service.ts";
 import type { Role } from "../../domain/types/user.types.ts";
 import { otpVerifyTemplate } from "../../infrastructure/services/mail/templates/otp-verify.template.ts";
 import { welcomeTemplate } from "../../infrastructure/services/mail/templates/welcome.template.ts";
-import { generateOTP } from "../../shared/utils/otp.helper.js";
-import { generateVerificationToken } from "../../shared/utils/token.helper.js";
+import { generateOTP } from "../../shared/utils/otp.util.ts";
+import { generateVerificationToken } from "../../shared/utils/token.util.ts";
 import type { CacheDTO } from "../dto/auth.dto.js";
 
 export class EmailVerificationService {
@@ -32,8 +32,7 @@ export class EmailVerificationService {
     const body = `
       <div>
         ${welcomeTemplate.body.replace("{{NAME}}", name)}
-        ${otpVerifyTemplate.body
-          .replace("{{OTP}}", otp)}
+        ${otpVerifyTemplate.body.replace("{{OTP}}", otp)}
         ${EMAIL_FOOTER.FOOTER1}
       </div>
     `;

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import type { IDoctorReapplicationUseCase } from "../../../application/repositories/doctor/i-doctor-reapplication.usecase.ts";
 
 export class GetDoctorReapplicationController {
@@ -26,7 +26,6 @@ export class GetDoctorReapplicationController {
         message: RESPONSE_MESSAGE.SUCCESS,
         data: result,
       });
-
     } catch (error) {
       return next(error);
     }

@@ -11,6 +11,7 @@ import type { PatientProfile, UpdateAddress } from "./patient.dto.ts";
 import type { SafeClinic } from "./clinic.dto.ts";
 import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
 import type { SafeDepartment } from "../../domain/types/admin.types.ts";
+import type { SafeUser } from "./auth.dto.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -83,11 +84,11 @@ export type PatientInfoDto = PatientProfile & {
   user: Pick<
     User,
     "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified" | "isBlocked"
-  >;
+  > | null;
 };
 
 export type PatientFullDetailsDto = {
-  user: Omit<User, "password" | "block" | "unblock" | "create" | "updateName" | "updatePhone"> | null;
+  user: Omit<SafeUser, "password" | "block" | "unblock" | "create" | "updateName" | "updatePhone"> | null;
   patient: Patient;
   address: SafeAddress | null;
 };
@@ -142,3 +143,5 @@ export type DoctorClinicDetailsDto = {
   doctorClinics: DoctorClinic[],
   doctorClinicMap: Map<string | null, DoctorClinic[]>
 }
+
+export type BaseDepartmentDto = Omit<SafeDepartment, "createdAt">

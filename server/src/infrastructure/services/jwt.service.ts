@@ -4,14 +4,14 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import {
   narrowedExpiresIn,
   tokenSignInOptions,
-} from "../../shared/utils/token.helper.ts";
+} from "../../shared/utils/token.util.ts";
 import type {
   AccessTokenPayloadDto,
   ActionTokenPayloadDto,
   RefreshTokenPayloadDto,
 } from "../../application/dto/auth.dto.ts";
 import { TokenExpiredAppError } from "../../domain/errors/token-expired.error.ts";
-import ErrorCode from "../../domain/enums/error-code.enums.ts";
+import ErrorCode from "../../domain/enums/error-code.enum.ts";
 import { InvalidTokenError } from "../../domain/errors/invalid-token.error.ts";
 
 const secret = process.env.JWT_SECRET;
@@ -91,5 +91,4 @@ export class JWTService implements ITokenService {
       throw new InvalidTokenError(ErrorCode.INVALID_TOKEN);
     }
   }
-  
 }

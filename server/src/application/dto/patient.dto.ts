@@ -9,6 +9,7 @@ import type {
   AdminDoctorDetails,
   DeleteMethods,
   DoctorProfileResponseDto,
+  SafeAddress,
 } from "./shared.dto.ts";
 
 export interface PatientDoctorProfileResponseDto extends DoctorProfileResponseDto {
@@ -47,7 +48,12 @@ export type CreatePatientProfileDto = {
   bloodGroup: string;
   allergies: string[];
   chronicConditions: string[];
-} & Omit<Address, "createdAt" | "updatedAt" | "ownerType" | "ownerId" | "id">;
+} & Omit<Address, "createdAt" | "updatedAt" | "ownerType" | "ownerId" | "id" | "update">;
+
+export interface NewPatientProfileDto {
+  patient: BasePatient,
+  address: SafeAddress
+}
 
 export type UpdatePatientDto = Pick<
   Patient,

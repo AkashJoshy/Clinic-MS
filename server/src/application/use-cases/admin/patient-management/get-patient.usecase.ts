@@ -1,8 +1,8 @@
-import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { PatientInfoDto } from "../../../dto/shared.dto.ts";
+import { PatientMapper } from "../../../mappers/admin/patient.mapper.ts";
 import type { IGetPatientUseCase } from "../../../repositories/admin/i-get-patient.usecase.ts";
 
 export class GetPatientUseCase implements IGetPatientUseCase {
@@ -28,44 +28,10 @@ export class GetPatientUseCase implements IGetPatientUseCase {
       throw new Error(error);
     });
 
-    return {
-      patient: {
-        id: patient.id!,
-        userId: patient.userId!,
-        displayName: patient.displayName,
-        patientNumber: patient.patientNumber,
-        relation: patient.relation,
-        medicalInformation: patient.medicalInformation,
-        imageUrl: {
-          url: patient.imageUrl.url,
-        },
-        emergencyContact: patient.emergencyContact,
-        dateOfBirth: patient.dateOfBirth,
-        gender: patient.gender,
-        createdAt: patient.createdAt,
-        updatedAt: patient.updatedAt,
-      },
-
-      address: address
-        ? {
-            addressLine: address.addressLine,
-            city: address.city,
-            state: address.state,
-            country: address.country,
-            pincode: address.pincode,
-            ownerId: address.ownerId,
-          }
-        : null,
-
-      user: {
-        email: user?.email ?? "",
-        phone: user?.phone ?? "",
-        createdAt: user?.createdAt ?? null,
-        isActive: user?.isActive ?? false,
-        isBlocked: user?.isBlocked ?? false,
-        isEmailVerified: user?.isEmailVerified ?? false,
-      },
-    } as PatientInfoDto
-    
+    return PatientMapper.toPatientInfoDto({
+      user,
+      patient,
+      address,
+    });
   }
 }

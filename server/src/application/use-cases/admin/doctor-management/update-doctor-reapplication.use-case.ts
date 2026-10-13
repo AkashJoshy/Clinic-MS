@@ -1,4 +1,5 @@
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
+import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
 import type { IDoctorReapplicationRepository } from "../../../../domain/repositories/i-doctor-reapplication.repository.ts";
@@ -10,6 +11,7 @@ import type { IUpdateAddressService } from "../../../i-service/i-update-address.
 import type { IUpdateClinicService } from "../../../i-service/i-update-clinic.service.ts";
 import type { IUpdateDoctorService } from "../../../i-service/i-update-doctor.service.ts";
 import type { IVerifyDoctorReapplicationTokenService } from "../../../i-service/i-verify-doctor-reapplication.service.ts";
+import { DoctorReapplicationMapper } from "../../../mappers/admin/doctor-re-application.mapper.ts";
 import type { IDoctorUpdateReapplicationUseCase } from "../../../repositories/doctor/i-doctor-update-reapplication.usecase.ts";
 
 export class UpdateReapplicationDetailsUseCase implements IDoctorUpdateReapplicationUseCase {
@@ -32,70 +34,35 @@ export class UpdateReapplicationDetailsUseCase implements IDoctorUpdateReapplica
     const { reapplication } =
       await this._verifyDoctorReapplicationService.execute(token);
 
+    if (!reapplication.doctorId) {
+      throw new NotFoundError("Doctor");
+    }
+
     const {
       user,
       address: clinicAddress,
       clinic,
       doctor,
     } = await this._getDoctorDetailsContextService.execute(
-      reapplication.doctorId!,
+      reapplication.doctorId,
     );
 
-    const {
-      profilePicture,
-      doctorRegistrationDoc,
-      medicalLicenceDoc,
-      clinicRegistrationDoc,
-      establishmentLicenceDoc,
-    } = files;
-
-    const {
-      bio,
-      fullName,
-      experienceYears,
-      gender,
-      licenceNumber,
-      qualification,
-      specialization,
-      phone,
-      about,
-      altPhone,
-      clinicName,
-      registrationNumber,
-      city,
-      addressLine,
-      pincode,
-    } = data;
-
-    const doctorDetailsToPass = {
-      id: doctor.id!,
-      ...(bio !== undefined && { bio }),
-      ...(phone !== undefined && { phone }),
-      ...(fullName !== undefined && { displayName: fullName }),
-      ...(experienceYears !== undefined && { experienceYears }),
-      ...(gender !== undefined && { gender }),
-      ...(licenceNumber !== undefined && { licenceNumber }),
-      ...(qualification !== undefined && { qualification }),
-      ...(specialization !== undefined && { specialization }),
-      ...(profilePicture !== undefined && { profilePicture }),
-      ...(medicalLicenceDoc !== undefined && { medicalLicenceDoc }),
-      ...(doctorRegistrationDoc !== undefined && { doctorRegistrationDoc }),
+    const reapplicationData = {
+      data,
+      files,
     };
 
-    const clinicDetailsToPass = {
-      ...(about !== undefined && { about }),
-      ...(altPhone !== undefined && { altPhone }),
-      ...(clinicName !== undefined && { name: clinicName }),
-      ...(registrationNumber !== undefined && { registrationNumber }),
-      ...(clinicRegistrationDoc !== undefined && { clinicRegistrationDoc }),
-      ...(establishmentLicenceDoc !== undefined && { establishmentLicenceDoc }),
-    };
+    const doctorDetailsToPass = DoctorReapplicationMapper.toDoctorUpdates(
+      reapplication.doctorId,
+      reapplicationData,
+    );
 
-    const addressDetailsToPass = {
-      ...(city !== undefined && { city }),
-      ...(addressLine !== undefined && { addressLine }),
-      ...(pincode !== undefined && { pincode }),
-    };
+    const clinicDetailsToPass =
+      DoctorReapplicationMapper.toClinicUpdates(reapplicationData);
+
+    const addressDetailsToPass = DoctorReapplicationMapper.toAddressUpdates({
+      data,
+    });
 
     const { doctor: updatedDoctor, user: updatedUser } =
       await this._updateDoctorService.execute({
@@ -149,12 +116,10 @@ export class UpdateReapplicationDetailsUseCase implements IDoctorUpdateReapplica
       }),
       this._doctorReapplicationRepository.findByIdAndUpdate(reapplication.id!, {
         reviewedAt: reapplication.reviewedAt,
-        status: reapplication.status
-      })
+        status: reapplication.status,
+      }),
     ]).catch((error) => {
       throw new InternalServerError(error.message);
     });
   }
-
-
 }

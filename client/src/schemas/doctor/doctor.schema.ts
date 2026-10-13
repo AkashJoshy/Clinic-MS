@@ -7,6 +7,7 @@ import {
 } from "./register.schema";
 import type { professionalDetailsSchema } from "./professional-details.schema";
 import type { consultationDetailsSchema } from "./consultation-details.schema";
+import type { scheduleFormSchema } from "./schedule-form.schema";
 
 export type DoctorRegisterStep1FormData = z.infer<
   typeof doctorRegisterStep1Schema
@@ -24,3 +25,4 @@ export type ConsulationDetailsSchema = z.input<
   typeof consultationDetailsSchema
 >;
 export type DoctorReapplicationSchemaFormData = z.input<typeof doctorReapplicationSchema>
+export type ScheduleFormSchemaFormData = z.input<typeof scheduleFormSchema>

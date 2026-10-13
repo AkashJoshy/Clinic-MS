@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import type { IGetDepartmentUseCase } from "../../../application/repositories/admin/i-get-department.usecase.ts";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 
 export class GetDepartmentController {

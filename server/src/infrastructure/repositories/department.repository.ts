@@ -3,9 +3,9 @@ import { Department } from "../../domain/entities/department.entity.ts";
 import type { IDepartmentRepository } from "../../domain/repositories/i-department.repository.ts";
 import {
   DepartmentModel,
-  type IDepartment,
-} from "../models/department.model.ts";
+} from "../models/department/department.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
+import type { IDepartment } from "../models/department/department.types.ts";
 
 export class DepartmentRepository
   extends BaseRepository<Department, IDepartment>

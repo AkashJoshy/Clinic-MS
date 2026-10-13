@@ -4,7 +4,7 @@ import DoctorFilterLayout from "../../components/shared/patient/search-doctors/d
 import DoctorResultsHeader from "../../components/shared/patient/search-doctors/doctor-results-header.shared";
 import DoctorList from "../../components/shared/patient/search-doctors/doctor-list.shared";
 import DoctorPagination from "../../components/shared/patient/search-doctors/doctor-pagination.shared";
-import { useDoctorSearch } from "../../hooks/useDoctorSearch";
+import { useDoctorSearch } from "../../hooks/use-doctor-search.hook";
 
 const SearchDoctorsPage = () => {
   const {
@@ -23,7 +23,6 @@ const SearchDoctorsPage = () => {
     handleSortChange,
     handlePageChange,
   } = useDoctorSearch();
-
 
   return (
     <div className="min-h-screen bg-gray-50/50 font-sans">
@@ -55,7 +54,6 @@ const SearchDoctorsPage = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-          
         </DoctorFilterLayout>
       </div>
     </div>

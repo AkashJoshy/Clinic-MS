@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import type { ILogoutUseCase } from "../../../application/repositories/auth/i-logout.usecase.ts";
 
 export class LogoutController {
@@ -16,7 +16,7 @@ export class LogoutController {
             : role === "doctor"
               ? "doctorRefreshToken"
               : "";
-      const refreshToken = req.cookies[refreshTokenRole]
+      const refreshToken = req.cookies[refreshTokenRole];
 
       const result = await this._logout.execute(refreshToken);
 

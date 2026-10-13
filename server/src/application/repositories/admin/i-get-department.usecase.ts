@@ -1,5 +1,5 @@
-import type { DepartmentDto } from "../../dto/admin.dto.ts";
+import type { BaseDepartmentDto } from "../../dto/shared.dto.ts";
 
 export interface IGetDepartmentUseCase {
-  execute(departmentId: string): Promise<DepartmentDto>;
+  execute(departmentId: string): Promise<BaseDepartmentDto>;
 }

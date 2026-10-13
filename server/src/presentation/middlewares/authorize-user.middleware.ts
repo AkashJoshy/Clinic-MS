@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { ResponseStatusCode } from "../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../domain/enums/response.enum.ts";
 import { RESPONSE_MESSAGE } from "../../domain/constants/response.constant.ts";
 
 export const authorizeUser = async (
@@ -14,14 +14,13 @@ export const authorizeUser = async (
         message: RESPONSE_MESSAGE.UNAUTHORIZED_ACCESS,
       });
     }
-    
+
     if (req.user) {
-      if ((req.user as any)?.isBlocked  || !(req.user as any)?.isActive) {
+      if ((req.user as any)?.isBlocked || !(req.user as any)?.isActive) {
         return res.status(ResponseStatusCode.FORBIDDEN).json({
           success: false,
           message: RESPONSE_MESSAGE.UNAUTHORIZED_ACCESS,
         });
-        
       }
     }
 

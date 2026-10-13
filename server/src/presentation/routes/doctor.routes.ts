@@ -14,7 +14,9 @@ import {
 } from "../schemas/doctor/doctor.schema.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
 import { updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
-import { doctorProfileController, doctorRegisterController, getDoctorReapplicationController, updateDoctorAddressController, updateDoctorConsultationDetailsController, updateDoctorProfessionalDetailsController, updateDoctorProfilePictureController, updateDoctorReapplicationController } from "../../container/index.ts";
+import { confirmSlotsController, doctorProfileController, doctorRegisterController, generateSlotsController, getDoctorReapplicationController, updateDoctorAddressController, updateDoctorConsultationDetailsController, updateDoctorProfessionalDetailsController, updateDoctorProfilePictureController, updateDoctorReapplicationController } from "../../container/index.ts";
+import { generateSlotsSchema } from "../schemas/doctor/generate-slots.schema.ts";
+import { confirmedSlotsSchema } from "../schemas/doctor/confirm-slots.schema.ts";
 
 const router = Router();
 
@@ -92,5 +94,23 @@ router.patch(
     await updateDoctorProfilePictureController.handle(req, res, next);
   },
 );
+
+router.patch(DOCTOR_ENDPOINTS["generate_slots"],
+  authenticateUser,
+  authorizeUser,
+  validate(generateSlotsSchema),
+  async(req, res, next) => {
+    await generateSlotsController.handle(req, res, next)
+  }
+)
+
+router.post(DOCTOR_ENDPOINTS["confirm_slots"],
+  authenticateUser,
+  authorizeUser,
+  validate(confirmedSlotsSchema),
+  async(req, res, next) => {
+    await confirmSlotsController.handle(req, res, next)
+  }
+)
 
 export default router;

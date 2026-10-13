@@ -1,9 +1,12 @@
 import type { IPatientRepository } from "../../domain/repositories/i-patient.repository.ts";
-import PatientModel, { type IPatient } from "../models/patient.model.ts";
-import CounterModel from "../models/counter.model.ts";
+import {
+  PatientModel
+} from "../models/patient/patient.model.ts";
+import { CounterModel } from "../models/counter/counter.model.ts";
 import { BaseRepository } from "./base/base.repository.ts";
 import { Types } from "mongoose";
 import Patient from "../../domain/entities/patient.entity.ts";
+import type { IPatient } from "../models/patient/patient.types.ts";
 
 export class PatientRepository
   extends BaseRepository<Patient, IPatient>

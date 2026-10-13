@@ -1,7 +1,7 @@
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { ICacheService } from "../../../../domain/services/cache.service.ts";
 import type { IMailService } from "../../../../domain/services/email.service.ts";
-import { generateVerificationToken } from "../../../../shared/utils/token.helper.ts";
+import { generateVerificationToken } from "../../../../shared/utils/token.util.ts";
 import {
   EMAIL_BODY,
   EMAIL_SUBJECTS,

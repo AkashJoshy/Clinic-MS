@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type { VerifyOtpRequest } from "../../../types/user.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import type { IVerifyEmailUseCase } from "../../../application/repositories/auth/i-verify-email.usecase.ts";
 
 export class VerifyEmailController {

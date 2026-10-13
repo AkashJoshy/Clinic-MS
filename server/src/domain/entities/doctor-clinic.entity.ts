@@ -1,9 +1,12 @@
 import type { ServiceMode } from "../types/shared.types.ts";
 import type {
   AddDoctorClinicProps,
-  Leave,
+  Break,
+  Exceptions,
+  SlotRules,
   WeeklySchedule,
 } from "../types/doctor-clinic.types.ts";
+import { INITIAL_EXCEPTIONS, INITIAL_SCHEDULE, INITIAL_SLOT_RULES } from "../constants/doctor-clinic.constants.ts";
 
 export class DoctorClinic {
   constructor(
@@ -12,9 +15,9 @@ export class DoctorClinic {
     public clinicId: string | null,
     public type: ServiceMode,
     public consultationFee: number,
-    public schedule: WeeklySchedule[],
-    public leaves: Leave[],
-    public slotDuration: number,
+    public weeklySchedule: WeeklySchedule[],
+    public slotRules: SlotRules,
+    public exceptions: Exceptions,
     public timeZone: string,
     public isActive: boolean,
     public readonly createdAt: Date | null,
@@ -28,9 +31,9 @@ export class DoctorClinic {
       data.clinicId ?? null,
       data.type ?? "BOTH",
       data.consultationFee ?? 0,
-      data.schedule ?? [],
-      data.leaves ?? [],
-      data.slotDuration ?? 30,
+      data.weeklySchedule ?? INITIAL_SCHEDULE,
+      data.slotRules ?? INITIAL_SLOT_RULES,
+      data.exceptions ?? INITIAL_EXCEPTIONS,
       data.timeZone ?? "UTC",
       data.isActive ?? false,
       data.createdAt ?? null,
@@ -70,30 +73,21 @@ export class DoctorClinic {
     return this.isActive;
   }
 
-  addLeave(leave: Leave) {
-    this.leaves.push(leave);
-  }
-
-  removeLeave(id: string) {
-    this.leaves = this.leaves.filter((l) => l.id !== id);
-  }
-
-  updateLeave(updated: Leave) {
-    this.leaves.map((l) => (l.id === updated.id ? updated : l));
-  }
-
   updateSchedule(schedule: WeeklySchedule[]) {
-    this.schedule = schedule;
+    this.weeklySchedule = schedule;
+  }
+
+  updateSlotRules(newRules: SlotRules) {
+    this.slotRules = newRules;
   }
 
   updateConsultationDetails(
     data: Pick<
       DoctorClinic,
-      "consultationFee" | "slotDuration" | "type" | "timeZone"
+      "consultationFee" | "type" | "timeZone"
     >,
   ) {
     this.consultationFee = Number(data.consultationFee);
-    this.slotDuration = Number(data.slotDuration);
     ((this.type = data.type), (this.timeZone = data.timeZone));
   }
 }

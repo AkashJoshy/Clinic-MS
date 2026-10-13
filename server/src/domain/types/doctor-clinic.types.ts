@@ -13,9 +13,32 @@ export interface Session {
   type: ServiceMode;
 }
 
+export type SlotStatus =
+  | "AVAILABLE"
+  | "BOOKED"
+  | "BLOCKED"
+  | "EXPIRED"
+  | "CANCELLED"
+  | "EXCEEDED"
+  | "REPLACEABLE";
+
+export interface Shift {
+  id: string;
+  startTime: string;
+  endTime: string;
+  mode: ServiceMode;
+}
+
 export interface WeeklySchedule {
   dayOfWeek: DayOfWeek;
-  sessions: Session[];
+  shifts: Shift[];
+}
+
+export type ShiftWithoutId = Omit<Shift, "id">;
+
+export interface WeeklyScheduleWithoutShiftId {
+  dayOfWeek: DayOfWeek;
+  shifts: ShiftWithoutId[];
 }
 
 export interface Leave {
@@ -30,15 +53,61 @@ export interface Leave {
   createdAt: Date | null;
 }
 
+export interface SlotRules {
+  sessionDuration: number;
+  bufferTime: number;
+  maxSessionsPerDay: number;
+  minAdvanceNotice: number;
+  bookingWindow: number;
+  slotInterval: "AUTO" | "FIXED";
+  autoConfirmBookings: boolean;
+  allowReschedule: boolean;
+}
+
+export interface Break {
+  id: string;
+  label: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface ScheduleException {
+  id: string;
+  reason: string;
+  startDate: string;
+  endDate: string;
+}
+
+export interface OneTimeAvailability {
+  id: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface Exceptions {
+  breaks: Break[];
+  vacations: ScheduleException[];
+  blackouts: ScheduleException[];
+  holidays: ScheduleException[];
+  overrides: OneTimeAvailability[];
+}
+
+export type BreakWithoutId = Omit<Break, "id">;
+
+export type ScheduleExceptionWithoutId = Omit<ScheduleException, "id">;
+
+export type OneTimeAvailabilityWithoutId = Omit<OneTimeAvailability, "id">;
+
 export interface AddDoctorClinicProps {
   id: string | null;
   doctorId: string | null;
   clinicId: string | null;
   type: ServiceMode;
   consultationFee: number;
-  schedule: WeeklySchedule[];
-  leaves: Leave[];
-  slotDuration: number;
+  weeklySchedule: WeeklySchedule[];
+  slotRules: SlotRules;
+  exceptions: Exceptions;
   timeZone: string;
   isActive: boolean;
   createdAt: Date | null;
@@ -48,30 +117,11 @@ export interface AddDoctorClinicProps {
 export interface Shift {
   id: string;
   startTime: string;
-  endTime: string; 
+  endTime: string;
   mode: ServiceMode;
 }
 
 export type ScheduleData = Record<string, Shift[]>;
-
-export interface SlotRules {
-  sessionDuration: number;
-  bufferTime: number;
-  maxSessionsPerDay: number;
-  minAdvanceNotice: number;
-  bookingWindow: number;
-  slotInterval: 'auto' | 'fixed';
-  bookingMode: 'online' | 'offline' | 'both';
-  autoConfirmBookings: boolean;
-  allowReschedule: boolean;
-}
-export interface ExceptionsData {
-  breaks: { id: string; label: string; startTime: string; endTime: string }[];
-  vacations: { id: string; startDate: string; endDate: string }[];
-  blackouts: { id: string; date: string; startTime: string; endTime: string; reason: string }[];
-  holidays: { id: string; date: string; label: string }[];
-  overrides: { id: string; date: string; startTime: string; endTime: string }[];
-}
 
 export interface WeeklyScheduleProps {
   schedule: ScheduleData;

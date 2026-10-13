@@ -1,7 +1,7 @@
 import type { Doctor } from "../../domain/entities/doctor.entity.ts";
-import type { AdminDoctorInfo } from "../dto/doctor.dto.ts";
+import type { AdminDoctorFullInfoDto } from "../dto/doctor.dto.ts";
 
 export interface IDoctorDetailsService {
-  executeOne(doctor: Doctor): Promise<AdminDoctorInfo>;
-  executeMany(doctors: Doctor[]): Promise<AdminDoctorInfo[]>;
+  executeOne(doctor: Doctor): Promise<AdminDoctorFullInfoDto>;
+  executeMany(doctors: Doctor[]): Promise<AdminDoctorFullInfoDto[]>;
 }

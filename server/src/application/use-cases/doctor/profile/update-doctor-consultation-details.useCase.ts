@@ -1,10 +1,10 @@
-import { DoctorClinic } from "../../../../domain/entities/doctor-clinic.entity.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { DoctorConsultationDetailsDto } from "../../../dto/doctor.dto.ts";
+import { DoctorConsultationMapper } from "../../../mappers/doctor/consultation.mapper.ts";
 import type { IDoctorConsultationUseCase } from "../../../repositories/doctor/i-doctor-consultation.usecase.ts";
 
 export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultationUseCase {
@@ -62,31 +62,15 @@ export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultati
 
     doctorClinic.updateConsultationDetails(consultationData);
 
-    const {
-      id: doctorClinicId,
-      doctorId: idOfDoctor,
-      clinicId: idOfClinic,
-      ...updatedDoctorClinic
-    } = doctorClinic;
-
     await this._doctorClinicRepository.findByIdAndUpdate(
       doctorClinic.id,
-      updatedDoctorClinic,
+      DoctorConsultationMapper.toDomain(doctorClinic),
     );
 
-    const response: DoctorConsultationDetailsDto = {
-      id,
+    return DoctorConsultationMapper.toDoctorConsultationDetails({
+      doctorClinic,
       userId,
-      clinicId,
-      doctorId,
-      consultationFee: updatedDoctorClinic.consultationFee,
-      isActive: updatedDoctorClinic.isActive,
-      slotDuration: updatedDoctorClinic.slotDuration,
-      timeZone: updatedDoctorClinic.timeZone,
-      type: updatedDoctorClinic.type,
-      updatedAt: doctor.updatedAt,
-    };
-
-    return response;
+      doctorUpdatedAt: doctor.updatedAt,
+    });
   }
 }

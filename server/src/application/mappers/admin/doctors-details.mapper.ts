@@ -1,131 +1,130 @@
+import type { Doctor } from "../../../domain/entities/doctor.entity.ts";
+import type { SafeDepartment } from "../../../domain/types/admin.types.ts";
+import type { SafeUser } from "../../dto/auth.dto.ts";
+import type { AdminDoctorFullInfoDto } from "../../dto/doctor.dto.ts";
+import type { DoctorClinicContextDto, SafeAddress } from "../../dto/shared.dto.ts";
 
-// export class DoctorDetailsMapper {
-//   static toAdminDoctorInfo(
-//     doctor: Doctor,
-//     user: SafeUser | null,
-//     doctorClinic: DoctorClinic | null,
-//     clinic: Clinic | null,
-//     clinicAddress: Address | null,
-//     doctorAddress: Address | null,
-//     department: Department | null,
-//   ): AdminDoctorInfo {
-//     return {
-//       user: user
-//         ? {
-//             email: user.email,
-//             phone: user.phone,
-//             isActive: user.isActive,
-//             isBlocked: user.isBlocked,
-//           }
-//         : null,
+export class DoctorDetailsMapper {
+  static toAdminDoctorFullInfo(
+    doctor: Doctor,
+    user: SafeUser | null,
+    doctorClinicDetails: DoctorClinicContextDto[],
+    doctorAddress: SafeAddress | null,
+    department: SafeDepartment | null,
+  ): AdminDoctorFullInfoDto {
+    return {
+      user: user
+        ? {
+            email: user.email,
+            phone: user.phone,
+            isActive: user.isActive,
+            isBlocked: user.isBlocked,
+          }
+        : null,
+      doctor: {
+        id: doctor.id,
+        displayName: doctor.displayName,
+        doctorCode: doctor.doctorCode,
+        bio: doctor.bio,
+        languages: doctor.languages,
+        gender: doctor.gender,
+        departmentId: doctor.departmentId,
+        specialization: doctor.specialization,
+        qualification: doctor.qualification,
+        experienceYears: doctor.experienceYears,
+        averageRating: doctor.averageRating,
+        totalReviews: doctor.totalReviews,
+        licenceNumber: doctor.licenceNumber,
 
-//       clinic: clinic
-//         ? {
-//             id: clinic.id,
-//             name: clinic.name,
-//             about: clinic.about,
-//             status: clinic.status,
+        registrationDoc: {
+          url: doctor.registrationDoc.url,
+          status: doctor.registrationDoc.status,
+        },
 
-//             location: {
-//               type: clinic.location.type,
-//               coordinates: clinic.location.coordinates as [
-//                 number,
-//                 number,
-//               ],
-//             },
+        medicalLicenceDoc: {
+          url: doctor.medicalLicenceDoc.url,
+          status: doctor.medicalLicenceDoc.status,
+        },
 
-//             establishmentLicenceDoc: {
-//               url: clinic.establishmentLicenceDoc.url,
-//               status: clinic.establishmentLicenceDoc.status,
-//             },
+        profilePicture: {
+          url: doctor.profilePicture.url,
+        },
 
-//             registrationDoc: {
-//               url: clinic.registrationDoc.url,
-//               status: clinic.registrationDoc.status,
-//             },
+        status: doctor.status,
+        reviewedAt: doctor.reviewedAt,
+        reviewedMessage: doctor.reviewedMessage,
+        reviewedReason: doctor.reviewedReason,
+        createdAt: doctor.createdAt,
+        updatedAt: doctor.updatedAt,
+      },
+      doctorClinicDetails: doctorClinicDetails.map((doctorClinic) => {
+        const clinic = doctorClinic?.clinic
+        const clinicAddress = doctorClinic?.clinicAddress
+        return {
+          id: doctorClinic.id,
+          type: doctorClinic.type,
+          consultationFee: doctorClinic.consultationFee,
+          weeklySchedule: doctorClinic.weeklySchedule,
+          exceptions: doctorClinic.exceptions,
+          slotRules: doctorClinic.slotRules,
+          timeZone: doctorClinic.timeZone,
+          isActive: doctorClinic.isActive,
+          updatedAt: doctorClinic.updatedAt,
+          clinic: clinic
+            ? {
+                id: clinic.id,
+                name: clinic.name,
+                about: clinic.about,
+                location: {
+                  type: clinic.location.type,
+                  coordinates: clinic.location.coordinates as [
+                    number,
+                    number,
+                  ],
+                },
+                status: clinic.status,
 
-//             clinicAddress: clinicAddress
-//               ? {
-//                   id: clinicAddress.id,
-//                   addressLine: clinicAddress.addressLine,
-//                   country: clinicAddress.country,
-//                   state: clinicAddress.state,
-//                   city: clinicAddress.city,
-//                   pincode: clinicAddress.pincode,
-//                   ownerId: clinicAddress.ownerId,
-//                 }
-//               : null,
-//           }
-//         : null,
+                registrationDoc: {
+                  url: clinic.registrationDoc.url,
+                  status: clinic.registrationDoc.status,
+                },
 
-//       doctor: {
-//         id: doctor.id,
-//         displayName: doctor.displayName,
-//         doctorCode: doctor.doctorCode,
-//         bio: doctor.bio,
-//         languages: doctor.languages,
-//         gender: doctor.gender,
-//         departmentId: doctor.departmentId,
-//         specialization: doctor.specialization,
-//         qualification: doctor.qualification,
-//         experienceYears: doctor.experienceYears,
-//         averageRating: doctor.averageRating,
-//         totalReviews: doctor.totalReviews,
-//         licenceNumber: doctor.licenceNumber,
-
-//         registrationDoc: {
-//           url: doctor.registrationDoc.url,
-//           status: doctor.registrationDoc.status,
-//         },
-
-//         medicalLicenceDoc: {
-//           url: doctor.medicalLicenceDoc.url,
-//           status: doctor.medicalLicenceDoc.status,
-//         },
-
-//         profilePicture: {
-//           url: doctor.profilePicture.url,
-//         },
-
-//         status: doctor.status,
-//         reviewedAt: doctor.reviewedAt,
-//         reviewedMessage: doctor.reviewedMessage,
-//         reviewedReason: doctor.reviewedReason,
-//         createdAt: doctor.createdAt,
-//         updatedAt: doctor.updatedAt,
-//       },
-
-//       doctorClinic: doctorClinic
-//         ? {
-//             id: doctorClinic.id,
-//             type: doctorClinic.type,
-//             consultationFee: doctorClinic.consultationFee,
-//             schedule: doctorClinic.schedule,
-//             slotDuration: doctorClinic.slotDuration,
-//             timeZone: doctorClinic.timeZone,
-//             isActive: doctorClinic.isActive,
-//             updatedAt: doctorClinic.updatedAt,
-//           }
-//         : null,
-
-//       address: doctorAddress
-//         ? {
-//             id: doctorAddress.id,
-//             addressLine: doctorAddress.addressLine,
-//             country: doctorAddress.country,
-//             state: doctorAddress.state,
-//             city: doctorAddress.city,
-//             pincode: doctorAddress.pincode,
-//             ownerId: doctorAddress.ownerId,
-//           }
-//         : null,
-
-//       department: department
-//         ? {
-//             id: department.id,
-//             name: department.name,
-//           }
-//         : null,
-//     };
-//   }
-// }
+                establishmentLicenceDoc: {
+                  url: clinic.establishmentLicenceDoc.url,
+                  status: clinic.establishmentLicenceDoc.status,
+                },
+              }
+            : null,
+          clinicAddress: clinicAddress
+            ? {
+                id: clinicAddress.id,
+                addressLine: clinicAddress.addressLine,
+                country: clinicAddress.country,
+                state: clinicAddress.state,
+                city: clinicAddress.city,
+                pincode: clinicAddress.pincode,
+                ownerId: clinicAddress.ownerId,
+              }
+            : null,
+        };
+      }),
+      address: doctorAddress
+        ? {
+            id: doctorAddress.id,
+            addressLine: doctorAddress.addressLine,
+            country: doctorAddress.country,
+            state: doctorAddress.state,
+            city: doctorAddress.city,
+            pincode: doctorAddress.pincode,
+            ownerId: doctorAddress.ownerId,
+          }
+        : null,
+      department: department
+        ? {
+            id: department.id,
+            name: department.name,
+          }
+        : null,
+    };
+  }
+}

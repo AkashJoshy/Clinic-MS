@@ -1,11 +1,8 @@
 import {
-  APPROVED_MESSAGE,
   DOCTOR_REJECTED_MESSAGE,
   EMAIL_SUBJECTS,
 } from "../../../../domain/constants/email.constants.ts";
 import { DoctorReapplication } from "../../../../domain/entities/doctor-reapplication.entity.ts";
-import { Doctor } from "../../../../domain/entities/doctor.entity.ts";
-import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { ValidationError } from "../../../../domain/errors/validation.error.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
@@ -15,7 +12,6 @@ import type { IDoctorReapplicationRepository } from "../../../../domain/reposito
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import type { IMailService } from "../../../../domain/services/email.service.ts";
-import { deleteFromCloudinary } from "../../../../infrastructure/cloudinary/cloudinary.uploader.ts";
 import type { DoctorStatusUpdateDto } from "../../../dto/doctor.dto.ts";
 import type { IActionTokenGenerationService } from "../../../i-service/i-action-token-generation.service.ts";
 import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/i-update-doctor-status.usecase.ts";

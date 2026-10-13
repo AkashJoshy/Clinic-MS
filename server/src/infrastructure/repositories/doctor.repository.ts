@@ -1,8 +1,10 @@
 import { BaseRepository } from "./base/base.repository.ts";
 import type { IDoctorRepository } from "../../domain/repositories/i-doctor.repository.ts";
-import { DoctorModel, type IDoctor } from "../models/doctor.model.ts";
-import CounterModel from "../models/counter.model.ts";
+import { DoctorModel } from "../models/doctor/doctor.model.ts";
+import { CounterModel } from "../models/counter/counter.model.ts";
 import { Doctor } from "../../domain/entities/doctor.entity.ts";
+import type { IDoctor } from "../models/doctor/doctor.types.ts";
+import { Types } from "mongoose";
 
 export class DoctorRepository
   extends BaseRepository<Doctor, IDoctor>
@@ -33,7 +35,7 @@ export class DoctorRepository
   protected toDomain(doc: IDoctor): Doctor {
     return Doctor.create({
       id: doc._id.toString(),
-      userId: doc.userId.toString(),
+      userId: doc.userId ? doc.userId.toString() : null,
       displayName: doc.displayName,
       doctorCode: doc.doctorCode,
       bio: doc.bio,
@@ -65,7 +67,7 @@ export class DoctorRepository
 
   protected toPersistence(entity: Doctor): Partial<IDoctor> {
     return {
-      userId: entity.userId!,
+      userId: new Types.ObjectId(entity.userId!),
       displayName: entity.displayName,
       doctorCode: entity.doctorCode,
       bio: entity.bio,

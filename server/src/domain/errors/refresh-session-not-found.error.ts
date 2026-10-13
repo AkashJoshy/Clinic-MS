@@ -1,4 +1,4 @@
-import ErrorCode from "../enums/error-code.enums.ts";
+import ErrorCode from "../enums/error-code.enum.ts";
 import { AppError } from "./app.errors.js";
 
 export class RefreshSessionNotFoundError extends AppError {
@@ -6,4 +6,3 @@ export class RefreshSessionNotFoundError extends AppError {
     super(message, ErrorCode.REFRESH_SESSION_NOT_FOUND, 401);
   }
 }
-

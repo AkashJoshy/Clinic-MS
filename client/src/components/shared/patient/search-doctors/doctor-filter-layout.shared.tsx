@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import DoctorFilters from "./doctor-filters.shared";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { FilterState } from "@/hooks/useDoctorSearch";
+import type { FilterState } from "@/hooks/use-doctor-search.hook";
 
 interface DoctorFilterLayoutProps {
   filters: FilterState;
@@ -29,7 +29,6 @@ const DoctorFilterLayout = ({
 }: DoctorFilterLayoutProps) => {
   return (
     <div className="flex gap-6 items-start">
-
       <aside className="hidden lg:block w-[260px] shrink-0">
         <div className="bg-white border border-gray-100 rounded-xl p-5 sticky top-6">
           <DoctorFilters

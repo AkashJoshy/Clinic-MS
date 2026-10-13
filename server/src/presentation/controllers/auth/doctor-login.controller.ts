@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { ResponseStatusCode } from "../../../domain/enums/response.enums.ts";
+import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
 import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts";
 import type { IDoctorLoginUseCase } from "../../../application/repositories/auth/i-doctor-login.usecase.ts";
 
@@ -13,20 +13,20 @@ export class DoctorLoginController {
 
       if (result === "PENDING") {
         return res.status(ResponseStatusCode.FORBIDDEN).json({
-        success: false,
-        message: RESPONSE_MESSAGE.DOCTOR_PENDING,
-        data: {
-          status: result
-        },
-      });
-    } else if (result === "REJECTED") {
-      return res.status(ResponseStatusCode.FORBIDDEN).json({
-        success: false,
-        message: RESPONSE_MESSAGE.DOCTOR_REJECTED,
-        data: {
-          status: result
-        },
-      });
+          success: false,
+          message: RESPONSE_MESSAGE.DOCTOR_PENDING,
+          data: {
+            status: result,
+          },
+        });
+      } else if (result === "REJECTED") {
+        return res.status(ResponseStatusCode.FORBIDDEN).json({
+          success: false,
+          message: RESPONSE_MESSAGE.DOCTOR_REJECTED,
+          data: {
+            status: result,
+          },
+        });
       } else if ("token" in result) {
         return res.status(ResponseStatusCode.OK).json({
           success: true,

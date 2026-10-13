@@ -1,4 +1,3 @@
-import { Doctor } from "../../../../domain/entities/doctor.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";

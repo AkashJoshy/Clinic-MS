@@ -1,5 +1,5 @@
 import type { UpdateQuery } from "mongoose";
-import type { QueryOptions } from "../types/shared.types.ts";
+import type { BulkWriteOperation, QueryOptions } from "../types/shared.types.ts";
 
 
 export interface IBaseRepository<T, TDocument = any> {
@@ -19,4 +19,5 @@ export interface IBaseRepository<T, TDocument = any> {
     filter: string | Record<string, any>,
     update: UpdateQuery<TDocument>,
   ): Promise<void>;
+  bulkWrite( operations: BulkWriteOperation<TDocument>[]): Promise<void>
 }

@@ -1,5 +1,5 @@
-import type { Department } from "../../../domain/entities/department.entity.ts";
+import type { BaseDepartmentDto } from "../../dto/shared.dto.ts";
 
 export interface IGetAllDepartmentsUseCase {
-  execute(): Promise<Department[] | []>;
+  execute(): Promise<BaseDepartmentDto[]>;
 }

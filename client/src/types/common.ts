@@ -14,6 +14,7 @@ import type { DoctorClinic } from "./doctor-clinic";
 import type { LucideIcon } from "lucide-react";
 import type { Clinic } from "./clinic";
 import type { BaseAddress } from "./patient";
+import type { UseMutateFunction } from "@tanstack/react-query";
 
 export type UnderConstructionProps = {
   title: string;
@@ -184,7 +185,7 @@ export type StatusTickerProps = {
 
 type CardDoctorClinicDetail = Omit<
   DoctorClinic,
-  "leaves" | "createdAt" | "doctorId" | "clinicId"
+  "createdAt" | "doctorId" | "clinicId"
 >;
 
 export type DoctorClinicContextDto = CardDoctorClinicDetail & {
@@ -196,3 +197,10 @@ export type DoctorClinicContextDto = CardDoctorClinicDetail & {
     | null;
   clinicAddress: BaseAddress | null;
 };
+
+export type MutateFn<T> = UseMutateFunction<
+  any,
+  any,
+  T,
+  void
+>;
