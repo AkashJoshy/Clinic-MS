@@ -1,11 +1,11 @@
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type {
   DoctorClinicDetailsBasicResponseDto,
-  PatientDoctorDetailsCardDto,
+  PatientDoctorDetailsResponseDto,
 } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../i-service/i-doctor-details.service.ts";
+import type { IDoctorDetailsService } from "../../../interfaces/services/doctor/i-doctor-details.service.ts";
 import { DoctorMapper } from "../../../mappers/patient/doctor.mapper.ts";
-import type { IGetAllDoctorsUseCase } from "../../../repositories/patient/i-get-all-doctors.usecase.ts";
+import type { IGetAllDoctorsUseCase } from "../../../interfaces/repositories/patient/doctor/i-get-all-doctors.usecase.ts";
 
 export class GetAllDoctorsUsecase implements IGetAllDoctorsUseCase {
   constructor(
@@ -13,15 +13,14 @@ export class GetAllDoctorsUsecase implements IGetAllDoctorsUseCase {
     private _doctorDetailsService: IDoctorDetailsService,
   ) {}
 
-  async execute(): Promise<PatientDoctorDetailsCardDto[]> {
-    const doctors = await this._doctorRepository.find();
-    // const doctors = await this._doctorRepository.findBy({
-    //   status: "APPROVED"
-    // });
+  async execute(): Promise<PatientDoctorDetailsResponseDto[]> {
+    const doctors = await this._doctorRepository.findBy({
+      status: "APPROVED",
+    });
 
     const response = await this._doctorDetailsService.executeMany(doctors);
 
-    const updatedResponse: PatientDoctorDetailsCardDto[] = response
+    const updatedResponse: PatientDoctorDetailsResponseDto[] = response
       .filter(
         (res) => res.user && res.doctorClinicDetails.some((dc) => dc.clinic),
       )

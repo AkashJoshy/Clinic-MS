@@ -2,7 +2,7 @@ import {
   MOCK_DOCTORS,
   type AvailabilityType,
   type ConsultationMode,
-} from "@/mocks/mockDoctors";
+} from "@/mocks/mock-doctors.mock";
 import { fetchDoctors } from "@/services/patient.service";
 import type { PatientDoctorDetailsCard } from "@/types/patient";
 import { useState, useMemo, useEffect } from "react";

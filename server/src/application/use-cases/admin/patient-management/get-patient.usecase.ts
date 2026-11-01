@@ -1,9 +1,9 @@
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { PatientInfoDto } from "../../../dto/shared.dto.ts";
 import { PatientMapper } from "../../../mappers/admin/patient.mapper.ts";
-import type { IGetPatientUseCase } from "../../../repositories/admin/i-get-patient.usecase.ts";
+import type { IGetPatientUseCase } from "../../../interfaces/repositories/admin/patient/i-get-patient.usecase.ts";
+import type { PatientInfoResponseDto } from "../../../dto/patient.dto.ts";
 
 export class GetPatientUseCase implements IGetPatientUseCase {
   constructor(
@@ -12,7 +12,7 @@ export class GetPatientUseCase implements IGetPatientUseCase {
     private _userRepository: IUserRepository,
   ) {}
 
-  async execute(patientId: string): Promise<PatientInfoDto | null> {
+  async execute(patientId: string): Promise<PatientInfoResponseDto | null> {
     const patient = await this._patientRepository.findById(patientId);
 
     if (!patient || !patient.id) {

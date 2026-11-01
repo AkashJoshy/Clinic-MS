@@ -5,13 +5,16 @@ import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts
 import type Patient from "../../domain/entities/patient.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
 import type { ImageData } from "../../domain/types/shared.types.ts";
-import type { DepartmentDto } from "./admin.dto.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
 import type { PatientProfile, UpdateAddress } from "./patient.dto.ts";
 import type { SafeClinic } from "./clinic.dto.ts";
 import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
 import type { SafeDepartment } from "../../domain/types/admin.types.ts";
 import type { SafeUser } from "./auth.dto.ts";
+import type { SafeWallet } from "../../domain/types/wallet.types.ts";
+import type { ownerModel } from "../../domain/enums/user.enums.ts";
+import type { SafeWalletTransaction } from "../../domain/types/wallet-transaction.types.ts";
+import type { DepartmentDto, SafeDepartmentDto } from "./department.dto.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -67,7 +70,11 @@ export interface ClinicWithDetailsDto {
   address: Address | null;
 }
 
-export type SafeAddress = Omit<Address, "update">
+export type SafeAddress = Omit<Address, "update">;
+
+export type AddressDetailsResponseDto = SafeAddress
+
+export type FullAddressResponseDto = Address
 
 type BaseAddress = Omit<
   Address,
@@ -80,68 +87,40 @@ export type AddressOption = "PRIMARY" | "NEW";
 
 export type DeleteMethods = "RESTORE" | "DELETE" | "BLOCK";
 
-export type PatientInfoDto = PatientProfile & {
-  user: Pick<
-    User,
-    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified" | "isBlocked"
-  > | null;
-};
-
 export type PatientFullDetailsDto = {
-  user: Omit<SafeUser, "password" | "block" | "unblock" | "create" | "updateName" | "updatePhone"> | null;
+  user: Omit<
+    SafeUser,
+    "password" | "block" | "unblock" | "create" | "updateName" | "updatePhone"
+  > | null;
   patient: Patient;
   address: SafeAddress | null;
 };
 
-export type PatientBasicInfoDto = {
-  patient: Pick<
-    Patient,
-    | "id"
-    | "displayName"
-    | "patientNumber"
-    | "medicalInformation"
-    | "gender"
-    | "userId"
-    | "createdAt"
-  > & {
-    imageUrl: Omit<ImageData, "publicId">;
-  };
-} & {
-  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
-};
+export type PatientFullResponseDto = PatientFullDetailsDto
 
 export type MessageDto = {
   message: string;
 };
 
 export interface UpdateAddressEntityDto {
-  address: Address, 
-  updates: Partial<UpdateAddress>
+  address: Address;
+  updates: Partial<UpdateAddress>;
 }
 
-export type ClinicDetailsResponseDto = {
-  clinics: SafeClinic[];
-  clinicMap: Map<string | null, SafeClinic>;
+
+export type AddressLookupResultDto = {
+  addresses: SafeAddress[];
+  addressMap: Map<string | null, SafeAddress>;
 };
 
-export type AddressDetailsResponseDto = {
-  addressess: SafeAddress[];
-  addressMap: Map<string | null, SafeAddress>;
-}
 
-export type DepartmentDetailsResponseDto = {
-  departments: SafeDepartment[];
-  departmentMap: Map<string | null, SafeDepartment>;
-}
+export type DepartmentLookupResultDto = {
+  departments: SafeDepartmentDto[];
+  departmentMap: Map<string | null, SafeDepartmentDto>;
+};
 
-export type DoctorClinicContextDto = SafeDoctorClinic & {
-  clinic: SafeClinic | null,
-  clinicAddress: SafeAddress | null
-}
+export type DoctorClinicDetailsResponseDto = {
+  doctorClinics: DoctorClinic[];
+  doctorClinicMap: Map<string | null, DoctorClinic[]>;
+};
 
-export type DoctorClinicDetailsDto = {
-  doctorClinics: DoctorClinic[],
-  doctorClinicMap: Map<string | null, DoctorClinic[]>
-}
-
-export type BaseDepartmentDto = Omit<SafeDepartment, "createdAt">

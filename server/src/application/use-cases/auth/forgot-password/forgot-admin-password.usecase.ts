@@ -1,6 +1,6 @@
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { ICacheService } from "../../../../domain/services/cache.service.ts";
-import type { IMailService } from "../../../../domain/services/email.service.ts";
+import type { ICacheService } from "../../../../domain/services/i-cache.service.ts";
+import type { IMailService } from "../../../../domain/services/i-email.service.ts";
 import { generateVerificationToken } from "../../../../shared/utils/token.util.ts";
 import {
   EMAIL_BODY,
@@ -9,7 +9,7 @@ import {
 import { AppError } from "../../../../domain/errors/app.errors.js";
 import type { ForgotRolePasswordDto } from "../../../dto/auth.dto.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IForgotPasswordUseCase } from "../../../repositories/auth/i-forgot-password.usecase.ts";
+import type { IForgotPasswordUseCase } from "../../../interfaces/repositories/auth/i-forgot-password.usecase.ts";
 import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
 
 export class ForgotAdminPasswordUseCase implements IForgotPasswordUseCase {

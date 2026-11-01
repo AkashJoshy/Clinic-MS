@@ -11,7 +11,7 @@ import type {
   UpdateProfilePictureDto,
   UpdateProfilePictureResponseDto,
 } from "../../../dto/patient.dto.ts";
-import type { IUpdateProfilePictureUseCase } from "../../../repositories/patient/i-update-profile-picture.usecase.ts";
+import type { IUpdateProfilePictureUseCase } from "../../../interfaces/repositories/shared/i-update-profile-picture.usecase.ts";
 
 export class UpdatePatientProfilePictureUseCase implements IUpdateProfilePictureUseCase {
   constructor(

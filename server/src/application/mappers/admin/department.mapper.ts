@@ -1,8 +1,7 @@
-import type { SafeDepartment } from "../../../domain/types/admin.types.ts";
-import type { BaseDepartmentDto } from "../../dto/shared.dto.ts";
+import type { DepartmentResponseDto, SafeDepartmentDto } from "../../dto/department.dto.ts";
 
 export class DepartmentMapper {
-  static toBaseDepartment(department: SafeDepartment): BaseDepartmentDto {
+  static toBaseDepartment(department: SafeDepartmentDto): DepartmentResponseDto {
     return {
       id: department.id,
       name: department.name,

@@ -1,6 +1,8 @@
 import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
-import type { BreakWithoutId, Exceptions, OneTimeAvailabilityWithoutId, ScheduleExceptionWithoutId, SlotRules, SlotStatus, WeeklySchedule, WeeklyScheduleWithoutShiftId } from "../../domain/types/doctor-clinic.types.ts";
+import type { BreakWithoutId, Exceptions, OneTimeAvailabilityWithoutId, ScheduleExceptionWithoutId, Session, SlotRules, SlotStatus, WeeklySchedule, WeeklyScheduleWithoutShiftId } from "../../domain/types/doctor-clinic.types.ts";
 import type { DayOfWeek, ServiceMode } from "../../domain/types/shared.types.ts";
+import type { SafeClinic } from "./clinic.dto.ts";
+import type { SafeAddress } from "./shared.dto.ts";
 
 export type SafeDoctorClinic = Omit<
   DoctorClinic,
@@ -14,6 +16,17 @@ export type SafeDoctorClinic = Omit<
   | "updateConsultationDetails"
   | "updateSlotRules"
 >;
+
+export type SafeDoctorClinicResponseDto = SafeDoctorClinic
+
+export interface GenerateSlotsDto {
+  doctorId: string;
+  clinicId: string;
+  doctorClinicId: string;
+  weeklySchedule: WeeklySchedule[];
+  exceptions: Exceptions;
+  slotRules: SlotRules;
+}
 
 export interface DoctorClinicScheduleWithoutIdDto {
   weeklySchedule: WeeklyScheduleWithoutShiftId[];
@@ -29,7 +42,7 @@ export interface ExceptionsWithoutIdDto {
   overrides: OneTimeAvailabilityWithoutId[];
 }
 
-export type SlotsWithDateDto = {
+export type SlotsWithDateResponseDto = {
   date: string;
   dayOfWeek: DayOfWeek;
   message: string;
@@ -41,11 +54,11 @@ export type SlotsWithDateDto = {
   }[];
 };
 
-export type DoctorClinicSlotsWithDateDto = {
+export type DoctorSlotsWithDateResponseDto = {
   doctorId: string;
   clinicId: string;
   doctorClinicId: string;
-  generatedSlots: SlotsWithDateDto[],
+  generatedSlots: SlotsWithDateResponseDto[],
   weeklySchedule: WeeklySchedule[],
   slotRules: SlotRules,
   exceptions: Exceptions
@@ -65,5 +78,19 @@ export type ConfirmSlotsDto = {
   doctorId: string;
   clinicId: string;
   doctorClinicId: string;
-  generatedSlots: SlotsWithDateDto[],
+  generatedSlots: SlotsWithDateResponseDto[],
+}
+
+export type DoctorClinicContextDto = SafeDoctorClinic & {
+  clinic: SafeClinic | null;
+  clinicAddress: SafeAddress | null;
+};
+
+export type DoctorClinicContextResponseDto = DoctorClinicContextDto
+
+export interface SlotGenerationDto {
+  doctorClinicId: string;
+  date: Date;
+  session: Session;
+  duration: number;
 }

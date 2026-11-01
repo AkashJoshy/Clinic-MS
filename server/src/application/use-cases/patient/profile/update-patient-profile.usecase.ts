@@ -5,7 +5,7 @@ import type {
   UpdatePatientDto,
 } from "../../../dto/patient.dto.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { IUpdatePatientProfileUseCase } from "../../../repositories/patient/i-update-patient-profile.usecase.ts";
+import type { IUpdatePatientProfileUseCase } from "../../../interfaces/repositories/patient/profile/i-update-patient-profile.usecase.ts";
 
 export class UpdatePatientProfileUseCase implements IUpdatePatientProfileUseCase {
   constructor(

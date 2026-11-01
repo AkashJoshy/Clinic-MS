@@ -23,26 +23,34 @@ export const RESPONSE_MESSAGE = {
 
   USER_PROFILE_RETRIEVED: "User profile retrieved successfully",
   USER_NOT_FOUND: "User not found",
-  
+
   PATIENT_REGISTERED: "Patient registered successfully",
   PATIENT_UPDATED: "Patient record updated successfully",
   PATIENT_DELETED: "Patient record deleted successfully",
   PATIENT_NOT_FOUND: "Patient not found",
   PATIENT_APPOINTMENT_BOOKED: "Appointment Booked successfully",
   PATIENT_SLOT_HOLD:
-  "Slot reserved successfully. Complete payment within 5 minutes",
-  
+    "Slot reserved successfully. Complete payment within 5 minutes",
+
   DOCTOR_REGISTERED: "Doctor registered successfully",
-  DOCTOR_PENDING: "Your doctor registration has been submitted successfully and is currently being reviewed by our admin team. We'll notify you once your application has been reviewed.",
-  DOCTOR_REJECTED: "Your doctor registration has not been approved. Please check your email for the rejection details and instructions on how to reapply.",
+  DOCTOR_PENDING:
+    "Your doctor registration has been submitted successfully and is currently being reviewed by our admin team. We'll notify you once your application has been reviewed.",
+  DOCTOR_REJECTED:
+    "Your doctor registration has not been approved. Please check your email for the rejection details and instructions on how to reapply.",
   FOUND_ZERO_DOCTOR: "No Doctors found",
 
   OTP_RESENT: "Otp resend successfully",
   OTP_ACCOUNT_VERIFIED: "Account Verified",
-  OTP_EMAIL_MESSAGE: "A verification email has been sent. Please check your inbox and verify your account.",
+  OTP_EMAIL_MESSAGE:
+    "A verification email has been sent. Please check your inbox and verify your account.",
 
   DEPARTMENT_CREATED: "Department created successfully",
 
+  PLAN_SWITCHED: (planName: string) => `Successfully switched to ${planName}!`,
+
+  PLAN_PURCHASED: (planName: string) =>
+    `Successfully purchased the ${planName} plan!`,
+  PLAN_CANCELLED: "Your subscription has been cancelled successfully.",
   INVALID_REQUEST: "Invalid request data",
   MISSING_REQUIRED_FIELDS: "Required fields are missing",
 

@@ -11,7 +11,7 @@ import {
   RATING_OPTIONS,
   type AvailabilityType,
   type ConsultationMode,
-} from "../../../../mocks/mockDoctors";
+} from "../../../../mocks/mock-doctors.mock";
 import type { FilterState } from "@/hooks/use-doctor-search.hook";
 
 interface DoctorFiltersProps {

@@ -13,79 +13,81 @@ import {
   updatePersonalProfilePictureSchema,
 } from "../schemas/shared/shared.schema.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
-import { createPatientProfileController, patientProfilesController, updatePatientAddressController, updatePatientProfileController, updatePatientProfilePictureController, updatePatientEmergencyContactController } from "../../container/index.ts";
 import { updatePatientEmergencyContactSchema } from "../schemas/patient/profile.schema.ts";
-import { getAllDoctorsController } from "../../container/modules/patient.modules.ts";
+import {
+  patientController,
+  patientDoctorController
+} from "../../container/modules/patient.modules.ts";
 
 const router = Router();
 
 // Routes
 router.get(
-  PATIENT_ENDPOINTS["FETCH_PATIENT_PROFILES"],
+  PATIENT_ENDPOINTS["PROFILES"]["FETCH_ONE"],
   authenticateUser,
   authorizeUser,
   async (req, res, next) => {
-    await patientProfilesController.handle(req, res, next);
+    await patientController.getProfiles(req, res, next);
+  },
+);
+
+router.post(
+  PATIENT_ENDPOINTS["PROFILES"]["CREATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validate(createPatientProfileSchema),
+  async (req, res, next) => {
+    await patientController.createProfile(req, res, next);
   },
 );
 
 router.patch(
-  PATIENT_ENDPOINTS["UPDATE_PATIENT_PROFILE"],
+  PATIENT_ENDPOINTS["PROFILES"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   validate(updatePersonalDetailsSchema),
   async (req, res, next) => {
-    await updatePatientProfileController.handle(req, res, next);
+    await patientController.updateProfile(req, res, next);
   },
 );
 
 router.patch(
-  PATIENT_ENDPOINTS["UPDATE_ADDRESS"],
+  PATIENT_ENDPOINTS["PROFILES"]["ADDRESS"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   validate(updateAddressSchema),
   async (req, res, next) => {
-    await updatePatientAddressController.handle(req, res, next);
-  },
-);
- 
-router.patch(
-  PATIENT_ENDPOINTS["UPDATE_EMERGENCY_CONTACT"],
-  authenticateUser,
-  authorizeUser,
-  validate(updatePatientEmergencyContactSchema),
-  async (req, res, next) => {
-    await updatePatientEmergencyContactController.handle(req, res, next);
+    await patientController.updateAddress(req, res, next);
   },
 );
 
 router.patch(
-  PATIENT_ENDPOINTS["UPDATE_PROFILE_PICTURE"],
+  PATIENT_ENDPOINTS["PROFILES"]["EMERGENCY_CONTACT"]["UPDATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validate(updatePatientEmergencyContactSchema),
+  async (req, res, next) => {
+    await patientController.updateProfileEmergencyContact(req, res, next);
+  },
+);
+
+router.patch(
+  PATIENT_ENDPOINTS["PROFILES"]["PROFILE_PICTURE"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   profileupload,
   validateFile(updatePersonalProfilePictureSchema),
   async (req, res, next) => {
-    await updatePatientProfilePictureController.handle(req, res, next);
-  },
-);
-
-router.post(
-  PATIENT_ENDPOINTS["CREATE_PATIENT_PROFILE"],
-  authenticateUser,
-  authorizeUser,
-  validate(createPatientProfileSchema),
-  async (req, res, next) => {
-    await createPatientProfileController.handle(req, res, next);
+    await patientController.updateProfilePicture(req, res, next);
   },
 );
 
 router.get(
-  PATIENT_ENDPOINTS["FETCH_ALL_DOCTORS"],
+  PATIENT_ENDPOINTS["DOCTORS"]["FETCH_ALL"],
   authenticateUser,
   authorizeUser,
   async (req, res, next) => {
-    await getAllDoctorsController.handle(req, res, next);
+    await patientDoctorController.getAll(req, res, next);
   },
 );
 

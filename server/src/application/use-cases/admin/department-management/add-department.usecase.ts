@@ -3,7 +3,7 @@ import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.ts";
 import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
 import type { CreateDepartmentDto } from "../../../dto/admin.dto.ts";
-import type { IAddDepartmentUseCase } from "../../../repositories/admin/i-add-department.usecase.ts";
+import type { IAddDepartmentUseCase } from "../../../interfaces/repositories/admin/department/i-add-department.usecase.ts";
 
 export class AddDepartmentUseCase implements IAddDepartmentUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}

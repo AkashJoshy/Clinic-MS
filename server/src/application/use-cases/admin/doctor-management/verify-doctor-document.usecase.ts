@@ -1,10 +1,10 @@
 import type { VerifyDocumentDto } from "../../../dto/admin.dto.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
-import type { IVerifyDoctorDocumentUseCase } from "../../../repositories/admin/i-verify-doctor-document.usecase.ts";
 import type { DoctorDocumentField } from "../../../../domain/types/admin.types.ts";
+import type { IVerifyDocumentUseCase } from "../../../interfaces/repositories/admin/doctor/i-verify-document.usecase.ts";
 
-export class VerifyDoctorDocumentUseCase implements IVerifyDoctorDocumentUseCase {
+export class VerifyDoctorDocumentUseCase implements IVerifyDocumentUseCase {
   constructor(private readonly _doctorRepository: IDoctorRepository) {}
 
   async execute(data: VerifyDocumentDto): Promise<void> {

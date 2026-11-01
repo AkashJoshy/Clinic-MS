@@ -13,6 +13,14 @@ export class UserRepository
     super(UserModel);
   }
 
+  async findAllCreatedToday(): Promise<User[] | null> {
+    const today = new Date()
+    const users = await UserModel.find({ createdAt: { $eq: today } }).sort({ createdAt: -1 })
+
+    if (!users) null
+    return users.map(user => this.toDomain(user))
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const userDoc = await UserModel.findOne({ email }).select("+password");
     if (!userDoc) return null;

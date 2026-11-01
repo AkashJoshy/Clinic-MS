@@ -23,7 +23,7 @@ export abstract class BaseRepository<
     const doc = await this.model.findByIdAndUpdate(
       id,
       { $set: data as any },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
     if (!doc) return null;
     return this.toDomain(doc);
@@ -81,7 +81,7 @@ export abstract class BaseRepository<
     const doc = await this.model.findOneAndUpdate(
       query as Record<string, any>,
       update,
-      { new: false },
+      { returnDocument: "after" },
     );
     if (!doc) return null;
     return this.toDomain(doc);

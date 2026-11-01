@@ -177,3 +177,41 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.subscription-modal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #1dc465 #111c29;
+  scrollbar-gutter: stable;
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #1dc465 #111c29;
+  scrollbar-gutter: stable;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #111c29;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1dc465;
+  border: 1px solid #111c29;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #18b558;
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: #111c29;
+}

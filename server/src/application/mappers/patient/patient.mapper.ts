@@ -1,7 +1,8 @@
 import type { RelationToPatient } from "../../../domain/constants/patient.constants.ts";
+import Patient from "../../../domain/entities/patient.entity.ts";
 import type { BasePatient } from "../../../domain/types/patient.types.ts";
 import type { Gender } from "../../../domain/types/shared.types.ts";
-import type { NewPatientProfileDto } from "../../dto/patient.dto.ts";
+import type { CreateDependentDto, NewPatientProfileDto } from "../../dto/patient.dto.ts";
 import { AddressMapper } from "../shared/address.mapper.ts";
 
 export class PatientMapper {
@@ -61,4 +62,34 @@ export class PatientMapper {
       address,
     };
   }
+
+  static toDependentEntity(
+  data: CreateDependentDto,
+  selfPatient: BasePatient,
+  phone: string,
+  patientNumber: string,
+): Patient {
+  return Patient.createDependent(
+    {
+      id: null,
+      userId: data.userId,
+      displayName: data.displayName,
+      relation: data.relation.toUpperCase() as RelationToPatient,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender.toUpperCase() as Gender,
+      medicalInformation: {
+        bloodGroup: data.bloodGroup!,
+        allergies: data.allergies ?? [],
+        chronicConditions: data.chronicConditions ?? [],
+      },
+      emergencyContact: {
+        name: selfPatient.displayName,
+        phone,
+        relationship: selfPatient.relation,
+      },
+    },
+    patientNumber,
+  );
+}
+
 }

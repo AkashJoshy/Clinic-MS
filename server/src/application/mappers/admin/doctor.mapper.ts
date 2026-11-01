@@ -1,12 +1,12 @@
 import type {
   AdminDoctorFullInfoDto,
   AdminDoctorInfoDto,
-  DoctorDetailsCardDto,
+  DoctorDetailsCardResponseDto,
 } from "../../dto/doctor.dto.ts";
 
 export class DoctorMapper {
   static toDoctorDetailsCard(doctorDetails: AdminDoctorFullInfoDto) {
-    const response: DoctorDetailsCardDto = (() => {
+    const response: DoctorDetailsCardResponseDto = (() => {
       const { user, address, department, doctor, doctorClinicDetails } =
         doctorDetails;
 

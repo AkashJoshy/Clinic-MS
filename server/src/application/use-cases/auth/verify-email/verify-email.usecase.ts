@@ -2,9 +2,9 @@ import { InternalServerError } from "../../../../domain/errors/internal-server.e
 import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.js";
 import { AlreadyExistsError } from "../../../../domain/errors/user-already-exists.error.js";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { ICacheService } from "../../../../domain/services/cache.service.ts";
+import type { ICacheService } from "../../../../domain/services/i-cache.service.ts";
 import type { CacheDTO, VerifyOtpDTO } from "../../../dto/auth.dto.ts";
-import type { IVerifyEmailUseCase } from "../../../repositories/auth/i-verify-email.usecase.ts";
+import type { IVerifyEmailUseCase } from "../../../interfaces/repositories/auth/i-verify-email.usecase.ts";
 
 export class VerifyEmailUseCase implements IVerifyEmailUseCase {
   constructor(

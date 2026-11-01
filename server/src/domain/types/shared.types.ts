@@ -19,6 +19,8 @@ export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";
 
+export type PaymentStatus = "SUCCESS" | "FAILED"
+
 export type SessionStatus =
   | "AVAILABLE"
   | "PENDING"

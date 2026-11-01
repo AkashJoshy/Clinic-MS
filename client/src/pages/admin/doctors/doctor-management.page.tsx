@@ -25,7 +25,7 @@ import { AllDoctorCard } from "@/components/shared/admin/all-doctor-card.shared"
 import { PendingApproval } from "@/components/shared/admin/pending-approval.shared";
 import { PendingDoctorCard } from "@/components/shared/admin/doctors/pending-card.shared";
 import type { DepartmentData, DoctorManagementTab } from "@/types/admin";
-import { getAllDepartments } from "@/services/common.service";
+import { getAllDepartments } from "@/services/shared.service";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { AllDoctorCardSkeleton } from "@/components/shared/skeletons/all-doctor-card.skeleton";
 import { DOCTOR_TABS } from "@/constants/admin.constant";
@@ -40,8 +40,11 @@ const ITEMS_PER_PAGE = 6;
 export default function DoctorManagementPage() {
   const [activeTab, setActiveTab] = useState<DoctorManagementTab>("all");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [doctorDetails, setDoctorDetails] = useState<DoctorDetailsCardInfo[]>([]);
-  const [rejectTarget, setRejectTarget] = useState<DoctorDetailsCardInfo | null>(null);
+  const [doctorDetails, setDoctorDetails] = useState<DoctorDetailsCardInfo[]>(
+    [],
+  );
+  const [rejectTarget, setRejectTarget] =
+    useState<DoctorDetailsCardInfo | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -55,8 +58,8 @@ export default function DoctorManagementPage() {
       const getDoctors = await getAllDoctors();
       const data = getDoctors.data;
       if (data) {
-        console.log(`Data: `)
-        console.log(data)
+        console.log(`Data: `);
+        console.log(data);
         setDoctorDetails(data);
         setIsLoading(false);
       } else {
@@ -94,8 +97,10 @@ export default function DoctorManagementPage() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
 
-      const match = det.doctorClinicDetails.filter(dc => dc.clinic?.name.toLowerCase()?.includes(q)) ||
-        det.doctor.displayName.toLowerCase().includes(q);
+      const match =
+        det.doctorClinicDetails.filter((dc) =>
+          dc.clinic?.name.toLowerCase()?.includes(q),
+        ) || det.doctor.displayName.toLowerCase().includes(q);
 
       if (!match) return false;
     }

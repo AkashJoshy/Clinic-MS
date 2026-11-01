@@ -1,4 +1,5 @@
-export const USER_ROLES = ["PATIENT", "ADMIN", "CLINIC", "DOCTOR"] as const
+export const USER_ROLES = ["PATIENT", "ADMIN", "DOCTOR"] as const
+export const USER_ROLES_MODEL = ["Patient", "Doctor", "Admin"] as const
 export const PROVIDER = ["LOCAL", "GOOGLE"]
 
 export const FILE_SIZE_5MB = 5 * 1024 * 1024;

@@ -1,5 +1,5 @@
 import { InternalServerError } from "../../domain/errors/internal-server.error.ts";
-import type { ITokenService } from "../../domain/services/token.service.ts";
+import type { ITokenService } from "../../domain/services/i-token.service.ts";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import {
   narrowedExpiresIn,

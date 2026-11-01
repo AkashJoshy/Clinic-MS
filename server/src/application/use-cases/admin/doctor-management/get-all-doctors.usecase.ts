@@ -1,8 +1,8 @@
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
-import type { DoctorDetailsCardDto } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../i-service/i-doctor-details.service.ts";
+import type { IDoctorDetailsService } from "../../../interfaces/services/doctor/i-doctor-details.service.ts";
 import { DoctorMapper } from "../../../mappers/admin/doctor.mapper.ts";
-import type { IGetAllDoctorsUseCase } from "../../../repositories/admin/i-get-all-doctors.usecase.ts";
+import type { IGetAllDoctorsUseCase } from "../../../interfaces/repositories/admin/doctor/i-get-all-doctors.usecase.ts";
+import type { DoctorDetailsCardResponseDto } from "../../../dto/doctor.dto.ts";
 
 export class GetAllDoctorsUseCase implements IGetAllDoctorsUseCase {
   constructor(
@@ -10,14 +10,16 @@ export class GetAllDoctorsUseCase implements IGetAllDoctorsUseCase {
     private _doctorDetailsService: IDoctorDetailsService,
   ) {}
 
-  async execute(): Promise<DoctorDetailsCardDto[]> {
+  async execute(): Promise<DoctorDetailsCardResponseDto[]> {
     const doctors = await this._doctorRepository.find();
 
     const response = await this._doctorDetailsService.executeMany(doctors);
 
-    const updatedResponse: DoctorDetailsCardDto[] = response.map((res) => {
-      return DoctorMapper.toDoctorDetailsCard(res);
-    });
+    const updatedResponse: DoctorDetailsCardResponseDto[] = response.map(
+      (res) => {
+        return DoctorMapper.toDoctorDetailsCard(res);
+      },
+    );
 
     return updatedResponse;
   }

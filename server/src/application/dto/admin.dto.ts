@@ -24,20 +24,6 @@ export interface UpdateClinicStatusDto {
   reviewMessage?: string;
 }
 
-export interface CreateDepartmentDto {
-  name: string;
-  status: EntityStatus;
-  mode: ServiceMode;
-}
-
-export type GetDepartmentDto = Omit<CreateDepartmentDto, "mode" | "name"> & {
-  id?: string;
-};
-
-export type DepartmentDto = CreateDepartmentDto & {
-  id: string | null;
-};
-
 export interface UpdateDoctorStatusDTO {
   doctorId: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "SUSPENDED";
@@ -53,13 +39,13 @@ export interface AdminDoctorProfileResponseDto extends DoctorProfileResponseDto 
   doctor: AdminDoctorDetails;
 }
 
-export type UserStatusDto = {
+export type UserStatusResponseDto = {
   userId: string;
   isActive: boolean;
   isBlocked: boolean;
 } & MessageDto;
 
-export type DepartmentStatusDto = {
+export type DepartmentStatusResponseDto = {
   departmentId: string;
   status: EntityStatus;
 } & MessageDto;

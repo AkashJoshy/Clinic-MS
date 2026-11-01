@@ -6,7 +6,7 @@ import type {
   BulkWriteDeleteOne,
   BulkWriteDeleteMany,
 } from "../../domain/types/shared.types.ts";
-import type { IBulkWriteGenerationService } from "../i-service/i-bulk-write-generation.service.ts";
+import type { IBulkWriteGenerationService } from "../interfaces/services/shared/i-bulk-write-generation.service.ts";
 
 export class BulkWriteGenerationService implements IBulkWriteGenerationService {
   insertOne<T>(data: T): BulkWriteInsertOne<T> {
@@ -24,20 +24,21 @@ export class BulkWriteGenerationService implements IBulkWriteGenerationService {
   updateOne<T>(
     filter: Record<string, unknown>,
     update: Partial<T>,
-    upsert: Boolean = false,
+    upsert: boolean = false,
   ): BulkWriteUpdateOne<T> {
     let updatedFilter: Record<string, unknown> = {};
 
-    updatedFilter = "id" in filter ?
-    (() => {
-      const { id, ...rest } = filter
+    updatedFilter =
+      "id" in filter
+        ? (() => {
+            const { id, ...rest } = filter;
 
-      return {
-        _id: id,
-        ...rest
-      }
-    })()
-    : filter
+            return {
+              _id: id,
+              ...rest,
+            };
+          })()
+        : filter;
 
     return {
       updateOne: {
@@ -51,20 +52,21 @@ export class BulkWriteGenerationService implements IBulkWriteGenerationService {
   updateMany<T>(
     filter: Record<string, unknown>,
     update: Partial<T>,
-    upsert: Boolean = false,
+    upsert: boolean = false,
   ): BulkWriteUpdateMany<T> {
     let updatedFilter: Record<string, unknown> = {};
 
-    updatedFilter = "id" in filter ?
-    (() => {
-      const { id, ...rest } = filter
+    updatedFilter =
+      "id" in filter
+        ? (() => {
+            const { id, ...rest } = filter;
 
-      return {
-        _id: id,
-        ...rest
-      }
-    })()
-    : filter
+            return {
+              _id: id,
+              ...rest,
+            };
+          })()
+        : filter;
 
     return {
       updateMany: {

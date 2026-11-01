@@ -83,7 +83,7 @@ export const PatientListItem = ({
 
           <div className=" ">
             <div className="">
-              <h3 className="text-white text-base font-semibold truncate xsxs:max-w-20 md:max-w-40">
+              <h3 className="text-white text-base w-30 font-semibold truncate xsxs:max-w-20 md:max-w-40">
                 {isPatient?.displayName || "Name unavailable"}
               </h3>
 
@@ -114,7 +114,7 @@ export const PatientListItem = ({
                     </div>
                   )}
 
-                  <div className="">{isPatient?.gender}</div>
+                  <div className="truncate w-22">{isPatient?.gender}</div>
                 </div>
               </div>
             )}

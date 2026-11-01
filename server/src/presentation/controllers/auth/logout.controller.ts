@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import { ResponseStatusCode } from "../../../domain/enums/response.enum.ts";
-import type { ILogoutUseCase } from "../../../application/repositories/auth/i-logout.usecase.ts";
+import type { ILogoutUseCase } from "../../../application/interfaces/repositories/auth/i-logout.usecase.ts";
 
 export class LogoutController {
   constructor(private _logout: ILogoutUseCase) {}
 
-  async handle(req: Request, res: Response, next: NextFunction) {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
       const role = req.body.role;
       const refreshTokenRole =

@@ -6,8 +6,8 @@ export const INITIAL_SLOT_RULES: SlotRules = {
   maxSessionsPerDay: 20,
   minAdvanceNotice: 60,
   bookingWindow: 30,
-  slotInterval: "auto",
-  bookingMode: "both",
+  slotInterval: "AUTO",
+  // bookingMode: "both",
   autoConfirmBookings: true,
   allowReschedule: true,
 };

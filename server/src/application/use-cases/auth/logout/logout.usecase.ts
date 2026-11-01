@@ -6,10 +6,10 @@ import type {
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import { AuthError } from "../../../../domain/errors/auth.error.ts";
 import type { IRefreshSessionRepository } from "../../../../domain/repositories/i-refresh-session.repository.ts";
-import type { IHashService } from "../../../../domain/services/hash.service.ts";
-import type { ITokenService } from "../../../../domain/services/token.service.ts";
+import type { IHashService } from "../../../../domain/services/i-hash.service.ts";
+import type { ITokenService } from "../../../../domain/services/i-token.service.ts";
 import { InvalidTokenError } from "../../../../domain/errors/invalid-token.error.ts";
-import type { ILogoutUseCase } from "../../../repositories/auth/i-logout.usecase.ts";
+import type { ILogoutUseCase } from "../../../interfaces/repositories/auth/i-logout.usecase.ts";
 import { RefreshSessionNotFoundError } from "../../../../domain/errors/refresh-session-not-found.error.ts";
 
 export class LogoutUseCase implements ILogoutUseCase {

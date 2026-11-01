@@ -16,3 +16,5 @@ export type ClinicDocumentField = RegistrationDocumentField | "establishmentLice
 export type DocumentField = RegistrationDocumentField | "medicalLicenceDoc" | "establishmentLicenceDoc"
 
 export type SafeDepartment = Omit<Department, "block" | "unblock">
+
+export type DepartmentResponseDto = Omit<Department, "block" | "unblock">

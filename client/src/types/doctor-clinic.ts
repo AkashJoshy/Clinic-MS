@@ -231,7 +231,7 @@ export interface ConfirmedSlots {
   generatedSlots: SlotsWithDate[];
 }
 
-export type SlotStatus = "AVAILABLE" | "REPLACEABLE";
+export type SlotStatus = "AVAILABLE" | "REPLACEABLE" | "BOOKED" | "APPROVED" | "CANCELLED" | "EXPIRED"
 
 export type PreviewHookProps = Pick<
   PreviewGeneratedSlotsProps,
@@ -250,4 +250,10 @@ export interface UsePreviewGeneratedSlotsReturn {
   handleAvailableClick: (startTime: string) => void;
   handleReplaceableClick: (startTime: string) => void;
   go: (step: number) => void;
+}
+
+export type CalendarClinicDetails = {
+  id: string | null,
+  name: string
+  color: string
 }

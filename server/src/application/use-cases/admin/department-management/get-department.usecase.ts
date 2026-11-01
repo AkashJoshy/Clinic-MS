@@ -2,7 +2,7 @@ import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
 import type { BaseDepartmentDto } from "../../../dto/shared.dto.ts";
 import { DepartmentMapper } from "../../../mappers/admin/department.mapper.ts";
-import type { IGetDepartmentUseCase } from "../../../repositories/admin/i-get-department.usecase.ts";
+import type { IGetDepartmentUseCase } from "../../../interfaces/repositories/admin/department/i-get-department.usecase.ts";
 
 export class GetDepartmentUseCase implements IGetDepartmentUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}

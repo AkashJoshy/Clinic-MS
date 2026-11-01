@@ -3,4 +3,5 @@ import type { IBaseRepository } from "./i-base.repository.ts";
 
 export interface IUserRepository extends IBaseRepository<User> {
   findByEmail(email: string): Promise<User | null>;
+  findAllCreatedToday(): Promise<User[] | null>
 }

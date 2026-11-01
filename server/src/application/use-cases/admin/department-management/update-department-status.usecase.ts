@@ -1,15 +1,16 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDepartmentRepository } from "../../../../domain/repositories/i-department.repository.ts";
-import type {
-  DepartmentStatusDto,
-  GetDepartmentDto,
-} from "../../../dto/admin.dto.ts";
-import type { IUpdateDepartmentStatusUseCase } from "../../../repositories/admin/i-update-department.usecase.ts";
+import type { DepartmentStatusResponseDto } from "../../../dto/admin.dto.ts";
+import type { GetDepartmentDto } from "../../../dto/department.dto.ts";
+
+import type { IUpdateDepartmentStatusUseCase } from "../../../interfaces/repositories/admin/department/i-update-department.usecase.ts";
 
 export class UpdateDepartmentStatusUseCase implements IUpdateDepartmentStatusUseCase {
   constructor(private _departmentRepository: IDepartmentRepository) {}
 
-  async execute(departmentDto: GetDepartmentDto): Promise<DepartmentStatusDto> {
+  async execute(
+    departmentDto: GetDepartmentDto,
+  ): Promise<DepartmentStatusResponseDto> {
     const { id, status } = departmentDto;
 
     if (!id || id === "undefined") throw new NotFoundError("Department");

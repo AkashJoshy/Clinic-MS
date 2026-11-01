@@ -1,13 +1,13 @@
 import type { SafeDoctorClinic } from "../../dto/doctor-clinic.dto.ts";
 import type {
-  DoctorConsultationDetailsDto,
+  DoctorConsultationResponseDto,
   DoctorConsultationMapperDto,
 } from "../../dto/doctor.dto.ts";
 
 export class DoctorConsultationMapper {
   static toDoctorConsultationDetails(
     consultationDetails: DoctorConsultationMapperDto,
-  ): DoctorConsultationDetailsDto {
+  ): DoctorConsultationResponseDto {
     const { doctorClinic, doctorUpdatedAt, userId } = consultationDetails;
     const {
       id,

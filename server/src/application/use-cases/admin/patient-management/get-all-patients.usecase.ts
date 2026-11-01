@@ -1,8 +1,8 @@
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
-import type { PatientBasicInfoDto } from "../../../dto/shared.dto.ts";
-import type { IPatientDetailsService } from "../../../i-service/i-patient-details.service.ts";
+import type { IPatientDetailsService } from "../../../interfaces/services/patient/i-patient-details.service.ts";
 import { PatientMapper } from "../../../mappers/admin/patient.mapper.ts";
-import type { IGetAllPatientsBasicUseCase } from "../../../repositories/admin/i-get-all-patients-basic.usecase.ts";
+import type { IGetAllPatientsBasicUseCase } from "../../../interfaces/repositories/admin/patient/i-get-all-patients-basic.usecase.ts";
+import type { PatientBasicInfoResponseDto } from "../../../dto/patient.dto.ts";
 
 export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
   constructor(
@@ -10,14 +10,17 @@ export class GetAllPatientsUseCase implements IGetAllPatientsBasicUseCase {
     private _patientDetailsService: IPatientDetailsService,
   ) {}
 
-  async execute(): Promise<PatientBasicInfoDto[]> {
+  async execute(): Promise<PatientBasicInfoResponseDto[]> {
+    console.log(`Reaching...`);
     const patients = await this._patientRepository.find();
 
     const initialResponse = await this._patientDetailsService.execute(patients);
 
-    const response: PatientBasicInfoDto[] = initialResponse.map((res) => {
-      return PatientMapper.toPatientBasicInfo(res);
-    });
+    const response: PatientBasicInfoResponseDto[] = initialResponse.map(
+      (res) => {
+        return PatientMapper.toPatientBasicInfo(res);
+      },
+    );
 
     return response;
   }

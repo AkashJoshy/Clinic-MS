@@ -4,13 +4,13 @@ import type {
   RefreshTokenPayloadDto,
   BaseUserDto,
 } from "../../../dto/auth.dto.ts";
-import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
-import type { IRefreshUseCase } from "../../../repositories/auth/i-refresh.usecase.ts";
+import type { IAccessTokenGenerationService } from "../../../interfaces/services/shared/token/i-access-token-generation.service.ts";
+import type { IRefreshUseCase } from "../../../interfaces/repositories/auth/i-refresh.usecase.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import { AuthError } from "../../../../domain/errors/auth.error.ts";
 import type { IRefreshSessionRepository } from "../../../../domain/repositories/i-refresh-session.repository.ts";
-import type { IHashService } from "../../../../domain/services/hash.service.ts";
-import type { ITokenService } from "../../../../domain/services/token.service.ts";
+import type { IHashService } from "../../../../domain/services/i-hash.service.ts";
+import type { ITokenService } from "../../../../domain/services/i-token.service.ts";
 import { RefreshTokenExpiredError } from "../../../../domain/errors/refresh-token-expired.error.ts";
 import { InvalidTokenError } from "../../../../domain/errors/invalid-token.error.ts";
 

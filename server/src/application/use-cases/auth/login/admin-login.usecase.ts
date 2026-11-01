@@ -5,10 +5,10 @@ import type {
   RefreshPayloadDto,
   LoginVerificationResponseDTO,
 } from "../../../dto/auth.dto.ts";
-import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
-import type { IUserExistenceService } from "../../../i-service/i-user-existence.service.ts";
-import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
+import type { ILoginUseCase } from "../../../interfaces/repositories/auth/i-login.usecase.ts";
+import type { IAccessTokenGenerationService } from "../../../interfaces/services/shared/token/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../interfaces/services/shared/token/i-refresh-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../interfaces/services/shared/user/i-user-existence.service.ts";
 
 export class AdminLoginUseCase implements ILoginUseCase {
   constructor(

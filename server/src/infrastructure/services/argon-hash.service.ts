@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import type { IHashService } from "../../domain/services/hash.service.ts";
+import type { IHashService } from "../../domain/services/i-hash.service.ts";
 
 export class ArgonHashService implements IHashService {
   async hash(value: string, label: string): Promise<string | undefined> {

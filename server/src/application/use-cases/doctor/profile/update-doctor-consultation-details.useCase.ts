@@ -3,9 +3,12 @@ import type { IClinicRepository } from "../../../../domain/repositories/i-clinic
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { DoctorConsultationDetailsDto } from "../../../dto/doctor.dto.ts";
+import type {
+  DoctorConsultationDto,
+  DoctorConsultationResponseDto,
+} from "../../../dto/doctor.dto.ts";
 import { DoctorConsultationMapper } from "../../../mappers/doctor/consultation.mapper.ts";
-import type { IDoctorConsultationUseCase } from "../../../repositories/doctor/i-doctor-consultation.usecase.ts";
+import type { IDoctorConsultationUseCase } from "../../../interfaces/repositories/doctor/profile/i-doctor-consultation.usecase.ts";
 
 export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultationUseCase {
   constructor(
@@ -16,8 +19,8 @@ export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultati
   ) {}
 
   async execute(
-    data: DoctorConsultationDetailsDto,
-  ): Promise<DoctorConsultationDetailsDto> {
+    data: DoctorConsultationDto,
+  ): Promise<DoctorConsultationResponseDto> {
     const { userId, id, clinicId, doctorId, ...consultationData } = data;
 
     const user = await this._userRepository.findById(userId);
@@ -71,6 +74,7 @@ export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultati
       doctorClinic,
       userId,
       doctorUpdatedAt: doctor.updatedAt,
-    });
+    })
+    
   }
 }

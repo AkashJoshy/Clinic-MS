@@ -1,6 +1,6 @@
 import type { SafeUser } from "../../dto/auth.dto.ts";
 import type {
-  DoctorProffesionalDetailsDto,
+  DoctorProfessionalResponseDto,
   SafeDoctor,
 } from "../../dto/doctor.dto.ts";
 
@@ -8,7 +8,7 @@ export class DoctorProfessionalMapper {
   static toDoctorProffesionalDetails(
     professionalDetails: SafeDoctor,
     userId: NonNullable<SafeUser["id"]>,
-  ): DoctorProffesionalDetailsDto {
+  ): DoctorProfessionalResponseDto {
     const {
       id,
       bio,

@@ -5,20 +5,20 @@ import { UpdatePatientAddressUseCase } from "../../application/use-cases/patient
 import { UpdatePatientEmergencyContactUseCase } from "../../application/use-cases/patient/profile/update-patient-emergency-contact.usecase.ts";
 import { UpdatePatientProfilePictureUseCase } from "../../application/use-cases/patient/profile/update-patient-profile-picture.usecase.ts";
 import { UpdatePatientProfileUseCase } from "../../application/use-cases/patient/profile/update-patient-profile.usecase.ts";
-import { CreatePatientProfileController } from "../../presentation/controllers/patient/create-patient-profile.controller.ts";
-import { GetAllDoctorsController } from "../../presentation/controllers/patient/get-all-doctors.controller.ts";
-import { PatientProfilesController } from "../../presentation/controllers/patient/patient-profiles.controller.ts";
-import { UpdatePatientAddressController } from "../../presentation/controllers/patient/update-patient-address.controller.ts";
-import { UpdatePatientEmergencyContactController } from "../../presentation/controllers/patient/update-patient-emergency-contact.controller.ts";
-import { UpdatePatientProfilePictureController } from "../../presentation/controllers/patient/update-patient-profile-picture.controller.ts";
-import { UpdatePatientProfileController } from "../../presentation/controllers/patient/update-patient-profile.controller.ts";
+import { GetPatientWalletUseCase } from "../../application/use-cases/patient/wallet-management/get-wallet.usecase.ts";
+import { WalletController } from "../../presentation/controllers/shared/wallet.controller.ts";
+import { DoctorController } from "../../presentation/controllers/patient/doctor.controller.ts";
+import { PatientController } from "../../presentation/controllers/patient/patient.controller.ts";
 import {
   mongooseAddressRepository,
   mongooseUserRepository,
   mongoosePatientRepository,
   mongooseDoctorRepository,
-  doctorDetailsService
+  doctorDetailsService,
+  mongooseWalletRepository,
+  walletTransactionsDetailsService,
 } from "../index.ts";
+import { GetDoctorWalletBalanceUseCase } from "../../application/use-cases/doctor/wallet-management/get-wallet-balance.usecase.ts";
 
 // Service-Usecase
 
@@ -43,44 +43,42 @@ const updatePatientAddressUseCase = new UpdatePatientAddressUseCase(
   mongoosePatientRepository,
   mongooseAddressRepository,
 );
-const updatePatientEmergencyContactUseCase = new UpdatePatientEmergencyContactUseCase(
-  mongoosePatientRepository,
-);
+const updatePatientEmergencyContactUseCase =
+  new UpdatePatientEmergencyContactUseCase(mongoosePatientRepository);
 
 const createPatientProfileUseCase = new CreatePatientProfileUseCase(
   mongoosePatientRepository,
   mongooseAddressRepository,
-  mongooseUserRepository
+  mongooseUserRepository,
 );
 const getAllDoctorsUseCase = new GetAllDoctorsUsecase(
   mongooseDoctorRepository,
   doctorDetailsService,
 );
 
+export const getPatientWalletUseCase = new GetPatientWalletUseCase(
+  mongooseWalletRepository,
+  mongooseUserRepository,
+  mongoosePatientRepository,
+  walletTransactionsDetailsService,
+);
+
+export const getDoctorWalletBalanceUseCase = new GetDoctorWalletBalanceUseCase(
+  mongooseWalletRepository,
+  mongooseUserRepository,
+  mongooseDoctorRepository,
+)
+
 // Controllers
-export const patientProfilesController = new PatientProfilesController(
+export const patientController = new PatientController(
   patientProfilesUseCase,
-);
-
-export const updatePatientProfileController = new UpdatePatientProfileController(
-  updatePatientProfileUseCase,
-);
-
-export const updatePatientProfilePictureController =
-  new UpdatePatientProfilePictureController(updatePatientProfilePictureUseCase);
-
-export const updatePatientAddressController = new UpdatePatientAddressController(
-  updatePatientAddressUseCase,
-);
-
-export const updatePatientEmergencyContactController = new UpdatePatientEmergencyContactController(
-  updatePatientEmergencyContactUseCase,
-);
-
-export const createPatientProfileController = new CreatePatientProfileController(
   createPatientProfileUseCase,
+  updatePatientProfileUseCase,
+  updatePatientAddressUseCase,
+  updatePatientEmergencyContactUseCase,
+  updatePatientProfilePictureUseCase,
 );
 
-export const getAllDoctorsController = new GetAllDoctorsController(
+export const patientDoctorController = new DoctorController(
   getAllDoctorsUseCase,
 );

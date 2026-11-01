@@ -1,0 +1,19 @@
+export const CANCELLATION_REASON = [
+  "TOO_EXPENSIVE",
+  "MISSING_FEATURES",
+  "NOT_USING_ENOUGH",
+  "SWITCHING_PLATFORM",
+  "TECHNICAL_ISSUES",
+  "OTHER",
+] as const;
+
+export const PAYMENT_METHOD = ["WALLET", "BANK_ACCOUNT", "RAZORPAY"] as const;
+
+export const SUBSCRIPTION_STATUS = [
+  "PENDING",
+  "ACTIVE",
+  "EXPIRED",
+  "CANCELLED",
+  "PAST_DUE",
+  "REPLACED"
+] as const;

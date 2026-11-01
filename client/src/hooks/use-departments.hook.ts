@@ -1,4 +1,4 @@
-import { getAllDepartments } from "@/services/common.service";
+import { getAllDepartments } from "@/services/shared.service";
 import type { DepartmentData } from "@/types/admin";
 import { useEffect, useState } from "react";
 

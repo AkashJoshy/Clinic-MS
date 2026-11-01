@@ -12,7 +12,6 @@ import type {
 import type { Role } from "./auth";
 import type { DoctorClinic } from "./doctor-clinic";
 import type { LucideIcon } from "lucide-react";
-import type { Clinic } from "./clinic";
 import type { BaseAddress } from "./patient";
 import type { UseMutateFunction } from "@tanstack/react-query";
 
@@ -129,6 +128,8 @@ export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";
 
+export type PaymentStatus = "SUCCESS" | "FAILED"
+
 export type SessionStatus =
   | "AVAILABLE"
   | "PENDING"
@@ -204,3 +205,4 @@ export type MutateFn<T> = UseMutateFunction<
   T,
   void
 >;
+

@@ -14,103 +14,173 @@ import {
 } from "../schemas/doctor/doctor.schema.ts";
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
 import { updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
-import { confirmSlotsController, doctorProfileController, doctorRegisterController, generateSlotsController, getDoctorReapplicationController, updateDoctorAddressController, updateDoctorConsultationDetailsController, updateDoctorProfessionalDetailsController, updateDoctorProfilePictureController, updateDoctorReapplicationController } from "../../container/index.ts";
 import { generateSlotsSchema } from "../schemas/doctor/generate-slots.schema.ts";
 import { confirmedSlotsSchema } from "../schemas/doctor/confirm-slots.schema.ts";
+import {
+  doctorController,
+  doctorDashboardController,
+  doctorReapplicationController,
+  doctorSlotController,
+  doctorSubscriptionController,
+} from "../../container/modules/doctor.modules.ts";
 
 const router = Router();
 
 // Routes
 router.get(
-  DOCTOR_ENDPOINTS["profile"],
+  DOCTOR_ENDPOINTS["PROFILE"]["FETCH_ONE"],
   authenticateUser,
   authorizeUser,
   async (req, res, next) => {
-    await doctorProfileController.handle(req, res, next);
-  },
-);
-
-router.post(
-  DOCTOR_ENDPOINTS["register"],
-  doctorUpload,
-  validate(doctorRegistrationSchema),
-  async (req, res, next) => {
-    await doctorRegisterController.handle(req, res, next);
+    await doctorController.getProfile(req, res, next);
   },
 );
 
 router.get(
-  DOCTOR_ENDPOINTS["reapplication_details"],
+  DOCTOR_ENDPOINTS["REAPPLICATIONS"]["FETCH_ONE"],
   async (req, res, next) => {
-    await getDoctorReapplicationController.handle(req, res, next);
+    await doctorReapplicationController.getReapplication(req, res, next);
   },
 );
 
 router.patch(
-  DOCTOR_ENDPOINTS["reapplication_details"],
+  DOCTOR_ENDPOINTS["REAPPLICATIONS"]["UPDATE_ONE"],
   doctorUpload,
   // validate(doctorRegistrationSchema),
   async (req, res, next) => {
-    await updateDoctorReapplicationController.handle(req, res, next);
+    await doctorReapplicationController.updateReapplication(req, res, next);
   },
 );
 
 router.put(
-  DOCTOR_ENDPOINTS["professionalDetails"],
+  DOCTOR_ENDPOINTS["PROFESSIONAL_DETAILS"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   validate(professionalDetailsSchema),
   async (req, res, next) => {
-    await updateDoctorProfessionalDetailsController.handle(req, res, next);
+    await doctorController.updateProfessionalDetails(req, res, next);
   },
 );
 
 router.put(
-  DOCTOR_ENDPOINTS["consultationDetails"],
+  DOCTOR_ENDPOINTS["CONSULTATION_DETAILS"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   validate(consultationDetailsSchema),
   async (req, res, next) => {
-    await updateDoctorConsultationDetailsController.handle(req, res, next);
+    await doctorController.updateConsulationDetails(req, res, next);
   },
 );
 
 router.put(
-  DOCTOR_ENDPOINTS["address"],
+  DOCTOR_ENDPOINTS["ADDRESSES"]["UPDATE_ONE"],
   authenticateUser,
   authorizeUser,
   async (req, res, next) => {
-    await updateDoctorAddressController.handle(req, res, next);
+    await doctorController.updateAddress(req, res, next);
   },
 );
 
 router.patch(
-  DOCTOR_ENDPOINTS["profile_picture"],
+  DOCTOR_ENDPOINTS["PROFILE_PICTURE"]["BASE"],
   authenticateUser,
   authorizeUser,
   profileupload,
   validateFile(updatePersonalProfilePictureSchema),
   async (req, res, next) => {
-    await updateDoctorProfilePictureController.handle(req, res, next);
+    await doctorController.updateProfessionalDetails(req, res, next);
   },
 );
 
-router.patch(DOCTOR_ENDPOINTS["generate_slots"],
+router.patch(
+  DOCTOR_ENDPOINTS["CLINICS"]["SLOTS"]["GENERATE"],
   authenticateUser,
   authorizeUser,
   validate(generateSlotsSchema),
-  async(req, res, next) => {
-    await generateSlotsController.handle(req, res, next)
-  }
-)
+  async (req, res, next) => {
+    await doctorSlotController.generateSlots(req, res, next);
+  },
+);
 
-router.post(DOCTOR_ENDPOINTS["confirm_slots"],
+router.post(
+  DOCTOR_ENDPOINTS["CLINICS"]["SLOTS"]["CONFIRM"],
   authenticateUser,
   authorizeUser,
   validate(confirmedSlotsSchema),
-  async(req, res, next) => {
-    await confirmSlotsController.handle(req, res, next)
-  }
-)
+  async (req, res, next) => {
+    await doctorSlotController.confirmSlots(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["OVERVIEW"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.getSubscriptionOverview(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["CREATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.getSubscriptionOverview(req, res, next);
+  },
+);
+
+router.post(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["BUY"]["WALLET"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.buySubscriptionWithWallet(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["UPGRADE_OPTIONS"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.getSubscriptionUpgradeOptions(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+router.patch(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["CANCEL"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.cancelSubscription(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["DASHBOARD"]["OVERVIEW"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorDashboardController.getDashboardOverview(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["DASHBOARD"]["CALENDAR_SLOTS"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorDashboardController.getCalendarSlotsByDate(req, res, next);
+  },
+);
 
 export default router;

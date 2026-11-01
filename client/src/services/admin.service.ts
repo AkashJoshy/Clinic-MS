@@ -4,11 +4,19 @@ import type {
   DoctorRejectDto,
   DoctorStatusUpdateDto,
   DocumentDto,
+  Subscription,
+  SubscriptionDetails,
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
 import type { DeletePatientDto } from "@/types/patient";
 import type { UpdateMethods } from "@/types/common";
 import { ROLE_VALUES } from "@/constants/role.constants";
+import type {
+  BaseSubscriptionData,
+  PlanStatus,
+  SubscriptionPlan,
+  UpdateSubscriptionStatusData,
+} from "@/types/subscription";
 
 export const addDepartment = async (data: Omit<DepartmentData, "id">) => {
   try {
@@ -256,13 +264,14 @@ export const updatePatient = async (data: DeletePatientDto) => {
 
 export const verifyDoctorDocument = async (doctorData: DocumentDto) => {
   try {
-    const {
-      id,
-      ...data
-    } = doctorData as DocumentDto   
-    const res = await api.patch(ENDPOINTS.ADMIN.VERIFY_DOCTOR_DOCUMENT(id), data, {
-      authRole: ROLE_VALUES.lower.ADMIN,
-    });
+    const { id, ...data } = doctorData as DocumentDto;
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.VERIFY_DOCTOR_DOCUMENT(id),
+      data,
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -278,12 +287,32 @@ export const verifyDoctorDocument = async (doctorData: DocumentDto) => {
 
 export const verifyClinicDocument = async (clinicData: DocumentDto) => {
   try {
-    const {
-      id,
-      ...data
-    } = clinicData as DocumentDto
-    const res = await api.patch(ENDPOINTS.ADMIN.VERIFY_CLINIC_DOCUMENT(id),
-      data, {
+    const { id, ...data } = clinicData as DocumentDto;
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.VERIFY_CLINIC_DOCUMENT(id),
+      data,
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const createNewSubscriptionPlan = async (
+  planData: BaseSubscriptionData,
+) => {
+  try {
+    const res = await api.post(ENDPOINTS.ADMIN.SUBSCRIPTION, planData, {
       authRole: ROLE_VALUES.lower.ADMIN,
     });
     return res.data;
@@ -299,3 +328,73 @@ export const verifyClinicDocument = async (clinicData: DocumentDto) => {
   }
 };
 
+export const getAllSubscriptionPlans = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.SUBSCRIPTION, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const editSubscriptionPlan = async (
+  subscriptionData: SubscriptionPlan,
+) => {
+  try {
+    const { id, ...planData } = subscriptionData;
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.UPDATE_SUBSCRIPTION(id),
+      planData,
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateSubscriptionPlanStatus = async (subscriptionData: UpdateSubscriptionStatusData) => {
+  try {
+    const { id, status } = subscriptionData;
+    console.log(`Subscription Data`);
+    console.log(subscriptionData);
+    
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.UPDATE_SUBSCRIPTION_STATUS(id),
+      {
+        status
+      },
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};

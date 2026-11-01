@@ -1,3 +1,5 @@
+import type { Clinic } from "../../../domain/entities/clinic.entity.ts";
+import type { Doctor } from "../../../domain/entities/doctor.entity.ts";
 import type {
   AddressToUpdateDto,
   DoctorReapplicationToUpdateDto,
@@ -62,4 +64,33 @@ export class DoctorReapplicationMapper {
     };
   }
   
+   static toDoctorPersistenceUpdates(
+    doctor: Doctor,
+  ) {
+    return {
+      bio: doctor.bio,
+      displayName: doctor.displayName,
+      experienceYears: doctor.experienceYears,
+      gender: doctor.gender,
+      licenceNumber: doctor.licenceNumber,
+      qualification: doctor.qualification,
+      specialization: doctor.specialization,
+      profilePicture: doctor.profilePicture,
+      registrationDoc: doctor.registrationDoc,
+      medicalLicenceDoc: doctor.medicalLicenceDoc,
+      status: doctor.status,
+    };
+  }
+
+  static toClinicPersistenceUpdates(clinic: Clinic) {
+  return {
+    name: clinic.name,
+    about: clinic.about,
+    altPhone: clinic.altPhone,
+    registrationNumber: clinic.registrationNumber,
+    registrationDoc: clinic.registrationDoc,
+    establishmentLicenceDoc: clinic.establishmentLicenceDoc,
+  };
+}
+
 }

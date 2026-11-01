@@ -3,6 +3,7 @@ export type ErrorCode =
   | "VALIDATION_ERROR"
   | "UNAUTHORIZED"
   | "FORBIDDEN"
+  | "BAD_REQUEST"
   | "NOT_FOUND"
   | "UNKNOWN_ERROR"
   | "CONFLICT"

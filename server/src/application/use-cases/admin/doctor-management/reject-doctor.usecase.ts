@@ -11,12 +11,12 @@ import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-
 import type { IDoctorReapplicationRepository } from "../../../../domain/repositories/i-doctor-reapplication.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { IMailService } from "../../../../domain/services/email.service.ts";
-import type { DoctorStatusUpdateDto } from "../../../dto/doctor.dto.ts";
-import type { IActionTokenGenerationService } from "../../../i-service/i-action-token-generation.service.ts";
-import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/i-update-doctor-status.usecase.ts";
+import type { IMailService } from "../../../../domain/services/i-email.service.ts";
+import type { ReviewDoctorUpdateDto } from "../../../dto/doctor.dto.ts";
+import type { IReviewDoctorUseCase } from "../../../interfaces/repositories/admin/doctor/i-review-doctor.usecase.ts";
+import type { IActionTokenGenerationService } from "../../../interfaces/services/shared/token/i-action-token-generation.service.ts";
 
-export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
+export class RejectDoctorUseCase implements IReviewDoctorUseCase {
   constructor(
     private _doctorRepository: IDoctorRepository,
     private _userRepository: IUserRepository,
@@ -28,7 +28,7 @@ export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
     private _actionTokenService: IActionTokenGenerationService,
   ) {}
 
-  async execute(data: DoctorStatusUpdateDto): Promise<void> {
+  async execute(data: ReviewDoctorUpdateDto): Promise<void> {
     const { rejectedReason, rejectedMessage, fields, id } = data;
     const doctor = await this._doctorRepository.findById(data.id);
 
@@ -116,6 +116,5 @@ export class RejectDoctorUseCase implements IUpdateDoctorStatusUseCase {
     );
 
     this._emailService.sendMail(user.email, subject, body);
-    
   }
 }

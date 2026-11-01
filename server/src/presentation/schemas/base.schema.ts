@@ -225,3 +225,12 @@ export const shiftSchema = z.object({
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid end time. Use HH:mm format."),
   mode: z.enum(SERVICE_MODE),
 });
+
+export const featureSchema = z.object({
+  id: z.string(),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Feature title must be at least 2 characters."),
+  isIncluded: z.boolean().default(true),
+});

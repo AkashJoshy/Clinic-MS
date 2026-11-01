@@ -26,6 +26,7 @@ import UnderConstruction from "./components/layout/under-construction.layout";
 import DepartmentPage from "./pages/admin/departments/department.page";
 import AddDepartmentPage from "./pages/admin/departments/add-department.page";
 import EditDepartmentPage from "./pages/admin/departments/edit-department.page";
+import SubscriptionsPage from "./pages/admin/subscriptions/subscriptions.page";
 import DoctorRegistrationPage from "./pages/doctor-registration.page";
 import DoctorManagementPage from "./pages/admin/doctors/doctor-management.page";
 import DoctorDetailsPage from "./pages/admin/doctors/doctor-details.page";
@@ -40,6 +41,10 @@ import DoctorHomepage from "./pages/auth/doctor-home.page";
 import DoctorRegistrationPendingPage from "./pages/auth/doctor-registration-pending.page";
 import DoctorRegistrationRejectedPage from "./pages/auth/doctor-registration-rejected.page";
 import DoctorReapplication from "./pages/doctor-reapplication.page";
+import PatientWalletPage from "./pages/patient/wallet.page";
+import DoctorWalletPage from "./pages/doctor/wallet.page";
+import DoctorSubscriptionPage from "./pages/doctor/subscription.page";
+import DoctorDashboardPage from "./pages/doctor/dashboard.page";
 
 const router = createBrowserRouter([
   {
@@ -187,13 +192,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/patient/wallet",
-                element: (
-                  <UnderConstruction
-                    title="Wallet"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                element: <PatientWalletPage roleOverride="patient" />,
               },
               {
                 path: "/patient/notifications",
@@ -231,13 +230,7 @@ const router = createBrowserRouter([
             children: [
               {
                 path: "/doctor/dashboard",
-                element: (
-                  <UnderConstruction
-                    title="Dashboard"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                element: <DoctorDashboardPage />
               },
               {
                 path: "/doctor/appointments",
@@ -264,14 +257,8 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "/doctor/subscription",
-                element: (
-                  <UnderConstruction
-                    title="Subscription"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                path: "/doctor/subscription", 
+                element: <DoctorSubscriptionPage roleOverride="doctor" />,
               },
               {
                 path: "/doctor/revenue",
@@ -285,13 +272,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/doctor/wallet",
-                element: (
-                  <UnderConstruction
-                    title="Wallet"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                element: <DoctorWalletPage roleOverride="doctor" />,
               },
               {
                 path: "/doctor/notifications",
@@ -362,13 +343,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "/admin/subscriptions",
-                element: (
-                  <UnderConstruction
-                    title="Subscription Plans"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                element: <SubscriptionsPage />,
               },
               {
                 path: "/admin/revenue",
@@ -452,7 +427,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => {
+ export const App = () => {
   return (
     <div>
       <TooltipProvider>
@@ -463,4 +438,4 @@ const App = () => {
   );
 };
 
-export default App;
+// export default App;

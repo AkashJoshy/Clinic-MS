@@ -1,15 +1,15 @@
 import type {
   DoctorClinicDetailsBasicDto,
   DoctorClinicDetailsBasicResponseDto,
-  PatientDoctorDetailsCardDto,
   PatientDoctorDetailsDto,
+  PatientDoctorDetailsResponseDto,
 } from "../../dto/doctor.dto.ts";
 
 export class DoctorMapper {
     
   static toPatientDoctorDetailsCard(
     doctorDetails: PatientDoctorDetailsDto,
-  ): PatientDoctorDetailsCardDto {
+  ): PatientDoctorDetailsResponseDto {
     const {
       id,
       gender,

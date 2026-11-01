@@ -40,5 +40,4 @@ export class Slot {
   static createBooked(props: Omit<Slot, "status">) {
     return Slot.create({ ...props, status: "BOOKED" });
   }
-
 }

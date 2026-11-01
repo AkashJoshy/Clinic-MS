@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import type { IMailService } from "../../../domain/services/email.service.ts";
+import type { IMailService } from "../../../domain/services/i-email.service.ts";
 import dotenv from "dotenv";
 dotenv.config();
 

@@ -1,0 +1,16 @@
+export const MODEL_NAMES = {
+  USER: "User",
+  SLOT: "Slot",
+  DOCTOR: "Doctor",
+  CLINIC: "Clinic",
+  PATIENT: "Patient",
+  ADDRESS: "Address",
+  COUNTER: "Counter",
+  WALLET: "Wallet",
+  DEPARTMENT: "Department",
+  DOCTOR_CLINIC: "DoctorClinic",
+  REFRESH_SESSION: "RefreshSession",
+  SUBSCRIPTION_PLAN: "SubscriptionPlan",
+  WALLET_TRANSACTION: "WalletTransaction",
+  DOCTOR_REAPPLICATION: "DoctorReapplication",
+} as const;

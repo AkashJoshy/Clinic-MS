@@ -1,9 +1,9 @@
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { ICacheService } from "../../../../domain/services/cache.service.ts";
-import type { IHashService } from "../../../../domain/services/hash.service.ts";
+import type { ICacheService } from "../../../../domain/services/i-cache.service.ts";
+import type { IHashService } from "../../../../domain/services/i-hash.service.ts";
 import { AppError } from "../../../../domain/errors/app.errors.js";
 import type { ResetPasswordDto } from "../../../dto/auth.dto.ts";
-import type { IResetPasswordUseCase } from "../../../repositories/auth/i-reset-password.usecase.ts";
+import type { IResetPasswordUseCase } from "../../../interfaces/repositories/auth/i-reset-password.usecase.ts";
 import { TokenExpiredAppError } from "../../../../domain/errors/token-expired.error.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";

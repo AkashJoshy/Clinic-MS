@@ -7,11 +7,11 @@ import type { IAddressRepository } from "../../../../domain/repositories/i-addre
 import { Address } from "../../../../domain/entities/address.entity.ts";
 import { InternalServerError } from "../../../../domain/errors/internal-server.error.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
-import type { IPatientRegisterUseCase } from "../../../repositories/auth/i-patient-register.usecase.ts";
-import type { IUserCreationService } from "../../../i-service/i-user-creation.service.ts";
-import type { IEmailVerificationService } from "../../../i-service/i-email-verification.service.ts";
+import type { IPatientRegisterUseCase } from "../../../interfaces/repositories/auth/i-patient-register.usecase.ts";
+import type { IEmailVerificationService } from "../../../interfaces/services/shared/user/i-email-verification.service.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import Patient from "../../../../domain/entities/patient.entity.ts";
+import type { IUserCreationService } from "../../../interfaces/services/shared/user/i-user-creation.service.ts";
 
 export class PatientRegisterUseCase implements IPatientRegisterUseCase {
   constructor(
@@ -23,7 +23,10 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
 
   async execute(data: RegisterUserDTO): Promise<VerificationResponseDto> {
     const message = "User Already Exists";
-    let newUser = await this._userCreation.execute(data, message);
+    let newUser = await this._userCreation.execute({
+      user: data,
+      message,
+    });
 
     if (!newUser)
       throw new DatabaseError(
@@ -74,11 +77,11 @@ export class PatientRegisterUseCase implements IPatientRegisterUseCase {
       ),
     );
 
-    const token = await this._mailVerficationService.execute(
-      newUser.email,
-      newUser.fullName,
-      newUser.role as Role,
-    );
+    const token = await this._mailVerficationService.execute({
+      email: newUser.email,
+      name: newUser.fullName,
+      role: newUser.role as Role,
+    });
     return { token, email: newUser.email, role: newUser.role };
   }
 }

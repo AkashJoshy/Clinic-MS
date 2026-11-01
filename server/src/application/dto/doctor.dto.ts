@@ -7,7 +7,6 @@ import type { DoctorReapplicationFiles } from "../../domain/types/doctor.types.t
 import type {
   ApprovalPlainUrl,
   Gender,
-  ImageData,
   PlainUrl,
   ServiceMode,
 } from "../../domain/types/shared.types.ts";
@@ -16,14 +15,13 @@ import type { DoctorReapplication } from "../../domain/entities/doctor-reapplica
 import type { SafeUser } from "./auth.dto.ts";
 import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
 import type { Address } from "../../domain/entities/address.entity.ts";
-import type { Exceptions, SlotRules, WeeklySchedule } from "../../domain/types/doctor-clinic.types.ts";
 
 export interface ClinicDetails {
   id: string;
   name: string;
 }
 
-export interface DoctorStatusUpdateDto {
+export interface ReviewDoctorUpdateDto {
   id: string;
   rejectedReason: string;
   rejectedMessage: string;
@@ -109,9 +107,14 @@ export type AdminDoctorFullInfoDto = Omit<
   address: BaseAddress | null;
 };
 
-export type PatientDoctorDetailsDto = Omit<AdminDoctorFullInfoDto, "doctorClinicDetails"> & {
-  doctorClinicDetails: DoctorClinicDetailsBasicResponseDto[]
-}
+export type AdminDoctorFullInfoResponseDto = AdminDoctorFullInfoDto
+
+export type PatientDoctorDetailsDto = Omit<
+  AdminDoctorFullInfoDto,
+  "doctorClinicDetails"
+> & {
+  doctorClinicDetails: DoctorClinicDetailsBasicResponseDto[];
+};
 
 export type AdminDoctorInfoDto = Omit<
   DoctorInfo,
@@ -136,7 +139,9 @@ export type AdminDoctorInfoDto = Omit<
   address: BaseAddress | null;
 };
 
-export type DoctorDetailsCardDto = {
+export type AdminDoctorInfoResponseDto = AdminDoctorInfoDto;
+
+export type DoctorDetailsCardResponseDto = {
   user: BasicDoctorInfo["user"] | null;
   department: AdminDoctorInfoDto["department"] | null;
   doctor: Pick<
@@ -167,7 +172,7 @@ export type DoctorDetailsCardDto = {
   address: AdminDoctorInfoDto["address"] | null;
 };
 
-export type PatientDoctorDetailsCardDto = {
+export type PatientDoctorDetailsResponseDto = {
   doctor: Pick<
     AdminDoctorInfoDto["doctor"],
     | "averageRating"
@@ -181,11 +186,7 @@ export type PatientDoctorDetailsCardDto = {
   >;
   doctorClinicDetails: (Pick<
     DoctorInfo["doctorClinicDetails"][number],
-    | "id"
-    | "consultationFee"
-    | "isActive"
-    | "timeZone"
-    | "type"
+    "id" | "consultationFee" | "isActive" | "timeZone" | "type"
   > & {
     clinic: Pick<
       NonNullable<AdminDoctorInfoDto["doctorClinicDetails"][number]["clinic"]>,
@@ -196,14 +197,15 @@ export type PatientDoctorDetailsCardDto = {
   department: BasicDoctorInfo["department"];
 };
 
-export type DoctorClinicDetailsBasicDto = AdminDoctorFullInfoDto["doctorClinicDetails"][number]
+export type DoctorClinicDetailsBasicDto =
+  AdminDoctorFullInfoDto["doctorClinicDetails"][number];
 
 export type DoctorClinicDetailsBasicResponseDto = Omit<
-  PatientDoctorDetailsCardDto["doctorClinicDetails"][number],
+  PatientDoctorDetailsResponseDto["doctorClinicDetails"][number],
   "weeklySchedule"
 >;
 
-export type DoctorDetailsDto = {
+export type DoctorDetailsResponseDto = {
   user: User;
   doctor: Doctor;
   doctorClinic: SafeDoctorClinic;
@@ -215,7 +217,7 @@ export type DoctorReapplicationResponseDto = {
   reapplication: DoctorReapplication;
 };
 
-export type DoctorProfileInfo = Omit<AdminDoctorInfoDto, "user">;
+export type DoctorProfileInfoResponseDto = Omit<AdminDoctorInfoDto, "user">;
 
 export interface DoctorRegisterDto {
   fullName: string;
@@ -249,8 +251,8 @@ export interface DoctorRegisterDto {
   medicalLicenceDoc?: Express.Multer.File[];
   doctorRegistrationDoc?: Express.Multer.File[];
 }
-
-export type DoctorProffesionalDetailsDto = Pick<
+//111
+export type DoctorProfessionalDto = Pick<
   SafeDoctor,
   | "id"
   | "bio"
@@ -262,6 +264,8 @@ export type DoctorProffesionalDetailsDto = Pick<
   | "licenceNumber"
   | "updatedAt"
 > & { userId: string };
+
+export type DoctorProfessionalResponseDto = DoctorProfessionalDto
 
 export type UpdateDoctorDto = Partial<
   Pick<
@@ -287,7 +291,7 @@ export type UpdateDoctorResponseDto = {
   user: User;
 };
 
-export type DoctorConsultationDetailsDto = Pick<
+export type DoctorConsultationDto = Pick<
   DoctorClinic,
   | "consultationFee"
   | "isActive"
@@ -298,14 +302,7 @@ export type DoctorConsultationDetailsDto = Pick<
   | "timeZone"
 > & { userId: string; updatedAt: Date | null };
 
-export interface GenerateSlotsDto {
-  doctorId: string;
-  clinicId: string;
-  doctorClinicId: string;
-  weeklySchedule: WeeklySchedule[];
-  exceptions: Exceptions;
-  slotRules: SlotRules;
-}
+export type DoctorConsultationResponseDto = DoctorConsultationDto;
 
 export type DoctorConsultationMapperDto = {
   doctorClinic: SafeDoctorClinic;
@@ -313,7 +310,7 @@ export type DoctorConsultationMapperDto = {
   doctorUpdatedAt: SafeDoctor["updatedAt"];
 };
 
-export interface GetReapplicationDetailsResponseDto {
+export interface ReapplicationResponseDto {
   doctor: SafeDoctor;
   clinicAddress: BaseAddress;
   fieldsToReupload: DoctorReapplication["fieldsToReupload"];
@@ -323,7 +320,7 @@ export interface GetReapplicationDetailsResponseDto {
 
 type ReapplicationData = Partial<DoctorRegisterDto>;
 
-export interface DoctorUpdateReapplicationDto {
+export interface ReapplicationUpdateDto {
   data: ReapplicationData;
   files: DoctorReapplicationFiles;
   token: string;
@@ -336,18 +333,18 @@ export interface UpdateDoctorEntityDto {
 }
 
 export interface DoctorReapplicationToUpdateDto {
-  data: DoctorUpdateReapplicationDto["data"];
-  files: DoctorUpdateReapplicationDto["files"];
+  data: ReapplicationUpdateDto["data"];
+  files: ReapplicationUpdateDto["files"];
 }
 
 export interface AddressToUpdateDto {
-  data: DoctorUpdateReapplicationDto["data"];
+  data: ReapplicationUpdateDto["data"];
 }
 
 export interface DoctorExistsDto {
   doctorId: string;
   clinicId: string;
-  doctorClinicId: string
+  doctorClinicId: string;
 }
 
 export interface DoctorExistsResponseDto {

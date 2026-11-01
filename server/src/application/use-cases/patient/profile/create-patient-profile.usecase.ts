@@ -4,15 +4,16 @@ import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type {
   CreatePatientProfileDto,
   PatientProfile,
+  PatientProfileResponseDto,
 } from "../../../dto/patient.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import { Address } from "../../../../domain/entities/address.entity.ts";
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
-import type { ICreatePatientProfileUseCase } from "../../../repositories/patient/i-create-patient-profile.usecase.ts";
 import type { Gender } from "../../../../domain/types/shared.types.ts";
 import type { RelationToPatient } from "../../../../domain/constants/patient.constants.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
 import { PatientMapper } from "../../../mappers/patient/patient.mapper.ts";
+import type { ICreatePatientProfileUseCase } from "../../../interfaces/repositories/patient/profile/i-create-patient-profile.usecase.ts";
 
 export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase {
   constructor(
@@ -21,7 +22,9 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
     private readonly _userRepository: IUserRepository,
   ) {}
 
-  async execute(data: CreatePatientProfileDto): Promise<PatientProfile> {
+  async execute(
+    data: CreatePatientProfileDto,
+  ): Promise<PatientProfileResponseDto> {
     const patientCount = await this._patientRepository.getPatientNumber();
     const patientNumber = `${process.env.PATIENT_NUMBER_MODEL || "PAT"}-${patientCount}`;
 
@@ -55,25 +58,10 @@ export class CreatePatientProfileUseCase implements ICreatePatientProfileUseCase
     } = data;
 
     const newPatient = await this._patientRepository.save(
-      Patient.createDependent(
-        {
-          id: null,
-          userId: data.userId,
-          displayName: data.displayName,
-          relation: data.relation.toUpperCase() as RelationToPatient,
-          dateOfBirth: data.dateOfBirth,
-          gender: data.gender.toUpperCase() as Gender,
-          medicalInformation: {
-            bloodGroup: data.bloodGroup,
-            allergies: data.allergies || [],
-            chronicConditions: data.chronicConditions || [],
-          },
-          emergencyContact: {
-            name: selfPatient.displayName,
-            phone: user.phone,
-            relationship: selfPatient.relation,
-          },
-        },
+      PatientMapper.toDependentEntity(
+        data,
+        selfPatient,
+        user.phone,
         patientNumber,
       ),
     );

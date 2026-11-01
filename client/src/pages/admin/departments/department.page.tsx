@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { updateDepartment } from "@/services/admin.service";
-import { getAllDepartments } from "@/services/common.service";
+import { getAllDepartments } from "@/services/shared.service";
 import { AllApprovals } from "@/components/shared/admin/all-approvals.shared";
 import { Pagination } from "@/components/layout/pagination.layout";
 import type { DepartmentData, SelectedDept } from "@/types/admin";
@@ -149,20 +149,20 @@ const DepartmentPage: React.FC = () => {
         </div>
       ) : (
         <AnimatePresence mode="wait">
-         <motion.div
+          <motion.div
             key={page}
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -15 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="space-y-3"
-            >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredDepartments.map((dept) => (
-            <DepartmentCard department={dept} handleDelete={handleDelete} />
-          ))}
-        </div>
-         </motion.div>
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredDepartments.map((dept) => (
+                <DepartmentCard department={dept} handleDelete={handleDelete} />
+              ))}
+            </div>
+          </motion.div>
         </AnimatePresence>
       )}
 
@@ -189,7 +189,6 @@ const DepartmentPage: React.FC = () => {
         onPageChange={setPage}
         colorCode="WHITE"
       />
-
     </div>
   );
 };

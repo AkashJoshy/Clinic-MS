@@ -7,7 +7,6 @@ import DoctorAccountInfo from "@/components/shared/doctor/profile/account-info.s
 import type { DoctorProfileData } from "@/types/doctor";
 import { initialData } from "@/constants/doctor.constant";
 import DoctorClinicDetails from "@/components/shared/doctor/profile/clinic-details.shared";
-import { Button } from "@/components/ui/button";
 
 const DoctorProfilePage: React.FC = () => {
   const [data, setData] = useState<DoctorProfileData>(initialData);

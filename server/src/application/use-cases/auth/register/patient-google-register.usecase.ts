@@ -14,10 +14,10 @@ import { InternalServerError } from "../../../../domain/errors/internal-server.e
 import { DatabaseError } from "../../../../domain/errors/database.error.ts";
 import { welcomeTemplate } from "../../../../infrastructure/services/mail/templates/welcome.template.ts";
 import { EMAIL_FOOTER } from "../../../../domain/constants/email.constants.ts";
-import type { IMailService } from "../../../../domain/services/email.service.ts";
-import type { IPatientGoogleAuthUseCase } from "../../../repositories/auth/i-patient-google-auth.usecase.ts";
-import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
-import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
+import type { IMailService } from "../../../../domain/services/i-email.service.ts";
+import type { IPatientGoogleAuthUseCase } from "../../../interfaces/repositories/auth/i-patient-google-auth.usecase.ts";
+import type { IAccessTokenGenerationService } from "../../../interfaces/services/shared/token/i-access-token-generation.service.ts";
+import type { IRefreshTokenGenerationService } from "../../../interfaces/services/shared/token/i-refresh-token-generation.service.ts";
 
 export class PatientGoogleRegisterUseCase implements IPatientGoogleAuthUseCase {
   constructor(

@@ -61,8 +61,9 @@ export type UpdatePatientDto = Pick<
 > &
   Pick<User, "email" | "phone">;
 
-export type UpdateEmergencyContactDto = EmergencyContact & { id: string }
+export type EmergencyContactDto = EmergencyContact & { id: string }
 
+export type EmergencyContactResponseDto = EmergencyContactDto
 
 export type PatientProfile = {
   patient: Omit<BasePatient, "imageUrl"> & {
@@ -71,6 +72,8 @@ export type PatientProfile = {
 } & {
   address: BaseAddress | null;
 };
+
+export type PatientProfileResponseDto = PatientProfile
 
 export interface PatientUpdateFields {
   fullName: string;
@@ -90,3 +93,38 @@ export interface UpdateProfilePictureResponseDto {
   ownerId: string;
   pictureUrl: string;
 }
+
+export type PatientBasicInfoResponseDto = {
+  patient: Pick<
+    Patient,
+    | "id"
+    | "displayName"
+    | "patientNumber"
+    | "medicalInformation"
+    | "gender"
+    | "userId"
+    | "createdAt"
+  > & {
+    imageUrl: Omit<ImageData, "publicId">;
+  };
+} & {
+  user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
+};
+
+export type PatientInfoResponseDto = PatientProfile & {
+  user: Pick<
+    User,
+    "email" | "phone" | "createdAt" | "isActive" | "isEmailVerified" | "isBlocked"
+  > | null;
+};
+
+export type CreateDependentDto = {
+  userId: string;
+  displayName: string;
+  relation: string;
+  dateOfBirth: string;
+  gender: Gender | string;
+  bloodGroup?: string;
+  allergies?: string[];
+  chronicConditions?: string[];
+};

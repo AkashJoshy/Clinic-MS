@@ -44,6 +44,15 @@ export type SafeClinic = Omit<
   | "update"
 >;
 
+export type SafeClinicResponseDto = SafeClinic
+
+export type ClinicDetailsResponseDto = {
+  clinics: SafeClinic[];
+  clinicMap: Map<string | null, SafeClinic>;
+};
+
+export type ClinicEntityResponseDto = Clinic
+
 export interface ClinicDoctorProfileResponseDto extends DoctorProfileResponseDto {
   doctor: ClinicDoctorDetails;
 }
@@ -78,7 +87,7 @@ export type UpdateClinicDto = Partial<
   establishmentLicenceDoc?: Express.Multer.File[] | undefined;
 };
 
-export interface UpdateClinicEntityDto {
+export interface ClinicEntityDto {
   clinic: Clinic, 
   updates: UpdateClinicDto
 }

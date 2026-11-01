@@ -1,9 +1,8 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
-import type { DoctorProfileInfo } from "../../../dto/doctor.dto.ts";
-import type { IDoctorDetailsService } from "../../../i-service/i-doctor-details.service.ts";
-import type { IDoctorProfileUseCase } from "../../../repositories/doctor/i-doctor-profile.usecase.ts";
+import type { IDoctorDetailsService } from "../../../interfaces/services/doctor/i-doctor-details.service.ts";
+import type { IDoctorProfileUseCase } from "../../../interfaces/repositories/doctor/profile/i-doctor-profile.usecase.ts";
+import type { DoctorProfileInfoResponseDto } from "../../../dto/doctor.dto.ts";
 
 export class DoctorProfileUseCase implements IDoctorProfileUseCase {
   constructor(
@@ -11,7 +10,7 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
     private _doctorDetailsService: IDoctorDetailsService,
   ) {}
 
-  async execute(userId: string): Promise<DoctorProfileInfo> {
+  async execute(userId: string): Promise<DoctorProfileInfoResponseDto> {
     const doctor = await this._doctorRepository.findOneBy({
       userId,
     });
@@ -22,6 +21,6 @@ export class DoctorProfileUseCase implements IDoctorProfileUseCase {
 
     const response = await this._doctorDetailsService.executeOne(doctor);
 
-    return response
+    return response;
   }
 }

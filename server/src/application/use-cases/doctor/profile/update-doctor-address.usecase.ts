@@ -1,5 +1,5 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IUpdateAddressUseCase } from "../../../repositories/patient/i-update-address.usecase.ts";
+import type { IUpdateAddressUseCase } from "../../../interfaces/repositories/shared/i-update-address.usecase.ts";
 import type { UpdateAddressDto } from "../../../dto/shared.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";

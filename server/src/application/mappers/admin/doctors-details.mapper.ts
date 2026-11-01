@@ -1,8 +1,9 @@
 import type { Doctor } from "../../../domain/entities/doctor.entity.ts";
-import type { SafeDepartment } from "../../../domain/types/admin.types.ts";
 import type { SafeUser } from "../../dto/auth.dto.ts";
+import type { SafeDepartmentDto } from "../../dto/department.dto.ts";
+import type { DoctorClinicContextDto } from "../../dto/doctor-clinic.dto.ts";
 import type { AdminDoctorFullInfoDto } from "../../dto/doctor.dto.ts";
-import type { DoctorClinicContextDto, SafeAddress } from "../../dto/shared.dto.ts";
+import type { SafeAddress } from "../../dto/shared.dto.ts";
 
 export class DoctorDetailsMapper {
   static toAdminDoctorFullInfo(
@@ -10,7 +11,7 @@ export class DoctorDetailsMapper {
     user: SafeUser | null,
     doctorClinicDetails: DoctorClinicContextDto[],
     doctorAddress: SafeAddress | null,
-    department: SafeDepartment | null,
+    department: SafeDepartmentDto | null,
   ): AdminDoctorFullInfoDto {
     return {
       user: user

@@ -1,8 +1,8 @@
-import { AccessTokenGenerationService } from "../../application/services/access-token.service.ts";
-import { EmailVerificationService } from "../../application/services/email-verification.service.ts";
-import { RefreshTokenGenerationService } from "../../application/services/refresh-token.service.ts";
-import { UserCreationService } from "../../application/services/user-creation.service.ts";
-import { UserExistenceService } from "../../application/services/user-existence.service.ts";
+import { EmailVerificationService } from "../../application/services/shared/user/email-verification.service.ts";
+import { RefreshTokenGenerationService } from "../../application/services/shared/token/refresh-token.service.ts";
+import { UserCreationService } from "../../application/services/shared/user/user-creation.service.ts";
+import { UserExistenceService } from "../../application/services/shared/user/user-existence.service.ts";
+import { WalletCreationService } from "../../application/services/wallet/wallet-creation.service.ts";
 import { ForgotAdminPasswordUseCase } from "../../application/use-cases/auth/forgot-password/forgot-admin-password.usecase.ts";
 import { ForgotDoctorPasswordUseCase } from "../../application/use-cases/auth/forgot-password/forgot-doctor-password.usecase.ts";
 import { ForgotPasswordUseCase } from "../../application/use-cases/auth/forgot-password/forgot-password.usecase.ts";
@@ -19,34 +19,37 @@ import { ResetAdminPasswordUseCase } from "../../application/use-cases/auth/rese
 import { ResetDoctorPasswordUseCase } from "../../application/use-cases/auth/reset-password/reset-doctor-password.usecase.ts";
 import { ResetPasswordUseCase } from "../../application/use-cases/auth/reset-password/reset-password.usecase.ts";
 import { VerifyEmailUseCase } from "../../application/use-cases/auth/verify-email/verify-email.usecase.ts";
-import { AdminLoginController } from "../../presentation/controllers/auth/admin-login.controller.ts";
-import { DoctorLoginController } from "../../presentation/controllers/auth/doctor-login.controller.ts";
-import { ForgotPasswordController } from "../../presentation/controllers/auth/forgot-password.controller.ts";
+import { DoctorRegisterUseCase } from "../../application/use-cases/auth/register/doctor-register.usecase.ts";
+import { EmailVerificationController } from "../../presentation/controllers/auth/email-verification.controller.ts";
+import { LoginController } from "../../presentation/controllers/auth/login.controller.ts";
 import { LogoutController } from "../../presentation/controllers/auth/logout.controller.ts";
-import { PatientGoogleLoginController } from "../../presentation/controllers/auth/patient-google-login.controller.ts";
-import { PatientGoogleRegisterController } from "../../presentation/controllers/auth/patient-google-register.controller.ts";
-import { PatientLoginController } from "../../presentation/controllers/auth/patient-login.controller.ts";
-import { PatientRegisterController } from "../../presentation/controllers/auth/patient-register.controller.ts";
-import { RefreshTokenController } from "../../presentation/controllers/auth/refresh-token.controller.ts";
-import { ResendOtpController } from "../../presentation/controllers/auth/resend-otp.controller.ts";
-import { ResetPasswordController } from "../../presentation/controllers/auth/reset-password.controller.ts";
-import { VerifyEmailController } from "../../presentation/controllers/auth/verify-email.controller.ts";
+import { PasswordController } from "../../presentation/controllers/auth/password.controller.ts";
+import { RegisterController } from "../../presentation/controllers/auth/register.controller.ts";
+import { TokenController } from "../../presentation/controllers/auth/token.controller.ts";
 import {
   argonHashService,
   jwtService,
   mongooseAddressRepository,
+  mongooseClinicRepository,
+  mongooseDoctorClinicRepository,
   mongooseDoctorRepository,
   mongoosePatientRepository,
   mongooseRefreshSessionRepository,
   mongooseUserRepository,
+  mongooseWalletRepository,
   nodeMailService,
   redisService,
 } from "../infrastructure.container.ts";
+import { AccessTokenGenerationService } from "../../application/services/shared/token/access-token.service.ts";
 
 // Service-Usecase
+const walletCreationService = new WalletCreationService(
+  mongooseWalletRepository,
+);
 const userCreationService = new UserCreationService(
   mongooseUserRepository,
   argonHashService,
+  walletCreationService,
 );
 const emailVerificationService = new EmailVerificationService(
   nodeMailService,
@@ -99,6 +102,15 @@ const doctorLoginUseCase = new DoctorLoginUseCase(
   mongooseDoctorRepository,
   accessTokenGenerationService,
   refreshTokenGenerationService,
+);
+
+const doctorRegisterUseCase = new DoctorRegisterUseCase(
+  mongooseDoctorRepository,
+  mongooseDoctorClinicRepository,
+  mongooseClinicRepository,
+  mongooseAddressRepository,
+  userCreationService,
+  emailVerificationService,
 );
 
 const refreshTokenUseCase = new RefreshTokenUseCase(
@@ -169,59 +181,29 @@ const patientGoogleRegisterUseCase = new PatientGoogleRegisterUseCase(
 );
 
 // Controllers
-export const patientRegisterController = new PatientRegisterController(
+export const registerController = new RegisterController(
   patientRegister,
+  patientGoogleRegisterUseCase,
+  doctorRegisterUseCase,
 );
 
-export const patientLoginController = new PatientLoginController(
-  patientLoginUseCase,
-);
-
-export const adminLoginController = new AdminLoginController(adminLoginUseCase);
-
-export const doctorLoginController = new DoctorLoginController(
+export const loginController = new LoginController(
+  adminLoginUseCase,
   doctorLoginUseCase,
-);
-
-export const refreshTokenController = new RefreshTokenController(
-  refreshTokenUseCase,
+  patientLoginUseCase,
+  patientGoogleLoginUseCase,
 );
 
 export const logoutController = new LogoutController(logoutUseCase);
 
-export const verifyEmailController = new VerifyEmailController(
-  verifyEmailUseCase,
-);
-
-export const resendOtpController = new ResendOtpController(resendOtpUseCase);
-
-export const forgotPasswordController = new ForgotPasswordController(
+export const passwordController = new PasswordController(
   forgotPasswordUseCase,
-);
-
-export const forgotDoctorPasswordController = new ForgotPasswordController(
-  forgotDoctorPasswordUseCase,
-);
-
-export const forgotAdminPasswordController = new ForgotPasswordController(
-  forgotAdminPasswordUseCase,
-);
-
-export const resetPasswordController = new ResetPasswordController(
   resetPasswordUseCase,
 );
 
-export const resetDoctorPasswordController = new ResetPasswordController(
-  resetDoctorPasswordUseCase,
-);
+export const tokenController = new TokenController(refreshTokenUseCase);
 
-export const resetAdminPasswordController = new ResetPasswordController(
-  resetAdminPasswordUseCase,
+export const emailVerificationController = new EmailVerificationController(
+  verifyEmailUseCase,
+  resendOtpUseCase,
 );
-
-export const patientGoogleLoginController = new PatientGoogleLoginController(
-  patientGoogleLoginUseCase,
-);
-
-export const patientGoogleRegisterController =
-  new PatientGoogleRegisterController(patientGoogleRegisterUseCase);

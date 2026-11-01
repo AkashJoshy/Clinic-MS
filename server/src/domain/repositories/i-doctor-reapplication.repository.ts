@@ -1,4 +1,4 @@
-import type { IDoctorReapplication } from "../../infrastructure/models/doctor-reapplication/doctor-reapplication.model.ts";
+import type { IDoctorReapplication } from "../../infrastructure/models/doctor-reapplication/doctor-reapplication.types.ts";
 import type { DoctorReapplication } from "../entities/doctor-reapplication.entity.ts";
 import type { DoctorReapplicationStatus } from "../types/doctor.types.ts";
 import type { IBaseRepository } from "./i-base.repository.ts";

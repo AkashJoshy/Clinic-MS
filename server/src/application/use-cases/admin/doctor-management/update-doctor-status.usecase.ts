@@ -1,9 +1,9 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { UserStatusDto } from "../../../dto/admin.dto.ts";
+import type { UserStatusResponseDto } from "../../../dto/admin.dto.ts";
 import type { DeletePatientDto } from "../../../dto/patient.dto.ts";
-import type { IUpdateStatusUseCase } from "../../../repositories/admin/i-update-status.usecase.ts";
+import type { IUpdateStatusUseCase } from "../../../interfaces/repositories/admin/patient/i-update-status.usecase.ts";
 
 export class UpdateDoctorStatusUseCase implements IUpdateStatusUseCase {
   constructor(
@@ -11,7 +11,7 @@ export class UpdateDoctorStatusUseCase implements IUpdateStatusUseCase {
     private _userRepository: IUserRepository,
   ) {}
 
-  async execute(data: DeletePatientDto): Promise<UserStatusDto> {
+  async execute(data: DeletePatientDto): Promise<UserStatusResponseDto> {
     const doctor = await this._doctorRepository.findById(data.id);
 
     if (!doctor || !doctor.id || !doctor.userId) {

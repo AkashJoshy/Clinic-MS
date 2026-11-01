@@ -15,6 +15,11 @@ export interface RegisterUserDTO {
   role: Role;
 }
 
+export type CreateUserServiceDto = {
+  user: RegisterUserDTO;
+  message?: string;
+};
+
 export interface GoogleLoginDTO {
   name: string;
   email: string;
@@ -26,11 +31,15 @@ export interface GoogleLoginDTO {
 export type SafeUser = Omit<User, "password" | "block" | "unblock" | "updateName" | "updatePhone">;
 
 export type UserDto = User;
+export type UserResponseDto = User;
 
 export type AccessPayloadDto = Pick<User, "id" | "role">;
 export type RefreshPayloadDto = Pick<User, "id"> & { tokenId: string };
 
 export type BaseUserDto = Pick<User, "id" | "role" | "isBlocked" | "isActive">;
+
+export type TokenResponseDto = string | void
+
 
 export interface TokenPair {
   access: string;
@@ -105,3 +114,11 @@ export interface ForgotRolePasswordDto {
   email: string;
   role: Role;
 }
+
+export type EmailVerificationDto = {
+  email: string;
+  name: string;
+  role: Role;
+};
+
+export type EmailVerificationResponseDto = string

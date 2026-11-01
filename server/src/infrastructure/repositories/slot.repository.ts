@@ -14,6 +14,64 @@ export class SlotRepository
     super(SlotModel);
   }
 
+  async findByDoctorIdAndDateRange(
+    doctorId: string,
+    from: Date,
+    to: Date,
+  ): Promise<Slot[]> {
+    const startDate = new Date(from);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(to);
+    endDate.setHours(12, 0, 0, 0);
+
+    const slots = await SlotModel.find({
+      doctorId,
+      $expr: {
+        $and: [
+          {
+            $gte: ["$date", from],
+          },
+          {
+            $lte: ["$date", to],
+          },
+        ],
+      },
+    });
+
+    return slots.map((slot) => this.toDomain(slot));
+  }
+
+  async findByDoctorIdForToday(doctorId: string): Promise<Slot[]> {
+    const today = new Date();
+
+    const startOfDay = new Date(today);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const startOfTomorrow = new Date(startOfDay);
+    startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
+    const slots = await SlotModel.find({
+      doctorId,
+      $expr: {
+        $and: [
+          { $gte: ["$date", startOfDay] },
+          { $lte: ["$date", startOfTomorrow] },
+        ],
+      },
+    });
+
+    return slots.map((slot) => this.toDomain(slot));
+  }
+
+  async findByDoctorId(doctorId: string): Promise<Slot[]> {
+    const slots = await SlotModel.find({
+      doctorId,
+    });
+
+    return slots.map((slot) => this.toDomain(slot));
+  }
+
   protected toDomain(doc: ISlot): Slot {
     return Slot.create({
       id: doc._id.toString() ?? null,

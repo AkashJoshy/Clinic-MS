@@ -1,9 +1,12 @@
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { DoctorProffesionalDetailsDto } from "../../../dto/doctor.dto.ts";
+import type {
+  DoctorProfessionalDto,
+  DoctorProfessionalResponseDto,
+} from "../../../dto/doctor.dto.ts";
 import { DoctorProfessionalMapper } from "../../../mappers/doctor/professional.mapper.ts";
-import type { IDoctorProfessionalUseCase } from "../../../repositories/doctor/i-doctor-professional.usecase.ts";
+import type { IDoctorProfessionalUseCase } from "../../../interfaces/repositories/doctor/profile/i-doctor-professional.usecase.ts";
 
 export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfessionalUseCase {
   constructor(
@@ -12,8 +15,8 @@ export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfession
   ) {}
 
   async execute(
-    data: DoctorProffesionalDetailsDto,
-  ): Promise<DoctorProffesionalDetailsDto> {
+    data: DoctorProfessionalDto,
+  ): Promise<DoctorProfessionalResponseDto> {
     const { userId, id, languages, ...profData } = data;
 
     const user = await this._userRepository.findById(userId);
@@ -33,6 +36,6 @@ export class UpdateDoctorProfessionalDetailsUseCase implements IDoctorProfession
 
     await this._doctorRepository.findByIdAndUpdate(doctor.id, doctor);
 
-    return DoctorProfessionalMapper.toDoctorProffesionalDetails(doctor, userId)
+    return DoctorProfessionalMapper.toDoctorProffesionalDetails(doctor, userId);
   }
 }

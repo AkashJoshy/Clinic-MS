@@ -1,10 +1,13 @@
+import type { Address } from "../../../domain/entities/address.entity.ts";
+import type Patient from "../../../domain/entities/patient.entity.ts";
+import type User from "../../../domain/entities/user.entity.ts";
 import type {
-  PatientBasicInfoDto,
-  PatientInfoDto,
-} from "../../dto/shared.dto.ts";
+  PatientBasicInfoResponseDto,
+  PatientInfoResponseDto,
+} from "../../dto/patient.dto.ts";
 
 export class PatientMapper {
-  static toPatientBasicInfo(patientDetails: PatientBasicInfoDto) {
+  static toPatientBasicInfo(patientDetails: PatientBasicInfoResponseDto) {
     const {
       id,
       userId,
@@ -14,8 +17,8 @@ export class PatientMapper {
       gender,
       imageUrl,
       createdAt,
-    } = patientDetails.patient as PatientBasicInfoDto["patient"];
-    const user = patientDetails.user as PatientBasicInfoDto["user"];
+    } = patientDetails.patient as PatientBasicInfoResponseDto["patient"];
+    const user = patientDetails.user as PatientBasicInfoResponseDto["user"];
 
     return {
       patient: {
@@ -41,7 +44,7 @@ export class PatientMapper {
     };
   }
 
-  static toPatientInfoDto(patientDetails: PatientInfoDto) {
+  static toPatientInfoDto(patientDetails: PatientInfoResponseDto) {
     const { user, address, patient } = patientDetails;
     const patientDet = this.toPatientBasicInfo({
       user,
@@ -67,6 +70,37 @@ export class PatientMapper {
             isEmailVerified: user?.isEmailVerified ?? false,
           }
         : null,
-    } as PatientInfoDto;
+    } as PatientInfoResponseDto;
+  }
+
+  static toPatientFullInfo({
+    patient,
+    user,
+    address,
+  }: {
+    patient: Patient;
+    address: Address | null;
+    user: User | null;
+  }) {
+    return {
+      user: user
+        ? {
+            id: user.id,
+            fullName: user.fullName,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            provider: user.provider,
+            isActive: user.isActive,
+            isEmailVerified: user.isEmailVerified,
+            isBlocked: user.isBlocked,
+            isTwoFactorenabled: user.isTwoFactorenabled,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          }
+        : null,
+      patient: patient,
+      address: address ?? null,
+    };
   }
 }

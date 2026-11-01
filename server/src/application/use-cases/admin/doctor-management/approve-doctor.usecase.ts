@@ -7,11 +7,11 @@ import type { IClinicRepository } from "../../../../domain/repositories/i-clinic
 import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 import type { IUserRepository } from "../../../../domain/repositories/i-user.repository.ts";
-import type { IMailService } from "../../../../domain/services/email.service.ts";
-import type { DoctorStatusUpdateDto } from "../../../dto/doctor.dto.ts";
-import type { IUpdateDoctorStatusUseCase } from "../../../repositories/admin/i-update-doctor-status.usecase.ts";
+import type { IMailService } from "../../../../domain/services/i-email.service.ts";
+import type { ReviewDoctorUpdateDto } from "../../../dto/doctor.dto.ts";
+import type { IReviewDoctorUseCase } from "../../../interfaces/repositories/admin/doctor/i-review-doctor.usecase.ts";
 
-export class ApproveDoctorUseCase implements IUpdateDoctorStatusUseCase {
+export class ApproveDoctorUseCase implements IReviewDoctorUseCase {
   constructor(
     private _doctorRepository: IDoctorRepository,
     private _clinicRepository: IClinicRepository,
@@ -19,9 +19,9 @@ export class ApproveDoctorUseCase implements IUpdateDoctorStatusUseCase {
     private _userRepository: IUserRepository,
     private _emailService: IMailService,
   ) {}
-
-  async execute(data: DoctorStatusUpdateDto): Promise<void> {
-    const doctor = await this._doctorRepository.findById(data.id);
+  async execute(data: ReviewDoctorUpdateDto): Promise<void> {
+    const { id, fields, rejectedMessage, rejectedReason } = data
+    const doctor = await this._doctorRepository.findById(id);
 
     if (!doctor || !doctor.id || !doctor.userId) {
       throw new NotFoundError("Doctor");
@@ -56,7 +56,7 @@ export class ApproveDoctorUseCase implements IUpdateDoctorStatusUseCase {
 
     doctorClinic.activate();
 
-    doctor.approve(data.rejectedMessage);
+    doctor.approve(rejectedMessage);
 
     await this._doctorRepository.findByIdAndUpdate(doctor.id, {
       status: doctor.status,

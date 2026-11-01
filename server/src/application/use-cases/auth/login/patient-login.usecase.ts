@@ -1,4 +1,3 @@
-import { InvalidCredentialsError } from "../../../../domain/errors/invalid-credentials.error.ts";
 import type { Role } from "../../../../domain/types/user.types.ts";
 import type {
   AccessPayloadDto,
@@ -7,11 +6,11 @@ import type {
   LoginVerificationResponseDTO,
   RefreshPayloadDto,
 } from "../../../dto/auth.dto.ts";
-import type { IEmailVerificationService } from "../../../i-service/i-email-verification.service.ts";
-import type { IAccessTokenGenerationService } from "../../../i-service/i-access-token-generation.service.ts";
-import type { IUserExistenceService } from "../../../i-service/i-user-existence.service.ts";
-import type { ILoginUseCase } from "../../../repositories/auth/i-login.usecase.ts";
-import type { IRefreshTokenGenerationService } from "../../../i-service/i-refresh-token-generation.service.ts";
+import type { IEmailVerificationService } from "../../../interfaces/services/shared/user/i-email-verification.service.ts";
+import type { IAccessTokenGenerationService } from "../../../interfaces/services/shared/token/i-access-token-generation.service.ts";
+import type { ILoginUseCase } from "../../../interfaces/repositories/auth/i-login.usecase.ts";
+import type { IRefreshTokenGenerationService } from "../../../interfaces/services/shared/token/i-refresh-token-generation.service.ts";
+import type { IUserExistenceService } from "../../../interfaces/services/shared/user/i-user-existence.service.ts";
 
 export class PatientLoginUseCase implements ILoginUseCase {
   constructor(
@@ -27,11 +26,11 @@ export class PatientLoginUseCase implements ILoginUseCase {
     const user = await this._userExistenceService.execute(data);
 
     if (!user.isEmailVerified) {
-      const token = await this._mailVerficationService.execute(
-        user.email,
-        user.fullName,
-        user.role as Role,
-      );
+      const token = await this._mailVerficationService.execute({
+        email: user.email,
+        name: user.fullName,
+        role: user.role as Role,
+      });
 
       return {
         token,

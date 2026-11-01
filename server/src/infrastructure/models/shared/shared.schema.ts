@@ -128,19 +128,14 @@ export const ImageDataSchema = new Schema<ImageData>(
   {
     url: {
       type: String,
-      required: true,
+      required: false,
     },
     publicId: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {
     _id: false,
   },
 );
-
-// export const imageSchema = new Schema<ImageData>({
-//   publicId: String,
-//   url: String,
-// });

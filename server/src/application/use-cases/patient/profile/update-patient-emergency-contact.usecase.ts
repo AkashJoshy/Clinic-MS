@@ -1,14 +1,17 @@
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
-import type { IUpdateEmergencyContactUseCase } from "../../../repositories/patient/i-update-emergency-contact.usecase.ts";
-import type { UpdateEmergencyContactDto } from "../../../dto/patient.dto.ts";
+import type { IUpdateEmergencyContactUseCase } from "../../../interfaces/repositories/patient/profile/i-update-emergency-contact.usecase.ts";
+import type {
+  EmergencyContactDto,
+  EmergencyContactResponseDto,
+} from "../../../dto/patient.dto.ts";
 
 export class UpdatePatientEmergencyContactUseCase implements IUpdateEmergencyContactUseCase {
   constructor(private readonly _patientRepository: IPatientRepository) {}
 
   async execute(
-    data: UpdateEmergencyContactDto,
-  ): Promise<UpdateEmergencyContactDto> {
+    data: EmergencyContactDto,
+  ): Promise<EmergencyContactResponseDto> {
     const { id, ...emergencyData } = data;
     const patient = await this._patientRepository.findById(data.id);
 
@@ -27,6 +30,7 @@ export class UpdatePatientEmergencyContactUseCase implements IUpdateEmergencyCon
       name: patient.emergencyContact?.name ?? "",
       phone: patient.emergencyContact?.phone ?? "",
       relationship: patient.emergencyContact?.relationship!,
-    };
+    }
+  
   }
 }

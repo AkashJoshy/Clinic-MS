@@ -1,15 +1,18 @@
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IPatientRepository } from "../../../../domain/repositories/i-patient.repository.ts";
-import type { PatientProfile } from "../../../dto/patient.dto.ts";
-import type { IPatientProfilesUseCase } from "../../../repositories/patient/i-patient-profiles.usecase.ts";
+import type {
+  PatientProfile,
+  PatientProfileResponseDto,
+} from "../../../dto/patient.dto.ts";
+import type { IPatientProfilesUseCase } from "../../../interfaces/repositories/patient/profile/i-patient-profiles.usecase.ts";
 
 export class PatientProfilesUseCase implements IPatientProfilesUseCase {
   constructor(
     private readonly _patientRepository: IPatientRepository,
-    readonly _addressRepository: IAddressRepository,
+    private readonly _addressRepository: IAddressRepository,
   ) {}
 
-  async execute(userId: string): Promise<PatientProfile[]> {
+  async execute(userId: string): Promise<PatientProfileResponseDto[]> {
     const patients = await this._patientRepository.findAllByUserId(userId);
 
     if (!patients) return [];
@@ -34,15 +37,11 @@ export class PatientProfilesUseCase implements IPatientProfilesUseCase {
     const addressMap = new Map(addressess.map((a) => [a.ownerId, a]));
 
     const response: PatientProfile[] = updatedPatients.map((patient) => {
-      const address = (() => {
-        const addr = patient && patient.id ? addressMap.get(patient.id) : null;
+      const addr = patient.id ? addressMap.get(patient.id) : undefined;
 
-        if (!addr) return null;
-
-        const { createdAt, updatedAt, ownerType, ...rest } = addr;
-
-        return rest;
-      })();
+      const address = addr
+        ? (({ createdAt, updatedAt, ownerType, ...rest }) => rest)(addr)
+        : null;
 
       return {
         address,

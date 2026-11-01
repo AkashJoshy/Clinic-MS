@@ -1,5 +1,5 @@
 import type { Redis } from "ioredis";
-import type { ICacheService } from "../../domain/services/cache.service.ts";
+import type { ICacheService } from "../../domain/services/i-cache.service.ts";
 
 export class RedisCacheService implements ICacheService {
   constructor(private _redis: Redis) {}

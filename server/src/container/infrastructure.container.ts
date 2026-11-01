@@ -1,12 +1,13 @@
-import { AddressDetailsService } from "../application/services/address-details.service.ts";
+import { AddressDetailsService } from "../application/services/shared/address/address-details.service.ts";
 import { BulkWriteGenerationService } from "../application/services/bulk-write-generation.service.ts";
-import { ClinicDetailsService } from "../application/services/clinic-details.service.ts";
+import { ClinicDetailsService } from "../application/services/clinic/clinic-details.service.ts";
 import { DepartmentDetailsService } from "../application/services/department-details.service.ts";
-import { DoctorClinicContextService } from "../application/services/doctor-clinic-context.service.ts";
-import { DoctorClinicDetailsService } from "../application/services/doctor-clinic-details.service.ts";
-import { DoctorDetailsService } from "../application/services/doctor-details.service.ts";
-import { DoctorExistsService } from "../application/services/doctor-exists.service.ts";
-import { EmailVerificationService } from "../application/services/email-verification.service.ts";
+import { DoctorClinicContextService } from "../application/services/doctor-clinic/doctor-clinic-context.service.ts";
+import { DoctorClinicDetailsService } from "../application/services/doctor-clinic/doctor-clinic-details.service.ts";
+import { DoctorDetailsService } from "../application/services/doctor/doctor-details.service.ts";
+import { DoctorExistsService } from "../application/services/doctor/doctor-exists.service.ts";
+import { EmailVerificationService } from "../application/services/shared/user/email-verification.service.ts";
+import { WalletTransactionsDetailsService } from "../application/services/wallet/wallet-transactions-details.service.ts";
 import { redis } from "../infrastructure/cache/redis.client.ts";
 import { AddressRepository } from "../infrastructure/repositories/address.repository.ts";
 import { ClinicRepository } from "../infrastructure/repositories/clinic.repository.ts";
@@ -17,11 +18,17 @@ import { DoctorRepository } from "../infrastructure/repositories/doctor.reposito
 import { PatientRepository } from "../infrastructure/repositories/patient.repository.ts";
 import { RefreshSessionRepository } from "../infrastructure/repositories/refresh-session.repository.ts";
 import { SlotRepository } from "../infrastructure/repositories/slot.repository.ts";
+import { SubscriptionPlanRepository } from "../infrastructure/repositories/subscription-plan.repository.ts";
 import { UserRepository } from "../infrastructure/repositories/user.repository.ts";
+import { WalletTransactionRepository } from "../infrastructure/repositories/wallet-transaction.repository.ts";
+import { WalletRepository } from "../infrastructure/repositories/wallet.repository.ts";
 import { ArgonHashService } from "../infrastructure/services/argon-hash.service.ts";
 import { JWTService } from "../infrastructure/services/jwt.service.ts";
 import { NodeMailerService } from "../infrastructure/services/mail/node-mailer.service.ts";
+import { RazorpayService } from "../infrastructure/services/razorpay.service.ts";
 import { RedisCacheService } from "../infrastructure/services/redis-cache.service.ts";
+import { DoctorSubscriptionRepository } from "../infrastructure/repositories/doctor-subscription.repository.ts";
+import { SubscriptionChangeCalculationService } from "../application/services/subscription/subscription-change-calculation.service.ts";
 
 // DB Repo's
 export const mongooseUserRepository = new UserRepository();
@@ -32,14 +39,22 @@ export const mongooseRefreshSessionRepository = new RefreshSessionRepository();
 export const mongooseDepartmentRepository = new DepartmentRepository();
 export const mongooseClinicRepository = new ClinicRepository();
 export const mongooseDoctorClinicRepository = new DoctorClinicRepository();
-export const mongooseDoctorReapplicationRepository = new DoctorReapplicationRepository();
-export const mongooseSlotRepository = new SlotRepository()
+export const mongooseDoctorReapplicationRepository =
+  new DoctorReapplicationRepository();
+export const mongooseSlotRepository = new SlotRepository();
+export const mongooseWalletRepository = new WalletRepository();
+export const mongooseWalletTransactionRepository =
+  new WalletTransactionRepository();
+export const mongooseSubscriptionPlanRepository =
+  new SubscriptionPlanRepository();
+export const mongooseDoctorSubscriptionRepository = new DoctorSubscriptionRepository()
 
 // Services
 export const argonHashService = new ArgonHashService();
 export const redisService = new RedisCacheService(redis);
 export const nodeMailService = new NodeMailerService();
 export const jwtService = new JWTService();
+export const razorpayService = new RazorpayService();
 
 // UseCase-Service
 export const emailVerificationService = new EmailVerificationService(
@@ -47,23 +62,23 @@ export const emailVerificationService = new EmailVerificationService(
   redisService,
 );
 export const addressDetailsService = new AddressDetailsService(
-  mongooseAddressRepository
-)
+  mongooseAddressRepository,
+);
 export const clinicDetailsService = new ClinicDetailsService(
-  mongooseClinicRepository
-)
-export const bulkWriteGenerationService = new BulkWriteGenerationService()
+  mongooseClinicRepository,
+);
+export const bulkWriteGenerationService = new BulkWriteGenerationService();
 export const doctorClinicDetailsService = new DoctorClinicDetailsService(
   mongooseDoctorClinicRepository,
-)
+);
 export const departmentDetailsService = new DepartmentDetailsService(
-  mongooseDepartmentRepository
-)
+  mongooseDepartmentRepository,
+);
 export const doctorClinicContextService = new DoctorClinicContextService(
   addressDetailsService,
   clinicDetailsService,
-  doctorClinicDetailsService
-)
+  doctorClinicDetailsService,
+);
 export const doctorDetailsService = new DoctorDetailsService(
   mongooseUserRepository,
   mongooseDepartmentRepository,
@@ -75,5 +90,9 @@ export const doctorExistsService = new DoctorExistsService(
   mongooseUserRepository,
   mongooseDoctorRepository,
   mongooseDoctorClinicRepository,
-  mongooseClinicRepository
-)
+  mongooseClinicRepository,
+);
+export const walletTransactionsDetailsService =
+  new WalletTransactionsDetailsService(mongooseWalletTransactionRepository);
+
+export const subscriptionChangeCalculationService = new SubscriptionChangeCalculationService()

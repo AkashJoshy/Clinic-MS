@@ -1,20 +1,33 @@
 
+const DOCTOR_BASE = "/doctor";
+const ADMIN_BASE = "/admin";
 
 export const AUTH_ENDPOINTS = {
-    PATIENT_LOGIN: "/login",
-    ADMIN_LOGIN: "/admin/login",
-    DOCTOR_LOGIN: "/doctor/login",
-    LOGOUT: "/logout",
-    PATIENT_REGISTER: "/register",
-    VERIFY_EMAIL: "/verify-email",
-    REFRESH_TOKEN: "/refresh",
-    RESEND_OTP: "/resend-otp",
-    FORGOT_PASSWORD: "/forgot-password",
-    FORGOT_DOCTOR_PASSWORD: "/doctor/forgot-password",
-    FORGOT_ADMIN_PASSWORD: "/admin/forgot-password",
-    RESET_PASSWORD: "/reset-password",
-    RESET_DOCTOR_PASSWORD: "/doctor/reset-password",
-    RESET_ADMIN_PASSWORD: "/admin/reset-password",
-    GOOGLE: "/google",
-    GOOGLE_CALLBACK: "/google/callback",
-}
+  LOGIN: {
+    PATIENT: "/login",
+    ADMIN: `${ADMIN_BASE}/login`,
+    DOCTOR: `${DOCTOR_BASE}/login`,
+  },
+  LOGOUT: "/logout",
+  REGISTER: {
+    PATIENT: "/register",
+    DOCTOR: `${DOCTOR_BASE}/register`,
+  },
+  VERIFY_EMAIL: "/verify-email",
+  REFRESH_TOKEN: "/refresh",
+  RESEND_OTP: "/resend-otp",
+  FORGOT_PASSWORD: {
+    PATIENT: "/forgot-password",
+    DOCTOR: `${DOCTOR_BASE}/forgot-password`,
+    ADMIN: `${ADMIN_BASE}/forgot-password`,
+  },
+  RESET_PASSWORD: {
+    PATIENT: "/reset-password",
+    DOCTOR: `${DOCTOR_BASE}/reset-password`,
+    ADMIN: `${ADMIN_BASE}/reset-password`,
+  },
+  GOOGLE: {
+    BASE: "/google",
+    CALLBACK: "/google/callback",
+  },
+};
