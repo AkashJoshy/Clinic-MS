@@ -1,3 +1,4 @@
+
 import type { NavItem } from "@/types/sideNav";
 import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -19,7 +20,10 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   const isActive = location.pathname === item.path;
   const isLogout = item.label === "Logout";
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+
   const logout = useAuthStore((state) => state.logout);
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
   const { mutate, isPending } = useAuthMutate(logoutUser, {
     onSuccess: () => {
       setShowLogoutAlert(false);
@@ -35,23 +39,32 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
     "transition-all duration-200 cursor-pointer select-none",
     "text-sm font-medium",
     isActive
-      ? "bg-[#1dc465]/10 text-[#1dc465]"
+      ? "text-current"
       : "text-slate-500 hover:bg-slate-50 hover:text-slate-900",
   );
+
+  const activeStyle = isActive
+    ? {
+        backgroundColor: `color-mix(in srgb, ${primaryColor} 10%, transparent)`,
+        color: primaryColor,
+      }
+    : undefined;
 
   const inner = (
     <>
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#1dc465] rounded-r-full" />
+        <span
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full"
+          style={{ backgroundColor: primaryColor }}
+        />
       )}
 
       <span
         className={cn(
           "shrink-0 flex items-center justify-center transition-colors duration-200",
-          isActive
-            ? "text-[#1dc465]"
-            : "text-slate-400 group-hover:text-slate-600",
+          !isActive && "text-slate-400 group-hover:text-slate-600",
         )}
+        style={isActive ? { color: primaryColor } : undefined}
       >
         {item.icon}
       </span>
@@ -92,6 +105,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
         >
           {inner}
         </button>
+
         <LogoutAlert
           open={showLogoutAlert}
           onOpenChange={setShowLogoutAlert}
@@ -107,6 +121,7 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
       <button
         onClick={item.onClick}
         className={cn(baseClasses, "w-full text-left outline-none")}
+        style={activeStyle}
       >
         {inner}
       </button>
@@ -114,7 +129,11 @@ const PatientRenderNavItem: React.FC<Props> = ({ item, collapsed }) => {
   }
 
   return (
-    <NavLink to={item.path!} className={baseClasses}>
+    <NavLink
+      to={item.path!}
+      className={baseClasses}
+      style={activeStyle}
+    >
       {inner}
     </NavLink>
   );

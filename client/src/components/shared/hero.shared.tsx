@@ -1,37 +1,51 @@
+
 import React from "react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import { Stethoscope } from "lucide-react";
+import { useAuthStore } from "@/store";
 
 const Hero = ({ websiteName }: { websiteName: string }) => {
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
   return (
     <div>
       <section className="min-h-screen pt-24 sm:pt-30 px-6 sm:px-12 pb-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-15 relative">
         <div />
 
         <div className="w-full lg:flex-[0_0_55%] lg:max-w-145 flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
-          <p className="text-primary fade-up fade-up-1 uppercase tracking-[0.15em] font-semibold text-xs mb-3.5">
+          <p
+            className="fade-up fade-up-1 uppercase tracking-[0.15em] font-semibold text-xs mb-3.5"
+            style={{ color: primaryColor }}
+          >
             Healthcare Management Platform
           </p>
+
           <h1 className="font-playfair fade-up fade-up-2 text-[clamp(38px,5vw,64px)] font-black leading-[1.12] tracking-[-0.03em] text-[#1a1a2e] mb-7">
             Smart Scheduling.
             <br />
-            <span className="text-primary">Better Care.</span>
+            <span style={{ color: primaryColor }}>Better Care.</span>
             <br />
-            Connected <span className="text-primary">Clinics.</span>
+            Connected <span style={{ color: primaryColor }}>Clinics.</span>
           </h1>
+
           <div className="fade-up fade-up-3 flex gap-3.5 flex-wrap justify-center lg:justify-start">
             <Link to="/doctor-registration">
               <Button
                 size="lg"
                 variant="outline"
-                className="group gap-2 border-primary/40 transition-all bg-primary duration-200 hover:-translate-y-0.5 hover:bg-primary/10 hover:border-primary"
+                className="group gap-2 transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  borderColor: `color-mix(in srgb, ${primaryColor} 40%, transparent)`,
+                  backgroundColor: primaryColor,
+                }}
               >
                 <Stethoscope className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
                 Join as a Doctor
               </Button>
             </Link>
           </div>
+
           <p className="fade-up fade-up-4 mt-7 text-[13px] text-[#888] tracking-[0.02em]">
             No credit card required · Free 14-day trial · Cancel anytime
           </p>
@@ -44,11 +58,13 @@ const Hero = ({ websiteName }: { websiteName: string }) => {
               intelligent platform — from the moment a patient books an
               appointment to follow-up care and billing.
             </p>
+
             <p className="text-base leading-7 text-[#444]">
               Designed for modern clinics, it eliminates paperwork, reduces
               no-shows, and helps your team focus on what truly matters —
               delivering exceptional patient care.
             </p>
+
             <div className="mt-7 flex gap-7 flex-wrap">
               {[
                 ["10k+", "Patients Managed"],
@@ -56,7 +72,10 @@ const Hero = ({ websiteName }: { websiteName: string }) => {
                 ["4.9★", "Avg Rating"],
               ].map(([val, label]) => (
                 <div key={label}>
-                  <div className="text-primary text-[26px] font-bold">
+                  <div
+                    className="text-[26px] font-bold"
+                    style={{ color: primaryColor }}
+                  >
                     {val}
                   </div>
                   <div className="text-xs text-[#888] mt-0.5">{label}</div>

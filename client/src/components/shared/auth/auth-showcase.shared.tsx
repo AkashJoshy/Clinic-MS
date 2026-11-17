@@ -1,14 +1,20 @@
 import { SHOW_CASES } from "@/data/showcase.data";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 import React from "react";
 
 const AuthShowcase = () => {
+
+  const {
+    websiteName
+  } = usePlatformConfig()
+
  return (
   <div className="hidden md:flex md:w-1/2 bg-primary items-center justify-center px-6 lg:px-16 py-12">
     <div className="max-w-xl w-full">
       <h2 className="text-3xl lg:text-4xl font-bold mb-10 text-white">
         Welcome to {" "}
         <span className="font-archivo font-extrabold text-primary-900">
-        Healthixia Care
+          {websiteName}
         </span>
       </h2>
 

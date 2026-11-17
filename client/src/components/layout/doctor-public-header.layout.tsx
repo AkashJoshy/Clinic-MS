@@ -2,8 +2,17 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
 
-const DoctorPublicHeader = () => {
+interface DoctorPublicHeaderProps {
+  websiteName: string;
+  primaryColor: string;
+}
+
+const DoctorPublicHeader = ({
+  websiteName,
+  primaryColor,
+}: DoctorPublicHeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -27,12 +36,18 @@ const DoctorPublicHeader = () => {
         }`}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-8.5 h-8.5 bg-primary rounded-lg flex items-center justify-center shrink-0">
+          <div
+            className="w-8.5 h-8.5 rounded-lg flex items-center justify-center shrink-0"
+            style={{ backgroundColor: primaryColor }}
+          >
             <span className="text-white text-lg">✦</span>
           </div>
 
-          <span className="font-playfair font-bold text-[18px] sm:text-[20px] text-[#1DC465] tracking-[-0.02em]">
-            Healthixia Care
+          <span
+            className="font-playfair font-bold text-[18px] sm:text-[20px] tracking-[-0.02em]"
+            style={{ color: primaryColor }}
+          >
+            {websiteName}
           </span>
         </div>
 
@@ -71,6 +86,7 @@ const DoctorPublicHeader = () => {
               size="lg"
               className="transition-transform duration-150 hover:-translate-y-0.5"
               variant="default"
+              style={{ backgroundColor: primaryColor }}
             >
               Register as a Doctor
             </Button>
@@ -147,14 +163,13 @@ const DoctorPublicHeader = () => {
             <Button
               className="w-full transition-transform duration-150 hover:-translate-y-0.5"
               variant="default"
+              style={{ backgroundColor: primaryColor, color: getContrastTextColor(primaryColor) }}
             >
               Register Doctor
             </Button>
           </Link>
         </div>
-        
       </div>
-      
     </>
   );
 };

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Receipt, Search, SearchX, RotateCcw } from "lucide-react";
 import type {
@@ -34,7 +35,7 @@ export const SubscriptionHistoryTable: React.FC<
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-white/10 pb-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Receipt size={17} className="text-[#1dc465]" />
+            <Receipt size={17} className="text-primary" />
             <h3 className="text-base font-bold tracking-tight text-white uppercase">
               Subscription Billing History
             </h3>
@@ -59,7 +60,7 @@ export const SubscriptionHistoryTable: React.FC<
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search invoice # or plan..."
-              className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-xs text-white placeholder-gray-500 transition-colors focus:border-[#1dc465] focus:outline-none"
+              className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-xs text-white placeholder-gray-500 transition-colors focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -71,7 +72,7 @@ export const SubscriptionHistoryTable: React.FC<
                 onClick={() => onStatusFilterChange(opt.value)}
                 className={`cursor-pointer rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all ${
                   statusFilter === opt.value
-                    ? "bg-[#1dc465] text-[#080d14] font-bold"
+                    ? "bg-primary text-primary-foreground font-bold"
                     : "text-[#8b9ab0] hover:text-white"
                 }`}
               >
@@ -106,7 +107,7 @@ export const SubscriptionHistoryTable: React.FC<
         </div>
       ) : (
         <>
-          <div className="hidden overflow-x-auto md:block">
+          <div className="hidden scrollbar-none custom-scrollbar scrollbar-dark overflow-x-auto md:block">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/10 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
@@ -118,7 +119,7 @@ export const SubscriptionHistoryTable: React.FC<
                   <th className="py-3 pl-3 pr-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="">
                 {history.map((item) => (
                   <SubscriptionHistoryRow
                     key={item.id}

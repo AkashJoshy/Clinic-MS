@@ -1,11 +1,19 @@
+
 import React, { useState } from "react";
 import { TrendingUp, Calendar, Info } from "lucide-react";
 
 import { formatCurrency } from "@/helpers/wallet.helper";
 import { CHART_DATA_BY_RANGE } from "./mock-data";
+
 import type { ChartPoint, TimeRange } from "@/types/wallet";
 
-export const WalletBalanceChart: React.FC = () => {
+interface WalletBalanceChartProps {
+  isDark?: boolean;
+}
+
+export const WalletBalanceChart: React.FC<WalletBalanceChartProps> = ({
+  isDark = false,
+}) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("7D");
   const [hoveredPoint, setHoveredPoint] = useState<ChartPoint | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -100,54 +108,73 @@ export const WalletBalanceChart: React.FC = () => {
 
   return (
     <section
-      className="
+      className={`
         flex h-full min-w-0 flex-col
-        rounded-2xl border border-slate-200/80
-        bg-white p-4 shadow-xs
-        sm:p-5
-        lg:p-6
-      "
+        rounded-2xl border p-4 shadow-xs
+        sm:p-5 lg:p-6
+        ${
+          isDark
+            ? "border-white/10 bg-[#0D1A27]"
+            : "border-slate-200/80 bg-white"
+        }
+      `}
     >
       <div
-        className="
+        className={`
           flex min-w-0 flex-col gap-3
-          border-b border-slate-100 pb-4
+          border-b pb-4
           sm:gap-4
           xl:flex-row xl:items-center xl:justify-between
-        "
+          ${isDark ? "border-white/10" : "border-slate-100"}
+        `}
       >
         <div className="min-w-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h2 className="text-base font-bold text-[#0D1A27] sm:text-lg">
+            <h2
+              className={`
+                text-base font-bold sm:text-lg
+                ${isDark ? "text-white" : "text-[#0D1A27]"}
+              `}
+            >
               Balance Overview
             </h2>
 
             <span
-              className="
+              className={`
                 inline-flex items-center gap-1 rounded-md
-                border border-emerald-100 bg-emerald-50
-                px-2 py-0.5 text-[10px] font-medium
-                text-emerald-700 sm:text-[11px]
-              "
+                border px-2 py-0.5 text-[10px] font-medium
+                sm:text-[11px]
+                ${
+                  isDark
+                    ? "border-primary-500/20 bg-primary-500/10 text-primary-400"
+                    : "border-primary-100 bg-primary-50 text-primary-700"
+                }
+              `}
             >
-              <TrendingUp className="h-3 w-3 shrink-0 text-[#1DC465]" />
+              <TrendingUp className="h-3 w-3 shrink-0 text-primary" />
               Historical Trend
             </span>
           </div>
 
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          <p
+            className={`
+              mt-1 text-xs leading-relaxed
+              ${isDark ? "text-slate-400" : "text-slate-500"}
+            `}
+          >
             Track how your wallet balance changes over time.
           </p>
         </div>
 
         <div
-          className="
+          className={`
             grid w-full grid-cols-4 gap-1
-            rounded-xl bg-slate-100 p-1
+            rounded-xl p-1
             text-[11px] font-semibold
             sm:w-fit sm:text-xs
             xl:shrink-0
-          "
+            ${isDark ? "bg-white/5" : "bg-slate-100"}
+          `}
           aria-label="Chart time range"
         >
           {(["7D", "1M", "3M", "1Y"] as TimeRange[]).map((range) => (
@@ -161,11 +188,15 @@ export const WalletBalanceChart: React.FC = () => {
                 px-2 py-2 transition-colors
                 sm:px-3 sm:py-1.5
                 focus-visible:outline-none
-                focus-visible:ring-2 focus-visible:ring-emerald-500
+                focus-visible:ring-2 focus-visible:ring-primary
                 ${
                   timeRange === range
-                    ? "bg-white font-bold text-[#0D1A27] shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
+                    ? isDark
+                      ? "bg-white/10 font-bold text-white shadow-xs"
+                      : "bg-white font-bold text-[#0D1A27] shadow-xs"
+                    : isDark
+                      ? "text-slate-400 hover:text-white"
+                      : "text-slate-500 hover:text-slate-800"
                 }
               `}
             >
@@ -202,11 +233,11 @@ export const WalletBalanceChart: React.FC = () => {
             }}
           >
             <div className="flex items-center gap-1.5 whitespace-nowrap text-[10px] text-slate-300">
-              <Calendar className="h-3 w-3 shrink-0 text-[#1DC465]" />
+              <Calendar className="h-3 w-3 shrink-0 text-primary" />
               <span>{hoveredPoint.date}</span>
             </div>
 
-            <div className="mt-0.5 whitespace-nowrap text-sm font-bold text-[#1DC465]">
+            <div className="mt-0.5 whitespace-nowrap text-sm font-bold text-primary">
               {formatCurrency(hoveredPoint.balance)}
             </div>
           </div>
@@ -227,8 +258,16 @@ export const WalletBalanceChart: React.FC = () => {
               x2="0"
               y2="1"
             >
-              <stop offset="0%" stopColor="#1DC465" stopOpacity="0.32" />
-              <stop offset="100%" stopColor="#1DC465" stopOpacity="0" />
+              <stop
+                offset="0%"
+                stopColor="var(--color-primary)"
+                stopOpacity="0.32"
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-primary)"
+                stopOpacity="0"
+              />
             </linearGradient>
           </defs>
 
@@ -243,7 +282,7 @@ export const WalletBalanceChart: React.FC = () => {
                   y1={y}
                   x2={width - padding.right}
                   y2={y}
-                  stroke="#E2E8F0"
+                  stroke={isDark ? "#334155" : "#E2E8F0"}
                   strokeDasharray="4 4"
                   strokeWidth="1"
                 />
@@ -252,7 +291,10 @@ export const WalletBalanceChart: React.FC = () => {
                   x={padding.left - 8}
                   y={y + 3}
                   textAnchor="end"
-                  className="fill-slate-400 font-sans text-[10px]"
+                  className={`
+                    font-sans text-[10px]
+                    ${isDark ? "fill-slate-500" : "fill-slate-400"}
+                  `}
                 >
                   ₹{(value / 1000).toFixed(0)}k
                 </text>
@@ -268,7 +310,7 @@ export const WalletBalanceChart: React.FC = () => {
             <path
               d={pathD}
               fill="none"
-              stroke="#1DC465"
+              stroke="var(--color-primary)"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -321,7 +363,7 @@ export const WalletBalanceChart: React.FC = () => {
                   y1={padding.top}
                   x2={pt.x}
                   y2={baseline}
-                  stroke="#1DC465"
+                  stroke="var(--color-primary)"
                   strokeWidth="1.5"
                   strokeDasharray="2 2"
                 />
@@ -339,8 +381,14 @@ export const WalletBalanceChart: React.FC = () => {
                 cx={pt.x}
                 cy={pt.y}
                 r={hoveredIndex === index ? 6 : 4}
-                fill={hoveredIndex === index ? "#1DC465" : "#ffffff"}
-                stroke="#1DC465"
+                fill={
+                  hoveredIndex === index
+                    ? "var(--color-primary)"
+                    : isDark
+                      ? "#0D1A27"
+                      : "#ffffff"
+                }
+                stroke="var(--color-primary)"
                 strokeWidth="2"
                 pointerEvents="none"
               />
@@ -349,7 +397,10 @@ export const WalletBalanceChart: React.FC = () => {
                 x={pt.x}
                 y={height - 10}
                 textAnchor="middle"
-                className="fill-slate-500 font-sans text-[11px]"
+                className={`
+                  font-sans text-[11px]
+                  ${isDark ? "fill-slate-400" : "fill-slate-500"}
+                `}
                 pointerEvents="none"
               >
                 {pt.point.label}
@@ -360,12 +411,17 @@ export const WalletBalanceChart: React.FC = () => {
       </div>
 
       <div
-        className="
+        className={`
           mt-3 flex flex-col gap-2
-          border-t border-slate-100 pt-3
-          text-[11px] text-slate-400
+          border-t pt-3
+          text-[11px]
           sm:flex-row sm:items-center sm:justify-between
-        "
+          ${
+            isDark
+              ? "border-white/10 text-slate-500"
+              : "border-slate-100 text-slate-400"
+          }
+        `}
       >
         <span className="flex min-w-0 items-start gap-1.5 leading-relaxed">
           <Info className="mt-0.5 h-3 w-3 shrink-0 text-slate-400" />
@@ -375,11 +431,15 @@ export const WalletBalanceChart: React.FC = () => {
         </span>
 
         <span
-          className="
+          className={`
             w-fit max-w-full rounded px-1.5 py-1
-            font-mono text-[10px] text-emerald-600
-            bg-emerald-50
-          "
+            font-mono text-[10px]
+            ${
+              isDark
+                ? "bg-emerald-500/10 text-emerald-400"
+                : "bg-emerald-50 text-emerald-600"
+            }
+          `}
         >
           Preview Ledger Data
         </span>

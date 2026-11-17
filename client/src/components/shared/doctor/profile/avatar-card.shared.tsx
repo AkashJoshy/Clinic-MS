@@ -25,7 +25,7 @@ const statusStyles: Record<
   APPROVED: {
     icon: <BadgeCheck size={13} />,
     label: "Approved",
-    className: "bg-[#1dc465]/10 text-[#1dc465]",
+    className: "bg-emerald-500/10 text-emerald-400",
   },
   PENDING: {
     icon: <Clock3 size={13} />,
@@ -47,6 +47,7 @@ const statusStyles: Record<
 const DoctorAvatarCard: React.FC = () => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   const {
     register,
@@ -126,7 +127,7 @@ const DoctorAvatarCard: React.FC = () => {
     "/default-doctor.png";
 
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6 flex flex-col items-center text-center">
+    <div className="flex flex-col items-center rounded-2xl border border-white/10 bg-[#0d1a27] p-6 text-center">
       <input
         type="file"
         ref={fileInputRef}
@@ -143,63 +144,73 @@ const DoctorAvatarCard: React.FC = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") handleAvatarClick();
         }}
-        className="relative group cursor-pointer mb-4"
+        className="group relative mb-4 cursor-pointer"
       >
-        <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-[#101f2e] ring-1 ring-white/8 shadow-lg">
+        <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-[#101f2e] shadow-lg ring-1 ring-white/10">
           <img
             src={avatarSrc}
             alt={doctorProfile.doctor?.displayName}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <Camera className="w-7 h-7 text-white" />
+
+        <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <Camera className="h-7 w-7 text-white" />
         </div>
-        <div className="absolute bottom-0 right-1 bg-[#1dc465] p-1.5 rounded-full text-[#0d1a27] shadow-md border-2 border-[#0d1a27] pointer-events-none">
-          <Camera className="w-3.5 h-3.5" />
+
+        <div
+          className="pointer-events-none absolute bottom-0 right-1 rounded-full border-2 border-[#0d1a27] p-1.5 shadow-md"
+          style={{
+            backgroundColor: primaryColor,
+            color: "#ffffff",
+          }}
+        >
+          <Camera className="h-3.5 w-3.5" />
         </div>
       </div>
-      <h2>
-        {errors.profilePicture && (
-          <h2 className="text-red-500 text-[12px]">
-            {String(errors?.profilePicture?.message)}
-          </h2>
-        )}
-      </h2>
 
-      <h2 className="text-white text-lg font-semibold">
+      {errors.profilePicture && (
+        <p className="text-[12px] text-red-500">
+          {String(errors.profilePicture.message)}
+        </p>
+      )}
+
+      <h2 className="text-lg font-semibold text-white">
         Dr. {doctorProfile?.doctor.displayName}
       </h2>
-      <p className="text-[#8b9ab0] text-sm mt-0.5">
+
+      <p className="mt-0.5 text-sm text-[#8b9ab0]">
         {doctorProfile.doctor?.specialization}
       </p>
 
-      <div className="flex items-center gap-2 mt-3 flex-wrap justify-center">
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
         <span
-          className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${status.className}`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${status.className}`}
         >
           {status.icon}
           {status.label}
         </span>
-        <span className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-white/5 text-[#8b9ab0]">
-          <Star size={12} className="text-amber-400 fill-amber-400" />
+
+        <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-[#8b9ab0]">
+          <Star size={12} className="fill-amber-400 text-amber-400" />
           {doctorProfile.doctor?.averageRating.toFixed(1)} (
           {doctorProfile.doctor?.totalReviews})
         </span>
       </div>
 
-      <div className="border-t border-white/8 w-full my-5" />
+      <div className="my-5 w-full border-t border-white/10" />
 
-      <div className="grid grid-cols-2 gap-3 w-full text-left">
+      <div className="grid w-full grid-cols-2 gap-3 text-left">
         <div>
-          <p className="text-[#8b9ab0] text-xs">Doctor code</p>
-          <p className="text-white text-sm font-medium mt-0.5">
+          <p className="text-xs text-[#8b9ab0]">Doctor code</p>
+          <p className="mt-0.5 text-sm font-medium text-white">
             {doctorProfile.doctor?.doctorCode}
           </p>
         </div>
+
         <div>
-          <p className="text-[#8b9ab0] text-xs">Qualification</p>
-          <p className="text-white text-sm font-medium mt-0.5">
+          <p className="text-xs text-[#8b9ab0]">Qualification</p>
+          <p className="mt-0.5 text-sm font-medium text-white">
             {doctorProfile.doctor?.qualification}
           </p>
         </div>
@@ -209,9 +220,15 @@ const DoctorAvatarCard: React.FC = () => {
         type="button"
         disabled={isPending}
         onClick={handleAvatarClick}
-        className={`mt-5 w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer bg-[#1dc465]/10 text-[#1dc465] hover:bg-[#1dc465]/15 ${
-          isPending ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+        className={`
+          mt-5 w-full cursor-pointer rounded-lg px-4 py-2
+          text-sm font-medium transition-colors duration-200
+          disabled:cursor-not-allowed disabled:opacity-50
+        `}
+        style={{
+          backgroundColor: `color-mix(in srgb, ${primaryColor} 12%, transparent)`,
+          color: primaryColor,
+        }}
       >
         {isPending ? "Updating..." : "Change photo"}
       </button>

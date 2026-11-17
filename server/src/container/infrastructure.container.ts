@@ -29,6 +29,7 @@ import { RazorpayService } from "../infrastructure/services/razorpay.service.ts"
 import { RedisCacheService } from "../infrastructure/services/redis-cache.service.ts";
 import { DoctorSubscriptionRepository } from "../infrastructure/repositories/doctor-subscription.repository.ts";
 import { SubscriptionChangeCalculationService } from "../application/services/subscription/subscription-change-calculation.service.ts";
+import { PlatformSettingsRepository } from "../infrastructure/repositories/platform-settings.repository.ts";
 
 // DB Repo's
 export const mongooseUserRepository = new UserRepository();
@@ -48,6 +49,7 @@ export const mongooseWalletTransactionRepository =
 export const mongooseSubscriptionPlanRepository =
   new SubscriptionPlanRepository();
 export const mongooseDoctorSubscriptionRepository = new DoctorSubscriptionRepository()
+export const mongoosePlatformSettingsRepository = new PlatformSettingsRepository()
 
 // Services
 export const argonHashService = new ArgonHashService();

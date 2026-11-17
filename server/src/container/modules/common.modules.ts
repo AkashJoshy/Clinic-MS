@@ -2,10 +2,12 @@ import { GetPatientWalletUseCase } from "../../application/use-cases/patient/wal
 import { CreateWalletTopupOrderUseCase } from "../../application/use-cases/shared/create-wallet-topup-order.usecase.ts";
 import { ExpirePendingWalletTransactionsUseCase } from "../../application/use-cases/shared/expire-pending-wallet-transactions.usecase.ts";
 import { GetAllDepartmentsUseCase } from "../../application/use-cases/shared/get-all-departments.usecase.ts";
+import { GetPlatformDataUseCase } from "../../application/use-cases/shared/get-platform-data.usecase.ts";
 import { VerifyWalletTopupOrderUseCase } from "../../application/use-cases/shared/verify-wallet-topup-order.usecase.ts";
 import { DepartmentController } from "../../presentation/controllers/shared/department.controller.ts";
+import { PlatformDataController } from "../../presentation/controllers/shared/platform-data.controller.ts";
 import { WalletController } from "../../presentation/controllers/shared/wallet.controller.ts";
-import { getDoctorWalletBalanceUseCase, getDoctorWalletUseCase, getPatientWalletUseCase, mongooseDepartmentRepository, mongoosePatientRepository, mongooseUserRepository, mongooseWalletRepository, mongooseWalletTransactionRepository, razorpayService, walletTransactionsDetailsService } from "../index.ts";
+import { getDoctorWalletBalanceUseCase, getDoctorWalletUseCase, getPatientWalletUseCase, mongooseDepartmentRepository, mongoosePatientRepository, mongoosePlatformSettingsRepository, mongooseUserRepository, mongooseWalletRepository, mongooseWalletTransactionRepository, razorpayService, walletTransactionsDetailsService } from "../index.ts";
 
 // Use-cases
 const getAllDepartmentsUseCase = new GetAllDepartmentsUseCase(
@@ -30,6 +32,9 @@ export const expirePendingWalletTransactionsUseCase = new ExpirePendingWalletTra
   mongooseWalletTransactionRepository
 )
 
+export const getPlatformDataUseCase = new GetPlatformDataUseCase(
+  mongoosePlatformSettingsRepository
+)
 
 // Controllers
 export const departmentController = new DepartmentController(
@@ -48,6 +53,10 @@ export const doctorWalletController = new WalletController(
   getDoctorWalletBalanceUseCase,
   createWalletTopupOrderUseCase,
   verifyWalletTopupOrderUseCase,
+)
+
+export const platformDataController = new PlatformDataController(
+  getPlatformDataUseCase
 )
 
 

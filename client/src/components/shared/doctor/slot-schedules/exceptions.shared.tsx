@@ -52,7 +52,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
-            <NumberBadge number={3} />
+            <div className="[&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
+              <NumberBadge number={3} />
+            </div>
 
             <h2 className="ml-2 text-xl font-semibold text-white">
               Exceptions & Overrides
@@ -73,7 +75,10 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             {(["breaks", "vacations", "blackouts", "holidays"] as const).map(
               (tab) => {
                 const isActive = activeTab === tab;
-                const count = exceptions[tab].length > 9 ? `${exceptions[tab].length}+` : exceptions[tab].length
+                const count =
+                  exceptions[tab].length > 9
+                    ? `${exceptions[tab].length}+`
+                    : exceptions[tab].length;
 
                 return (
                   <button
@@ -81,31 +86,31 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                     type="button"
                     onClick={() => handleTabChange(tab)}
                     className={`
-          group inline-flex shrink-0 items-center gap-2
-          whitespace-nowrap border-b-2 px-3 py-3
-          text-xs font-medium capitalize
-          transition-all duration-200 sm:px-4 sm:text-sm
-          ${
-            isActive
-              ? "border-[#1dc465] text-[#1dc465]"
-              : "border-transparent text-slate-400 hover:border-white/20 hover:text-white"
-          }
-        `}
+                      group inline-flex shrink-0 items-center gap-2
+                      whitespace-nowrap border-b-2 px-3 py-3
+                      text-xs font-medium capitalize
+                      transition-all duration-200 sm:px-4 sm:text-sm
+                      ${
+                        isActive
+                          ? "border-primary text-primary"
+                          : "border-transparent text-slate-400 hover:border-white/20 hover:text-white"
+                      }
+                    `}
                   >
                     <span>{tab}</span>
 
                     <span
                       className={`
-            inline-flex h-[22px] min-w-[22px] items-center
-            justify-center rounded-md px-1.5
-            text-[11px] font-semibold tabular-nums
-            transition-colors duration-200
-            ${
-              isActive
-                ? "border border-[#1dc465]/30 bg-[#1dc465]/15 text-[#1dc465]"
-                : "border border-white/10 bg-white/[0.04] text-white/80 group-hover:border-white/20 group-hover:bg-white/[0.08]"
-            }
-          `}
+                        inline-flex h-[22px] min-w-[22px] items-center
+                        justify-center rounded-md px-1.5
+                        text-[11px] font-semibold tabular-nums
+                        transition-colors duration-200
+                        ${
+                          isActive
+                            ? "border border-primary/30 bg-primary/15 text-primary"
+                            : "border border-white/10 bg-white/[0.04] text-white/80 group-hover:border-white/20 group-hover:bg-white/[0.08]"
+                        }
+                      `}
                     >
                       {count}
                     </span>
@@ -157,7 +162,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             <button
               type="button"
               onClick={handleAddItem}
-              className="mt-4 flex items-center gap-1 text-sm text-[#1dc465] hover:underline"
+              className="mt-4 flex items-center gap-1 text-sm text-primary hover:underline"
             >
               <Plus size={14} />
               Add {activeTab.slice(0, -1)}
@@ -184,7 +189,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         label: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-primary"
                   />
                 </div>
 
@@ -203,7 +208,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
 
@@ -222,7 +227,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -243,7 +248,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   type="button"
                   onClick={handleAddBreak}
                   disabled={!isBreakFormValid}
-                  className="bg-[#1dc465] text-white hover:bg-[#1dc465]/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Add Break
                 </Button>
@@ -277,7 +282,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         reason: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-primary"
                   />
                 </div>
 
@@ -297,7 +302,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startDate: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
 
@@ -317,7 +322,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endDate: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -338,7 +343,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   type="button"
                   onClick={handleAddDateException}
                   disabled={!isDateFormValid}
-                  className="bg-[#1dc465] text-white hover:bg-[#1dc465]/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Add{" "}
                   {activeTab === "vacations"
@@ -367,9 +372,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
               {exceptions.overrides.map((override) => (
                 <div
                   key={override.id}
-                  className="flex items-center justify-between rounded border border-[#1dc465]/20 bg-[#1dc465]/10 p-3"
+                  className="flex items-center justify-between rounded border border-primary/20 bg-primary/10 p-3"
                 >
-                  <span className="text-sm text-[#1dc465]">
+                  <span className="text-sm text-primary">
                     {override.date} • {override.startTime} - {override.endTime}
                   </span>
 
@@ -387,7 +392,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
           {/* Override Form */}
           {showOverrideForm && (
-            <div className="mt-4 rounded-lg border border-[#1dc465]/20 bg-[#1dc465]/5 p-4">
+            <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
               <div className="grid gap-3 sm:grid-cols-3">
                 {/* Date */}
                 <div>
@@ -405,7 +410,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         date: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
 
@@ -424,7 +429,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
 
@@ -443,7 +448,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-[#1dc465]"
+                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -464,7 +469,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   type="button"
                   onClick={handleAddOverride}
                   disabled={!isOverrideFormValid}
-                  className="bg-[#1dc465] text-white hover:bg-[#1dc465]/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Add Override
                 </Button>
@@ -476,7 +481,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             <button
               type="button"
               onClick={() => setShowOverrideForm(true)}
-              className="mt-3 flex items-center gap-1 text-sm text-[#1dc465] hover:underline"
+              className="mt-3 flex items-center gap-1 text-sm text-primary hover:underline"
             >
               <Plus size={14} />
               Add Override

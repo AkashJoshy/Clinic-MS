@@ -34,6 +34,7 @@ import {
   mongooseDoctorClinicRepository,
   mongooseDoctorRepository,
   mongoosePatientRepository,
+  mongoosePlatformSettingsRepository,
   mongooseRefreshSessionRepository,
   mongooseUserRepository,
   mongooseWalletRepository,
@@ -94,6 +95,7 @@ const adminLoginUseCase = new AdminLoginUseCase(
   userExistenceService,
   accessTokenGenerationService,
   refreshTokenGenerationService,
+  mongoosePlatformSettingsRepository
 );
 
 const doctorLoginUseCase = new DoctorLoginUseCase(

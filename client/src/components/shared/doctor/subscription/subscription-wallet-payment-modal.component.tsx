@@ -27,7 +27,10 @@ interface SubscriptionWalletPaymentModalProps {
   currentSubscription: DoctorSubscription | null;
   isOpen: boolean;
   onClose: () => void;
-  onConfirmPayment: (plan: AvailablePlanOption, payableAmount: number) => Promise<void> | void;
+  onConfirmPayment: (
+    plan: AvailablePlanOption,
+    payableAmount: number,
+  ) => Promise<void> | void;
   walletDetails: WalletBalance | null;
   creditAmount: number;
   payableAmount: number;
@@ -172,7 +175,7 @@ const SubscriptionWalletPaymentModal: React.FC<
         onMouseDown={(event) => event.stopPropagation()}
       >
         <header className="flex shrink-0 items-center gap-3 border-b border-white/10 px-4 py-4 sm:px-5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1dc465]/10 text-[#1dc465]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Wallet size={20} />
           </div>
 
@@ -195,7 +198,7 @@ const SubscriptionWalletPaymentModal: React.FC<
           </button>
         </header>
 
-        <div className="custom-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
+        <div className="custom-scrollbar scrollbar-dark min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
           <div className="space-y-5 p-4 sm:p-5">
             <WalletBalanceCard
               balance={walletBalance}
@@ -209,7 +212,7 @@ const SubscriptionWalletPaymentModal: React.FC<
                 </p>
 
                 {plan.billingCycle && (
-                  <span className="rounded-full border border-[#1dc465]/20 bg-[#1dc465]/10 px-2.5 py-1 text-[10px] font-medium text-[#1dc465]">
+                  <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-medium text-primary">
                     {plan.billingCycle.toLowerCase()}
                   </span>
                 )}
@@ -262,7 +265,7 @@ const SubscriptionWalletPaymentModal: React.FC<
                     ? "border-red-500/20 bg-red-500/[0.05]"
                     : isDowngrade
                       ? "border-sky-500/20 bg-sky-500/[0.05]"
-                      : "border-[#1dc465]/20 bg-[#1dc465]/[0.05]"
+                      : "border-primary/20 bg-primary/[0.05]"
               }`}
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.04]">
@@ -271,9 +274,9 @@ const SubscriptionWalletPaymentModal: React.FC<
                 ) : isDowngrade ? (
                   <ArrowDownLeft size={19} className="text-sky-400" />
                 ) : isUpgrade ? (
-                  <ArrowUpRight size={19} className="text-[#1dc465]" />
+                  <ArrowUpRight size={19} className="text-primary" />
                 ) : (
-                  <CheckCircle2 size={19} className="text-[#1dc465]" />
+                  <CheckCircle2 size={19} className="text-primary" />
                 )}
               </div>
 
@@ -306,9 +309,9 @@ const SubscriptionWalletPaymentModal: React.FC<
               </div>
             </div>
 
-            <div className="rounded-xl border border-[#1dc465]/20 bg-[#1dc465]/[0.05] p-4">
+            <div className="rounded-xl border border-primary/20 bg-primary/[0.05] p-4">
               <div className="mb-3 flex items-center gap-2">
-                <Wallet size={17} className="text-[#1dc465]" />
+                <Wallet size={17} className="text-primary" />
 
                 <h3 className="font-semibold text-white">
                   Wallet balance overview
@@ -340,7 +343,7 @@ const SubscriptionWalletPaymentModal: React.FC<
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4 border-t border-[#1dc465]/20 pt-3">
+                <div className="flex items-center justify-between gap-4 border-t border-primary/20 pt-3">
                   <span className="font-semibold text-white">
                     Projected wallet balance
                   </span>
@@ -379,7 +382,7 @@ const SubscriptionWalletPaymentModal: React.FC<
             type="button"
             onClick={handleConfirm}
             disabled={isProcessing || walletUnavailable || !enoughBalance}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1dc465] px-4 py-3.5 text-sm font-semibold text-[#07130b] transition hover:bg-[#18b558] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {isProcessing ? (
               <RefreshCw size={16} className="animate-spin" />

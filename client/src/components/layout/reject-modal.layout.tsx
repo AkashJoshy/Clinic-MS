@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, X } from "lucide-react";
-import { DOCTOR_REAPPLICATION_FIELDS, DOCUMENT_REJECTION_REASONS } from "@/constants/admin.constant";
+import {
+  DOCTOR_REAPPLICATION_FIELDS,
+  DOCUMENT_REJECTION_REASONS,
+} from "@/constants/admin.constant";
 import type { RejectPatientData } from "@/schemas/admin/admin.schema";
 import { rejectDoctorSchema } from "@/schemas/admin/doctor.schema";
-
 import toast from "react-hot-toast";
 
 interface RejectModalProps<T> {
@@ -13,6 +15,7 @@ interface RejectModalProps<T> {
   onConfirm: (data: RejectPatientData) => void;
   onClose: () => void;
   mutateFn: (data: T) => void | Promise<void>;
+  isDark: boolean;
 }
 
 export const RejectModal = <T,>({
@@ -21,6 +24,7 @@ export const RejectModal = <T,>({
   onConfirm,
   onClose,
   mutateFn,
+  isDark,
 }: RejectModalProps<T>) => {
   const {
     register,
@@ -38,18 +42,37 @@ export const RejectModal = <T,>({
     },
   });
 
-  const fieldsToDelete = watch("fields") as string[];
+  const fieldsToDelete = watch("fields") ?? [];
   const rejectedReason = watch("rejectedReason");
 
-  const handleFieldSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const theme = {
+    modal: isDark
+      ? "border-white/10 bg-[#0d1a27]"
+      : "border-gray-200 bg-white",
+    heading: isDark ? "text-white" : "text-gray-900",
+    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
+    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+    input: isDark
+      ? "border-white/10 bg-[#080d14] text-white placeholder:text-[#4a5568]"
+      : "border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400",
+    inputFocus: "focus:border-[#1dc465]/50",
+    closeButton: isDark
+      ? "text-[#8b9ab0] hover:text-white"
+      : "text-gray-500 hover:text-gray-900",
+    cancelButton: isDark
+      ? "border-white/8 bg-white/5 text-[#8b9ab0] hover:bg-white/10 hover:text-white"
+      : "border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900",
+  };
+
+  const handleFieldSelect = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     const value = e.target.value;
 
     if (!value) return;
 
-    const currentFields = fieldsToDelete ?? [];
-
-    if (!currentFields.includes(value)) {
-      setValue("fields", [...currentFields, value], {
+    if (!fieldsToDelete.includes(value)) {
+      setValue("fields", [...fieldsToDelete, value], {
         shouldValidate: true,
       });
     }
@@ -61,15 +84,17 @@ export const RejectModal = <T,>({
     setValue(
       "fields",
       fieldsToDelete.filter((item) => item !== field),
-      {
-        shouldValidate: true,
-      },
+      { shouldValidate: true },
     );
   };
 
   const onSubmit = async (data: RejectPatientData) => {
-    await mutateFn(data as T);
-    onConfirm(data);
+    try {
+      await mutateFn(data as T);
+      onConfirm(data);
+    } catch {
+      toast.error("Failed to process rejection.");
+    }
   };
 
   return (
@@ -78,7 +103,7 @@ export const RejectModal = <T,>({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0d1a27] p-6 shadow-2xl"
+        className={`relative w-full max-w-md rounded-2xl border p-6 shadow-2xl ${theme.modal}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -88,20 +113,22 @@ export const RejectModal = <T,>({
           </div>
 
           <div>
-            <h3 className="text-base font-semibold text-white">
-              Reject Patient
+            <h3 className={`text-base font-semibold ${theme.heading}`}>
+              Reject Doctor
             </h3>
 
-            <p className="mt-0.5 text-sm text-[#8b9ab0]">
+            <p className={`mt-0.5 text-sm ${theme.muted}`}>
               You are rejecting{" "}
-              <span className="font-medium text-white">{name}</span>
+              <span className={`font-medium ${theme.heading}`}>
+                {name}
+              </span>
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="ml-auto shrink-0 cursor-pointer text-[#8b9ab0] transition-colors hover:text-white"
+            className={`ml-auto shrink-0 cursor-pointer transition-colors ${theme.closeButton}`}
           >
             <X size={18} />
           </button>
@@ -109,19 +136,18 @@ export const RejectModal = <T,>({
 
         {/* 1. Reason for Rejection */}
         <div className="mb-5">
-          <label className="mb-2 block text-sm font-medium text-[#c0ccd8]">
+          <label className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Reason for Rejection <span className="text-rose-400">*</span>
           </label>
 
           <select
             {...register("rejectedReason")}
-            className={`w-full cursor-pointer rounded-xl border bg-[#080d14] px-4 py-3 text-sm text-white outline-none transition-colors ${
+            className={`w-full cursor-pointer rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${theme.input} ${theme.inputFocus} ${
               errors.rejectedReason
                 ? "border-rose-500/60"
-                : "border-white/10 focus:border-[#1dc465]/50"
+                : ""
             }`}
           >
-            {/* Disabled default value */}
             <option value="" disabled>
               Select a reason
             </option>
@@ -145,9 +171,9 @@ export const RejectModal = <T,>({
 
         {/* 2. More Information */}
         <div className="mb-5">
-          <label className="mb-2 block text-sm font-medium text-[#c0ccd8]">
+          <label className={`mb-2 block text-sm font-medium ${theme.text}`}>
             More Information{" "}
-            <span className="text-xs font-normal text-[#66758a]">
+            <span className={`text-xs font-normal ${theme.muted}`}>
               (Optional)
             </span>
           </label>
@@ -156,8 +182,8 @@ export const RejectModal = <T,>({
             {...register("rejectedMessage")}
             rows={3}
             placeholder="Provide additional details about the rejection..."
-            className={`w-full resize-none rounded-xl border bg-[#080d14] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-[#4a5568] focus:border-[#1dc465]/50 ${
-              errors.rejectedMessage ? "border-rose-500/60" : "border-white/10"
+            className={`w-full resize-none rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${theme.input} ${theme.inputFocus} ${
+              errors.rejectedMessage ? "border-rose-500/60" : ""
             }`}
           />
 
@@ -170,9 +196,9 @@ export const RejectModal = <T,>({
 
         {/* 3. Fields to Delete */}
         <div className="mb-5">
-          <label className="mb-2 block text-sm font-medium text-[#c0ccd8]">
+          <label className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Fields to Delete{" "}
-            <span className="text-xs font-normal text-[#66758a]">
+            <span className={`text-xs font-normal ${theme.muted}`}>
               (Optional)
             </span>
           </label>
@@ -180,7 +206,7 @@ export const RejectModal = <T,>({
           <select
             defaultValue=""
             onChange={handleFieldSelect}
-            className="w-full cursor-pointer rounded-xl border border-white/10 bg-[#080d14] px-4 py-3 text-sm text-white outline-none transition-colors focus:border-[#1dc465]/50"
+            className={`w-full cursor-pointer rounded-xl border px-4 py-3 text-sm outline-none transition-colors ${theme.input} ${theme.inputFocus}`}
           >
             <option value="" disabled>
               Select fields to delete
@@ -189,9 +215,9 @@ export const RejectModal = <T,>({
             {rejectedReason ? (
               DOCTOR_REAPPLICATION_FIELDS.map((field) => (
                 <option
-                  key={field.label}
+                  key={field.value}
                   value={field.value}
-                  disabled={fieldsToDelete.includes(field.label)}
+                  disabled={fieldsToDelete.includes(field.value)}
                 >
                   {field.label}
                 </option>
@@ -204,22 +230,29 @@ export const RejectModal = <T,>({
           {/* Selected Fields */}
           {fieldsToDelete.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {fieldsToDelete.map((field) => (
-                <span
-                  key={field}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/20 bg-rose-400/5 px-2.5 py-1 text-[10px] font-medium text-rose-300"
-                >
-                  {field}
+              {fieldsToDelete.map((field) => {
+                const fieldLabel =
+                  DOCTOR_REAPPLICATION_FIELDS.find(
+                    (item) => item.value === field,
+                  )?.label ?? field;
 
-                  <button
-                    type="button"
-                    onClick={() => removeField(field)}
-                    className="cursor-pointer text-rose-400 transition-colors hover:text-rose-200"
+                return (
+                  <span
+                    key={field}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-rose-400/20 bg-rose-400/5 px-2.5 py-1 text-[10px] font-medium text-rose-400"
                   >
-                    <X size={11} />
-                  </button>
-                </span>
-              ))}
+                    {fieldLabel}
+
+                    <button
+                      type="button"
+                      onClick={() => removeField(field)}
+                      className="cursor-pointer text-rose-400 transition-colors hover:text-rose-200"
+                    >
+                      <X size={11} />
+                    </button>
+                  </span>
+                );
+              })}
             </div>
           )}
         </div>
@@ -229,7 +262,7 @@ export const RejectModal = <T,>({
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-xl border border-white/8 bg-white/5 px-4 py-2.5 text-sm font-medium text-[#8b9ab0] transition-all duration-150 hover:bg-white/10 hover:text-white"
+            className={`cursor-pointer rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-150 ${theme.cancelButton}`}
           >
             Cancel
           </button>
@@ -237,14 +270,8 @@ export const RejectModal = <T,>({
           <button
             type="button"
             onClick={handleSubmit(
-              (data) => {
-                console.log(`Data from reject: `);
-                console.log(data);
-                onSubmit(data)
-              },
-              (error: any) => {
-                toast.error(`Error: ${error.message}`)
-              },
+              onSubmit,
+              () => toast.error("Please check the rejection form."),
             )}
             className="cursor-pointer rounded-xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-rose-600"
           >

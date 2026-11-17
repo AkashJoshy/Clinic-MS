@@ -123,12 +123,12 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  /* --primary: oklch(0.922 0 0); */
+  /* --primary-foreground: oklch(0.205 0 0); */
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: oklch(9.962% 0.017 20.511);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
@@ -214,4 +214,50 @@
 
 .custom-scrollbar::-webkit-scrollbar-corner {
   background: #111c29;
+}
+
+/* Shared scrollbar dimensions */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* DARK THEME */
+.custom-scrollbar.scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: #344456 #0d1a27;
+}
+
+.custom-scrollbar.scrollbar-dark::-webkit-scrollbar-track {
+  background: #0d1a27;
+  border-radius: 10px;
+}
+
+.custom-scrollbar.scrollbar-dark::-webkit-scrollbar-thumb {
+  background: #344456;
+  border-radius: 10px;
+}
+
+.custom-scrollbar.scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: #4a6078;
+}
+
+/* LIGHT THEME */
+.custom-scrollbar.scrollbar-light {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #ffffff;
+}
+
+.custom-scrollbar.scrollbar-light::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.custom-scrollbar.scrollbar-light::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+.custom-scrollbar.scrollbar-light::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }

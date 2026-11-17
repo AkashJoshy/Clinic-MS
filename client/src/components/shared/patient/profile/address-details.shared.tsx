@@ -18,6 +18,8 @@ import {
 } from "@/schemas/patient/address.schema";
 import { emptyAddress } from "@/constants/patient.constant";
 import { useLocationOptions } from "@/hooks/use-location-options.hook";
+import { useAuthStore } from "@/store";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
 
 const AddressDetails: React.FC<AddressDetailsProps> = ({
   address,
@@ -31,6 +33,8 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
   setOriginalAddress,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
   const { countries, states, handleCountryChange, handleStateChange, cities } =
     useLocationOptions();
 
@@ -70,18 +74,30 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
 
   const errorText = "text-xs text-red-600 mt-1";
 
+  const primaryTint = {
+    backgroundColor: `color-mix(in srgb, ${primaryColor} 10%, white)`,
+    color: primaryColor,
+  };
+
+  const primaryButtonStyle = {
+    backgroundColor: primaryColor,
+    color: getContrastTextColor(primaryColor),
+  };
+
   return (
     <div className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 md:p-8">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-blue-500" />
+          <MapPin className="w-5 h-5" style={{ color: primaryColor }} />
           Address
         </h3>
+
         {!isEditing && (
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm"
+            className="flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors duration-200 text-sm"
+            style={primaryTint}
           >
             <Pencil className="w-4 h-4" />
             Edit
@@ -248,8 +264,11 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
             address.state ||
             address.country ? (
               <div className="flex items-start gap-4 rounded-xl border border-gray-100 bg-gray-50/60 p-4">
-                <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
-                  <MapPin className="h-5 w-5 text-blue-500" />
+                <div
+                  className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                  style={primaryTint}
+                >
+                  <MapPin className="h-5 w-5" />
                 </div>
                 <div className="space-y-0.5">
                   <p className="font-medium text-gray-900">
@@ -286,7 +305,8 @@ const AddressDetails: React.FC<AddressDetailsProps> = ({
             </button>
             <button
               type="submit"
-              className="px-6 cursor-pointer py-2.5 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto shadow-sm"
+              className="px-6 cursor-pointer py-2.5 rounded-lg font-medium transition-colors w-full sm:w-auto shadow-sm"
+              style={primaryButtonStyle}
             >
               Save Changes
             </button>

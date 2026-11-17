@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AuthStateDTO } from "@/types/auth";
+import type { AuthStateDTO, PlatformData } from "@/types/auth";
 import type { AuthActions } from "./auth.actions";
 import { initialAuthState } from "@/constants/user.constants";
+import type { User } from "@/types/user";
+import { initialPlatformState } from "@/constants/admin-settings.constant";
 
 type AuthStore = AuthActions & AuthStateDTO;
 
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthStore>()(
       _hasHydrated: false,
       patients: [],
       activePatient: null,
+      platform: initialPlatformState,
       setHasHydrated(val: boolean) {
         _set({ _hasHydrated: val });
       },
@@ -111,18 +114,30 @@ export const useAuthStore = create<AuthStore>()(
             : null,
         }));
       },
+      updatePlatform(partial) {
+        _set((state) => ({
+          platform: { ...state.platform, ...partial } as PlatformData,
+        }));
+      },
       setError(error) {
         _set({ error });
       },
       setLoading(isLoading) {
         _set({ isLoading });
       },
-      setUser(user) {
-        _set({ user });
+      setUser(user, role) {
+        _set((state) => ({
+          users: state?.users
+            ? { ...state.users, [role]: user }
+            : { admin: null, patient: null, doctor: null },
+        }));
       },
-      updateUser(partial) {
-        _set((state: { user: any }) => ({
-          user: state.user ? { ...state.user, ...partial } : null,
+      updateUser(partial, role) {
+        _set((state) => ({
+          users: {
+            ...state.users,
+            [role]: { ...state.users[role], ...partial },
+          },
         }));
       },
       setDoctor(doctor) {
@@ -149,6 +164,7 @@ export const useAuthStore = create<AuthStore>()(
         tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
         users: state.users,
+        platform: state.platform,
         activePatient: state.activePatient,
         patients: state.patients,
         doctor: state.doctor,

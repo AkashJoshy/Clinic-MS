@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LayoutGrid, Pencil, Plus, Search, Trash } from "lucide-react";
+import { LayoutGrid, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
 import { useMutate } from "@/hooks/use-mutate.hook";
@@ -13,11 +13,17 @@ import DepartmentCard from "@/components/shared/admin/departments/department-car
 import DepartmentCardSkeleton from "@/components/shared/skeletons/department-card.skeleton";
 import toast from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import AdminPageHeader from "@/components/shared/page-header.shared";
+import { useAuthStore } from "@/store";
 
 const ITEMS_PER_PAGE = 6;
 
 const DepartmentPage: React.FC = () => {
   const navigate = useNavigate();
+
+  const admin = useAuthStore((state) => state.users.admin);
+  const isDark = admin?.theme === "DARK";
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [allDepartments, setAllDepartments] = useState<DepartmentData[]>([]);
@@ -30,17 +36,18 @@ const DepartmentPage: React.FC = () => {
   const fetchDepartments = async () => {
     try {
       setIsLoading(true);
-      let response = await getAllDepartments();
+      const response = await getAllDepartments();
       const data = response.data;
+
       if (data) {
         setAllDepartments(data);
-        setIsLoading(false);
       } else {
         setAllDepartments([]);
-        setIsLoading(false);
       }
     } catch (error) {
       toast.error("Error fetching departments");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -51,7 +58,7 @@ const DepartmentPage: React.FC = () => {
   const { mutate } = useMutate(updateDepartment, {
     onSuccess: (data) => {
       setAllDepartments((prev) => {
-        const updatedDepts = prev.map((dept) => {
+        return prev.map((dept) => {
           if (dept.id === data.data?.departmentId) {
             return {
               ...dept,
@@ -61,16 +68,15 @@ const DepartmentPage: React.FC = () => {
 
           return dept;
         });
-
-        return updatedDepts;
       });
+
       setOpen(false);
     },
   });
 
   function onUpdate() {
     if (selectedDept && selectedDept.id) {
-      mutate({ id: selectedDept?.id, status: selectedDept?.status });
+      mutate({ id: selectedDept.id, status: selectedDept.status });
     }
   }
 
@@ -93,28 +99,24 @@ const DepartmentPage: React.FC = () => {
   }
 
   const totalItems = filteredDepartments.length;
-  const totalPages = Math.ceil(filteredDepartments.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
-    <div className="min-h-full p-6 lg:p-8 space-y-6 border border-white/10 bg-white/2 shadow-2xs">
+    <div
+      className={`min-h-full p-6 lg:p-8 space-y-6 border shadow-2xs ${
+        isDark ? "border-white/10 bg-white/2" : "border-gray-200 bg-white"
+      }`}
+    >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#1dc465]/15 border border-[#1dc465]/25 flex items-center justify-center">
-            <LayoutGrid size={20} className="text-[#1dc465]" />
-          </div>
-          <div>
-            <h1 className="text-white text-xl font-bold">
-              Department Management
-            </h1>
-            <h6 className="text-[#8b9ab0] text-sm">
-              Manage hospital departments
-            </h6>
-          </div>
-        </div>
+        <AdminPageHeader
+          icon={LayoutGrid}
+          title="Department Management"
+          description="Manage hospital departments"
+        />
 
         <button
           onClick={() => navigate("/admin/department/add")}
-          className="flex items-center gap-2 px-4 py-2 bg-[#1dc465] rounded-[10px] font-bold hover:bg-[#15a050] transition-colors cursor-pointer"
+          className={`flex items-center gap-2 px-4 py-2 bg-primary rounded-[10px] font-bold hover:bg-primary/90 transition-colors text-primary-foreground cursor-pointer`}
         >
           <Plus size={18} />
           Add Department
@@ -124,27 +126,37 @@ const DepartmentPage: React.FC = () => {
       <div className="relative max-w-md">
         <Search
           size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8b9ab0]"
+          className={`absolute left-3 top-1/2 -translate-y-1/2 ${
+            isDark ? "text-[#8b9ab0]" : "text-gray-400"
+          }`}
         />
+
         <input
           type="text"
           placeholder="Search all departments..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-[#0d1a27] border border-white/8 rounded-xl text-white text-sm focus:border-[#1dc465]/50 outline-none transition-all"
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setPage(1);
+          }}
+          className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm outline-none transition-all ${
+            isDark
+              ? "bg-[#0d1a27] border-white/8 text-white placeholder:text-[#8b9ab0] focus:border-primary/50"
+              : "bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-primary/50"
+          }`}
         />
       </div>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <DepartmentCardSkeleton key={i} />
+            <DepartmentCardSkeleton key={i} isDark={isDark} />
           ))}
         </div>
       ) : filteredDepartments.length === 0 ? (
         <div className="text-center py-12">
-          <h1 className="text-[#8b9ab0]">
-            <AllApprovals name="Departments" />
+          <h1 className={isDark ? "text-[#8b9ab0]" : "text-gray-500"}>
+            <AllApprovals name="Departments" isDark={isDark} />
           </h1>
         </div>
       ) : (
@@ -159,27 +171,30 @@ const DepartmentPage: React.FC = () => {
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredDepartments.map((dept) => (
-                <DepartmentCard department={dept} handleDelete={handleDelete} />
+                <DepartmentCard
+                  key={dept.id}
+                  department={dept}
+                  handleDelete={handleDelete}
+                  isDark={isDark}
+                />
               ))}
             </div>
           </motion.div>
         </AnimatePresence>
       )}
 
-      {isOpen &&
-        (selectedDept ? (
-          <DeleteConfirmationalModal
-            id={selectedDept.id}
-            name={selectedDept.name}
-            type="Department"
-            action={selectedDept.action}
-            status={selectedDept.status}
-            service={onUpdate}
-            closeDeleteBox={closeDeleteBox}
-          />
-        ) : (
-          ""
-        ))}
+      {isOpen && selectedDept && (
+        <DeleteConfirmationalModal
+          id={selectedDept.id}
+          name={selectedDept.name}
+          type="Department"
+          action={selectedDept.action}
+          status={selectedDept.status}
+          service={onUpdate}
+          closeDeleteBox={closeDeleteBox}
+          isDark={isDark}
+        />
+      )}
 
       <Pagination
         currentPage={page}
@@ -187,7 +202,7 @@ const DepartmentPage: React.FC = () => {
         totalItems={totalItems}
         totalPages={totalPages}
         onPageChange={setPage}
-        colorCode="WHITE"
+        isDark={isDark}
       />
     </div>
   );

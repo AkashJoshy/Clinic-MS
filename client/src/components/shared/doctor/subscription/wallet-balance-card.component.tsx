@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Wallet } from "lucide-react";
 
@@ -18,7 +17,7 @@ const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
   balance,
   unavailable,
 }) => (
-  <div className="relative overflow-hidden rounded-2xl border border-[#1dc465]/20 bg-gradient-to-br from-[#1dc465]/10 via-[#1dc465]/[0.04] to-transparent p-4">
+  <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/[0.04] to-transparent p-4">
     <div className="flex items-center justify-between gap-3">
       <div>
         <p className="text-xs font-medium text-gray-400">
@@ -32,7 +31,7 @@ const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
         <div className="mt-3 flex items-center gap-2">
           <span
             className={`h-2 w-2 rounded-full ${
-              unavailable ? "bg-amber-400" : "bg-[#1dc465]"
+              unavailable ? "bg-amber-400" : "bg-primary"
             }`}
           />
 
@@ -42,7 +41,7 @@ const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
         </div>
       </div>
 
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#1dc465]/10 text-[#1dc465]">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
         <Wallet size={24} />
       </div>
     </div>

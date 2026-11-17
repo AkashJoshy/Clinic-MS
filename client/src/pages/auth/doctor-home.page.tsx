@@ -2,17 +2,10 @@ import { useCallback } from "react";
 import DoctorPublicHeader from "@/components/layout/doctor-public-header.layout";
 import DoctorPublicFooter from "@/components/layout/doctor-public-footer.layout";
 import DoctorHero from "@/components/shared/doctor-hero.shared";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 
 const DoctorHomepage = () => {
-  const formattedWebsiteCall = useCallback((name: string) => {
-    return name
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word[0].toUpperCase() + word.slice(1))
-      .join(" ");
-  }, []);
-
-  const websiteName = formattedWebsiteCall(import.meta.env.VITE_WEBSITE_NAME || "Healthixia Care");
+  const { websiteName, primaryColor } = usePlatformConfig();
 
   return (
     <div
@@ -33,7 +26,7 @@ const DoctorHomepage = () => {
         .fade-up-3 { animation-delay: 0.4s; opacity: 0; }
         .fade-up-4 { animation-delay: 0.55s; opacity: 0; }
       `}</style>
-      <DoctorPublicHeader />
+      <DoctorPublicHeader websiteName={websiteName} primaryColor={primaryColor} />
       <DoctorHero websiteName={websiteName} />
       <DoctorPublicFooter websiteName={websiteName} />
     </div>

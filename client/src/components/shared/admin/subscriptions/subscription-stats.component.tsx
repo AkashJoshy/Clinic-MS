@@ -4,9 +4,22 @@ import type { SubscriptionStats } from "@/types/subscription";
 
 interface SubscriptionStatsProps {
   stats: SubscriptionStats;
+  isDark: boolean;
 }
 
-export const SubscriptionStatsSection: React.FC<SubscriptionStatsProps> = ({ stats }) => {
+export const SubscriptionStatsSection: React.FC<SubscriptionStatsProps> = ({
+  stats,
+  isDark,
+}) => {
+  const theme = {
+    card: isDark
+      ? "bg-[#0c141e]/80 border-white/8 hover:border-white/15"
+      : "bg-white border-gray-200 hover:border-gray-300",
+    title: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+    value: isDark ? "text-white" : "text-gray-900",
+    subtitle: isDark ? "text-[#6b7c93]" : "text-gray-500",
+  };
+
   const statItems = [
     {
       title: "Active Tiers",
@@ -29,8 +42,8 @@ export const SubscriptionStatsSection: React.FC<SubscriptionStatsProps> = ({ sta
       value: `₹${stats.estimatedMonthlyRevenue.toLocaleString()}`,
       subtitle: "Estimated active revenue",
       icon: IndianRupee,
-      color: "text-[#1dc465]",
-      bg: "bg-[#1dc465]/10 border-[#1dc465]/20",
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10 border-emerald-500/20",
     },
     {
       title: "System Compliance",
@@ -43,25 +56,35 @@ export const SubscriptionStatsSection: React.FC<SubscriptionStatsProps> = ({ sta
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {statItems.map((item, idx) => {
         const Icon = item.icon;
+
         return (
           <div
             key={idx}
-            className="p-4 rounded-2xl bg-[#0c141e]/80 border border-white/8 backdrop-blur-sm hover:border-white/15 transition-all flex items-center justify-between shadow-sm"
+            className={`flex items-center justify-between rounded-2xl border p-4 shadow-sm backdrop-blur-sm transition-all ${theme.card}`}
           >
             <div>
-              <p className="text-xs font-medium text-[#8b9ab0] uppercase tracking-wider">
+              <p
+                className={`text-xs font-medium uppercase tracking-wider ${theme.title}`}
+              >
                 {item.title}
               </p>
-              <h3 className="text-2xl font-bold text-white mt-1 tracking-tight">
+
+              <h3
+                className={`mt-1 text-2xl font-bold tracking-tight ${theme.value}`}
+              >
                 {item.value}
               </h3>
-              <p className="text-[11px] text-[#6b7c93] mt-0.5">{item.subtitle}</p>
+
+              <p className={`mt-0.5 text-[11px] ${theme.subtitle}`}>
+                {item.subtitle}
+              </p>
             </div>
+
             <div
-              className={`w-11 h-11 rounded-xl flex items-center justify-center border ${item.bg} ${item.color}`}
+              className={`flex h-11 w-11 items-center justify-center rounded-xl border ${item.bg} ${item.color}`}
             >
               <Icon size={20} />
             </div>

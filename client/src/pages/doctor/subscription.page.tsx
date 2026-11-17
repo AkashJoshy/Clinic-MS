@@ -13,14 +13,11 @@ import {
 } from "@/components/shared/doctor/subscription";
 import SubscriptionWalletPaymentModal from "@/components/shared/doctor/subscription/subscription-wallet-payment-modal.component";
 import type { AvailablePlanOption } from "@/types/doctor-subscription";
-import type { BillingCycle } from "@/types/subscription";
 import SubscriptionUpgradeModal from "@/components/shared/doctor/subscription/subscription-upgrade.modal";
 import type { RouteRoleProps } from "@/types/auth";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { buySubscriptionWithWallet } from "@/services/doctor.service";
 import { useAuthStore } from "@/store";
-import SubscriptionCancelledSwitchModal from "@/components/shared/doctor/subscription/subscription-cancelled-switch.modal";
-import toast from "react-hot-toast";
 
 const DoctorSubscriptionPage = (roleOverride: {
   roleOverride: RouteRoleProps;

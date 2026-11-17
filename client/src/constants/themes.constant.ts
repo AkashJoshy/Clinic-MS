@@ -1,4 +1,6 @@
 
+export const THEME_MODE = ["DARK", "LIGHT"] as const
+
 export type ThemeStyle =
   | "dark-glow"
   | "glass"

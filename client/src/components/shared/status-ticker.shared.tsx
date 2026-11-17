@@ -1,5 +1,6 @@
 import { defaultIcons, variantStyles } from "@/data/shared.data";
 import type { StatusTickerProps } from "@/types/common";
+import { useAuthStore } from "@/store";
 import { motion } from "framer-motion";
 import { useLayoutEffect, useRef, useState } from "react";
 
@@ -12,6 +13,9 @@ const StatusTicker = ({
   message,
   variant = "info",
 }: StatusTickerProps) => {
+  const { admin } = useAuthStore((state) => state.users);
+  const isDark = admin?.theme === "DARK";
+
   const styles = variantStyles[variant];
   const Icon = icon ?? defaultIcons[variant];
 
@@ -28,17 +32,13 @@ const StatusTicker = ({
     if (!container || !messageElement) return;
 
     const measure = () => {
-        setContainerWidth(container.clientWidth);
-        setMessageWidth(messageElement.offsetWidth);
-    };
-    
-    measure();
-    console.log([containerWidth, -messageWidth]);
-
-    const resizeObserver = new ResizeObserver(() => {
-      setContainerWidth(container.offsetWidth);
+      setContainerWidth(container.clientWidth);
       setMessageWidth(messageElement.scrollWidth);
-    });
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
 
     resizeObserver.observe(container);
     resizeObserver.observe(messageElement);
@@ -56,19 +56,33 @@ const StatusTicker = ({
 
   const isReady = containerWidth > 0 && messageWidth > 0;
 
+  const themeStyles = {
+    container: isDark
+      ? "bg-[#0d1a27] border-white/10"
+      : "bg-white border-gray-200",
+
+    iconWrapper: isDark
+      ? "border-white/10"
+      : "border-gray-200",
+
+    text: isDark
+      ? "text-[#c1ccd9]"
+      : "text-gray-700",
+  };
+
   return (
     <div
-      className={`w-full h-10 rounded-md overflow-hidden border flex items-center ${styles.container}`}
+      className={`flex h-10 w-full items-center overflow-hidden rounded-md border ${themeStyles.container} ${styles.container}`}
     >
       <div
-        className={`shrink-0 px-2.5 h-full flex items-center border-r ${styles.iconWrapper}`}
+        className={`flex h-full shrink-0 items-center border-r px-2.5 ${themeStyles.iconWrapper} ${styles.iconWrapper}`}
       >
-        <Icon className={`w-4 h-4 ${styles.icon}`} />
+        <Icon className={`h-4 w-4 ${styles.icon}`} />
       </div>
 
       <div
         ref={containerRef}
-        className="relative flex-1 overflow-hidden h-full flex items-center"
+        className="relative flex h-full flex-1 items-center overflow-hidden"
       >
         <motion.div
           key={message}
@@ -76,9 +90,7 @@ const StatusTicker = ({
           initial={{ x: containerWidth }}
           animate={
             isReady
-              ? {
-                  x: [containerWidth, -messageWidth],
-                }
+              ? { x: [containerWidth, -messageWidth] }
               : { x: containerWidth }
           }
           transition={{
@@ -86,7 +98,7 @@ const StatusTicker = ({
             repeat: Infinity,
             ease: "linear",
           }}
-          className="absolute whitespace-nowrap text-xs font-medium tracking-wide"
+          className={`absolute whitespace-nowrap text-xs font-medium tracking-wide ${themeStyles.text}`}
         >
           {message}
         </motion.div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, SearchX, RotateCcw } from "lucide-react";
+import { useAuthStore } from "@/store";
 import {
   SubscriptionHeader,
   SubscriptionStatsSection,
@@ -9,9 +10,11 @@ import {
 } from "@/components/shared/admin/subscriptions";
 import SubscriptionStatusModal from "@/components/shared/admin/subscriptions/subscription-status.modal";
 import { useSubscriptions } from "@/hooks/use-subscriptions.hook";
-import type { RouteRoleProps } from "@/types/auth";
 
 const SubscriptionsPage = () => {
+  const admin = useAuthStore((state) => state.users.admin);
+  const isDark = admin?.theme === "DARK";
+
   const {
     counts,
     editingPlan,
@@ -35,8 +38,28 @@ const SubscriptionsPage = () => {
     statusPlan,
   } = useSubscriptions();
 
+  const theme = {
+    container: isDark
+      ? "border-white/10 bg-white/[0.02]"
+      : "border-gray-200 bg-white shadow-sm",
+    emptyContainer: isDark
+      ? "border-white/10 bg-white/[0.01]"
+      : "border-gray-200 bg-gray-50",
+    iconWrapper: isDark
+      ? "border-white/10 bg-white/5 text-gray-400"
+      : "border-gray-200 bg-white text-gray-400",
+    heading: isDark ? "text-white" : "text-gray-900",
+    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+    resetButton: isDark
+      ? "border-white/10 bg-white/5 text-white hover:bg-white/10"
+      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100",
+    createButton: "bg-primary text-primary-foreground hover:bg-primary/90",
+  };
+
   return (
-    <div className="min-h-full space-y-6 rounded-2xl border border-white/10 bg-white/[0.02] p-4 shadow-2xs sm:p-6 lg:p-8">
+    <div
+      className={`min-h-full space-y-6 rounded-2xl border p-4 shadow-2xs sm:p-6 lg:p-8 ${theme.container}`}
+    >
       <SubscriptionHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
@@ -44,21 +67,27 @@ const SubscriptionsPage = () => {
         onStatusFilterChange={setStatusFilter}
         onOpenCreateModal={handleOpenCreateModal}
         counts={counts}
+        isDark={isDark}
       />
 
-      <SubscriptionStatsSection stats={stats} />
+      <SubscriptionStatsSection stats={stats} isDark={isDark} />
 
       {filteredPlans.length === 0 ? (
-        <div className="space-y-4 rounded-2xl border border-dashed border-white/10 bg-white/[0.01] px-4 py-16 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-gray-400">
+        <div
+          className={`space-y-4 rounded-2xl border border-dashed px-4 py-16 text-center ${theme.emptyContainer}`}
+        >
+          <div
+            className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border ${theme.iconWrapper}`}
+          >
             <SearchX size={26} />
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-white">
+            <h3 className={`text-base font-semibold ${theme.heading}`}>
               No subscription plans match your filter
             </h3>
-            <p className="mx-auto max-w-sm text-xs text-[#8b9ab0]">
+
+            <p className={`mx-auto max-w-sm text-xs ${theme.description}`}>
               Try adjusting your search query or switching the status filter to
               see other plans.
             </p>
@@ -68,7 +97,7 @@ const SubscriptionsPage = () => {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-white/10"
+              className={`flex cursor-pointer items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-semibold transition-all ${theme.resetButton}`}
             >
               <RotateCcw size={14} />
               Reset Filters
@@ -77,7 +106,7 @@ const SubscriptionsPage = () => {
             <button
               type="button"
               onClick={handleOpenCreateModal}
-              className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#1dc465] px-4 py-2 text-xs font-bold text-[#080d14] shadow-md transition-all hover:bg-[#15a050]"
+              className={`flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold shadow-md transition-all ${theme.createButton}`}
             >
               <Plus size={14} strokeWidth={2.5} />
               Create Plan
@@ -104,6 +133,7 @@ const SubscriptionsPage = () => {
                   plan={plan}
                   onEdit={handleOpenEditModal}
                   onToggleStatus={handleOpenStatusModal}
+                  isDark={isDark}
                 />
               </motion.div>
             ))}
@@ -116,6 +146,7 @@ const SubscriptionsPage = () => {
         onClose={handleCloseFormModal}
         onSubmit={handleSubmitForm}
         initialData={editingPlan}
+        isDark={isDark}
       />
 
       {isStatusModalOpen && statusPlan && (
@@ -124,6 +155,7 @@ const SubscriptionsPage = () => {
           onClose={handleCloseStatusModal}
           onConfirm={handleConfirmStatusChange}
           isUpdating={isUpdatingStatus}
+          isDark={isDark}
         />
       )}
     </div>

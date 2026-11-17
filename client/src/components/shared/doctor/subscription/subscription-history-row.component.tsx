@@ -1,5 +1,12 @@
 import React from "react";
-import { FileText, Download, Eye, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import {
+  FileText,
+  Download,
+  Eye,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 import type { SubscriptionHistoryRowProps } from "@/types/doctor-subscription";
 
 export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
@@ -17,7 +24,7 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
     switch (item.status) {
       case "PAID":
         return (
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#1dc465]">
+          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">
             <CheckCircle2 size={11} />
             Paid
           </span>
@@ -41,29 +48,23 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
 
   return (
     <>
-      {/* Desktop Table Row */}
       <tr className="hidden border-b border-white/5 transition-colors hover:bg-white/[0.02] md:table-row">
-        {/* Invoice & Plan */}
         <td className="py-4 pl-4 pr-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#1dc465]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-primary">
               <FileText size={16} />
             </div>
             <div>
               <p className="text-xs font-bold text-white">
                 {item.invoiceNumber}
               </p>
-              <p className="text-[11px] text-[#8b9ab0]">
-                {item.planName}
-              </p>
+              <p className="text-[11px] text-[#8b9ab0]">{item.planName}</p>
             </div>
           </div>
         </td>
 
         {/* Date */}
-        <td className="px-3 py-4 text-xs text-gray-300">
-          {formattedDate}
-        </td>
+        <td className="px-3 py-4 text-xs text-gray-300">{formattedDate}</td>
 
         {/* Amount */}
         <td className="px-3 py-4">
@@ -84,9 +85,7 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
         </td>
 
         {/* Status */}
-        <td className="px-3 py-4">
-          {getStatusBadge()}
-        </td>
+        <td className="px-3 py-4">{getStatusBadge()}</td>
 
         {/* Actions */}
         <td className="py-4 pl-3 pr-4 text-right">
@@ -105,7 +104,7 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
               type="button"
               onClick={() => onDownloadInvoice(item)}
               title="Download Tax Receipt"
-              className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] font-semibold text-[#1dc465] transition-colors hover:bg-[#1dc465]/10"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
             >
               <Download size={13} />
               <span>PDF</span>
@@ -118,16 +117,14 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
       <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 md:hidden">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[#1dc465]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-primary">
               <FileText size={15} />
             </div>
             <div>
               <p className="text-xs font-bold text-white">
                 {item.invoiceNumber}
               </p>
-              <p className="text-[11px] text-[#8b9ab0]">
-                {item.planName}
-              </p>
+              <p className="text-[11px] text-[#8b9ab0]">{item.planName}</p>
             </div>
           </div>
           {getStatusBadge()}
@@ -141,7 +138,8 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
           <div className="text-right">
             <span className="text-[11px] text-[#8b9ab0]">Total: </span>
             <span className="font-bold text-white">
-              {item.currency}{item.totalAmount.toLocaleString("en-IN")}
+              {item.currency}
+              {item.totalAmount.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
@@ -162,7 +160,7 @@ export const SubscriptionHistoryRow: React.FC<SubscriptionHistoryRowProps> = ({
             <button
               type="button"
               onClick={() => onDownloadInvoice(item)}
-              className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-semibold text-[#1dc465]"
+              className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-semibold text-primary"
             >
               <Download size={12} />
               <span>PDF</span>

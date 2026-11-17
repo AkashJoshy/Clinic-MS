@@ -1,5 +1,5 @@
 
-export const RegistrationHeader = () => {
+export const RegistrationHeader = ({ websiteName }: { websiteName: string }) => {
   return (
     <>
       <div className="text-center mb-8">
@@ -10,7 +10,7 @@ export const RegistrationHeader = () => {
           Register Doctor
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          Join {import.meta.env.VITE_WEBSITE_NAME.toLowerCase()} and connect with patients
+          Join {websiteName} and connect with patients
         </p>
       </div>
     </>

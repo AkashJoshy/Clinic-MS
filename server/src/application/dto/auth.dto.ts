@@ -1,4 +1,5 @@
 import type User from "../../domain/entities/user.entity.ts";
+import type { ThemeMode } from "../../domain/types/platform-settings.types.ts";
 import type { AuthProvider, Role } from "../../domain/types/user.types.ts";
 
 export interface CacheDTO {
@@ -30,6 +31,10 @@ export interface GoogleLoginDTO {
 
 export type SafeUser = Omit<User, "password" | "block" | "unblock" | "updateName" | "updatePhone">;
 
+export type UserWithTheme = SafeUser & {
+  theme: ThemeMode;
+};
+
 export type UserDto = User;
 export type UserResponseDto = User;
 
@@ -47,7 +52,7 @@ export interface TokenPair {
 }
 
 export interface LoginResponseDTO {
-  user: SafeUser | null;
+  user: UserWithTheme | null;
   tokenPair: TokenPair;
   role: string;
   message?: string;

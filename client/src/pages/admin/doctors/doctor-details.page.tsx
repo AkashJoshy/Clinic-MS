@@ -30,15 +30,19 @@ import { DoctorProfileCard } from "@/components/shared/admin/doctors/profile-car
 import { DoctorContactCard } from "@/components/shared/admin/doctors/contact-card.shared";
 import { DoctorQualificationsCard } from "@/components/shared/admin/doctors/qualifications-card.shared";
 import { DoctorClinicCard } from "@/components/shared/admin/doctors/clinic-card.shared";
-import { DoctorScheduleCard } from "@/components/shared/admin/doctors/schedule-card.shared";
 import DocumentVerificationModal from "@/components/shared/document-verification-modal.shared";
 import type { User } from "@/types/user";
 import type { UpdateMethods } from "@/types/common";
 import StatusTicker from "@/components/shared/status-ticker.shared";
+import { useAuthStore } from "@/store";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useParams<{ doctorId: string }>();
   const navigate = useNavigate();
+
+  const { admin } = useAuthStore((state) => state.users);
+  const isDark = admin?.theme === "DARK";
+
   const [doctorData, setDoctorData] = useState<AdminDoctorInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -49,11 +53,48 @@ export default function DoctorDetailsPage() {
     null,
   );
 
+  const theme = {
+    page: isDark
+      ? "border-white/10 bg-white/[0.02]"
+      : "border-gray-200 bg-white shadow-sm",
+
+    card: isDark
+      ? "bg-[#0d1a27] border-white/8"
+      : "bg-white border-gray-200 shadow-sm",
+
+    inner: isDark
+      ? "bg-[#080d14] border-white/8"
+      : "bg-gray-50 border-gray-200",
+
+    heading: isDark ? "text-white" : "text-gray-900",
+    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
+    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+
+    backButton: isDark
+      ? "text-[#8b9ab0] hover:text-white"
+      : "text-gray-500 hover:text-gray-900",
+
+    primaryButton: isDark
+      ? `text-black hover:bg-[#159a4e]`
+      : `text-white hover:bg-[#159a4e]`,
+
+    imageOverlay: isDark ? "bg-[#080d14]/90" : "bg-gray-900/80",
+
+    imageCard: isDark
+      ? "bg-[#0d1a27] border-white/8"
+      : "bg-white border-gray-200",
+
+    imageContent: isDark ? "bg-[#080d14]/30" : "bg-gray-100",
+  };
+
   const fetchDoctorDetails = async () => {
     if (!doctorId) return;
+
     setLoading(true);
+
     try {
       const res = await getDoctor(doctorId);
+
       if (res.success && res.data) {
         setDoctorData(res.data);
       } else {
@@ -108,6 +149,7 @@ export default function DoctorDetailsPage() {
 
   const handleDocumentAction = () => {
     if (!selectedDocument) return;
+
     const dto: DocumentDto = {
       id: selectedDocument.id,
       name: selectedDocument.name,
@@ -126,6 +168,7 @@ export default function DoctorDetailsPage() {
 
   const handleBlockToggle = () => {
     if (!doctorData?.doctor?.id || !actionType) return;
+
     mutateStatus({
       id: doctorData.doctor.id,
       method: actionType,
@@ -134,6 +177,7 @@ export default function DoctorDetailsPage() {
 
   const handleApprove = () => {
     if (!doctorId) return;
+
     mutateApprove({
       id: doctorId,
       reviewMessage: "Approved by Administrator",
@@ -146,8 +190,11 @@ export default function DoctorDetailsPage() {
 
   const formatDate = (dateString: Date | string | null) => {
     if (!dateString) return "N/A";
+
     const date = new Date(dateString);
+
     if (isNaN(date.getTime())) return "N/A";
+
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -157,9 +204,13 @@ export default function DoctorDetailsPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-100 h-full space-y-4">
-        <div className="w-12 h-12 border-4 border-[#1dc465]/20 border-t-[#1dc465] rounded-full animate-spin"></div>
-        <p className="text-[#8b9ab0] text-sm animate-pulse">
+      <div
+        className={`flex h-full min-h-100 flex-col items-center justify-center space-y-4 ${
+          isDark ? "bg-[#080d14]" : "bg-gray-50"
+        }`}
+      >
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#1dc465]/20 border-t-[#1dc465]" />
+        <p className={`${theme.muted} animate-pulse text-sm`}>
           Loading doctor details...
         </p>
       </div>
@@ -168,26 +219,32 @@ export default function DoctorDetailsPage() {
 
   if (!doctorData) {
     return (
-      <div className="p-6 lg:p-8 space-y-6">
+      <div className="space-y-6 p-6 lg:p-8">
         <button
           onClick={() => navigate("/admin/doctors")}
-          className="flex items-center gap-2 text-[#8b9ab0] hover:text-white transition-colors text-sm font-semibold mb-4 cursor-pointer"
+          className={`mb-4 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold transition-colors ${theme.backButton}`}
         >
           <ArrowLeft size={16} />
           Back to Doctor Management
         </button>
-        <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-8 text-center max-w-lg mx-auto">
-          <AlertTriangle className="mx-auto text-amber-500 mb-4" size={48} />
-          <h2 className="text-white text-xl font-bold mb-2">
+
+        <div
+          className={`mx-auto max-w-lg rounded-2xl border p-8 text-center ${theme.card}`}
+        >
+          <AlertTriangle className="mx-auto mb-4 text-amber-500" size={48} />
+
+          <h2 className={`${theme.heading} mb-2 text-xl font-bold`}>
             Doctor Not Found
           </h2>
-          <p className="text-[#8b9ab0] text-sm mb-6">
+
+          <p className={`${theme.muted} mb-6 text-sm`}>
             The doctor profile you are looking for does not exist or has been
             removed.
           </p>
+
           <button
             onClick={() => navigate("/admin/doctors")}
-            className="px-6 py-2.5 bg-[#1dc465] hover:bg-[#159a4e] text-black font-semibold rounded-xl transition-all cursor-pointer"
+            className={`cursor-pointer rounded-xl bg-primary px-6 py-2.5 font-semibold transition-all ${theme.primaryButton}`}
           >
             Go Back to List
           </button>
@@ -196,18 +253,22 @@ export default function DoctorDetailsPage() {
     );
   }
 
-  const { user, doctor, address, department, doctorClinicDetails } =
-    doctorData;
+  const { user, doctor, address, department, doctorClinicDetails } = doctorData;
 
   const isBlocked =
     (user as User)?.isBlocked === true || (user as any)?.isActive === false;
 
   return (
-    <div className="border border-white/10 bg-white/2 shadow-2xs p-6 lg:p-8 space-y-6 max-w-[1400px] mx-auto animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div
+      className={`mx-auto max-w-[1400px] animate-fade-in space-y-6 border p-6 shadow-2xs lg:p-8 ${
+        theme.page
+      }`}
+    >
+      {/* Header */}
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <button
           onClick={() => navigate("/admin/doctors")}
-          className="flex items-center gap-2 text-[#8b9ab0] hover:text-white transition-colors text-sm font-semibold w-fit cursor-pointer"
+          className={`flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold transition-colors ${theme.backButton}`}
         >
           <ArrowLeft size={16} />
           Back to Doctors
@@ -218,13 +279,14 @@ export default function DoctorDetailsPage() {
             <>
               <button
                 onClick={() => setIsRejectOpen(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                className="flex cursor-pointer items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-5 py-2.5 text-sm font-semibold text-rose-500 transition-all hover:bg-rose-500 hover:text-white"
               >
                 Reject Doctor
               </button>
+
               <button
                 onClick={handleApprove}
-                className="flex items-center gap-2 px-5 py-2.5 bg-[#1dc465] text-black hover:bg-[#159a4e] rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                className={`flex cursor-pointer items-center gap-2 rounded-xl bg-[#1dc465] px-5 py-2.5 text-sm font-semibold transition-all ${theme.primaryButton}`}
               >
                 <CheckCircle size={16} />
                 Approve Doctor
@@ -240,7 +302,7 @@ export default function DoctorDetailsPage() {
                     setActionType("RESTORE");
                     setIsConfirmOpen(true);
                   }}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465] hover:bg-[#1dc465] hover:text-black rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-[#1dc465]/20 bg-[#1dc465]/10 px-5 py-2.5 text-sm font-semibold text-[#1dc465] transition-all hover:bg-[#1dc465] hover:text-black"
                 >
                   <UserCheck size={16} />
                   Restore Doctor
@@ -251,7 +313,7 @@ export default function DoctorDetailsPage() {
                     setActionType("BLOCK");
                     setIsConfirmOpen(true);
                   }}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl text-sm font-semibold transition-all cursor-pointer"
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-5 py-2.5 text-sm font-semibold text-rose-500 transition-all hover:bg-rose-500 hover:text-white"
                 >
                   <ShieldAlert size={16} />
                   Block Doctor
@@ -262,6 +324,7 @@ export default function DoctorDetailsPage() {
         </div>
       </div>
 
+      {/* Rejection status */}
       {doctor.status === "REJECTED" && (
         <StatusTicker
           message={`${import.meta.env.VITE_DOCTOR_REJECTION_MESSAGE} ${
@@ -274,24 +337,29 @@ export default function DoctorDetailsPage() {
         />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-4 space-y-6">
+      {/* Doctor details */}
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        <div className="space-y-6 lg:col-span-4">
           <DoctorProfileCard
             doctor={doctor}
             department={department}
             isBlocked={isBlocked}
+            role="admin"
           />
+
           <DoctorContactCard
             email={user?.email}
             phone={user?.phone}
             languages={doctor.languages}
             address={address}
+            role="admin"
           />
         </div>
 
-        <div className="lg:col-span-8 space-y-6">
+        <div className="space-y-6 lg:col-span-8">
           <DoctorQualificationsCard
             doctor={doctor}
+            role="admin"
             onViewDocument={setPreviewImage}
             formatDate={formatDate}
             onDocumentAction={(
@@ -312,6 +380,7 @@ export default function DoctorDetailsPage() {
               });
             }}
           />
+
           <DoctorClinicCard
             onViewDocument={setPreviewImage}
             doctorClinicDetails={doctorClinicDetails}
@@ -333,7 +402,6 @@ export default function DoctorDetailsPage() {
               })
             }
           />
-
         </div>
       </div>
 
@@ -344,6 +412,7 @@ export default function DoctorDetailsPage() {
           service={handleDocumentAction}
           onClose={() => setSelectedDocument(null)}
           isLoading={isVerifyingDoctorDoc || isVerifyingClinicDoc}
+          isDark={isDark}
         />
       )}
 
@@ -356,6 +425,7 @@ export default function DoctorDetailsPage() {
           action={actionType!}
           service={handleBlockToggle}
           closeDeleteBox={() => setIsConfirmOpen(false)}
+          isDark={isDark}
         />
       )}
 
@@ -366,31 +436,36 @@ export default function DoctorDetailsPage() {
           onConfirm={handleRejectConfirm}
           onClose={() => setIsRejectOpen(false)}
           mutateFn={mutateReject}
+          isDark={isDark}
         />
       )}
 
       {previewImage && (
         <div
-          className="fixed inset-0 bg-[#080d14]/90 backdrop-blur-md flex items-center justify-center z-100 p-4 sm:p-8 animate-fade-in"
+          className={`fixed inset-0 z-[100] flex animate-fade-in items-center justify-center p-4 backdrop-blur-md sm:p-8 ${theme.imageOverlay}`}
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="bg-[#0d1a27] border border-white/8 p-2 rounded-2xl relative max-w-4xl w-full shadow-2xl overflow-hidden"
+            className={`relative w-full max-w-4xl overflow-hidden rounded-2xl border p-2 shadow-2xl ${theme.imageCard}`}
             onClick={(e) => e.stopPropagation()}
           >
             <button
+              type="button"
               onClick={() => setPreviewImage(null)}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#080d14]/50 backdrop-blur-md flex items-center justify-center text-white hover:bg-rose-500 transition-all z-10 cursor-pointer"
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-all hover:bg-rose-500"
             >
               <X size={20} />
             </button>
-            <div className="overflow-auto max-h-[85vh] rounded-xl bg-[#080d14]/30">
+
+            <div
+              className={`max-h-[85vh] overflow-auto rounded-xl ${theme.imageContent}`}
+            >
               <img
                 src={previewImage}
                 alt="Document Preview"
-                className="w-full h-auto object-contain max-h-[80vh]"
+                className="h-auto max-h-[80vh] w-full object-contain"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src =
+                  e.currentTarget.src =
                     "https://placehold.co/800x600/0d1a27/1dc465?text=Document+Not+Found";
                 }}
               />

@@ -1,3 +1,4 @@
+
 import type {
   SlotRules,
   SlotRulesPreferencesProps,
@@ -32,7 +33,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
         `}
       >
         <div className="mb-6 flex items-center">
-          <NumberBadge number={2} />
+          <div className="[&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
+            <NumberBadge number={2} />
+          </div>
 
           <h2 className="ml-2 text-xl font-semibold text-white">
             Slot & Booking Rules
@@ -50,7 +53,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("sessionDuration", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
             />
             {error?.sessionDuration?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
@@ -69,7 +72,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("bufferTime", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
             />
             {error?.bufferTime?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
@@ -88,7 +91,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("maxSessionsPerDay", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
             />
             {error?.maxSessionsPerDay?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
@@ -107,7 +110,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("minAdvanceNotice", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
             />
             {error?.minAdvanceNotice?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
@@ -126,7 +129,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("bookingWindow", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
             />
             {error?.bookingWindow?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
@@ -146,7 +149,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
                   e.target.value as SlotRules["slotInterval"],
                 )
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-[#1dc465]/50 xsxs:text-[10px] xs:text-[14px]"
+              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50 xsxs:text-[10px] xs:text-[14px]"
             >
               <option value="AUTO">Auto (Continuous)</option>
               <option value="FIXED">Fixed On the Hour/Half-Hour</option>
@@ -177,7 +180,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
                 className={`
                   relative mt-2 h-6 w-11 rounded-full
                   transition-colors xsxs:block md:hidden
-                  ${rules.autoConfirmBookings ? "bg-[#1dc465]" : "bg-gray-600"}
+                  ${rules.autoConfirmBookings ? "bg-primary" : "bg-gray-600"}
                 `}
               >
                 <div
@@ -198,7 +201,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               className={`
                 relative h-6 w-11 shrink-0 rounded-full
                 transition-colors xsxs:hidden md:block
-                ${rules.autoConfirmBookings ? "bg-[#1dc465]" : "bg-gray-600"}
+                ${rules.autoConfirmBookings ? "bg-primary" : "bg-gray-600"}
               `}
             >
               <div
@@ -232,7 +235,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
                 className={`
                   relative mt-2 h-6 w-11 rounded-full
                   transition-colors xsxs:block md:hidden
-                  ${rules.allowReschedule ? "bg-[#1dc465]" : "bg-gray-600"}
+                  ${rules.allowReschedule ? "bg-primary" : "bg-gray-600"}
                 `}
               >
                 <div
@@ -253,7 +256,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               className={`
                 relative h-6 w-11 shrink-0 rounded-full
                 transition-colors xsxs:hidden md:block
-                ${rules.allowReschedule ? "bg-[#1dc465]" : "bg-gray-600"}
+                ${rules.allowReschedule ? "bg-primary" : "bg-gray-600"}
               `}
             >
               <div
@@ -277,8 +280,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
         <LockedOverlay
           disabled={disabled}
           title="Slot & Booking Rules Locked"
-          description="Complete the weekly schedule setup first to configure your slot
-             and booking rules."
+          description="Complete the weekly schedule setup first to configure your slot and booking rules."
         />
       )}
     </div>

@@ -12,6 +12,7 @@ import type {
 import type { DoctorClinic, ExceptionsData, Session, SlotRules, WeeklySchedule } from "./doctor-clinic";
 import type { Clinic } from "./clinic";
 import type { DepartmentData } from "./admin";
+import type { RouteRoleProps } from "./auth";
 
 export interface Doctor {
   id: string | null;
@@ -255,6 +256,7 @@ export interface DoctorProfileCardProps {
   doctor: DoctorProfCard;
   department: { id: string; name: string } | null;
   isBlocked: boolean;
+  role: RouteRoleProps
 }
 
 type DoctorQualificationCard = Pick<
@@ -274,6 +276,7 @@ type DoctorQualificationCard = Pick<
 
 export interface DoctorQualificationsCardProps {
   doctor: DoctorQualificationCard;
+  role: RouteRoleProps
   onViewDocument: (url: string) => void;
   formatDate: (date: any) => string;
   onDocumentAction?: (

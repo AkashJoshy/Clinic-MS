@@ -1,7 +1,9 @@
+
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, X } from "lucide-react";
 import AddProfile from "./add-profile.shared";
+import { useAuthStore } from "@/store";
 
 interface AddProfileModalProps {
   isOpen: boolean;
@@ -12,7 +14,8 @@ export const AddProfileModal: React.FC<AddProfileModalProps> = ({
   isOpen,
   onClose,
 }) => {
- 
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,10 +39,12 @@ export const AddProfileModal: React.FC<AddProfileModalProps> = ({
             >
               <X className="cursor-pointer" size={20} />
             </button>
+
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <PlusCircle size={20} className="text-emerald-500" />
+              <PlusCircle size={20} style={{ color: primaryColor }} />
               Add New Profile
             </h2>
+
             <AddProfile onClose={onClose} isSubmit={true} />
           </motion.div>
         </motion.div>
@@ -47,4 +52,5 @@ export const AddProfileModal: React.FC<AddProfileModalProps> = ({
     </AnimatePresence>
   );
 };
+
 export default AddProfileModal;

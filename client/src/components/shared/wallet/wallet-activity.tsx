@@ -16,9 +16,14 @@ import {
 
 const ITEMS_PER_PAGE = 10;
 
+interface Props extends WalletActivityProps {
+  isDark?: boolean;
+}
+
 export default function WalletActivity({
   transactions = [],
-}: WalletActivityProps) {
+  isDark = false,
+}: Props) {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -71,13 +76,36 @@ export default function WalletActivity({
   const endItem = Math.min(page * ITEMS_PER_PAGE, filteredTransactions.length);
 
   return (
-    <section id="wallet-activity-section" className="min-w-0 w-full space-y-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm sm:space-y-6 sm:p-5 lg:p-6">
+    <section
+      id="wallet-activity-section"
+      className={`
+        min-w-0 w-full space-y-5 overflow-hidden
+        rounded-2xl border p-3 shadow-sm
+        sm:space-y-6 sm:p-5 lg:p-6
+        ${
+          isDark
+            ? "border-white/10 bg-[#0D1A27]"
+            : "border-slate-200/80 bg-white"
+        }
+      `}
+    >
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h2 className="text-lg font-bold tracking-tight text-[#0D1A27] sm:text-xl">
+          <h2
+            className={`
+              text-lg font-bold tracking-tight sm:text-xl
+              ${isDark ? "text-white" : "text-[#0D1A27]"}
+            `}
+          >
             Wallet Activity
           </h2>
-          <p className="mt-1 text-xs leading-5 text-slate-500 sm:text-sm">
+
+          <p
+            className={`
+              mt-1 text-xs leading-5 sm:text-sm
+              ${isDark ? "text-slate-400" : "text-slate-500"}
+            `}
+          >
             Track your wallet transactions and payments.
           </p>
         </div>
@@ -86,35 +114,69 @@ export default function WalletActivity({
           <Search
             size={17}
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            className={`
+              pointer-events-none absolute left-3 top-1/2
+              -translate-y-1/2
+              ${isDark ? "text-slate-500" : "text-slate-400"}
+            `}
           />
+
           <input
             type="search"
             value={search}
             onChange={(event) => handleSearch(event.target.value)}
             placeholder="Search transactions..."
             aria-label="Search wallet transactions"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-9 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#1DC465] focus:bg-white focus:ring-4 focus:ring-[#1DC465]/10"
+            className={`
+              w-full rounded-xl border py-3 pl-9 pr-3
+              text-sm outline-none transition
+              focus:border-primary focus:ring-4 focus:ring-primary/10
+              ${
+                isDark
+                  ? "border-white/10 bg-white/5 text-white placeholder:text-slate-500 focus:bg-white/[0.07]"
+                  : "border-slate-200 bg-slate-50/50 text-slate-700 placeholder:text-slate-400 focus:bg-white"
+              }
+            `}
           />
         </div>
       </div>
 
-      <div className="min-w-0 divide-y divide-slate-100">
+      <div
+        className={`
+          min-w-0 divide-y
+          ${isDark ? "divide-white/10" : "divide-slate-100"}
+        `}
+      >
         {paginatedTransactions.map((txn) => {
           const credit = txn.type === "CREDIT";
 
           return (
             <div
               key={txn.id}
-              className="flex min-w-0 flex-col gap-3 py-4 first:pt-1 last:pb-1 min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between sm:gap-4 sm:py-5"
+              className="
+                flex min-w-0 flex-col gap-3
+                py-4 first:pt-1 last:pb-1
+                min-[420px]:flex-row
+                min-[420px]:items-start
+                min-[420px]:justify-between
+                sm:gap-4 sm:py-5
+              "
             >
               <div className="flex min-w-0 flex-1 items-start gap-3">
                 <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${
-                    credit
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-rose-50 text-rose-600"
-                  }`}
+                  className={`
+                    flex h-10 w-10 shrink-0 items-center
+                    justify-center rounded-xl sm:h-11 sm:w-11
+                    ${
+                      credit
+                        ? isDark
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "bg-emerald-50 text-emerald-600"
+                        : isDark
+                          ? "bg-rose-500/10 text-rose-400"
+                          : "bg-rose-50 text-rose-600"
+                    }
+                  `}
                 >
                   {credit ? (
                     <ArrowDownLeft size={20} />
@@ -124,28 +186,51 @@ export default function WalletActivity({
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="break-words text-sm font-semibold leading-5 text-[#0D1A27] [overflow-wrap:anywhere]">
+                  <p
+                    className={`
+                      break-words text-sm font-semibold leading-5
+                      [overflow-wrap:anywhere]
+                      ${isDark ? "text-slate-100" : "text-[#0D1A27]"}
+                    `}
+                  >
                     {txn.description || txn.source || "Wallet transaction"}
                   </p>
 
-                  <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs leading-5 text-slate-500">
+                  <div
+                    className={`
+                      mt-1 flex min-w-0 flex-wrap items-center
+                      gap-x-1.5 gap-y-1 text-xs leading-5
+                      ${isDark ? "text-slate-400" : "text-slate-500"}
+                    `}
+                  >
                     <span className="break-words">
                       {txn.paymentMethod || "Payment method unavailable"}
                     </span>
-                    <span className="text-slate-300">·</span>
+                    <span
+                      className={isDark ? "text-slate-600" : "text-slate-300"}
+                    >
+                      ·
+                    </span>
                     <span>{formatDate(txn.createdAt?.toString()!)}</span>
                   </div>
 
                   {txn.referenceId && (
-                    <p className="mt-1 break-all text-xs leading-5 text-slate-400">
+                    <p
+                      className={`
+                        mt-1 break-all text-xs leading-5
+                        ${isDark ? "text-slate-500" : "text-slate-400"}
+                      `}
+                    >
                       Ref: {txn.referenceId}
                     </p>
                   )}
 
                   <span
-                    className={`mt-2 inline-flex max-w-full rounded-full px-2.5 py-1 text-[10px] font-semibold sm:text-[11px] ${getStatusClass(
-                      txn.status || "",
-                    )}`}
+                    className={`
+                      mt-2 inline-flex max-w-full rounded-full
+                      px-2.5 py-1 text-[10px] font-semibold sm:text-[11px]
+                      ${getStatusClass(txn.status || "")}
+                    `}
                   >
                     {txn.status || "UNKNOWN"}
                   </span>
@@ -153,11 +238,29 @@ export default function WalletActivity({
               </div>
 
               <div
-                className={`flex w-full items-center justify-between gap-2 border-t border-slate-100 pt-2 min-[420px]:w-auto min-[420px]:shrink-0 min-[420px]:flex-col min-[420px]:items-end min-[420px]:border-0 min-[420px]:pt-0 ${
-                  credit ? "text-emerald-600" : "text-rose-600"
-                }`}
+                className={`
+                  flex w-full items-center justify-between gap-2
+                  border-t pt-2
+                  min-[420px]:w-auto min-[420px]:shrink-0
+                  min-[420px]:flex-col min-[420px]:items-end
+                  min-[420px]:border-0 min-[420px]:pt-0
+                  ${
+                    credit
+                      ? isDark
+                        ? "border-white/10 text-emerald-400"
+                        : "border-slate-100 text-emerald-600"
+                      : isDark
+                        ? "border-white/10 text-rose-400"
+                        : "border-slate-100 text-rose-600"
+                  }
+                `}
               >
-                <span className="text-[11px] font-medium text-slate-400 min-[420px]:hidden">
+                <span
+                  className={`
+                    text-[11px] font-medium min-[420px]:hidden
+                    ${isDark ? "text-slate-500" : "text-slate-400"}
+                  `}
+                >
                   Transaction amount
                 </span>
 
@@ -172,15 +275,35 @@ export default function WalletActivity({
 
         {filteredTransactions.length === 0 && (
           <div className="px-3 py-12 text-center sm:py-16">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50">
-              <Wallet size={26} aria-hidden="true" className="text-slate-300" />
+            <div
+              className={`
+                mx-auto mb-4 flex h-14 w-14 items-center
+                justify-center rounded-2xl
+                ${isDark ? "bg-white/5" : "bg-slate-50"}
+              `}
+            >
+              <Wallet
+                size={26}
+                aria-hidden="true"
+                className={isDark ? "text-slate-600" : "text-slate-300"}
+              />
             </div>
 
-            <p className="text-sm font-semibold text-slate-700">
+            <p
+              className={`
+                text-sm font-semibold
+                ${isDark ? "text-slate-200" : "text-slate-700"}
+              `}
+            >
               No transactions found
             </p>
 
-            <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-slate-500 sm:text-sm">
+            <p
+              className={`
+                mx-auto mt-1 max-w-xs text-xs leading-5 sm:text-sm
+                ${isDark ? "text-slate-400" : "text-slate-500"}
+              `}
+            >
               {search.trim()
                 ? "Try another search term or clear your search."
                 : "Your wallet transactions will appear here."}
@@ -190,7 +313,10 @@ export default function WalletActivity({
               <button
                 type="button"
                 onClick={() => handleSearch("")}
-                className="mt-3 text-sm font-semibold text-emerald-600 transition hover:text-emerald-700"
+                className="
+                  mt-3 text-sm font-semibold text-primary
+                  transition hover:text-primary/80
+                "
               >
                 Clear search
               </button>
@@ -199,8 +325,19 @@ export default function WalletActivity({
         )}
       </div>
 
-      <div className="flex min-w-0 flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-5 text-slate-500">
+      <div
+        className={`
+          flex min-w-0 flex-col gap-3 border-t pt-4
+          sm:flex-row sm:items-center sm:justify-between
+          ${isDark ? "border-white/10" : "border-slate-100"}
+        `}
+      >
+        <p
+          className={`
+            text-xs leading-5
+            ${isDark ? "text-slate-400" : "text-slate-500"}
+          `}
+        >
           Showing {startItem}–{endItem} of {filteredTransactions.length}{" "}
           transactions
         </p>
@@ -212,7 +349,18 @@ export default function WalletActivity({
               onClick={goToPreviousPage}
               disabled={page <= 1}
               aria-label="Go to previous page"
-              className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm"
+              className={`
+                inline-flex min-h-9 items-center gap-1
+                rounded-lg border px-2.5 py-2
+                text-xs font-medium transition
+                disabled:cursor-not-allowed disabled:opacity-40
+                sm:px-3 sm:text-sm
+                ${
+                  isDark
+                    ? "border-white/10 text-slate-300 hover:bg-white/5"
+                    : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                }
+              `}
             >
               <ChevronLeft size={16} />
               Previous
@@ -220,7 +368,10 @@ export default function WalletActivity({
 
             <span
               aria-live="polite"
-              className="whitespace-nowrap text-xs text-slate-600 sm:text-sm"
+              className={`
+                whitespace-nowrap text-xs sm:text-sm
+                ${isDark ? "text-slate-400" : "text-slate-600"}
+              `}
             >
               {page} / {totalPages}
             </span>
@@ -230,7 +381,18 @@ export default function WalletActivity({
               onClick={goToNextPage}
               disabled={page >= totalPages}
               aria-label="Go to next page"
-              className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm"
+              className={`
+                inline-flex min-h-9 items-center gap-1
+                rounded-lg border px-2.5 py-2
+                text-xs font-medium transition
+                disabled:cursor-not-allowed disabled:opacity-40
+                sm:px-3 sm:text-sm
+                ${
+                  isDark
+                    ? "border-white/10 text-slate-300 hover:bg-white/5"
+                    : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                }
+              `}
             >
               Next
               <ChevronRight size={16} />

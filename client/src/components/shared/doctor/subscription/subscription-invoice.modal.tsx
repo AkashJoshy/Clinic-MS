@@ -39,7 +39,7 @@ export const SubscriptionInvoiceModal: React.FC<
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -51,7 +51,7 @@ export const SubscriptionInvoiceModal: React.FC<
       >
         <div className="flex items-center justify-between border-b border-white/10 bg-[#09101a] px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1dc465]/15 text-[#1dc465]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
               <ShieldCheck size={16} />
             </span>
             <h3 className="text-sm font-bold text-white">
@@ -71,7 +71,7 @@ export const SubscriptionInvoiceModal: React.FC<
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between border-b border-white/10 pb-6">
             <div>
               <div className="flex items-center gap-2 text-white">
-                <Building2 size={20} className="text-[#1dc465]" />
+                <Building2 size={20} className="text-primary" />
                 <span className="text-lg font-bold tracking-tight">
                   ClinicMS Healthcare Cloud
                 </span>
@@ -85,7 +85,7 @@ export const SubscriptionInvoiceModal: React.FC<
             </div>
 
             <div className="text-left sm:text-right space-y-1">
-              <span className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-bold text-[#1dc465]">
+              <span className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-bold text-emerald-400">
                 TAX INVOICE - PAID
               </span>
               <p className="font-mono text-sm font-bold text-white">
@@ -119,7 +119,7 @@ export const SubscriptionInvoiceModal: React.FC<
                 Payment Details
               </p>
               <p className="mt-1 flex sm:justify-end items-center gap-1.5 text-white">
-                <CreditCard size={14} className="text-[#1dc465]" />
+                <CreditCard size={14} className="text-primary" />
                 <span>{invoice.paymentMethod}</span>
               </p>
               <p className="font-mono text-[11px] text-gray-400 flex sm:justify-end items-center gap-1">
@@ -182,7 +182,7 @@ export const SubscriptionInvoiceModal: React.FC<
                 {invoice.taxAmount.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="flex w-64 justify-between border-t border-white/10 pt-2 text-sm font-bold text-[#1dc465]">
+            <div className="flex w-64 justify-between border-t border-white/10 pt-2 text-sm font-bold text-primary">
               <span>Total Paid:</span>
               <span>
                 {invoice.currency}
@@ -191,7 +191,7 @@ export const SubscriptionInvoiceModal: React.FC<
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-[#1dc465]">
+          <div className="flex items-center gap-2 rounded-lg border border-primary-500/20 bg-primary-500/5 p-3 text-[11px] text-primary-400">
             <CheckCircle2 size={15} />
             <span>
               This is a digitally generated tax receipt with certified 256-bit
@@ -221,7 +221,7 @@ export const SubscriptionInvoiceModal: React.FC<
             <button
               type="button"
               onClick={() => onDownload(invoice)}
-              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#1dc465] px-4 py-2 text-xs font-bold text-[#080d14] shadow-md transition-colors hover:bg-[#18af59]"
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
             >
               <Download size={14} />
               <span>Download PDF</span>

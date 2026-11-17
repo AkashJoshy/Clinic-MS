@@ -1,72 +1,114 @@
+
 import { Stethoscope, Star } from "lucide-react";
 import type { DoctorProfileCardProps } from "@/types/doctor";
+import { useAuthStore } from "@/store";
 
+export const DoctorProfileCard = ({
+  doctor,
+  department,
+  isBlocked,
+  role
+}: DoctorProfileCardProps) => {
+  const user = useAuthStore((state) => state.users[role]);
+  const isDark = user?.theme === "DARK";
 
-export const DoctorProfileCard = ({ doctor, department, isBlocked }: DoctorProfileCardProps) => {
+  const theme = {
+    card: isDark
+      ? "bg-[#0d1a27] border-white/8"
+      : "bg-white border-gray-200 shadow-sm",
+
+    heading: isDark ? "text-white" : "text-gray-900",
+    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
+    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+
+    divider: isDark ? "border-white/5" : "border-gray-200",
+
+    code: isDark
+      ? "bg-white/5 border-white/10 text-[#8b9ab0]"
+      : "bg-gray-100 border-gray-200 text-gray-600",
+  };
+
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6 text-center space-y-4">
-      <div className="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden bg-[#1dc465]/10 border-2 border-[#1dc465]/35 flex items-center justify-center">
+    <div
+      className={`space-y-4 rounded-2xl border p-6 text-center ${theme.card}`}
+    >
+      <div className="relative mx-auto flex h-32 w-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-primary/35 bg-primary/10">
         {doctor.profilePicture?.url ? (
           <img
             src={doctor.profilePicture.url}
             alt={doctor.displayName}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <Stethoscope size={56} className="text-[#1dc465]" />
+          <Stethoscope size={56} className="text-primary" />
         )}
       </div>
 
       <div className="space-y-1">
-        <h2 className="text-white text-xl font-bold tracking-tight">
+        <h2 className={`${theme.heading} text-xl font-bold tracking-tight`}>
           {doctor.displayName}
         </h2>
+
         <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[#8b9ab0]">
+          <span
+            className={`rounded-md border px-2.5 py-0.5 text-[11px] font-bold ${theme.code}`}
+          >
             {doctor.doctorCode}
           </span>
+
           {department && (
-            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465] capitalize">
+            <span className="rounded-md border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold capitalize text-primary">
               {department.name}
             </span>
           )}
         </div>
-        
+
         <div className="flex items-center justify-center gap-1.5 pt-1">
           <Star size={14} className="fill-amber-400 text-amber-400" />
-          <span className="text-white text-sm font-bold">{doctor.averageRating || "0.0"}</span>
-          <span className="text-[#8b9ab0] text-xs">({doctor.totalReviews || 0} reviews)</span>
+
+          <span className={`${theme.heading} text-sm font-bold`}>
+            {doctor.averageRating || "0.0"}
+          </span>
+
+          <span className={`${theme.muted} text-xs`}>
+            ({doctor.totalReviews || 0} reviews)
+          </span>
         </div>
       </div>
 
       {doctor.bio && (
-        <p className="text-[#8b9ab0] text-xs leading-relaxed border-t border-white/5 pt-3">
+        <p
+          className={`${theme.muted} border-t pt-3 text-xs leading-relaxed ${theme.divider}`}
+        >
           "{doctor.bio}"
         </p>
       )}
 
-      <div className="border-t border-white/5 pt-4 flex flex-col gap-2">
+      <div className={`flex flex-col gap-2 border-t pt-4 ${theme.divider}`}>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-[#8b9ab0]">Verification Status</span>
+          <span className={theme.muted}>Verification Status</span>
+
           <span
-            className={`px-2.5 py-1 rounded-md text-[11px] font-bold ${
+            className={`rounded-md border px-2.5 py-1 text-[11px] font-bold ${
               doctor.status === "APPROVED"
-                ? "bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465]"
+                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500"
                 : doctor.status === "PENDING"
-                ? "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-                : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                  ? "border-amber-500/20 bg-amber-500/10 text-amber-500"
+                  : "border-rose-500/20 bg-rose-500/10 text-rose-500"
             }`}
           >
             {doctor.status}
           </span>
         </div>
+
         <div className="flex items-center justify-between text-xs">
-          <span className="text-[#8b9ab0]">Account Status</span>
+          <span className={theme.muted}>Account Status</span>
+
           <span
-            className={`px-2.5 py-1 rounded-md text-[11px] font-bold ${
+            className={`rounded-md border px-2.5 py-1 text-[11px] font-bold ${
               !isBlocked
-                ? "bg-[#1dc465]/10 border border-[#1dc465]/20 text-[#1dc465]"
-                : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                ? "border-blue-500/20 bg-blue-500/10 text-blue-500"
+                : "border-rose-500/20 bg-rose-500/10 text-rose-500"
             }`}
           >
             {!isBlocked ? "Active" : "Blocked"}

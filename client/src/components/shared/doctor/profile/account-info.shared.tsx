@@ -31,6 +31,7 @@ const DoctorAccountInfo: React.FC<DoctorAccountInfoProps> = ({
   department,
 }) => {
   const doctorProfile = useAuthStore((state) => state.doctor);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   if (!doctorProfile) return <DoctorAccountInfoSkeleton />;
 
@@ -39,45 +40,49 @@ const DoctorAccountInfo: React.FC<DoctorAccountInfoProps> = ({
     new Date(doctorProfile.doctorClinic?.updatedAt!).getTime()
       ? doctorProfile.doctorClinic?.updatedAt
       : doctorProfile.doctor?.updatedAt!;
+
   const lastUpdated = daysAgo(String(lastUpdatedDate));
 
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">
-      <h3 className="text-white font-semibold text-base mb-4 flex items-center gap-2">
-        <ShieldCheck className="w-5 h-5 text-[#1dc465]" />
+    <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6">
+      <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-white">
+        <ShieldCheck className="h-5 w-5" style={{ color: primaryColor }} />
         Account info
       </h3>
 
       <div className="space-y-4">
         {department ? (
-          <div className="flex justify-between items-center pb-3 border-b border-white/8">
-            <span className="text-[#8b9ab0] text-sm flex items-center gap-2">
-              <Building2 className="w-4 h-4" /> Department
+          <div className="flex items-center justify-between border-b border-white/8 pb-3">
+            <span className="flex items-center gap-2 text-sm text-[#8b9ab0]">
+              <Building2 className="h-4 w-4" />
+              Department
             </span>
-            <span className="text-white font-medium text-sm capitalize">
+            <span className="text-sm font-medium capitalize text-white">
               {department?.name}
             </span>
           </div>
         ) : (
           <div>
-            <h2 className="text-red-600 text-center">No Department Found!</h2>
+            <h2 className="text-center text-red-600">No Department Found!</h2>
           </div>
         )}
 
-        <div className="flex justify-between items-center pb-3 border-b border-white/8">
-          <span className="text-[#8b9ab0] text-sm flex items-center gap-2">
-            <Calendar className="w-4 h-4" /> Member since
+        <div className="flex items-center justify-between border-b border-white/8 pb-3">
+          <span className="flex items-center gap-2 text-sm text-[#8b9ab0]">
+            <Calendar className="h-4 w-4" />
+            Member since
           </span>
-          <span className="text-white font-medium text-sm">
+          <span className="text-sm font-medium text-white">
             {formatDate(String(doctorProfile.doctor?.createdAt))}
           </span>
         </div>
 
-        <div className="flex justify-between items-center">
-          <span className="text-[#8b9ab0] text-sm flex items-center gap-2">
-            <Clock className="w-4 h-4" /> Last updated
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-2 text-sm text-[#8b9ab0]">
+            <Clock className="h-4 w-4" />
+            Last updated
           </span>
-          <span className="text-white font-medium text-sm">
+          <span className="text-sm font-medium text-white">
             {lastUpdated !== null ? `${lastUpdated} days ago` : "—"}
           </span>
         </div>

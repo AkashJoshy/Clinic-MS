@@ -17,3 +17,5 @@ export const ROLE_VALUES = {
     DOCTOR: "Doctor",
   },
 } as const;
+
+export const DEFAULT_PLATFORM_NAME = "Healthixia Care";

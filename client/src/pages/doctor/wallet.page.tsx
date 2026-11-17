@@ -13,6 +13,7 @@ import {
 import WalletActivity from "@/components/shared/wallet/wallet-activity";
 import type { RouteRoleProps } from "@/types/auth";
 import useWallet from "@/hooks/use-wallet.hook";
+import { useAuthStore } from "@/store";
 
 export const DoctorWalletPage = ({
   roleOverride,
@@ -40,6 +41,9 @@ export const DoctorWalletPage = ({
     walletHolder,
   } = useWallet(roleOverride);
 
+  const user = useAuthStore(state => state.users[roleOverride])
+  const isDark = user?.theme === "DARK"
+
   return (
     <div className="relative min-h-full space-y-6 border border-white/10 bg-white/[0.02] p-6 shadow-2xs lg:p-8">
       <WalletHeader
@@ -60,13 +64,13 @@ export const DoctorWalletPage = ({
         </div>
 
         <div className="lg:col-span-7 h-full flex flex-col justify-between">
-          {wallet && <WalletSummaryCards wallet={wallet} stats={stats} />}
+          {wallet && <WalletSummaryCards wallet={wallet} stats={stats} isDark={true} />}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
         <div className="lg:col-span-7 h-full">
-          <WalletBalanceChart />
+          <WalletBalanceChart isDark={true} />
         </div>
 
         <div className="lg:col-span-5 h-full">
@@ -76,11 +80,12 @@ export const DoctorWalletPage = ({
             onViewTransactions={handleScrollToTransactions}
             onOpenStatements={() => setIsStatementsOpen(true)}
             onOpenPaymentMethods={() => setIsPaymentMethodsOpen(true)}
+            isDark={true}
           />
         </div>
       </div>
 
-      <WalletActivity transactions={transactions} />
+      <WalletActivity transactions={transactions} isDark={true} />
 
       <AddMoneyModal
         isOpen={isAddMoneyOpen}
@@ -88,6 +93,7 @@ export const DoctorWalletPage = ({
         onBalanceUpdate={handleBalanceUpdate}
         roleOverride={roleOverride}
         availableBalance={stats.availableBalance}
+        isDark={true}
       />
 
       <WithdrawModal
@@ -95,22 +101,26 @@ export const DoctorWalletPage = ({
         onClose={() => setIsWithdrawOpen(false)}
         availableBalance={stats.availableBalance}
         onSuccessWithdraw={handleSuccessWithdraw}
+        isDark={true}
       />
 
       <TransactionDetailsModal
         transaction={selectedTxn}
         onClose={() => setSelectedTxn(null)}
         onDownloadReceipt={handleDownloadReceipt}
+        isDark={true}
       />
 
       <StatementModal
         isOpen={isStatementsOpen}
         onClose={() => setIsStatementsOpen(false)}
+        isDark={true}
       />
 
       <PaymentMethodsModal
         isOpen={isPaymentMethodsOpen}
         onClose={() => setIsPaymentMethodsOpen(false)}
+        isDark={true}
       />
     </div>
   );

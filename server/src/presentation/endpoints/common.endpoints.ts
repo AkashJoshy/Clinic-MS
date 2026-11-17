@@ -1,14 +1,7 @@
-// export const COMMON_ENDPOINTS = {
-//     FETCH_DEPARTMENTS: "/departments",
-//     UPDATE_PROFILE_ADDRESS: "/addresses/:ownerId",
-//     GET_WALLET: "/wallet/:ownerId",
-//     CREATE_WALLET_TOPUP_ORDER: `/wallet/top-up/orders`,
-//     VERIFY_WALLET_TOP_ORDER: `/wallet/top-up/orders/verify`
-// }  
-
 const DEPARTMENTS_BASE = "/departments";
 const ADDRESSES_BASE = "/addresses";
 const WALLET_BASE = "/wallet";
+const PLATFORM_DATA = "/platform-data"
 
 export const COMMON_ENDPOINTS = {
   DEPARTMENTS: {
@@ -18,6 +11,9 @@ export const COMMON_ENDPOINTS = {
   ADDRESSES: {
     BASE: ADDRESSES_BASE,
     UPDATE_ONE: `${ADDRESSES_BASE}/:ownerId`,
+  },
+  PLATFORM: {
+    BASE: PLATFORM_DATA
   },
   WALLET: {
     BASE: WALLET_BASE,

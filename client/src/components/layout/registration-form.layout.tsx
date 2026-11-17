@@ -13,6 +13,8 @@ import { FcGoogle } from "react-icons/fc";
 import type { GoogleAuthMode } from "@/types/auth";
 import toast from "react-hot-toast";
 import { useMutate } from "@/hooks/use-mutate.hook";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import { useAuthStore } from "@/store";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -55,6 +57,7 @@ const RegistrationForm = () => {
 
   const [searchParams] = useSearchParams();
   const message = searchParams.get("message");
+  const { primaryColor } = useAuthStore(state => state.platform)
 
   useEffect(() => {
     if (message) {
@@ -100,7 +103,7 @@ const RegistrationForm = () => {
             control={control}
           />
 
-          <Button type="submit" disabled={isPending} className="w-full">
+          <Button type="submit" disabled={isPending} style={{ color: getContrastTextColor(primaryColor) }} className="w-full">
             {!isPending ? "Register" : "Registering..."}
           </Button>
         </form>

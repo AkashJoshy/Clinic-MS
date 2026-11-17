@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     DOCTORS: "/admin/doctors",
     PATIENTS: "/admin/patients",
     SUBSCRIPTION: "/admin/subscriptions",
+    PLATFORM_SETTINGS: "/admin/platform-settings",
     UPDATE_SUBSCRIPTION: (planId: string) => `/admin/subscriptions/${planId}`,
     UPDATE_SUBSCRIPTION_STATUS: (planId: string) =>
       `/admin/subscriptions/${planId}/status`,
@@ -50,6 +51,7 @@ export const ENDPOINTS = {
   },
   COMMON: {
     DEPARTMENTS: `/common/departments`,
+    PLATFORM_DATA: `/common/platform-data`,
     CREATE_WALLET_TOPUP_ORDER: `/common/wallet/top-up/orders`,
     VERIFY_WALLET_TOPUP_ORDER: `/common/wallet/top-up/orders/verify`,
     GET_WALLET: (ownerId: string) => `/common/wallet/${ownerId}`,

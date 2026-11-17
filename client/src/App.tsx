@@ -45,389 +45,393 @@ import PatientWalletPage from "./pages/patient/wallet.page";
 import DoctorWalletPage from "./pages/doctor/wallet.page";
 import DoctorSubscriptionPage from "./pages/doctor/subscription.page";
 import DoctorDashboardPage from "./pages/doctor/dashboard.page";
+import AdminSettingsPage from "./pages/admin/settings.page";
+import PlatformConfigInitializer from "./components/layout/platform-config-initializer.layout";
 
 const router = createBrowserRouter([
   {
-    element: <ToastLayout />,
+    element: <PlatformConfigInitializer />,
     children: [
       {
-        element: <AuthRoute role="patient" />,
-        children: [
-          { path: "/", element: <Homepage /> },
-          { path: "/login", element: <PatientLogin /> },
-          { path: "/signup", element: <PatientRegisterPage /> },
-          {
-            path: "/forgot-password",
-            element: <ForgotPasswordPage role={"PATIENT"} />,
-          },
-          {
-            path: "/change-password",
-            element: <ChangePasswordPage role="PATIENT" />,
-          },
-          {
-            path: "/verify-email",
-            element: <OTPVerification role="PATIENT" />,
-          },
-        ],
-      },
-      {
-        element: <AuthRoute role="admin" />,
+        element: <ToastLayout />,
         children: [
           {
-            path: "/admin",
-            element: (
-              <LoginForm
-                portal={"Admin"}
-                role={"ADMIN"}
-                fn={loginAdmin}
-                to="/admin/dashboard"
-              />
-            ),
-          },
-          {
-            path: "/admin/forgot-password",
-            element: <ForgotPasswordPage role={"ADMIN"} />,
-          },
-          {
-            path: "/admin/change-password",
-            element: <ChangePasswordPage role="ADMIN" />,
-          },
-        ],
-      },
-      {
-        element: <AuthRoute role="doctor" />,
-        children: [
-          { path: "/doctor-home", element: <DoctorHomepage /> },
-          { path: "/doctor/reapplication", element: <DoctorReapplication /> },
-          {
-            path: "/doctor",
-            element: (
-              <LoginForm
-                portal={"Doctor"}
-                role={"DOCTOR"}
-                fn={loginDoctor}
-                to="/doctor/dashboard"
-              />
-            ),
-          },
-          {
-            path: "/doctor/forgot-password",
-            element: <ForgotPasswordPage role={"DOCTOR"} />,
-          },
-          {
-            path: "/doctor/change-password",
-            element: <ChangePasswordPage role="DOCTOR" />,
-          },
-          {
-            path: "/doctor/verify-email",
-            element: <OTPVerification role="DOCTOR" />,
-          },
-        ],
-      },
-
-      { path: "/two-factor", element: <TwofactorAuthenticationPage /> },
-      {
-        path: "/doctor-registration",
-        element: <DoctorRegistrationPage />,
-      },
-      {
-        path: "/doctor-registration-pending",
-        element: <DoctorRegistrationPendingPage />,
-      },
-      {
-        path: "/doctor-registration-rejected",
-        element: <DoctorRegistrationRejectedPage />,
-      },
-
-      {
-        element: <ProtectedRoute role="patient" />,
-        children: [
-          {
-            element: <PatientDashboardLayout />,
+            element: <AuthRoute role="patient" />,
             children: [
-              { path: "/patient/dashboard", element: <Dashboard /> },
+              { path: "/", element: <Homepage /> },
+              { path: "/login", element: <PatientLogin /> },
+              { path: "/signup", element: <PatientRegisterPage /> },
               {
-                path: "/patient/find-doctors",
-                element: <SearchDoctorsPage />,
+                path: "/forgot-password",
+                element: <ForgotPasswordPage role={"PATIENT"} />,
               },
               {
-                path: "/patient/book-appointment",
-                element: (
-                  <UnderConstruction
-                    title="Book Appointment"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                path: "/change-password",
+                element: <ChangePasswordPage role="PATIENT" />,
               },
               {
-                path: "/patient/my-appointments",
-                element: (
-                  <UnderConstruction
-                    title="My Bookings"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/patient/medical-reports",
-                element: (
-                  <UnderConstruction
-                    title="Medical Reports"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/patient/bills-payments",
-                element: (
-                  <UnderConstruction
-                    title="Bills & Payments"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/patient/wallet",
-                element: <PatientWalletPage roleOverride="patient" />,
-              },
-              {
-                path: "/patient/notifications",
-                element: (
-                  <UnderConstruction
-                    title="Notifications"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/patient/my-profile",
-                element: <MyProfilePage />,
-              },
-              {
-                path: "/patient/settings",
-                element: (
-                  <UnderConstruction
-                    title="Settings"
-                    backTo="/patient/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                path: "/verify-email",
+                element: <OTPVerification role="PATIENT" />,
               },
             ],
           },
-        ],
-      },
-      {
-        element: <ProtectedRoute role="doctor" />,
-        children: [
           {
-            element: <DoctorDashboardLayout />,
+            element: <AuthRoute role="admin" />,
             children: [
               {
-                path: "/doctor/dashboard",
-                element: <DoctorDashboardPage />
-              },
-              {
-                path: "/doctor/appointments",
+                path: "/admin",
                 element: (
-                  <UnderConstruction
-                    title="Appointments"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
+                  <LoginForm
+                    portal={"Admin"}
+                    role={"ADMIN"}
+                    fn={loginAdmin}
+                    to="/admin/dashboard"
                   />
                 ),
               },
               {
-                path: "/doctor/schedule",
-                element: <SchedulePage />,
+                path: "/admin/forgot-password",
+                element: <ForgotPasswordPage role={"ADMIN"} />,
               },
               {
-                path: "/doctor/patients",
-                element: (
-                  <UnderConstruction
-                    title="Patients"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
-              },
-              {
-                path: "/doctor/subscription", 
-                element: <DoctorSubscriptionPage roleOverride="doctor" />,
-              },
-              {
-                path: "/doctor/revenue",
-                element: (
-                  <UnderConstruction
-                    title="Revenue"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
-              },
-              {
-                path: "/doctor/wallet",
-                element: <DoctorWalletPage roleOverride="doctor" />,
-              },
-              {
-                path: "/doctor/notifications",
-                element: (
-                  <UnderConstruction
-                    title="Notifications"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
-              },
-              {
-                path: "/doctor/my-profile",
-                element: <DoctorProfilePage />,
-              },
-              {
-                path: "/doctor/settings",
-                element: (
-                  <UnderConstruction
-                    title="Settings"
-                    backTo="/doctor/dashboard"
-                    backLabel={"Back to Dashboard"}
-                  />
-                ),
+                path: "/admin/change-password",
+                element: <ChangePasswordPage role="ADMIN" />,
               },
             ],
           },
-        ],
-      },
+          {
+            element: <AuthRoute role="doctor" />,
+            children: [
+              { path: "/doctor-home", element: <DoctorHomepage /> },
+              {
+                path: "/doctor/reapplication",
+                element: <DoctorReapplication />,
+              },
+              {
+                path: "/doctor",
+                element: (
+                  <LoginForm
+                    portal={"Doctor"}
+                    role={"DOCTOR"}
+                    fn={loginDoctor}
+                    to="/doctor/dashboard"
+                  />
+                ),
+              },
+              {
+                path: "/doctor/forgot-password",
+                element: <ForgotPasswordPage role={"DOCTOR"} />,
+              },
+              {
+                path: "/doctor/change-password",
+                element: <ChangePasswordPage role="DOCTOR" />,
+              },
+              {
+                path: "/doctor/verify-email",
+                element: <OTPVerification role="DOCTOR" />,
+              },
+            ],
+          },
 
-      {
-        element: <ProtectedRoute role="admin" />,
-        children: [
+          { path: "/two-factor", element: <TwofactorAuthenticationPage /> },
           {
-            element: <AdminDashboardLayout />,
+            path: "/doctor-registration",
+            element: <DoctorRegistrationPage />,
+          },
+          {
+            path: "/doctor-registration-pending",
+            element: <DoctorRegistrationPendingPage />,
+          },
+          {
+            path: "/doctor-registration-rejected",
+            element: <DoctorRegistrationRejectedPage />,
+          },
+
+          {
+            element: <ProtectedRoute role="patient" />,
             children: [
               {
-                path: "/admin/dashboard",
-                element: <AdminDashboardPage />,
-              },
-              {
-                path: "/admin/doctors",
-                element: <DoctorManagementPage />,
-              },
-              {
-                path: "/admin/doctors/:doctorId",
-                element: <DoctorDetailsPage />,
-              },
-              {
-                path: "/admin/patients",
-                element: <PatientManagementPage />,
-              },
-              {
-                path: "/admin/patients/:patientId",
-                element: <PatientDetailsPage />,
-              },
-              {
-                path: "/admin/departments",
-                element: <DepartmentPage />,
-              },
-              {
-                path: "/admin/department/add",
-                element: <AddDepartmentPage />,
-              },
-              {
-                path: "/admin/department/edit/:deptId",
-                element: <EditDepartmentPage />,
-              },
-              {
-                path: "/admin/subscriptions",
-                element: <SubscriptionsPage />,
-              },
-              {
-                path: "/admin/revenue",
-                element: (
-                  <UnderConstruction
-                    title="Payment Revenue"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/wallet",
-                element: (
-                  <UnderConstruction
-                    title="Wallet"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/withdraw-requests",
-                element: (
-                  <UnderConstruction
-                    title="Withdraw Requests"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/reports",
-                element: (
-                  <UnderConstruction
-                    title="System Reports"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/notifications",
-                element: (
-                  <UnderConstruction
-                    title="Notifications"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/my-profile",
-                element: (
-                  <UnderConstruction
-                    title="My Profile"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
-              },
-              {
-                path: "/admin/settings",
-                element: (
-                  <UnderConstruction
-                    title="Settings"
-                    backTo="/admin/dashboard"
-                    backLabel="Back to Dashboard"
-                  />
-                ),
+                element: <PatientDashboardLayout />,
+                children: [
+                  { path: "/patient/dashboard", element: <Dashboard /> },
+                  {
+                    path: "/patient/find-doctors",
+                    element: <SearchDoctorsPage />,
+                  },
+                  {
+                    path: "/patient/book-appointment",
+                    element: (
+                      <UnderConstruction
+                        title="Book Appointment"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/patient/my-appointments",
+                    element: (
+                      <UnderConstruction
+                        title="My Bookings"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/patient/medical-reports",
+                    element: (
+                      <UnderConstruction
+                        title="Medical Reports"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/patient/bills-payments",
+                    element: (
+                      <UnderConstruction
+                        title="Bills & Payments"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/patient/wallet",
+                    element: <PatientWalletPage roleOverride="patient" />,
+                  },
+                  {
+                    path: "/patient/notifications",
+                    element: (
+                      <UnderConstruction
+                        title="Notifications"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/patient/my-profile",
+                    element: <MyProfilePage />,
+                  },
+                  {
+                    path: "/patient/settings",
+                    element: (
+                      <UnderConstruction
+                        title="Settings"
+                        backTo="/patient/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                ],
               },
             ],
           },
+          {
+            element: <ProtectedRoute role="doctor" />,
+            children: [
+              {
+                element: <DoctorDashboardLayout />,
+                children: [
+                  {
+                    path: "/doctor/dashboard",
+                    element: <DoctorDashboardPage />,
+                  },
+                  {
+                    path: "/doctor/appointments",
+                    element: (
+                      <UnderConstruction
+                        title="Appointments"
+                        backTo="/doctor/dashboard"
+                        backLabel={"Back to Dashboard"}
+                      />
+                    ),
+                  },
+                  {
+                    path: "/doctor/schedule",
+                    element: <SchedulePage />,
+                  },
+                  {
+                    path: "/doctor/patients",
+                    element: (
+                      <UnderConstruction
+                        title="Patients"
+                        backTo="/doctor/dashboard"
+                        backLabel={"Back to Dashboard"}
+                      />
+                    ),
+                  },
+                  {
+                    path: "/doctor/subscription",
+                    element: <DoctorSubscriptionPage roleOverride="doctor" />,
+                  },
+                  {
+                    path: "/doctor/revenue",
+                    element: (
+                      <UnderConstruction
+                        title="Revenue"
+                        backTo="/doctor/dashboard"
+                        backLabel={"Back to Dashboard"}
+                      />
+                    ),
+                  },
+                  {
+                    path: "/doctor/wallet",
+                    element: <DoctorWalletPage roleOverride="doctor" />,
+                  },
+                  {
+                    path: "/doctor/notifications",
+                    element: (
+                      <UnderConstruction
+                        title="Notifications"
+                        backTo="/doctor/dashboard"
+                        backLabel={"Back to Dashboard"}
+                      />
+                    ),
+                  },
+                  {
+                    path: "/doctor/my-profile",
+                    element: <DoctorProfilePage />,
+                  },
+                  {
+                    path: "/doctor/settings",
+                    element: (
+                      <UnderConstruction
+                        title="Settings"
+                        backTo="/doctor/dashboard"
+                        backLabel={"Back to Dashboard"}
+                      />
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+
+          {
+            element: <ProtectedRoute role="admin" />,
+            children: [
+              {
+                element: <AdminDashboardLayout />,
+                children: [
+                  {
+                    path: "/admin/dashboard",
+                    element: <AdminDashboardPage />,
+                  },
+                  {
+                    path: "/admin/doctors",
+                    element: <DoctorManagementPage />,
+                  },
+                  {
+                    path: "/admin/doctors/:doctorId",
+                    element: <DoctorDetailsPage />,
+                  },
+                  {
+                    path: "/admin/patients",
+                    element: <PatientManagementPage />,
+                  },
+                  {
+                    path: "/admin/patients/:patientId",
+                    element: <PatientDetailsPage role="admin" />,
+                  },
+                  {
+                    path: "/admin/departments",
+                    element: <DepartmentPage />,
+                  },
+                  {
+                    path: "/admin/department/add",
+                    element: <AddDepartmentPage />,
+                  },
+                  {
+                    path: "/admin/department/edit/:deptId",
+                    element: <EditDepartmentPage />,
+                  },
+                  {
+                    path: "/admin/subscriptions",
+                    element: <SubscriptionsPage />,
+                  },
+                  {
+                    path: "/admin/revenue",
+                    element: (
+                      <UnderConstruction
+                        title="Payment Revenue"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/wallet",
+                    element: (
+                      <UnderConstruction
+                        title="Wallet"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/withdraw-requests",
+                    element: (
+                      <UnderConstruction
+                        title="Withdraw Requests"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/reports",
+                    element: (
+                      <UnderConstruction
+                        title="System Reports"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/notifications",
+                    element: (
+                      <UnderConstruction
+                        title="Notifications"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/my-profile",
+                    element: (
+                      <UnderConstruction
+                        title="My Profile"
+                        backTo="/admin/dashboard"
+                        backLabel="Back to Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    path: "/admin/settings",
+                    element: <AdminSettingsPage />,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: "*",
+            element: <NotFoundPage />,
+          },
         ],
-      },
-      {
-        path: "*",
-        element: <NotFoundPage />,
       },
     ],
   },
 ]);
 
- export const App = () => {
+export const App = () => {
   return (
     <div>
       <TooltipProvider>
@@ -438,4 +442,3 @@ const router = createBrowserRouter([
   );
 };
 
-// export default App;

@@ -11,7 +11,7 @@ const AboutUs = ({websiteName}: {websiteName: string }) => {
       <div className="absolute -top-25 -right-25 w-100 h-100 rounded-full bg-[radial-gradient(circle,rgba(45,106,79,0.2)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="max-w-275 mx-auto">
-        <p className="text-[#5fba8a] uppercase tracking-widest text-sm mb-3">
+        <p className="text-primary uppercase tracking-widest text-sm mb-3">
           Why Choose Us
         </p>
 

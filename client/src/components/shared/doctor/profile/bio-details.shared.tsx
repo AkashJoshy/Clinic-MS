@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Pencil, X, Check, Plus, Info } from "lucide-react";
 import type {
@@ -19,14 +20,12 @@ import DoctorBioDetailsSkeleton from "../../skeletons/doctor-bio-details.skeleto
 const DoctorBioDetails: React.FC = () => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const { doctor: user } = useAuthStore((state) => state.users);
+  const { primaryColor } = useAuthStore((state) => state.platform);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
 
-  if (!doctorProfile) return <DoctorBioDetailsSkeleton />;
-
   const [isEditing, setIsEditing] = useState(false);
-
   const [languages, setLanguages] = useState<string[]>(
-    doctorProfile.doctor.languages,
+    doctorProfile?.doctor.languages ?? []
   );
   const [languageInput, setLanguageInput] = useState("");
 
@@ -47,27 +46,12 @@ const DoctorBioDetails: React.FC = () => {
     },
   });
 
-  const startEdit = () => {
-    reset({
-      id: doctorProfile.doctor.id!,
-      userId: user?.id!,
-      gender: doctorProfile.doctor.gender,
-      experienceYears: doctorProfile.doctor.experienceYears,
-      bio: doctorProfile.doctor.bio ?? "",
-      licenceNumber: doctorProfile.doctor.licenceNumber,
-      qualification: doctorProfile.doctor.qualification,
-      specialization: doctorProfile.doctor.specialization,
-      languages: doctorProfile.doctor.languages,
-    });
-
-    setIsEditing(true);
-  };
-
   const { mutate, isPending } = useMutate(updateDoctorProfessionalDetails, {
     onSuccess(data) {
-      if (data?.data) {
+      if (data?.data && doctorProfile) {
         const doctorData = data.data;
         const { userId, patientId, ...updatedData } = doctorData;
+
         const professionalDetails: DoctorInfo = {
           ...doctorProfile,
           doctor: {
@@ -82,18 +66,47 @@ const DoctorBioDetails: React.FC = () => {
     },
   });
 
-  const cancelEdit = () => setIsEditing(false);
+  useEffect(() => {
+    if (doctorProfile) {
+      setLanguages(doctorProfile.doctor.languages ?? []);
+    }
+  }, [doctorProfile]);
+
+  if (!doctorProfile) return <DoctorBioDetailsSkeleton />;
+
+  const startEdit = () => {
+    reset({
+      id: doctorProfile.doctor.id!,
+      userId: user?.id!,
+      gender: doctorProfile.doctor.gender,
+      experienceYears: doctorProfile.doctor.experienceYears,
+      bio: doctorProfile.doctor.bio ?? "",
+      licenceNumber: doctorProfile.doctor.licenceNumber,
+      qualification: doctorProfile.doctor.qualification,
+      specialization: doctorProfile.doctor.specialization,
+      languages: doctorProfile.doctor.languages,
+    });
+
+    setLanguages(doctorProfile.doctor.languages);
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setLanguages(doctorProfile.doctor.languages);
+  };
 
   const addLanguage = () => {
     const value = languageInput.trim().toUpperCase();
-    console.log(value);
+
     if (!value || languages.includes(value)) return;
-    console.log(value);
+
     setLanguages((prev) => {
       const res = [...prev, value];
       setValue("languages", res);
       return res;
     });
+
     setLanguageInput("");
   };
 
@@ -107,22 +120,29 @@ const DoctorBioDetails: React.FC = () => {
 
   const fieldClasses = `w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80] ${
     isEditing
-      ? "border-[#1dc465]/40 focus:border-[#1dc465] focus:ring-1 focus:ring-[#1dc465]/40"
+      ? "border-white/10 focus:ring-1"
       : "border-white/8 cursor-default"
   }`;
-  const labelClasses = "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+
+  const labelClasses =
+    "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+
+  const primaryTint = `color-mix(in srgb, ${primaryColor} 10%, transparent)`;
+  const primaryBorder = `color-mix(in srgb, ${primaryColor} 40%, transparent)`;
 
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-5">
-        <h3 className="text-white font-semibold text-base">
+    <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <h3 className="text-base font-semibold text-white">
           Professional details
         </h3>
+
         {!isEditing ? (
           <button
             type="button"
             onClick={startEdit}
-            className="flex items-center gap-1.5 text-xs font-medium text-[#1dc465] hover:text-[#15a050] transition-colors cursor-pointer"
+            className="flex cursor-pointer items-center gap-1.5 text-xs font-medium transition-colors"
+            style={{ color: primaryColor }}
           >
             <Pencil size={13} /> Edit
           </button>
@@ -131,17 +151,16 @@ const DoctorBioDetails: React.FC = () => {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center gap-1 text-xs font-medium text-[#8b9ab0] hover:text-white px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer"
+              className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#8b9ab0] transition-colors hover:text-white"
             >
               <X size={13} /> Cancel
             </button>
+
             <button
               type="button"
               disabled={isPending}
               onClick={handleSubmit(
                 (data) => {
-                  console.log(data);
-
                   if (!user?.id) return;
 
                   const professionalData = {
@@ -172,7 +191,7 @@ const DoctorBioDetails: React.FC = () => {
                       .sort()
                       .every(
                         (value, index) =>
-                          value === [...data.languages].sort()[index],
+                          value === [...data.languages].sort()[index]
                       );
 
                   if (isSameData && isSame) {
@@ -189,22 +208,23 @@ const DoctorBioDetails: React.FC = () => {
                       ),
                       {
                         position: "bottom-right",
-                      },
+                      }
                     );
                   } else {
                     mutate(data as DoctorProffesionalDetails);
                     setIsEditing(false);
                   }
                 },
-                (error) => {
+                () => {
                   toast.error("Data is incomplete for the updation");
-                },
+                }
               )}
-              className={`flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors ${
-                isPending
-                  ? "bg-[#1dc465]/50 text-primary-100 cursor-not-allowed"
-                  : "bg-[#1dc465] text-[#0d1a27] hover:bg-[#15a050] cursor-pointer"
-              }`}
+              className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: isPending ? primaryTint : primaryColor,
+                color: isPending ? primaryColor : "#0d1a27",
+                opacity: isPending ? 0.6 : 1,
+              }}
             >
               <Check aria-disabled={isPending} size={13} /> Save
             </button>
@@ -212,26 +232,34 @@ const DoctorBioDetails: React.FC = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClasses}>Gender</label>
+
           {isEditing ? (
             <>
-              <select className={fieldClasses} {...register("gender")}>
+              <select
+                className={fieldClasses}
+                style={{
+                  borderColor: errors.gender ? undefined : primaryBorder,
+                }}
+                {...register("gender")}
+              >
                 {GENDER.map((g) => (
                   <option key={g} value={g}>
                     {g.charAt(0) + g.slice(1).toLowerCase()}
                   </option>
                 ))}
               </select>
-              {errors && errors.gender && (
-                <h2 className="text-red-500 text-[11px] mt-2">
+
+              {errors.gender && (
+                <h2 className="mt-2 text-[11px] text-red-500">
                   {errors.gender?.message}
                 </h2>
               )}
             </>
           ) : (
-            <p className="text-sm text-white px-3.5 py-2.5">
+            <p className="px-3.5 py-2.5 text-sm text-white">
               {doctorProfile.doctor.gender.charAt(0) +
                 doctorProfile.doctor.gender.slice(1).toLowerCase()}
             </p>
@@ -240,6 +268,7 @@ const DoctorBioDetails: React.FC = () => {
 
         <div>
           <label className={labelClasses}>Experience (years)</label>
+
           {isEditing ? (
             <>
               <input
@@ -247,14 +276,15 @@ const DoctorBioDetails: React.FC = () => {
                 className={fieldClasses}
                 {...register("experienceYears")}
               />
-              {errors && errors.experienceYears && (
-                <h2 className="text-red-500 text-[11px] mt-2">
+
+              {errors.experienceYears && (
+                <h2 className="mt-2 text-[11px] text-red-500">
                   {errors.experienceYears?.message}
                 </h2>
               )}
             </>
           ) : (
-            <p className="text-sm text-white px-3.5 py-2.5">
+            <p className="px-3.5 py-2.5 text-sm text-white">
               {doctorProfile.doctor.experienceYears} years
             </p>
           )}
@@ -263,6 +293,7 @@ const DoctorBioDetails: React.FC = () => {
 
       <div className="mt-4">
         <label className={labelClasses}>Bio</label>
+
         {isEditing ? (
           <>
             <textarea
@@ -271,14 +302,15 @@ const DoctorBioDetails: React.FC = () => {
               className={`${fieldClasses} resize-none`}
               {...register("bio")}
             />
-            {errors && errors.bio && (
-              <h2 className="text-red-500 text-[11px] mt-2">
+
+            {errors.bio && (
+              <h2 className="mt-2 text-[11px] text-red-500">
                 {errors.bio?.message}
               </h2>
             )}
           </>
         ) : (
-          <p className="text-sm text-[#c3cddb] px-3.5 py-2.5 leading-relaxed">
+          <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
             {doctorProfile.doctor.bio || "No bio added yet."}
           </p>
         )}
@@ -286,6 +318,7 @@ const DoctorBioDetails: React.FC = () => {
 
       <div className="mt-4">
         <label className={labelClasses}>Licence Number</label>
+
         {isEditing ? (
           <>
             <input
@@ -293,23 +326,25 @@ const DoctorBioDetails: React.FC = () => {
               className={`${fieldClasses} resize-none`}
               {...register("licenceNumber")}
             />
-            {errors && errors.licenceNumber && (
-              <h2 className="text-red-500 text-[11px] mt-2">
+
+            {errors.licenceNumber && (
+              <h2 className="mt-2 text-[11px] text-red-500">
                 {errors.licenceNumber?.message}
               </h2>
             )}
           </>
         ) : (
-          <p className="text-sm text-[#c3cddb] px-3.5 py-2.5 leading-relaxed">
+          <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
             {doctorProfile.doctor.licenceNumber ||
               "Licence Number not provided"}
           </p>
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="mt-4">
           <label className={labelClasses}>Qualification</label>
+
           {isEditing ? (
             <>
               <input
@@ -317,14 +352,15 @@ const DoctorBioDetails: React.FC = () => {
                 className={`${fieldClasses} resize-none`}
                 {...register("qualification")}
               />
-              {errors && errors.qualification && (
-                <h2 className="text-red-500 text-[11px] mt-2">
+
+              {errors.qualification && (
+                <h2 className="mt-2 text-[11px] text-red-500">
                   {errors.qualification?.message}
                 </h2>
               )}
             </>
           ) : (
-            <p className="text-sm text-[#c3cddb] px-3.5 py-2.5 leading-relaxed">
+            <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
               {doctorProfile.doctor.qualification ||
                 "Licence Number not provided"}
             </p>
@@ -333,6 +369,7 @@ const DoctorBioDetails: React.FC = () => {
 
         <div className="mt-4">
           <label className={labelClasses}>Specialization</label>
+
           {isEditing ? (
             <>
               <input
@@ -340,14 +377,15 @@ const DoctorBioDetails: React.FC = () => {
                 className={`${fieldClasses} resize-none`}
                 {...register("specialization")}
               />
-              {errors && errors.specialization && (
-                <h2 className="text-red-500 text-[11px] mt-2">
+
+              {errors.specialization && (
+                <h2 className="mt-2 text-[11px] text-red-500">
                   {errors.specialization?.message}
                 </h2>
               )}
             </>
           ) : (
-            <p className="text-sm text-[#c3cddb] px-3.5 py-2.5 leading-relaxed">
+            <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
               {doctorProfile.doctor.specialization ||
                 "Licence Number not provided"}
             </p>
@@ -357,13 +395,12 @@ const DoctorBioDetails: React.FC = () => {
 
       <div className="mt-4">
         <label className={labelClasses}>Languages spoken</label>
+
         {isEditing && (
-          <div className="flex items-center gap-2 mb-2.5">
+          <div className="mb-2.5 flex items-center gap-2">
             <input
               type="text"
-              onChange={(e) => {
-                setLanguageInput(e.target.value);
-              }}
+              onChange={(e) => setLanguageInput(e.target.value)}
               value={languageInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -378,7 +415,11 @@ const DoctorBioDetails: React.FC = () => {
             <button
               type="button"
               onClick={addLanguage}
-              className="p-2.5 rounded-lg bg-[#1dc465]/10 text-[#1dc465] hover:bg-[#1dc465]/15 transition-colors cursor-pointer shrink-0"
+              className="shrink-0 cursor-pointer rounded-lg p-2.5 transition-colors"
+              style={{
+                backgroundColor: primaryTint,
+                color: primaryColor,
+              }}
               aria-label="Add language"
             >
               <Plus size={16} />
@@ -389,27 +430,31 @@ const DoctorBioDetails: React.FC = () => {
         <div className="flex flex-wrap gap-2 px-1">
           {(isEditing ? languages : doctorProfile.doctor.languages).length ===
             0 && (
-            <span className="text-sm text-[#5b6b80]">No languages added</span>
+            <span className="text-sm text-[#5b6b80]">
+              No languages added
+            </span>
           )}
+
           {(isEditing ? languages : doctorProfile.doctor.languages).map(
             (lang) => (
               <span
                 key={lang}
-                className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-white/5 text-[#c3cddb]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-[#c3cddb]"
               >
                 {lang}
+
                 {isEditing && (
                   <button
                     type="button"
                     onClick={() => removeLanguage(lang)}
                     aria-label={`Remove ${lang}`}
-                    className="hover:text-rose-400 cursor-pointer"
+                    className="cursor-pointer hover:text-rose-400"
                   >
                     <X size={11} />
                   </button>
                 )}
               </span>
-            ),
+            )
           )}
         </div>
       </div>

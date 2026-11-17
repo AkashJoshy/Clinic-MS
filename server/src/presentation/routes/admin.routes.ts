@@ -14,6 +14,7 @@ import {
   adminDoctorController,
   adminPatientController,
   adminSubscriptionPlanController,
+  platformSettingsController,
 } from "../../container/index.ts";
 
 const router = Router();
@@ -182,6 +183,22 @@ router.patch(
       res,
       next,
     ),
+);
+
+router.get(
+  ADMIN_ENDPOINTS["PLATFORM_SETTINGS"]["FETCH"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) =>
+    await platformSettingsController.getPlatformSettings(req, res, next),
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["PLATFORM_SETTINGS"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) =>
+    await platformSettingsController.updatePlatformSettings(req, res, next),
 );
 
 export default router;

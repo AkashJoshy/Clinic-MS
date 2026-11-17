@@ -54,33 +54,33 @@ export const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
     <article
       className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border transition-all duration-300 ${
         isCurrent
-          ? "border-[#1dc465]/60 bg-gradient-to-b from-[#102720] via-[#0c1920] to-[#0a111a] shadow-lg shadow-[#1dc465]/[0.07]"
+          ? "border-primary/60 bg-gradient-to-b from-primary/10 via-[#0c1920] to-[#0a111a] shadow-lg shadow-primary/[0.07]"
           : isPopular
-            ? "border-[#1dc465]/35 bg-gradient-to-b from-[#101f29] via-[#0c1722] to-[#0a111a] shadow-lg shadow-black/10 hover:-translate-y-1 hover:border-[#1dc465]/60 hover:shadow-xl hover:shadow-[#1dc465]/[0.06]"
+            ? "border-primary/35 bg-gradient-to-b from-[#101f29] via-[#0c1722] to-[#0a111a] shadow-lg shadow-black/10 hover:-translate-y-1 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/[0.06]"
             : "border-white/[0.09] bg-gradient-to-b from-[#0e1721] to-[#0a111a] hover:-translate-y-1 hover:border-white/20 hover:shadow-xl hover:shadow-black/20"
       }`}
     >
       <div
         className={`pointer-events-none absolute inset-x-0 top-0 h-px ${
           isCurrent || isPopular
-            ? "bg-gradient-to-r from-transparent via-[#1dc465]/70 to-transparent"
+            ? "bg-gradient-to-r from-transparent via-primary/70 to-transparent"
             : "bg-gradient-to-r from-transparent via-white/15 to-transparent"
         }`}
       />
 
       {(isCurrent || isPopular) && (
-        <div className="pointer-events-none absolute -right-16 -top-20 h-40 w-40 rounded-full bg-[#1dc465]/[0.045] blur-3xl transition-opacity duration-300 group-hover:bg-[#1dc465]/[0.08]" />
+        <div className="pointer-events-none absolute -right-16 -top-20 h-40 w-40 rounded-full bg-primary/[0.045] blur-3xl transition-opacity duration-300 group-hover:bg-primary/[0.08]" />
       )}
 
       <div className="relative flex h-full flex-col p-5 sm:p-6">
         <div className="mb-5 flex min-h-7 items-center justify-between gap-2">
           {isCurrent ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#1dc465]/25 bg-[#1dc465]/10 px-3 py-1 text-[10px] font-bold tracking-wide text-[#5ee69a]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[10px] font-bold tracking-wide text-primary">
               <Sparkles size={12} />
               YOUR CURRENT PLAN
             </span>
           ) : isPopular ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#1dc465]/25 bg-[#1dc465]/10 px-3 py-1 text-[10px] font-bold tracking-wide text-[#5ee69a]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[10px] font-bold tracking-wide text-primary">
               <Flame size={12} fill="currentColor" />
               MOST POPULAR
             </span>
@@ -131,7 +131,7 @@ export const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
           </div>
 
           <div className="mt-3 flex items-center gap-2 border-t border-white/[0.07] pt-3">
-            <ShieldCheck size={13} className="shrink-0 text-[#1dc465]" />
+            <ShieldCheck size={13} className="shrink-0 text-primary" />
             <span className="text-[11px] text-[#91a0b3]">
               {billingDescription}
             </span>
@@ -160,7 +160,7 @@ export const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
                   <span
                     className={`mt-0.5 flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full ${
                       feature.isIncluded
-                        ? "bg-[#1dc465]/10 text-[#45d987]"
+                        ? "bg-primary/10 text-primary"
                         : "bg-white/[0.045] text-[#657286]"
                     }`}
                   >
@@ -195,7 +195,7 @@ export const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
             <button
               type="button"
               disabled
-              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-[#1dc465]/20 bg-[#1dc465]/[0.07] px-4 py-3 text-xs font-semibold text-[#75dba0]"
+              className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/[0.07] px-4 py-3 text-xs font-semibold text-primary"
             >
               <Check size={14} />
               Current Active Plan
@@ -209,8 +209,8 @@ export const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
                 !canSelectPlan
                   ? "cursor-not-allowed border border-white/[0.08] bg-white/[0.025] text-[#68768a]"
                   : isPopular
-                    ? "cursor-pointer bg-[#1dc465] text-[#07120b] shadow-md shadow-[#1dc465]/10 hover:bg-[#2cdb77] active:scale-[0.99]"
-                    : "cursor-pointer border border-white/[0.13] bg-white/[0.035] text-[#e2e8f0] hover:border-[#1dc465]/35 hover:bg-[#1dc465]/[0.06] active:scale-[0.99]"
+                    ? "cursor-pointer bg-primary text-primary-foreground shadow-md shadow-primary/10 hover:bg-primary/90 active:scale-[0.99]"
+                    : "cursor-pointer border border-white/[0.13] bg-white/[0.035] text-[#e2e8f0] hover:border-primary/35 hover:bg-primary/[0.06] active:scale-[0.99]"
               }`}
             >
               {!hasValidPrice ? (

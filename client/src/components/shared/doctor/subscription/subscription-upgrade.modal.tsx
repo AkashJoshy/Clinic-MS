@@ -119,15 +119,15 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
         </header>
 
         <div
-          className="custom-scrollbar min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain"
+          className="custom-scrollbar scrollbar-dark min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain"
           style={{ scrollbarGutter: "stable" }}
         >
           <div className="space-y-5 p-5 text-sm text-gray-300 sm:p-6">
             {/* Selected plan */}
-            <div className="rounded-xl border border-[#1dc465]/30 bg-[#1dc465]/[0.07] p-4">
+            <div className="rounded-xl border border-primary/30 bg-primary/[0.07] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase tracking-wider text-[#1dc465]">
+                  <p className="text-xs font-medium uppercase tracking-wider text-primary">
                     Selected plan
                   </p>
 
@@ -175,7 +175,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                           feature.isIncluded === false
                             ? "bg-white/5 text-gray-500"
-                            : "bg-[#1dc465]/15 text-[#1dc465]"
+                            : "bg-primary/15 text-primary"
                         }`}
                       >
                         {feature.isIncluded === false ? (
@@ -280,9 +280,9 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
 
             {/* Wallet balance after subscription change */}
             {credit > 0 && walletDetails && (
-              <div className="rounded-xl border border-[#1dc465]/20 bg-[#1dc465]/[0.05] p-4">
+              <div className="rounded-xl border border-primary/20 bg-primary/[0.05] p-4">
                 <div className="mb-3 flex items-center gap-2">
-                  <Wallet size={17} className="text-[#1dc465]" />
+                  <Wallet size={17} className="text-primary" />
 
                   <h3 className="font-semibold text-white">
                     Wallet balance after upgrade
@@ -310,7 +310,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between gap-4 border-t border-[#1dc465]/20 pt-3">
+                  <div className="flex items-center justify-between gap-4 border-t border-primary/20 pt-3">
                     <span className="font-semibold text-white">
                       Expected wallet balance
                     </span>
@@ -343,7 +343,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
               type="button"
               onClick={handleWalletPayment}
               disabled={isProcessing || isWalletUnavailable}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#1dc465]/40 bg-[#1dc465]/10 px-3 py-2.5 text-sm font-semibold text-[#1dc465] transition hover:bg-[#1dc465]/15 disabled:cursor-not-allowed disabled:opacity-50 md:flex-1"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2.5 text-sm font-semibold text-primary transition hover:bg-primary/15 disabled:cursor-not-allowed disabled:opacity-50 md:flex-1"
             >
               <Wallet size={16} className="shrink-0" />
 
@@ -357,7 +357,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
             <button
               type="button"
               disabled={isProcessing}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#1dc465] px-3 py-2.5 text-sm font-semibold text-[#07130b] transition hover:bg-[#18b558] disabled:cursor-not-allowed disabled:opacity-60 md:flex-1"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60 md:flex-1"
             >
               <CreditCard size={16} className="shrink-0" />
 

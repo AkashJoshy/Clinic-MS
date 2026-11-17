@@ -24,7 +24,7 @@ export class PatientLoginUseCase implements ILoginUseCase {
     data: LoginDTO,
   ): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
-
+ 
     if (!user.isEmailVerified) {
       const token = await this._mailVerficationService.execute({
         email: user.email,

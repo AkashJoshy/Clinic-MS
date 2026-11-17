@@ -15,6 +15,8 @@ import type { SafeWallet } from "../../domain/types/wallet.types.ts";
 import type { ownerModel } from "../../domain/enums/user.enums.ts";
 import type { SafeWalletTransaction } from "../../domain/types/wallet-transaction.types.ts";
 import type { DepartmentDto, SafeDepartmentDto } from "./department.dto.ts";
+import type { PlatformSettings } from "../../domain/entities/platform-settings.entity.ts";
+import type { AppearanceSettingsProps, PlatformDetailsProps } from "../../domain/types/platform-settings.types.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -72,9 +74,9 @@ export interface ClinicWithDetailsDto {
 
 export type SafeAddress = Omit<Address, "update">;
 
-export type AddressDetailsResponseDto = SafeAddress
+export type AddressDetailsResponseDto = SafeAddress;
 
-export type FullAddressResponseDto = Address
+export type FullAddressResponseDto = Address;
 
 type BaseAddress = Omit<
   Address,
@@ -96,7 +98,7 @@ export type PatientFullDetailsDto = {
   address: SafeAddress | null;
 };
 
-export type PatientFullResponseDto = PatientFullDetailsDto
+export type PatientFullResponseDto = PatientFullDetailsDto;
 
 export type MessageDto = {
   message: string;
@@ -107,12 +109,10 @@ export interface UpdateAddressEntityDto {
   updates: Partial<UpdateAddress>;
 }
 
-
 export type AddressLookupResultDto = {
   addresses: SafeAddress[];
   addressMap: Map<string | null, SafeAddress>;
 };
-
 
 export type DepartmentLookupResultDto = {
   departments: SafeDepartmentDto[];
@@ -124,3 +124,8 @@ export type DoctorClinicDetailsResponseDto = {
   doctorClinicMap: Map<string | null, DoctorClinic[]>;
 };
 
+export type PlatformDataResponseDto = {
+  platformName: PlatformDetailsProps["platformName"];
+  primaryColor: AppearanceSettingsProps["primaryBrandColor"];
+  isMaintenanceMode: boolean;
+};

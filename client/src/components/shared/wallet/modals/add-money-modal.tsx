@@ -24,12 +24,17 @@ import {
 } from "@/services/shared.service";
 import toast from "react-hot-toast";
 
-export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
+interface Props extends AddMoneyModalProps {
+  isDark?: boolean;
+}
+
+export const AddMoneyModal: React.FC<Props> = ({
   isOpen,
   onClose,
   onBalanceUpdate,
   availableBalance,
-  roleOverride
+  roleOverride,
+  isDark = false,
 }) => {
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -51,14 +56,14 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
     verifyPaymentMutation,
     {
       onSuccess: (data) => {
-        const response = data.data
+        const response = data.data;
         if (response) {
-          console.log(`data.data`)
-          console.log(data)
-          
-          console.log(`response transaction: `)
+          console.log(`data.data`);
+          console.log(data);
 
-          onBalanceUpdate(response.balance, response.transaction)
+          console.log(`response transaction: `);
+
+          onBalanceUpdate(response.balance, response.transaction);
           toast.success(data.data.message);
           onClose();
         }
@@ -75,7 +80,7 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
 
         openRazorpayCheckout({
           order: rest,
-          description: `${roleOverride[0].toUpperCase+roleOverride.slice(1)} Wallet Top-up`,
+          description: `${roleOverride[0].toUpperCase + roleOverride.slice(1)} Wallet Top-up`,
           onSuccess: (response) => {
             console.log("Payment successful:", response);
             if (response) {
@@ -83,12 +88,12 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
                 status: "SUCCESS",
                 orderDetails: response,
                 authRole: roleOverride,
-              })
+              });
             }
           },
           onFailure: (error) => {
             console.error("Payment failed:", error);
-            toast.error("Payment is Failed")
+            toast.error("Payment is Failed");
           },
 
           onDismiss: () => {
@@ -121,26 +126,42 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-slate-200">
+      <div
+        className={`relative w-full max-w-lg rounded-2xl p-6 shadow-2xl border ${
+          isDark ? "bg-[#0D1A27] border-white/10" : "bg-white border-slate-200"
+        }`}
+      >
         {/* Close Button */}
         <button
           type="button"
           onClick={handleModalClose}
           disabled={isPending}
-          className="absolute right-4 top-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          className={`absolute right-4 top-4 p-2 rounded-xl transition-colors ${
+            isDark
+              ? "text-slate-400 hover:text-white hover:bg-white/10"
+              : "text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+          }`}
         >
           <X className="w-5 h-5" />
         </button>
 
         {isSuccess ? (
           <div className="py-10 text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#1DC465] mx-auto flex items-center justify-center animate-bounce">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 mx-auto flex items-center justify-center animate-bounce">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h3 className="text-xl font-bold text-[#0D1A27]">
+            <h3
+              className={`text-xl font-bold ${
+                isDark ? "text-white" : "text-[#0D1A27]"
+              }`}
+            >
               Deposit Successful!
             </h3>
-            <p className="text-sm text-slate-500">
+            <p
+              className={`text-sm ${
+                isDark ? "text-slate-400" : "text-slate-500"
+              }`}
+            >
               ₹{selectedAmount.toLocaleString("en-IN")} has been credited to
               your wallet.
             </p>
@@ -148,12 +169,24 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <h3 className="text-xl font-bold text-[#0D1A27]">
+              <h3
+                className={`text-xl font-bold ${
+                  isDark ? "text-white" : "text-[#0D1A27]"
+                }`}
+              >
                 Add Money to Wallet
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p
+                className={`text-xs mt-0.5 ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
                 Current Available Balance:{" "}
-                <span className="font-semibold text-slate-800">
+                <span
+                  className={`font-semibold ${
+                    isDark ? "text-slate-200" : "text-slate-800"
+                  }`}
+                >
                   {formatCurrency(availableBalance)}
                 </span>
               </p>
@@ -161,18 +194,30 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
 
             {/* Amount input */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-700">
+              <label
+                className={`block text-xs font-semibold ${
+                  isDark ? "text-slate-300" : "text-slate-700"
+                }`}
+              >
                 Enter Amount (₹)
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-lg font-bold text-slate-500">
+                <span
+                  className={`absolute left-3.5 top-1/2 -translate-y-1/2 text-lg font-bold ${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}
+                >
                   ₹
                 </span>
                 <input
                   type="number"
                   {...register("amount", { valueAsNumber: true })}
                   placeholder="e.g. 2000"
-                  className="w-full pl-8 pr-4 py-2.5 rounded-xl border border-slate-300 text-lg font-bold text-[#0D1A27] focus:outline-none focus:border-[#1DC465] focus:ring-2 focus:ring-[#1DC465]/20"
+                  className={`w-full pl-8 pr-4 py-2.5 rounded-xl border text-lg font-bold focus:outline-none focus:ring-2 focus:border-primary focus:ring-primary/20 ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white placeholder:text-slate-500"
+                      : "bg-white border-slate-300 text-[#0D1A27] placeholder:text-slate-400"
+                  }`}
                 />
               </div>
               {errors.amount && (
@@ -194,8 +239,10 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
                   }
                   className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                     selectedAmount === amt
-                      ? "bg-[#1DC465]/15 border-[#1DC465] text-[#118042]"
-                      : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                      ? "bg-primary/15 border-primary text-primary"
+                      : isDark
+                        ? "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                        : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   +₹{amt.toLocaleString("en-IN")}
@@ -204,30 +251,58 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
             </div>
 
             {/* Payment Summary */}
-            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-xs">
-              <div className="flex justify-between text-slate-500">
+            <div
+              className={`p-3.5 rounded-xl border space-y-1.5 text-xs ${
+                isDark
+                  ? "bg-white/5 border-white/10"
+                  : "bg-slate-50 border-slate-200"
+              }`}
+            >
+              <div
+                className={`flex justify-between ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
                 <span>Deposit Amount:</span>
-                <span className="font-semibold text-slate-700">
+                <span
+                  className={`font-semibold ${
+                    isDark ? "text-slate-200" : "text-slate-700"
+                  }`}
+                >
                   {formatCurrency(Number(selectedAmount) || 0)}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-500">
+              <div
+                className={`flex justify-between ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
                 <span>Convenience & Gateway Fee:</span>
-                <span className="font-semibold text-emerald-600">
+                <span className="font-semibold text-emerald-500">
                   FREE (₹0.00)
                 </span>
               </div>
-              <div className="border-t border-slate-200 pt-1.5 flex justify-between font-bold text-slate-900 text-sm">
+              <div
+                className={`border-t pt-1.5 flex justify-between font-bold text-sm ${
+                  isDark
+                    ? "border-white/10 text-white"
+                    : "border-slate-200 text-slate-900"
+                }`}
+              >
                 <span>Total Payable:</span>
-                <span className="text-[#1DC465]">
+                <span className="text-primary">
                   {formatCurrency(Number(selectedAmount) || 0)}
                 </span>
               </div>
             </div>
 
             {/* Secure Badge & Actions */}
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <div
+              className={`flex items-center gap-1.5 text-[11px] ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
               <span>
                 256-bit encrypted • Razorpay verified gateway integration
               </span>
@@ -238,14 +313,18 @@ export const AddMoneyModal: React.FC<AddMoneyModalProps> = ({
                 type="button"
                 onClick={handleModalClose}
                 disabled={isPending}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-50"
+                className={`flex-1 py-2.5 rounded-xl border font-semibold text-xs transition-colors ${
+                  isDark
+                    ? "border-white/10 text-slate-300 hover:bg-white/5"
+                    : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                }`}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isPending}
-                className="flex-1 cursor-pointer py-2.5 rounded-xl bg-[#1DC465] hover:bg-[#18a857] text-white font-bold text-xs shadow-xs flex items-center justify-center gap-2"
+                className="flex-1 cursor-pointer py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs shadow-xs flex items-center justify-center gap-2 transition-colors"
               >
                 {isPending ? (
                   <>

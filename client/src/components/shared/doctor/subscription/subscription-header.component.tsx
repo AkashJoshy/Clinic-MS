@@ -21,13 +21,13 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
     ? "border border-gray-500/30 bg-gray-500/10 text-gray-400"
     : isCancelled
       ? "border border-amber-500/30 bg-amber-500/10 text-amber-400"
-      : "border border-emerald-500/30 bg-emerald-500/10 text-[#1dc465]";
+      : "border border-primary/30 bg-primary/10 text-primary";
 
   const statusDotClass = !hasSubscription
     ? "bg-gray-400"
     : isCancelled
       ? "bg-amber-400"
-      : "animate-pulse bg-[#1dc465]";
+      : "animate-pulse bg-primary";
 
   return (
     <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
@@ -67,7 +67,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
         <button
           type="button"
           onClick={onOpenUpgradeModal}
-          className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-[#1dc465] to-[#17a050] px-4 py-2 text-xs font-bold text-[#080d14] shadow-md shadow-[#1dc465]/20 transition-all hover:brightness-110 active:scale-[0.98]"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98]"
         >
           <Sparkles size={14} />
           <span>{hasSubscription ? "Change Plan" : "Choose a Plan"}</span>

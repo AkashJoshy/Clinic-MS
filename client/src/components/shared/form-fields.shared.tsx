@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Controller, type FieldValues, type Path } from "react-hook-form";
-import type { Control } from "react-hook-form"
+import type { Control } from "react-hook-form";
 import type { FormFieldsProps, OptionItem } from "@/types/common";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Upload, FileText } from "lucide-react";
@@ -14,7 +14,6 @@ const normalizeOptions = (
     typeof opt === "string" ? { label: opt, value: opt } : opt,
   );
 };
-
 
 function DocUploadBox<T extends FieldValues>({
   name,
@@ -98,7 +97,9 @@ function DayToggleGroup<T extends FieldValues>({
       control={control}
       defaultValue={[] as any}
       render={({ field }) => {
-        const selected: string[] = Array.isArray(field.value) ? field.value : [];
+        const selected: string[] = Array.isArray(field.value)
+          ? field.value
+          : [];
 
         const toggle = (day: string) => {
           const next = selected.includes(day)
@@ -138,7 +139,6 @@ function DayToggleGroup<T extends FieldValues>({
   );
 }
 
-
 export function TimeSlotGrid<T extends FieldValues>({
   name,
   options,
@@ -158,7 +158,9 @@ export function TimeSlotGrid<T extends FieldValues>({
       control={control}
       defaultValue={[] as any}
       render={({ field }) => {
-        const selected: string[] = Array.isArray(field.value) ? field.value : [];
+        const selected: string[] = Array.isArray(field.value)
+          ? field.value
+          : [];
 
         const toggle = (slot: string) => {
           const next = selected.includes(slot)
@@ -195,7 +197,6 @@ export function TimeSlotGrid<T extends FieldValues>({
     />
   );
 }
-
 
 function StatusToggle<T extends FieldValues>({
   name,
@@ -249,6 +250,7 @@ function FormFields<T extends FieldValues>({
   setValue,
   control,
   containerClass = "",
+  isDark = false,
 }: FormFieldsProps<T>) {
   const [visibleFields, setVisibleFields] = useState<Record<string, boolean>>(
     {},
@@ -258,21 +260,16 @@ function FormFields<T extends FieldValues>({
     setVisibleFields((prev) => ({ ...prev, [fieldName]: !prev[fieldName] }));
 
   const inputClass = (name: string) => {
+    const hasError = !!(errors as any)[name];
 
-    const hasError = !!(errors as any)[name]
-
-    return(
-      `w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200
+    return `w-full px-4 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200
       ${
-         hasError
-        ? "border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-200"
-        : "border-gray-200 bg-gray-50 focus:border-primary focus:ring-4 focus:ring-primary/10"
-        }
-        `
-    )
-  }
-
-  const isDark = containerClass !== "";
+        hasError
+          ? "border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-200"
+          : "border-gray-200 bg-gray-50 focus:border-primary focus:ring-4 focus:ring-primary/10"
+      }
+        `;
+  };
 
   return (
     <>
@@ -282,11 +279,13 @@ function FormFields<T extends FieldValues>({
 
         return (
           <div key={name} className={inp.hidden ? "hidden" : ""}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              className={`block text-sm font-medium mb-1 ${
+                isDark ? "text-[#8b9ab0]" : "text-gray-700"
+              }`}
+            >
               {inp.title}
-              {inp.isRequired && (
-                <span className="text-red-500 ml-0.5">*</span>
-              )}
+              {inp.isRequired && <span className="text-red-500 ml-0.5">*</span>}
             </label>
 
             {/* Password */}
@@ -318,10 +317,10 @@ function FormFields<T extends FieldValues>({
                 name={inp.name as Path<T>}
                 control={control}
                 render={({ field }) => {
-                  const options = (inp.options ?? []).map((opt) => 
-                    typeof opt === "string" 
-                      ? { value: opt, label: opt } 
-                      : { value: opt.value, label: opt.label }
+                  const options = (inp.options ?? []).map((opt) =>
+                    typeof opt === "string"
+                      ? { value: opt, label: opt }
+                      : { value: opt.value, label: opt.label },
                   );
                   return (
                     <Select
@@ -350,9 +349,13 @@ function FormFields<T extends FieldValues>({
                            }`,
                         placeholder: () => "text-gray-400 text-sm",
                         singleValue: () =>
-                          isDark ? "text-white text-sm" : "text-gray-900 text-sm",
+                          isDark
+                            ? "text-white text-sm"
+                            : "text-gray-900 text-sm",
                         input: () =>
-                          isDark ? "text-white text-sm" : "text-gray-900 text-sm",
+                          isDark
+                            ? "text-white text-sm"
+                            : "text-gray-900 text-sm",
                         menu: () =>
                           `mt-1 border rounded-lg shadow-lg overflow-hidden z-50
                            ${isDark ? "bg-[#0d1a27] border-gray-700" : "bg-white border-gray-200"}`,
@@ -403,11 +406,9 @@ function FormFields<T extends FieldValues>({
             {inp.type === "multi-select-days" && (
               <DayToggleGroup<T>
                 name={inp.name as unknown as Path<T>}
-                options={
-                  (inp.options ?? []).filter(
-                    (o): o is string => typeof o === "string",
-                  )
-                }
+                options={(inp.options ?? []).filter(
+                  (o): o is string => typeof o === "string",
+                )}
                 control={control}
                 hasError={hasError}
               />
@@ -417,11 +418,9 @@ function FormFields<T extends FieldValues>({
             {inp.type === "multi-select-slots" && (
               <TimeSlotGrid<T>
                 name={inp.name as unknown as Path<T>}
-                options={
-                  (inp.options ?? []).filter(
-                    (o): o is string => typeof o === "string",
-                  )
-                }
+                options={(inp.options ?? []).filter(
+                  (o): o is string => typeof o === "string",
+                )}
                 control={control}
                 hasError={hasError}
               />
@@ -431,11 +430,9 @@ function FormFields<T extends FieldValues>({
             {inp.type === "status-toggle" && (
               <StatusToggle<T>
                 name={inp.name as unknown as Path<T>}
-                options={
-                  (inp.options ?? []).filter(
-                    (o): o is string => typeof o === "string",
-                  )
-                }
+                options={(inp.options ?? []).filter(
+                  (o): o is string => typeof o === "string",
+                )}
                 control={control}
                 hasError={hasError}
               />
@@ -455,9 +452,13 @@ function FormFields<T extends FieldValues>({
                 placeholder={inp.placeHolder}
                 disabled={inp?.isDisabled}
                 defaultValue={inp.isValue as string}
-                 max={inp.type === "date" ? new Date().toISOString().split("T")[0] : undefined}
+                max={
+                  inp.type === "date"
+                    ? new Date().toISOString().split("T")[0]
+                    : undefined
+                }
                 {...register(inp.name as unknown as Path<T>)}
-                className={`${inputClass(name)} ${containerClass} ${inp?.isDisabled ? `cursor-not-allowed` : ''}`}
+                className={`${inputClass(name)} ${containerClass} ${inp?.isDisabled ? `cursor-not-allowed` : ""}`}
               />
             )}
 

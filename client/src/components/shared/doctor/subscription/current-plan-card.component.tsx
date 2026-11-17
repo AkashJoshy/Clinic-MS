@@ -71,7 +71,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
   if (!subscription) {
     return (
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#0c1f20] via-[#09151f] to-[#070e17] p-6 shadow-xl lg:p-8">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#1dc465]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
 
         <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-3">
@@ -93,12 +93,12 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-[#8b9ab0]">
               <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-[#1dc465]" />
+                <CheckCircle2 size={14} className="text-primary" />
                 Flexible plans
               </span>
 
               <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-[#1dc465]" />
+                <CheckCircle2 size={14} className="text-primary" />
                 Choose what suits your practice
               </span>
             </div>
@@ -112,7 +112,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
                 block: "start",
               });
             }}
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#1dc465] px-5 py-3 text-sm font-bold text-[#080d14] shadow-md transition-all hover:bg-[#18af59] active:scale-[0.98]"
+            className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 active:scale-[0.98]"
           >
             <Layers size={16} />
             <span>Explore Plans</span>
@@ -131,13 +131,13 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
   const billingCycleLabel = subscription.billingCycle
     .toLowerCase()
-    .replace(/_/g, " ");
+    .replace(/\_/g, " ");
 
   const paymentMethod = subscription.paymentMethod;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-[#1dc465]/30 bg-gradient-to-br from-[#0c1f20] via-[#09151f] to-[#070e17] p-5 shadow-xl shadow-[#1dc465]/5 lg:p-7">
-      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#1dc465]/10 blur-3xl" />
+    <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary-950/40 via-[#09151f] to-[#070e17] p-5 shadow-xl shadow-primary/5 lg:p-7">
+      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-4">
@@ -146,7 +146,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
               className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${
                 isCancelled
                   ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                  : "border-[#1dc465]/30 bg-[#1dc465]/15 text-[#1dc465]"
+                  : "border-primary/30 bg-primary/15 text-primary"
               }`}
             >
               {isCancelled ? "Subscription Cancelled" : "Current Plan"}
@@ -191,7 +191,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
         <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 lg:min-w-[320px]">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2 text-xs text-[#8b9ab0]">
-              <Calendar size={15} className="text-[#1dc465]" />
+              <Calendar size={15} className="text-primary" />
               <span>Subscription Expiry Date</span>
             </div>
 
@@ -202,7 +202,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2 text-xs text-[#8b9ab0]">
-              <CreditCard size={15} className="text-[#1dc465]" />
+              <CreditCard size={15} className="text-primary" />
               <span>Payment Method</span>
             </div>
 
@@ -210,7 +210,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
               <button
                 type="button"
                 onClick={onOpenPaymentMethods}
-                className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-white transition-colors hover:text-[#1dc465]"
+                className="inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-white transition-colors hover:text-primary"
               >
                 <span>{getPaymentMethodLabel(paymentMethod)}</span>
                 <ArrowUpRight size={12} />
@@ -224,7 +224,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2 text-xs text-[#8b9ab0]">
-              <Calendar size={15} className="text-[#1dc465]" />
+              <Calendar size={15} className="text-primary" />
               <span>Period Started</span>
             </div>
 
@@ -238,7 +238,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
               <span>Period Validity</span>
             </div>
 
-            <span className="rounded-md bg-[#1dc465]/10 px-2 py-0.5 text-xs font-bold text-[#1dc465]">
+            <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
               {daysRemaining === null
                 ? "Not available"
                 : daysRemaining === 0
@@ -259,7 +259,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
                 block: "start",
               });
             }}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-[#1dc465] px-4 py-2 text-xs font-bold text-[#080d14] shadow-md transition-all hover:bg-[#18af59] active:scale-[0.98]"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 active:scale-[0.98]"
           >
             <Sparkles size={14} />
             <span>Change or Upgrade Plan</span>
@@ -274,7 +274,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
               <RefreshCw
                 size={13}
                 className={
-                  subscription.autoRenew ? "text-[#1dc465]" : "text-gray-400"
+                  subscription.autoRenew ? "text-primary" : "text-gray-400"
                 }
               />
 
@@ -308,7 +308,9 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
           {subscription.cancellationReason && (
             <p className="mt-1 text-xs text-[#8b9ab0]">
               Reason:{" "}
-              {subscription.cancellationReason.toLowerCase().replace(/_/g, " ")}
+              {subscription.cancellationReason
+                .toLowerCase()
+                .replace(/\_/g, " ")}
             </p>
           )}
 

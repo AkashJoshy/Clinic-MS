@@ -1,4 +1,3 @@
-// AddProfile.tsx
 import React, { useEffect } from "react";
 import FormFields from "../../form-fields.shared";
 import type { RelativeFormData } from "@/schemas/patient/patient.schema";
@@ -22,6 +21,8 @@ const AddProfile: React.FC<AddProfileProps> = ({
   const setPatients = useAuthStore((state) => state.setPatients);
   const activePatient = useAuthStore((state) => state.activePatient);
   const { patient: user } = useAuthStore((state) => state.users);
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
   const { countries, states, cities, handleCountryChange, handleStateChange } =
     useLocationOptions();
 
@@ -59,6 +60,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
           p.patient?.relation[0] + p.patient?.relation.slice(1).toLowerCase(),
       )
       .filter((r) => r !== "");
+
     const allUniqueRelations = [
       "Father",
       "Mother",
@@ -75,9 +77,11 @@ const AddProfile: React.FC<AddProfileProps> = ({
     const sortedRelations = relations
       .filter((r) => r !== "" || " ")
       .filter((r) => allUniqueRelations.includes(r));
+
     const allAvailableRelations = options?.filter(
       (r) => !sortedRelations.includes(r),
     ) as string[];
+
     RELATIVE_REGISTER_FORM_INPUTS[1].options = allAvailableRelations;
   }, []);
 
@@ -98,6 +102,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
   }, [isAddressComplete, setValue]);
 
   const country = watch("country");
+
   useEffect(() => {
     if (country) {
       handleCountryChange(country);
@@ -107,6 +112,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
   PATIENT_LOCATION_FIELDS[2].options = states.map((s) => s.name);
 
   const state = watch("state");
+
   useEffect(() => {
     if (state && country) {
       handleStateChange(country, state);
@@ -143,6 +149,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
 
     const isValid = await trigger();
     if (!isValid) return;
+
     try {
       const data = watch();
 
@@ -170,6 +177,15 @@ const AddProfile: React.FC<AddProfileProps> = ({
     (f) => f.name !== "allergies" && f.name !== "chronicConditions",
   );
 
+  const primaryButtonStyle = {
+    backgroundColor: primaryColor,
+    color: "#ffffff",
+  };
+
+  const primaryFocusStyle = {
+    "--primary-color": primaryColor,
+  } as React.CSSProperties;
+
   return (
     <>
       <div className="grid gap-4">
@@ -179,6 +195,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
           errors={errors}
           control={control}
         />
+
         <div className="space-y-2">
           <label className="block text-sm font-medium text-slate-700">
             Allergies
@@ -190,28 +207,31 @@ const AddProfile: React.FC<AddProfileProps> = ({
               onChange={(e) => setAllergyInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addAllergy()}
               placeholder="Type an allergy and press Enter"
-              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
+              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-[var(--primary-color)] focus:bg-white transition-all"
+              style={primaryFocusStyle}
             />
             <button
               type="button"
               onClick={addAllergy}
-              className="px-4 cursor-pointer py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg"
+              className="px-4 cursor-pointer py-2 text-white text-sm font-semibold rounded-lg transition-colors"
+              style={primaryButtonStyle}
             >
               Add
             </button>
           </div>
+
           {allergies.length > 0 ? (
             <div className="flex flex-wrap gap-2 pt-1">
               {allergies.map((item: string) => (
                 <span
                   key={item}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
                 >
                   {item}
                   <button
                     type="button"
                     onClick={() => removeAllergy(item)}
-                    className="hover:bg-emerald-100 rounded-full w-4 h-4 flex items-center justify-center text-emerald-800"
+                    className="flex h-4 w-4 items-center justify-center rounded-full text-primary-700 transition-colors hover:bg-primary-100"
                   >
                     ×
                   </button>
@@ -224,6 +244,7 @@ const AddProfile: React.FC<AddProfileProps> = ({
             </p>
           )}
         </div>
+
         <div className="space-y-2">
           <label className="block text-sm font-medium text-slate-700">
             Chronic Conditions
@@ -235,28 +256,31 @@ const AddProfile: React.FC<AddProfileProps> = ({
               onChange={(e) => setChronicInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addChronic()}
               placeholder="Type a condition and press Enter"
-              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-emerald-500 focus:bg-white transition-all"
+              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:border-[var(--primary-color)] focus:bg-white transition-all"
+              style={primaryFocusStyle}
             />
             <button
               type="button"
               onClick={addChronic}
-              className="px-4 py-2 cursor-pointer bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg"
+              className="px-4 py-2 cursor-pointer text-white text-sm font-semibold rounded-lg transition-colors"
+              style={primaryButtonStyle}
             >
               Add
             </button>
           </div>
+
           {chronicConditions.length > 0 ? (
             <div className="flex flex-wrap gap-2 pt-1">
               {chronicConditions.map((item: string) => (
                 <span
                   key={item}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
                 >
                   {item}
                   <button
                     type="button"
                     onClick={() => removeChronic(item)}
-                    className="hover:bg-emerald-100 rounded-full w-4 h-4 flex items-center justify-center text-emerald-800"
+                    className="flex h-4 w-4 items-center justify-center rounded-full text-primary-700 transition-colors hover:bg-primary-100"
                   >
                     ×
                   </button>
@@ -273,9 +297,10 @@ const AddProfile: React.FC<AddProfileProps> = ({
         <label className="block text-sm font-medium text-slate-700">
           Address
         </label>
+
         {isAddressComplete && (
           <div className="flex gap-6">
-            <label className=" text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700">
               <input
                 type="radio"
                 value="PRIMARY"
@@ -320,12 +345,14 @@ const AddProfile: React.FC<AddProfileProps> = ({
           </div>
         )}
       </div>
+
       {isSubmit && (
         <div className="mt-6 flex justify-end">
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2 cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+            className="px-5 py-2 cursor-pointer text-white rounded-lg transition-colors"
+            style={primaryButtonStyle}
           >
             Save Profile
           </button>

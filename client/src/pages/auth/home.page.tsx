@@ -4,18 +4,16 @@ import Hero from "@/components/shared/hero.shared";
 import Services from "@/components/layout/services.layout";
 import Features from "@/components/shared/features.shared";
 import AboutUs from "@/components/shared/about-us.shared";
-import { useCallback } from "react";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
+import { useAuthStore } from "@/store";
 
 const Homepage = () => {
-  const formattedWebsiteCall = useCallback((name: string) => {
-    return name
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word[0].toUpperCase() + word.slice(1))
-      .join(" ");
-  }, []);
+  
+  const {
+    websiteName,
+  } = usePlatformConfig()
 
-  const websiteName = formattedWebsiteCall(import.meta.env.VITE_WEBSITE_NAME);
+  const { primaryColor } = useAuthStore(state => state.platform)
 
   return (
     <div
@@ -36,10 +34,10 @@ const Homepage = () => {
         .fade-up-3 { animation-delay: 0.4s; opacity: 0; }
         .fade-up-4 { animation-delay: 0.55s; opacity: 0; }
       `}</style>
-      <PublicHeader />
+      <PublicHeader websiteName={websiteName} primaryColor={primaryColor} />
       <Hero websiteName={websiteName} />
       <Services />
-      <Features />
+      <Features primaryColor={primaryColor} />
       <AboutUs websiteName={websiteName} />
       <PublicFooter websiteName={websiteName} />
     </div>

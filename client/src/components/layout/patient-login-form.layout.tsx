@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +11,6 @@ import FormFields from "../shared/form-fields.shared";
 import {
   Link,
   useNavigate,
-  useParams,
   useSearchParams,
 } from "react-router-dom";
 import { initiateGoogleAuth, loginUser } from "@/services/auth.service";
@@ -18,6 +18,8 @@ import { toast } from "react-hot-toast";
 import { useAuthMutate } from "@/hooks/use-auth-mutate.hook";
 import { useAuthStore } from "@/store";
 import type { GoogleAuthMode } from "@/types/auth";
+import { DEFAULT_PLATFORM_NAME } from "@/constants/role.constants";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
 
 const PatientLoginForm = () => {
   const {
@@ -32,18 +34,24 @@ const PatientLoginForm = () => {
       role: "PATIENT",
     },
   });
+
   const navigate = useNavigate();
 
-  const { mutateAsync, isPending, setLoading } = useAuthMutate(loginUser, {
+  const { mutateAsync, isPending } = useAuthMutate(loginUser, {
     onSuccess: (data) => {
       if (data.data.token && data.data.role && data.data.email) {
         const expiryTime =
-                  Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
-        localStorage.setItem(`otpResendExpiry_${data.data.role}_${data.data.email}`, expiryTime.toString())
-        navigate(`/verify-email?token=${data.data.token}`,{
+          Date.now() + import.meta.env.VITE_COOLDOWN_SECOND * 1000;
+
+        localStorage.setItem(
+          `otpResendExpiry_${data.data.role}_${data.data.email}`,
+          expiryTime.toString(),
+        );
+
+        navigate(`/verify-email?token=${data.data.token}`, {
           state: {
-            email: data.data.email
-          }
+            email: data.data.email,
+          },
         });
       } else {
         navigate("/patient/dashboard");
@@ -52,7 +60,8 @@ const PatientLoginForm = () => {
   });
 
   const login = useAuthStore((state) => state.login);
-  const savedToken = useAuthStore((state) => state.tokens);
+  const platformdetails = useAuthStore((state) => state.platform);
+  const { primaryColor } = platformdetails;
 
   const handleGoogleLogin = async (mode: GoogleAuthMode) => {
     await initiateGoogleAuth(mode);
@@ -68,6 +77,7 @@ const PatientLoginForm = () => {
     if (message) {
       toast.error(message);
       navigate("/login", { replace: true });
+
       if (
         message === "Account not found. Redirecting to signup..." ||
         message.includes("signup")
@@ -75,16 +85,22 @@ const PatientLoginForm = () => {
         navigate("/signup");
       }
     }
+
     if (token && role && user) {
-      const parsedUser = typeof user === "string" ? JSON.parse(user) : user;
+      const parsedUser = JSON.parse(user);
       login(token, parsedUser, parsedUser.role.toLowerCase());
     }
   }, [message, user, token]);
 
+  const websiteName = platformdetails.platformName || DEFAULT_PLATFORM_NAME;
+
   return (
     <div className="flex w-full md:w-1/2 items-center justify-center p-6 sm:p-12 bg-gray-50">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-2xl font-bold mb-2 text-gray-800">Welcome Back</h2>
+        <h2 className="text-2xl font-bold mb-2 text-gray-800">
+          Welcome Back
+        </h2>
+
         <p className="text-gray-500 mb-6 text-sm">
           Sign in to access your Health dashboard
         </p>
@@ -102,7 +118,9 @@ const PatientLoginForm = () => {
             register={register}
             errors={errors}
             control={control}
+            isDark={false}
           />
+
           <input type="hidden" {...register("role")} />
 
           <p className="flex justify-between text-sm text-gray-500">
@@ -111,29 +129,36 @@ const PatientLoginForm = () => {
               <span className="cursor-pointer">Forgot password?</span>
             </Link>
           </p>
-          <Button type="submit" disabled={isPending} className="w-full">
+
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full"
+            style={{ backgroundColor: primaryColor, color: getContrastTextColor(primaryColor) }}
+          >
             {!isPending ? "Sign In" : "Signing in..."}
           </Button>
         </form>
 
         <h4 className="text-sm text-gray-500 mt-6 text-center">Or</h4>
 
-        <div className="flex items-center justify-center gap-2 w-full px-4 py-2 hover:bg-primary-50 border border-gray-300 rounded-lg cursor-pointer transition">
+        <div
+          className="flex items-center justify-center gap-2 w-full px-4 py-2 hover:bg-primary-50 border border-gray-300 rounded-lg cursor-pointer transition"
+          onClick={() => handleGoogleLogin("login")}
+        >
           <FcGoogle size={20} />
-          <span
-            onClick={() => {
-              handleGoogleLogin("login");
-            }}
-            className="text-gray-700 font-medium"
-          >
+          <span className="text-gray-700 font-medium">
             Sign in with Google
           </span>
         </div>
 
         <p className="text-sm text-gray-500 mt-6 text-center">
-          New to {import.meta.env.VITE_WEBSITE_NAME.toLowerCase()}?{" "}
+          New to {websiteName}?{" "}
           <Link to={"/signup"}>
-            <span className="text-primary hover:underline cursor-pointer">
+            <span
+              className="hover:underline cursor-pointer"
+              style={{ color: primaryColor }}
+            >
               Create Account
             </span>
           </Link>

@@ -1,5 +1,8 @@
+
 import React, { useEffect, useState } from "react";
+
 import { X, CreditCard, ShieldCheck, Lock, AlertCircle } from "lucide-react";
+
 import type { ManagePaymentMethodModalProps } from "@/types/doctor-subscription";
 
 export const ManagePaymentMethodModal: React.FC<
@@ -108,7 +111,7 @@ export const ManagePaymentMethodModal: React.FC<
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -122,7 +125,7 @@ export const ManagePaymentMethodModal: React.FC<
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 bg-[#09101a] px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1dc465]/15 text-[#1dc465]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
               <CreditCard size={16} />
             </span>
 
@@ -154,7 +157,7 @@ export const ManagePaymentMethodModal: React.FC<
           {/* Card preview */}
           <div className="relative overflow-hidden rounded-xl border border-white/15 bg-gradient-to-tr from-[#0a1b24] via-[#0e2a33] to-[#123e3e] p-4 text-white shadow-lg">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#1dc465]">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
                 {previewBrand}
               </span>
               <Lock size={13} className="text-gray-300" />
@@ -206,11 +209,13 @@ export const ManagePaymentMethodModal: React.FC<
               inputMode="numeric"
               autoComplete="cc-number"
               value={cardNumber}
-              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+              onChange={(e) =>
+                setCardNumber(formatCardNumber(e.target.value))
+              }
               placeholder="Enter card number"
               required
               maxLength={23}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-[#1dc465] focus:outline-none"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -234,7 +239,7 @@ export const ManagePaymentMethodModal: React.FC<
                 placeholder="MM/YY"
                 maxLength={5}
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-[#1dc465] focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
               />
             </div>
 
@@ -259,7 +264,7 @@ export const ManagePaymentMethodModal: React.FC<
                 pattern="[0-9]{3,4}"
                 placeholder="CVV"
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-[#1dc465] focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
               />
             </div>
           </div>
@@ -281,7 +286,7 @@ export const ManagePaymentMethodModal: React.FC<
               onChange={(e) => setCardHolder(e.target.value)}
               placeholder="Enter cardholder name"
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-[#1dc465] focus:outline-none"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
             />
           </div>
 
@@ -296,11 +301,14 @@ export const ManagePaymentMethodModal: React.FC<
           )}
 
           <div className="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 text-[11px] text-gray-400">
-            <ShieldCheck size={14} className="mt-0.5 shrink-0 text-[#1dc465]" />
+            <ShieldCheck
+              size={14}
+              className="mt-0.5 shrink-0 text-primary"
+            />
             <span>
               Use a PCI-DSS-compliant payment provider to securely collect and
-              tokenize card details. Never store raw card numbers or CVV in your
-              application database.
+              tokenize card details. Never store raw card numbers or CVV in
+              your application database.
             </span>
           </div>
 
@@ -316,7 +324,7 @@ export const ManagePaymentMethodModal: React.FC<
 
             <button
               type="submit"
-              className="cursor-pointer rounded-xl bg-[#1dc465] px-4 py-2 text-xs font-bold text-[#080d14] shadow-md transition-colors hover:bg-[#18af59]"
+              className="cursor-pointer rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
             >
               {currentPaymentMethod
                 ? "Update Payment Method"

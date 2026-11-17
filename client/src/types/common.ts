@@ -115,6 +115,7 @@ export interface FormFieldsProps<T extends FieldValues> {
   setValue?: UseFormSetValue<T>;
   control: Control<T>;
   containerClass?: string;
+  isDark: boolean
 }
 
 export interface OptionItem {
@@ -146,6 +147,8 @@ export type SessionStatus =
   | "PENDING";
 
 export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
+
+export type ThemeMode = "DARK" | "LIGHT"
 
 export type UpdateMethods = "RESTORE" | "DELETE" | "BLOCK";
 
@@ -206,3 +209,6 @@ export type MutateFn<T> = UseMutateFunction<
   void
 >;
 
+export interface SkeletonCardProps {
+  isDark: boolean;
+}

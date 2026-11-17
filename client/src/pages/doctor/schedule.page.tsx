@@ -102,7 +102,7 @@ const SchedulePage = () => {
               <select
                 value={selectedClinicId ?? ""}
                 onChange={(e) => handleClinicChange(e.target.value)}
-                className=" h-10 w-full appearance-none rounded-lg border border-white/10 bg-white/[0.04] pl-10 pr-9 text-sm font-medium text-white outline-none transition-all hover:border-white/20 focus:border-[#1DC465]/50 focus:ring-2 focus:ring-[#1DC465]/10 "
+                className=" h-10 w-full appearance-none rounded-lg border border-white/10 bg-white/[0.04] pl-10 pr-9 text-sm font-medium text-white outline-none transition-all hover:border-white/20 focus:border-primary/50 focus:ring-2 focus:ring-primary/10 "
               >
                 {" "}
                 {doctorDetails?.doctorClinicDetails
@@ -118,7 +118,7 @@ const SchedulePage = () => {
                     </option>
                   ))}{" "}
               </select>{" "}
-              <MapPin className=" pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1DC465] " />{" "}
+              <MapPin className=" pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-primary " />{" "}
               <ChevronDown className=" pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40 transition-transform group-focus-within:rotate-180 " />{" "}
             </div>{" "}
             {selectedClinic && (
@@ -134,9 +134,9 @@ const SchedulePage = () => {
       </div>
 
       {selectedClinic && (
-        <div className="flex items-center gap-3 rounded-xl border border-[#1DC465]/10 bg-[#1DC465]/[0.04] px-4 py-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1DC465]/10">
-            <MapPin className="h-4 w-4 text-[#1DC465]" />
+        <div className="flex items-center gap-3 rounded-xl border border-primary/10 bg-primary/[0.04] px-4 py-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <MapPin className="h-4 w-4 text-primary" />
           </div>
 
           <div className="min-w-0">
@@ -228,9 +228,13 @@ const SchedulePage = () => {
                   doctorDetails?.doctorClinicDetails.find(
                     (dc) => dc.clinic?.id === selectedClinicId,
                   ) ?? null;
-                if (!doctorDetails?.doctor?.id || !doctorClinic?.clinic?.id || !doctorClinic.id) {
+                if (
+                  !doctorDetails?.doctor?.id ||
+                  !doctorClinic?.clinic?.id ||
+                  !doctorClinic.id
+                ) {
                   toast.error("Doctor or clinic details are missing");
-                  return
+                  return;
                 }
 
                 if (doctorClinic && previewSlots.length > 0 && doctorDetails) {

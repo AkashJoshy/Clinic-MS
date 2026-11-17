@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AlertTriangle, X, ShieldAlert, Calendar } from "lucide-react";
+
 import type { DoctorSubscription } from "@/types/doctor-subscription";
 
 export type CancellationReason =
@@ -159,7 +160,7 @@ export const SubscriptionCancelModal: React.FC<
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer rounded-xl bg-[#1dc465] px-4 py-2 text-xs font-bold text-[#07130c] transition-colors hover:bg-[#19b85b]"
+              className="cursor-pointer rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Close
             </button>
@@ -246,7 +247,7 @@ export const SubscriptionCancelModal: React.FC<
                     value={value}
                     checked={selectedReason === value}
                     onChange={() => setSelectedReason(value)}
-                    className="accent-[#1dc465]"
+                    className="accent-primary"
                   />
                   <span className="text-xs text-gray-300">{label}</span>
                 </label>
@@ -269,7 +270,7 @@ export const SubscriptionCancelModal: React.FC<
               maxLength={150}
               rows={3}
               placeholder="Tell us more (optional)"
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/[0.02] p-3 text-xs text-gray-300 outline-none transition-colors placeholder:text-gray-500 focus:border-[#1dc465]"
+              className="w-full resize-none rounded-lg border border-white/10 bg-white/[0.02] p-3 text-xs text-gray-300 outline-none transition-colors placeholder:text-gray-500 focus:border-primary"
             />
             <p className="text-right text-[10px] text-gray-500">
               {message.length}/150
@@ -280,7 +281,7 @@ export const SubscriptionCancelModal: React.FC<
           {subscription.autoRenew && (
             <div className="space-y-2 rounded-xl border border-white/10 bg-[#09101a] p-3.5">
               <div className="flex items-center gap-2 font-semibold text-white">
-                <Calendar size={14} className="text-[#1dc465]" />
+                <Calendar size={14} className="text-primary" />
                 <span>Prefer to turn off auto-renewal?</span>
               </div>
               <p className="text-[11px] text-[#8b9ab0]">
@@ -290,7 +291,7 @@ export const SubscriptionCancelModal: React.FC<
               <button
                 type="button"
                 onClick={onDisableAutoRenewInstead}
-                className="mt-1 w-full cursor-pointer rounded-lg border border-[#1dc465]/40 bg-[#1dc465]/10 py-1.5 text-xs font-semibold text-[#1dc465] transition-colors hover:bg-[#1dc465]/20"
+                className="mt-1 w-full cursor-pointer rounded-lg border border-primary/40 bg-primary/10 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
               >
                 Turn Off Auto-Renew Instead
               </button>

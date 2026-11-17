@@ -10,6 +10,7 @@ import type {
   RazorpayOptions,
   RazorpayPaymentResponse,
 } from "@/types/razorpay";
+import type { RouteRoleProps } from "@/types/auth";
 
 export const getAllDepartments = async () => {
   try {
@@ -145,6 +146,25 @@ export const verifyPaymentMutation = async (
       { orderDetails, status },
       { authRole },
     );
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    throw {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const fetchPlatformData = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.COMMON.PLATFORM_DATA, {
+      // authRole: ownerRole,
+    });
 
     return res.data;
   } catch (error: any) {

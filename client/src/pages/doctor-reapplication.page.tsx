@@ -31,6 +31,7 @@ import { useMutate } from "@/hooks/use-mutate.hook";
 import DoctorPublicHeader from "@/components/layout/doctor-public-header.layout";
 import PublicHeader from "@/components/layout/public-header.layout";
 import { useLocationOptions } from "@/hooks/use-location-options.hook";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 
 export default function DoctorReapplication() {
   const [searchParams] = useSearchParams();
@@ -76,6 +77,8 @@ export default function DoctorReapplication() {
       errors: relevantErrors,
     };
   };
+
+  const { websiteName } = usePlatformConfig();
 
   const {
     register,
@@ -388,7 +391,7 @@ export default function DoctorReapplication() {
   if (status === "submitted") {
     return (
       <div className="min-h-screen bg-linear-to-br from-primary-50 via-white to-cyan-50 flex flex-col">
-        <PublicHeader />
+        <PublicHeader websiteName={websiteName} />
         <div className="flex-1 mt-10 flex items-center justify-center px-4 py-10">
           <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl shadow-gray-100 p-8 text-center border border-gray-100">
             <div className="mx-auto mb-2 h-14 w-14 rounded-full bg-emerald-50 flex items-center justify-center">
@@ -421,7 +424,7 @@ export default function DoctorReapplication() {
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-gray-100 p-6 sm:p-10 border border-gray-100">
       <div className="mx-auto max-w-3xl space-y-8 px-4 sm:px-6 lg:px-8">
-        <DoctorPublicHeader />
+        <DoctorPublicHeader websiteName={websiteName} />
         <div className="space-y-4 border-b mt-15 border-gray-100 pb-6">
           {totalToUpdate > 0 && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">

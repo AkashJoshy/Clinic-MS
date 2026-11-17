@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import type { Patient, PatientProfile } from "@/types/patient";
 import AddProfileModal from "./add-profile-modal.shared";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 
 export function Header() {
   const patients = useAuthStore((state) => state.patients);
@@ -20,6 +21,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [isAddOpen, setAddOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { websiteName } = usePlatformConfig();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -48,7 +50,7 @@ export function Header() {
           <Activity size={18} className="text-white" />
         </div>
         <h1 className="text-white font-semibold">
-          {import.meta.env.VITE_WEBSITE_NAME}
+          {websiteName}
         </h1>
       </div>
 

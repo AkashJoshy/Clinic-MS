@@ -1,11 +1,13 @@
 import api from "@/api/interceptors";
-import type { DepartmentData, DepartmentDto } from "@/types/admin";
+import type {
+  DepartmentData,
+  DepartmentDto,
+  UpdatePlatformSettingsData,
+} from "@/types/admin";
 import type {
   DoctorRejectDto,
   DoctorStatusUpdateDto,
   DocumentDto,
-  Subscription,
-  SubscriptionDetails,
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
 import type { DeletePatientDto } from "@/types/patient";
@@ -13,7 +15,6 @@ import type { UpdateMethods } from "@/types/common";
 import { ROLE_VALUES } from "@/constants/role.constants";
 import type {
   BaseSubscriptionData,
-  PlanStatus,
   SubscriptionPlan,
   UpdateSubscriptionStatusData,
 } from "@/types/subscription";
@@ -371,17 +372,61 @@ export const editSubscriptionPlan = async (
   }
 };
 
-export const updateSubscriptionPlanStatus = async (subscriptionData: UpdateSubscriptionStatusData) => {
+export const updateSubscriptionPlanStatus = async (
+  subscriptionData: UpdateSubscriptionStatusData,
+) => {
   try {
     const { id, status } = subscriptionData;
     console.log(`Subscription Data`);
     console.log(subscriptionData);
-    
+
     const res = await api.patch(
       ENDPOINTS.ADMIN.UPDATE_SUBSCRIPTION_STATUS(id),
       {
-        status
+        status,
       },
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getPlatformSettings = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.PLATFORM_SETTINGS, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updatePlatformSettings = async (
+  settingsData: UpdatePlatformSettingsData,
+) => {
+  try {
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.PLATFORM_SETTINGS,
+      settingsData,
       {
         authRole: ROLE_VALUES.lower.ADMIN,
       },

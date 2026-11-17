@@ -19,25 +19,23 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
     startTime: "09:00",
     endTime: "17:00",
     mode: "ONLINE" as ServiceMode,
-  })
+  });
 
   const days = schedule;
 
-  const {
-    validateAndAddShift,
-    deleteLastShift,
-    errorMsg,
-    setErrorMsg
-  } = useWeeklySchedule({
-    schedule,
-    onChange,
-    selectedClinicId
-  })
+  const { validateAndAddShift, deleteLastShift, errorMsg, setErrorMsg } =
+    useWeeklySchedule({
+      schedule,
+      onChange,
+      selectedClinicId,
+    });
 
   return (
     <div className="w-full bg-[#0d1a27] border border-white/10 rounded-lg p-3 xxs:p-4 xs:p-5">
       <div className="flex items-center mb-6">
-        <NumberBadge number={1} />
+        <div className="[&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
+          <NumberBadge number={1} />
+        </div>
         <h2 className="text-xl font-semibold text-white ml-2">
           Weekly Schedule
         </h2>
@@ -51,67 +49,56 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
               );
               const shifts = daySchedule?.shifts ?? [];
               const hasShifts = shifts.length > 0;
+
               return (
                 <div key={day.dayOfWeek} className="flex flex-col gap-3">
-                  {" "}
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2 min-w-0">
-                    {" "}
                     <span className="text-sm font-medium text-white shrink-0 sm:w-14 md:w-16 sm:pt-2">
-                      {" "}
-                      {day.dayOfWeek.toUpperCase().slice(0, 3)}{" "}
-                    </span>{" "}
+                      {day.dayOfWeek.toUpperCase().slice(0, 3)}
+                    </span>
+
                     <div className="flex-1 min-w-0">
-                      {" "}
                       {!hasShifts ? (
                         <span className="block w-full text-red-400 border border-red-400/50 p-2 rounded-[10px] text-xs sm:text-sm text-center">
-                          {" "}
-                          DAY OFF{" "}
+                          DAY OFF
                         </span>
                       ) : (
                         <div className="flex flex-col gap-2">
-                          {" "}
                           {shifts.map((shift) => {
                             const isOnline = shift.mode === "ONLINE";
                             const isOffline = shift.mode === "OFFLINE";
+
                             return (
                               <div
                                 key={shift.id}
                                 className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 w-full min-w-0"
                               >
-                                {" "}
                                 <div className="flex flex-1 items-center gap-2 min-w-0">
-                                  {" "}
-                                  {/* Start Time */}{" "}
                                   <span className="shrink-0 text-sm font-medium text-white">
-                                    {" "}
-                                    {shift.startTime}{" "}
-                                  </span>{" "}
-                                  {/* Mode Indicator */}{" "}
+                                    {shift.startTime}
+                                  </span>
+
                                   <div className="h-1.5 flex-1 min-w-3 overflow-hidden rounded-full">
-                                    {" "}
                                     {isOnline && (
                                       <div className="h-full w-full bg-blue-500" />
-                                    )}{" "}
+                                    )}
                                     {isOffline && (
                                       <div className="h-full w-full bg-green-500" />
-                                    )}{" "}
-                                  </div>{" "}
-                                  {/* End Time */}{" "}
+                                    )}
+                                  </div>
+
                                   <span className="shrink-0 text-sm font-medium text-white">
-                                    {" "}
-                                    {shift.endTime}{" "}
-                                  </span>{" "}
-                                </div>{" "}
+                                    {shift.endTime}
+                                  </span>
+                                </div>
                               </div>
                             );
-                          })}{" "}
+                          })}
                         </div>
-                      )}{" "}
-                    </div>{" "}
-                    {/* Actions */}{" "}
+                      )}
+                    </div>
+
                     <div className="flex sm:flex-col items-center justify-end sm:justify-start gap-1 shrink-0">
-                      {" "}
-                      {/* Add Shift */}{" "}
                       <button
                         onClick={() => {
                           setInlineFormDay(
@@ -121,34 +108,27 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                           );
                           setErrorMsg("");
                         }}
-                        className="p-2 rounded-full hover:bg-white/10 text-[#1dc465]"
+                        className="p-2 rounded-full hover:bg-white/10 text-primary"
                         title="Add shift"
                       >
-                        {" "}
-                        <Plus size={18} />{" "}
-                      </button>{" "}
+                        <Plus size={18} />
+                      </button>
+
                       <button
                         onClick={() => deleteLastShift(day.dayOfWeek)}
                         disabled={!hasShifts}
                         title={hasShifts ? "Clear day" : "No shifts to delete"}
                         className={`p-2 rounded-full transition-colors ${hasShifts ? "hover:bg-white/10 text-[#8b9ab0] hover:text-red-400" : "text-white/10 cursor-not-allowed"}`}
                       >
-                        {" "}
-                        <Trash2 size={16} />{" "}
-                      </button>{" "}
-                    </div>{" "}
-                  </div>{" "}
-                  {/* Inline Add Shift Form */}{" "}
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+
                   {inlineFormDay === day.dayOfWeek && (
                     <div className="mt-2 w-full p-3 bg-white/5 rounded border border-white/10 flex flex-col sm:flex-row flex-wrap gap-4 sm:items-end">
-                      {" "}
-                      {/* Start Time */}{" "}
                       <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        {" "}
-                        <label className="text-xs text-white">
-                          {" "}
-                          Start Time{" "}
-                        </label>{" "}
+                        <label className="text-xs text-white">Start Time</label>
                         <input
                           type="time"
                           value={newShift.startTime}
@@ -159,15 +139,11 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                             })
                           }
                           className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
-                        />{" "}
-                      </div>{" "}
-                      {/* End Time */}{" "}
+                        />
+                      </div>
+
                       <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        {" "}
-                        <label className="text-xs text-white">
-                          {" "}
-                          End Time{" "}
-                        </label>{" "}
+                        <label className="text-xs text-white">End Time</label>
                         <input
                           type="time"
                           value={newShift.endTime}
@@ -178,15 +154,11 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                             })
                           }
                           className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
-                        />{" "}
-                      </div>{" "}
-                      {/* Mode */}{" "}
+                        />
+                      </div>
+
                       <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        {" "}
-                        <label className="text-xs text-white">
-                          {" "}
-                          Mode{" "}
-                        </label>{" "}
+                        <label className="text-xs text-white">Mode</label>
                         <select
                           value={newShift.mode}
                           onChange={(e) =>
@@ -197,20 +169,18 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                           }
                           className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
                         >
-                          {" "}
-                          <option value="ONLINE">Online</option>{" "}
-                          <option value="OFFLINE">Offline</option>{" "}
-                        </select>{" "}
-                      </div>{" "}
+                          <option value="ONLINE">Online</option>
+                          <option value="OFFLINE">Offline</option>
+                        </select>
+                      </div>
+
                       <button
-                        onClick={() => {
-                          setInlineFormDay(null);
-                        }}
+                        onClick={() => setInlineFormDay(null)}
                         className="bg-gray-400 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-500 cursor-pointer w-full sm:w-auto"
                       >
-                        {" "}
-                        Cancel{" "}
-                      </button>{" "}
+                        Cancel
+                      </button>
+
                       <button
                         onClick={() => {
                           if (
@@ -224,25 +194,26 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                             setInlineFormDay(null);
                           }
                         }}
-                        className="bg-[#1dc465] text-[#0d1a27] px-4 py-1.5 rounded text-sm font-medium hover:bg-[#19a955] cursor-pointer w-full sm:w-auto "
+                        className="bg-primary text-primary-foreground px-4 py-1.5 rounded text-sm font-medium hover:bg-primary/90 cursor-pointer w-full sm:w-auto"
                       >
-                        {" "}
-                        Save{" "}
-                      </button>{" "}
+                        Save
+                      </button>
+
                       {errorMsg && (
                         <p className="text-red-400 text-xs w-full mt-1">
-                          {" "}
-                          {errorMsg}{" "}
+                          {errorMsg}
                         </p>
-                      )}{" "}
+                      )}
                     </div>
-                  )}{" "}
+                  )}
                 </div>
               );
             })
           : ""}
       </div>
+
       {error && <h4 className="text-red-600">{error?.message}</h4>}
+
       <div className="mt-6">
         {!showGlobalForm ? (
           <button
@@ -250,7 +221,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
               setShowGlobalForm(true);
               setErrorMsg("");
             }}
-            className="w-full py-3 border border-dashed border-[#1dc465]/50 text-[#1dc465] rounded-lg hover:bg-[#1dc465]/10 flex items-center justify-center gap-2"
+            className="w-full py-3 border border-dashed border-primary/50 text-primary rounded-lg hover:bg-primary/10 flex items-center justify-center gap-2"
           >
             <Plus size={18} /> Add Shift
           </button>
@@ -271,7 +242,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                       day: e.target.value.toUpperCase(),
                     })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-[#1dc465]/60 focus:ring-1 focus:ring-[#1dc465]/40 transition-colors"
+                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors"
                 >
                   {schedule.map((d) => (
                     <option key={d.dayOfWeek} value={d.dayOfWeek}>
@@ -292,7 +263,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                   onChange={(e) =>
                     setNewShift({ ...newShift, startTime: e.target.value })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-[#1dc465]/60 focus:ring-1 focus:ring-[#1dc465]/40 transition-colors [color-scheme:dark]"
+                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors [color-scheme:dark]"
                 />
               </div>
 
@@ -306,7 +277,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                   onChange={(e) =>
                     setNewShift({ ...newShift, endTime: e.target.value })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-[#1dc465]/60 focus:ring-1 focus:ring-[#1dc465]/40 transition-colors [color-scheme:dark]"
+                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors [color-scheme:dark]"
                 />
               </div>
 
@@ -322,7 +293,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                       mode: e.target.value as ServiceMode,
                     })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-[#1dc465]/60 focus:ring-1 focus:ring-[#1dc465]/40 transition-colors"
+                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors"
                 >
                   <option value="ONLINE">Online</option>
                   <option value="OFFLINE">Offline</option>
@@ -356,7 +327,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                     setShowGlobalForm(false);
                   }
                 }}
-                className="bg-[#1dc465] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#19a955] transition-colors"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 Add Shift
               </button>

@@ -13,4 +13,5 @@ export const MODEL_NAMES = {
   SUBSCRIPTION_PLAN: "SubscriptionPlan",
   WALLET_TRANSACTION: "WalletTransaction",
   DOCTOR_REAPPLICATION: "DoctorReapplication",
+  PLATFORM_SETTINGS: "PlatformSettings"
 } as const;

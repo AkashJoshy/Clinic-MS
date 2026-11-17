@@ -21,14 +21,14 @@ export const SubscriptionUsageMetrics: React.FC<
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-[#1dc465]" />
+          <TrendingUp size={16} className="text-primary" />
           <h3 className="text-sm font-bold tracking-tight text-white uppercase">
             Resource Quota & Usage
           </h3>
         </div>
 
         <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[#0c141d]/80 p-6 sm:p-8">
-          <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#1dc465]/5 blur-3xl" />
+          <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
 
           <div className="relative z-10 flex flex-col items-center justify-center text-center">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5">
@@ -60,9 +60,9 @@ export const SubscriptionUsageMetrics: React.FC<
       title: "Patient Consultations",
       icon: Users,
       metric: usage.consultations,
-      barClass: "bg-[#1dc465]",
-      textClass: "text-[#1dc465]",
-      bgClass: "bg-[#1dc465]/10",
+      barClass: "bg-primary",
+      textClass: "text-primary",
+      bgClass: "bg-primary/10",
       description: "Booked & completed clinic sessions",
     },
     {
@@ -101,7 +101,7 @@ export const SubscriptionUsageMetrics: React.FC<
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-[#1dc465]" />
+          <TrendingUp size={16} className="text-primary" />
           <h3 className="text-sm font-bold tracking-tight text-white uppercase">
             Resource Quota & Usage
           </h3>

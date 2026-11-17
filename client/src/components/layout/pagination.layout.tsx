@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 
 interface PaginationProps {
@@ -8,7 +7,7 @@ interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
-  colorCode: "BLACK" | "WHITE";
+  isDark: boolean;
 }
 
 export const Pagination = ({
@@ -17,11 +16,9 @@ export const Pagination = ({
   totalItems,
   itemsPerPage,
   onPageChange,
-  colorCode,
+  isDark,
 }: PaginationProps) => {
   if (totalPages < 1) return null;
-
-  const isBlack = colorCode === "BLACK";
 
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -58,52 +55,49 @@ export const Pagination = ({
 
   const pages = getPageNumbers();
 
-  const borderClass = isBlack
-    ? "border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300"
-    : "border-white/10 text-[#8b9ab0] hover:bg-white/5 hover:border-white/20";
+  const theme = {
+    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
 
-  const disabledClass = isBlack
-    ? "border-gray-100 text-gray-300 cursor-not-allowed"
-    : "border-white/5 text-[#4a5568] cursor-not-allowed";
+    // Result numbers adapt to the selected theme
+    resultCount: isDark ? "text-white" : "text-black",
+
+    button: isDark
+      ? "border-white/10 text-[#8b9ab0] hover:bg-white/5 hover:border-white/20 hover:text-white"
+      : "border-gray-200 text-gray-600 hover:bg-gray-100 hover:border-gray-300 hover:text-gray-900",
+
+    disabled: isDark
+      ? "border-white/5 text-[#4a5568] cursor-not-allowed"
+      : "border-gray-100 text-gray-300 cursor-not-allowed",
+
+    ellipsis: isDark ? "text-[#4a5568]" : "text-gray-400",
+
+    // Active page number always stays white
+    active: "bg-[#1dc465] border-[#1dc465] !text-white",
+  };
+
+  const isPreviousDisabled = currentPage <= 1;
+  const isNextDisabled = currentPage >= totalPages;
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-      <p
-        className={cn(
-          "text-sm",
-          isBlack ? "text-slate-500" : "text-[#8b9ab0]"
-        )}
-      >
+      {/* Results information */}
+      <p className={cn("text-sm", theme.description)}>
         Showing{" "}
-        <span
-          className={cn(
-            "font-medium",
-            isBlack ? "text-black" : "text-white"
-          )}
-        >
+        <span className={cn("font-semibold", theme.resultCount)}>
           {startItem}
         </span>{" "}
         –{" "}
-        <span
-          className={cn(
-            "font-medium",
-            isBlack ? "text-black" : "text-white"
-          )}
-        >
+        <span className={cn("font-semibold", theme.resultCount)}>
           {endItem}
         </span>{" "}
         of{" "}
-        <span
-          className={cn(
-            "font-medium",
-            isBlack ? "text-black" : "text-white"
-          )}
-        >
+        <span className={cn("font-semibold", theme.resultCount)}>
           {totalItems}
         </span>{" "}
         results
       </p>
 
+      {/* Pagination controls */}
       <nav
         aria-label="Pagination"
         className="flex items-center justify-center gap-1"
@@ -111,11 +105,11 @@ export const Pagination = ({
         <button
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          disabled={isPreviousDisabled}
           aria-label="Previous page"
           className={cn(
-            "flex items-center gap-1 px-3 h-8 rounded-md text-xs font-medium border transition-colors",
-            currentPage === 1 ? disabledClass : borderClass
+            "flex items-center gap-1 px-3 h-8 rounded-lg text-xs font-medium border transition-all duration-200",
+            isPreviousDisabled ? theme.disabled : theme.button,
           )}
         >
           <ChevronLeft size={14} />
@@ -127,10 +121,7 @@ export const Pagination = ({
             page === "..." ? (
               <span
                 key={`ellipsis-${index}`}
-                className={cn(
-                  "px-2 text-xs",
-                  isBlack ? "text-gray-400" : "text-[#4a5568]"
-                )}
+                className={cn("px-2 text-xs select-none", theme.ellipsis)}
               >
                 …
               </span>
@@ -140,36 +131,31 @@ export const Pagination = ({
                 key={page}
                 onClick={() => onPageChange(page)}
                 aria-label={`Page ${page}`}
-                aria-current={
-                  currentPage === page ? "page" : undefined
-                }
+                aria-current={currentPage === page ? "page" : undefined}
                 className={cn(
-                  "w-8 h-8 rounded-md text-xs font-medium border transition-colors cursor-pointer",
-                  currentPage === page
-                    ? "bg-[#1dc465] border-[#1dc465] text-[#080d14]"
-                    : borderClass
+                  "w-8 h-8 rounded-lg text-xs font-semibold border transition-all duration-200",
+                  currentPage === page ? theme.active : theme.button,
                 )}
               >
                 {page}
               </button>
-            )
+            ),
           )}
         </div>
 
         <button
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          disabled={isNextDisabled}
           aria-label="Next page"
           className={cn(
-            "flex items-center gap-1 px-3 h-8 rounded-md text-xs font-medium border transition-colors",
-            currentPage === totalPages ? disabledClass : borderClass
+            "flex items-center gap-1 px-3 h-8 rounded-lg text-xs font-medium border transition-all duration-200",
+            isNextDisabled ? theme.disabled : theme.button,
           )}
         >
           <span className="hidden sm:inline">Next</span>
           <ChevronRight size={14} />
         </button>
-
       </nav>
     </div>
   );

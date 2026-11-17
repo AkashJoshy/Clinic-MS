@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   PlusCircle,
@@ -16,6 +15,7 @@ interface WalletQuickActionsProps {
   onViewTransactions: () => void;
   onOpenStatements: () => void;
   onOpenPaymentMethods: () => void;
+  isDark?: boolean;
 }
 
 export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
@@ -24,6 +24,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
   onViewTransactions,
   onOpenStatements,
   onOpenPaymentMethods,
+  isDark = false,
 }) => {
   const actions = [
     {
@@ -70,21 +71,34 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
 
   return (
     <section
-      className="
+      className={`
         flex h-full min-w-0 flex-col gap-4
-        rounded-2xl border border-slate-200/80
-        bg-white p-4 shadow-xs
-        sm:gap-5 sm:p-5
-        lg:p-6
-      "
+        rounded-2xl border p-4 shadow-xs
+        sm:gap-5 sm:p-5 lg:p-6
+        ${
+          isDark
+            ? "border-white/10 bg-[#0D1A27]"
+            : "border-slate-200/80 bg-white"
+        }
+      `}
     >
       {/* Header */}
       <div className="min-w-0">
-        <h2 className="text-base font-bold text-[#0D1A27] sm:text-lg">
+        <h2
+          className={`
+            text-base font-bold sm:text-lg
+            ${isDark ? "text-white" : "text-[#0D1A27]"}
+          `}
+        >
           Quick Actions
         </h2>
 
-        <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+        <p
+          className={`
+            mt-0.5 text-xs leading-relaxed
+            ${isDark ? "text-slate-400" : "text-slate-500"}
+          `}
+        >
           Execute fast operations or configure wallet tools.
         </p>
       </div>
@@ -112,12 +126,14 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
                 p-2.5 text-center transition-all
                 active:scale-[0.98]
                 focus-visible:outline-none
-                focus-visible:ring-2 focus-visible:ring-emerald-500
+                focus-visible:ring-2 focus-visible:ring-primary
                 sm:p-3
                 ${
                   action.isPrimary
-                    ? "border-[#1DC465]/30 bg-[#1DC465]/10 hover:bg-[#1DC465]/20"
-                    : "border-slate-200/80 bg-slate-50/70 hover:border-slate-300 hover:bg-slate-100"
+                    ? "border-primary/30 bg-primary/10 hover:bg-primary/20"
+                    : isDark
+                      ? "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                      : "border-slate-200/80 bg-slate-50/70 hover:border-slate-300 hover:bg-slate-100"
                 }
               `}
             >
@@ -128,8 +144,10 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
                   group-hover:scale-105 sm:h-10 sm:w-10
                   ${
                     action.isPrimary
-                      ? "bg-[#1DC465] text-white shadow-xs"
-                      : "border border-slate-200 bg-white text-slate-600 shadow-2xs"
+                      ? "bg-primary text-primary-foreground shadow-xs"
+                      : isDark
+                        ? "border border-white/10 bg-white/5 text-slate-300 shadow-2xs"
+                        : "border border-slate-200 bg-white text-slate-600 shadow-2xs"
                   }
                 `}
               >
@@ -137,19 +155,21 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
               </span>
 
               <span
-                className="
+                className={`
                   max-w-full break-words text-xs font-bold
-                  leading-tight text-[#0D1A27]
-                "
+                  leading-tight
+                  ${isDark ? "text-white" : "text-[#0D1A27]"}
+                `}
               >
                 {action.label}
               </span>
 
               <span
-                className="
+                className={`
                   mt-1 max-w-full break-words
-                  text-[10px] leading-relaxed text-slate-500
-                "
+                  text-[10px] leading-relaxed
+                  ${isDark ? "text-slate-400" : "text-slate-500"}
+                `}
               >
                 {action.desc}
               </span>
@@ -160,45 +180,72 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
 
       {/* Linked Payout Summary */}
       <div
-        className="
+        className={`
           mt-auto flex min-w-0 flex-col gap-4
-          rounded-xl border border-slate-200/80
-          bg-slate-50 p-3
+          rounded-xl border p-3
           sm:p-4
-        "
+          ${
+            isDark
+              ? "border-white/10 bg-white/5"
+              : "border-slate-200/80 bg-slate-50"
+          }
+        `}
       >
         {/* Bank Details */}
         <div className="flex min-w-0 items-start gap-2.5 sm:gap-3">
           <div
-            className="
+            className={`
               flex h-9 w-9 shrink-0 items-center justify-center
-              rounded-lg border border-blue-200
-              bg-blue-100 text-blue-700
-            "
+              rounded-lg border
+              ${
+                isDark
+                  ? "border-blue-500/20 bg-blue-500/10 text-blue-400"
+                  : "border-blue-200 bg-blue-100 text-blue-700"
+              }
+            `}
           >
             <Building2 className="h-4 w-4" />
           </div>
 
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-              <span className="break-words text-xs font-semibold leading-relaxed text-slate-800">
+              <span
+                className={`
+                  break-words text-xs font-semibold leading-relaxed
+                  ${isDark ? "text-slate-200" : "text-slate-800"}
+                `}
+              >
                 Linked Payout: HDFC Bank (•••• 9842)
               </span>
 
               <span
-                className="
+                className={`
                   inline-flex shrink-0 items-center gap-1
-                  rounded border border-emerald-200
-                  bg-emerald-100 px-1.5 py-0.5
-                  text-[10px] font-medium text-emerald-800
-                "
+                  rounded border px-1.5 py-0.5
+                  text-[10px] font-medium
+                  ${
+                    isDark
+                      ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
+                      : "border-emerald-200 bg-emerald-100 text-emerald-800"
+                  }
+                `}
               >
-                <ShieldCheck className="h-3 w-3 text-emerald-600" />
+                <ShieldCheck
+                  className={`
+                    h-3 w-3
+                    ${isDark ? "text-emerald-400" : "text-emerald-600"}
+                  `}
+                />
                 Verified
               </span>
             </div>
 
-            <p className="mt-1 break-words text-[11px] leading-relaxed text-slate-500">
+            <p
+              className={`
+                mt-1 break-words text-[11px] leading-relaxed
+                ${isDark ? "text-slate-400" : "text-slate-500"}
+              `}
+            >
               IFSC: HDFC0001245
               <span className="mx-1">•</span>
               Auto-settlement active
@@ -208,28 +255,58 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
 
         {/* Limits */}
         <div
-          className="
+          className={`
             grid grid-cols-2 gap-3
-            border-t border-slate-200 pt-3
-            text-[11px] text-slate-500
-          "
+            border-t pt-3
+            text-[11px]
+            ${
+              isDark
+                ? "border-white/10 text-slate-400"
+                : "border-slate-200 text-slate-500"
+            }
+          `}
         >
           <div className="min-w-0">
-            <span className="block leading-relaxed text-slate-400">
+            <span
+              className={`
+                block leading-relaxed
+                ${isDark ? "text-slate-500" : "text-slate-400"}
+              `}
+            >
               Daily Limit
             </span>
 
-            <span className="mt-0.5 block break-words font-semibold text-slate-700 sm:text-xs">
+            <span
+              className={`
+                mt-0.5 block break-words font-semibold sm:text-xs
+                ${isDark ? "text-slate-200" : "text-slate-700"}
+              `}
+            >
               ₹1,00,000
             </span>
           </div>
 
-          <div className="min-w-0 border-l border-slate-200 pl-3">
-            <span className="block leading-relaxed text-slate-400">
+          <div
+            className={`
+              min-w-0 border-l pl-3
+              ${isDark ? "border-white/10" : "border-slate-200"}
+            `}
+          >
+            <span
+              className={`
+                block leading-relaxed
+                ${isDark ? "text-slate-500" : "text-slate-400"}
+              `}
+            >
               Per Txn Limit
             </span>
 
-            <span className="mt-0.5 block break-words font-semibold text-slate-700 sm:text-xs">
+            <span
+              className={`
+                mt-0.5 block break-words font-semibold sm:text-xs
+                ${isDark ? "text-slate-200" : "text-slate-700"}
+              `}
+            >
               ₹50,000
             </span>
           </div>

@@ -1,15 +1,16 @@
 import type { Doctor } from "../../domain/entities/doctor.entity.ts";
+import type { PlatformSettings } from "../../domain/entities/platform-settings.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
 import type { DocumentField } from "../../domain/types/admin.types.ts";
 import type {
+  BusinessSettingsProps,
+  GeneralSettingsProps,
+  SystemSettingsProps,
+} from "../../domain/types/platform-settings.types.ts";
+import type {
   ApprovalStatus,
-  DayOfWeek,
   EntityStatus,
-  Gender,
-  ImageData,
-  ServiceMode,
 } from "../../domain/types/shared.types.ts";
-import type { UpdateDto } from "./auth.dto.ts";
 import type {
   AdminDoctorDetails,
   DoctorProfileResponseDto,
@@ -50,7 +51,6 @@ export type DepartmentStatusResponseDto = {
   status: EntityStatus;
 } & MessageDto;
 
-
 export interface VerifyDocumentDto {
   id: string;
   action: "VERIFY" | "REJECT";
@@ -58,3 +58,27 @@ export interface VerifyDocumentDto {
   url: string;
 }
 
+export type BasePlatformSettingsDto = Omit<PlatformSettings, "updateGeneral" | "updateBusiness" | "updateSystem">;
+
+export type SafePlatformSettingsDto = Omit<
+  BasePlatformSettingsDto,
+  "createdBy" | "createdAt" | "updatedBy" | "updatedAt"
+>;
+
+export type PlatformSettingsResponseDto = SafePlatformSettingsDto;
+
+export type UpdatePlatformSettingsDto =
+  | {
+      selection: "GENERAL";
+      data: GeneralSettingsProps;
+    }
+  | {
+      selection: "BUSINESS";
+      data: BusinessSettingsProps;
+    }
+  | {
+      selection: "SYSTEM";
+      data: SystemSettingsProps;
+    };
+
+export type UpdatePlatformSettingsResponseDto = UpdatePlatformSettingsDto;

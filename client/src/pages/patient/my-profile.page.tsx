@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Camera } from "lucide-react";
+import { Camera, UserRound } from "lucide-react";
 import { useAuthStore } from "@/store";
 import type {
   EmergencyContactDetails,
@@ -29,8 +29,15 @@ import {
 } from "@/constants/patient.constant";
 import PatientInfo from "@/components/shared/patient/profile/patient-info.shared";
 import EmergencyDetails from "@/components/shared/patient/profile/emergency-details.shared";
-import ProfileHeader from "@/components/shared/patient/profile/profile-header.shared";
-import { disabledInputClasses, displayClasses, inputClasses, labelClasses } from "@/data/shared.data";
+import {
+  disabledInputClasses,
+  displayClasses,
+  inputClasses,
+  labelClasses,
+} from "@/data/shared.data";
+import type { RouteRoleProps } from "@/types/auth";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import PatientPageHeader from "@/components/shared/page-header.shared";
 
 const toDateInputValue = (value?: string) => {
   if (!value) return "";
@@ -62,13 +69,17 @@ const MyProfilePage: React.FC = () => {
   );
   const patients = useAuthStore((store) => store.patients);
   const updatePatients = useAuthStore((store) => store.updatePatients);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   const { mutateAsync } = useMutate(updatePatientProfile, {
     onSuccess: () => {
       if (activePatient?.patient?.relation === "Self") {
-        updateUser({
-          fullName: profile.displayName,
-        });
+        updateUser(
+          {
+            fullName: profile.displayName,
+          },
+          user?.role as RouteRoleProps,
+        );
       }
 
       const updatedPatient: PatientProfile = {
@@ -300,20 +311,23 @@ const MyProfilePage: React.FC = () => {
     await profilePictureMutate(formData);
   };
 
-    const avatarSrc =
+  const avatarSrc =
     avatarPreview ||
     activePatient?.patient?.imageUrl?.url ||
     "/" + import.meta.env.VITE_DEFAULT_USER_PROFILE_IMAGE;
 
-    const inputClass = inputClasses(isEditing)
+  const inputClass = inputClasses(isEditing);
 
   return (
     <div className="min-h-screen">
       <div className="space-y-6 bg-white p-6 border border-gray-200 shadow-sm">
-       <ProfileHeader />
+        <PatientPageHeader
+        icon={UserRound}
+        title="My Profile"
+        description="Manage your personal information and account settings."
+      />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
           <div className="lg:col-span-1 space-y-6">
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -350,8 +364,14 @@ const MyProfilePage: React.FC = () => {
                 <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <Camera className="w-8 h-8 text-white" />
                 </div>
-                <div className="absolute bottom-0 right-2 bg-blue-600 p-2 rounded-full text-white shadow-md border-2 border-white pointer-events-none">
-                  <Camera className="w-4 h-4" />
+                <div
+                  className="absolute bottom-0 right-2 p-2 rounded-full shadow-md border-2 border-white pointer-events-none"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  <Camera
+                    className="w-4 h-4"
+                    style={{ color: getContrastTextColor(primaryColor) }}
+                  />
                 </div>
               </div>
               {errors?.profilePicture?.message && (
@@ -365,7 +385,13 @@ const MyProfilePage: React.FC = () => {
                 type="button"
                 disabled={profilePictureIsPending}
                 onClick={handleAvatarClick}
-                className={`px-4 py-2 cursor-pointer bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm w-full ${profilePictureIsPending ? "opacity-50 cursor-not-allowed" : ""} `}
+                className={`px-4 py-2 cursor-pointer font-medium rounded-lg transition-colors duration-200 text-sm w-full ${
+                  profilePictureIsPending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                style={{
+                  backgroundColor: `color-mix(in srgb, ${primaryColor} 10%, white)`,
+                  color: primaryColor,
+                }}
               >
                 {!profilePictureIsPending ? "Change Photo" : "Changing..."}
               </button>

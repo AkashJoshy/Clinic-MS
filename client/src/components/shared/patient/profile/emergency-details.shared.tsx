@@ -1,8 +1,9 @@
 import { RELATIONS } from "@/constants/form-fields.constants";
-import { normalizeGender, normalizeRelation } from "@/helpers/profile.helper";
+import { normalizeRelation } from "@/helpers/profile.helper";
 import type { EmergencyDetailsForm } from "@/schemas/patient/patient.schema";
 import { EmergencyDetailsSchema } from "@/schemas/patient/personal-details.schema";
 import type { EmergencyDetailsProps } from "@/types/patient";
+import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Info, Pencil, Phone, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
   setOriginalEmergencyContact,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   const {
     register,
@@ -56,17 +58,28 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
 
   const UPDATED_RELATIONS = RELATIONS.filter((r) => r !== "");
 
+  const primaryTint = {
+    backgroundColor: `color-mix(in srgb, ${primaryColor} 10%, white)`,
+    color: primaryColor,
+  };
+
+  const primaryButtonStyle = {
+    backgroundColor: primaryColor,
+    color: "#ffffff",
+  };
+
   return (
     <div className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 md:p-8">
       <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
         <h3 className="text-xl font-semibold text-gray-900">
-          EmergencyDetails
+          Emergency Details
         </h3>
         {!isEditing && (
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm"
+            className="flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors duration-200 text-sm"
+            style={primaryTint}
           >
             <Pencil className="w-4 h-4" />
             Edit
@@ -171,7 +184,9 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
                 <option value="">Select Relation</option>
                 {UPDATED_RELATIONS.map((r) => {
                   return (
-                    <option value={r}>{r[0] + r.toLowerCase().slice(1)}</option>
+                    <option value={r} key={r}>
+                      {r[0] + r.toLowerCase().slice(1)}
+                    </option>
                   );
                 })}
               </select>
@@ -199,7 +214,8 @@ const EmergencyDetails: React.FC<EmergencyDetailsProps> = ({
             </button>
             <button
               type="submit"
-              className="px-6 cursor-pointer py-2.5 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto shadow-sm"
+              className="px-6 cursor-pointer py-2.5 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors w-full sm:w-auto shadow-sm"
+              style={primaryButtonStyle}
             >
               Save Changes
             </button>

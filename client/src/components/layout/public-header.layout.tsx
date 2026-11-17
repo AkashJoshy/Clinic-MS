@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { PUBLIC_NAV_LINKS } from "@/constants/navLinks.constant";
 import { Link, useLocation } from "react-router-dom";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
 
-const PublicHeader = () => {
+interface PublicHeaderProps {
+  websiteName: string;
+  primaryColor: string;
+}
+
+const PublicHeader = ({ websiteName, primaryColor }: PublicHeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -34,8 +40,12 @@ const PublicHeader = () => {
           <div className="w-8.5 h-8.5 bg-primary rounded-lg flex items-center justify-center shrink-0">
             <span className="text-white text-lg">✦</span>
           </div>
-          <span className="font-playfair font-bold text-[18px] sm:text-[20px] text-[#1DC465] tracking-[-0.02em]">
-            Healthixia Care
+
+          <span
+            className="font-playfair font-bold text-[18px] sm:text-[20px] tracking-[-0.02em]"
+            style={{ color: primaryColor }}
+          >
+            {websiteName}
           </span>
         </div>
 
@@ -54,20 +64,24 @@ const PublicHeader = () => {
         )}
 
         <div className="hidden md:flex gap-2.5">
-          <Link to={"/login"}>
+          <Link to={!isDoctorRegistration ? "/login" : "/doctor"}>
             <Button size="lg" variant="main">
               Log In
             </Button>
           </Link>
-          <Link to={"/signup"}>
-            <Button
-              size="lg"
-              className="transition-transform duration-150 hover:-translate-y-0.5"
-              variant="default"
-            >
-              Sign Up
-            </Button>
-          </Link>
+
+          {!isDoctorRegistration && (
+            <Link to={"/signup"}>
+              <Button
+                size="lg"
+                style={{ color: getContrastTextColor(primaryColor) }}
+                className="transition-transform duration-150 hover:-translate-y-0.5"
+                variant="default"
+              >
+                Sign Up
+              </Button>
+            </Link>
+          )}
         </div>
 
         <button
@@ -76,13 +90,19 @@ const PublicHeader = () => {
           aria-label="Toggle menu"
         >
           <span
-            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
+            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${
+              menuOpen ? "rotate-45 translate-y-2" : ""
+            }`}
           />
           <span
-            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`}
+            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${
+              menuOpen ? "opacity-0" : ""
+            }`}
           />
           <span
-            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
+            className={`block w-6 h-0.5 bg-[#1a1a2e] transition-all duration-300 ${
+              menuOpen ? "-rotate-45 -translate-y-2" : ""
+            }`}
           />
         </button>
       </nav>
@@ -103,12 +123,15 @@ const PublicHeader = () => {
             </span>
           ))}
 
-        <div className={`flex gap-2.5 ${isDoctorRegistration ? 'mt-0   ' : 'mt-5'}`}>
+        <div
+          className={`flex gap-2.5 ${isDoctorRegistration ? "mt-0" : "mt-5"}`}
+        >
           <Link className="flex-1" to={"/login"}>
             <Button className="w-full" variant="main">
               Log In
             </Button>
           </Link>
+
           <Link className="flex-1" to={"/signup"}>
             <Button
               className="w-full transition-transform duration-150 hover:-translate-y-0.5"

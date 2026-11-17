@@ -222,12 +222,20 @@ type PatientProfCard = Pick<
   };
 };
 
-export type DoctorProfileCardProps = {
+export type PatientProfileCardProps = {
   patient: PatientProfCard;
   isActive: boolean;
   isBlocked: boolean;
   isEmailVerified: boolean;
+  isDark: boolean;
 };
+
+export interface PatientContactCardProps {
+  email?: string;
+  phone?: string;
+  createdAt?: Date;
+  isDark: boolean;
+}
 
 export type PatientPersonalInformation = {
   patient: Pick<
@@ -240,11 +248,13 @@ export type PatientPersonalInformation = {
     | "gender"
   >;
   address: BaseAddress | null;
+  isDark: boolean;
 };
 
 export interface PatientListItemProps {
   patientInfo: PatientBasicInfo;
   setPatientInfo: Dispatch<SetStateAction<PatientBasicInfo[]>>;
+  isDark: boolean
 }
 
 export type PatientDoctorDetailsCard = {

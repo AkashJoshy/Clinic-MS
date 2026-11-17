@@ -1,29 +1,75 @@
+
 import React, { useState } from "react";
-import { Plus, Check, X, Pencil, Trash2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Plus,
+  Check,
+  X,
+  Pencil,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+
 import type { SubscriptionFeature } from "@/types/subscription";
 
 interface SubscriptionFeaturesManagerProps {
   features: SubscriptionFeature[];
   onChange: (features: SubscriptionFeature[]) => void;
   error?: string;
+  isDark: boolean;
 }
 
-export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerProps> = ({
-  features,
-  onChange,
-  error,
-}) => {
+export const SubscriptionFeaturesManager: React.FC<
+  SubscriptionFeaturesManagerProps
+> = ({ features, onChange, error, isDark }) => {
   const [newFeatureText, setNewFeatureText] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
 
+  const theme = {
+    heading: isDark ? "text-white" : "text-gray-900",
+    count: isDark ? "bg-white/10 text-gray-300" : "bg-gray-100 text-gray-600",
+    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+
+    input: isDark
+      ? "bg-[#0a111a] border-white/10 text-white placeholder:text-gray-500"
+      : "bg-white border-gray-200 text-gray-900 placeholder:text-gray-400",
+
+    emptyState: isDark
+      ? "border-white/10 bg-white/[0.02] text-gray-400"
+      : "border-gray-300 bg-gray-50 text-gray-500",
+
+    featureItem: isDark
+      ? "bg-[#0c1622] border-white/8 hover:border-white/15"
+      : "bg-white border-gray-200 hover:border-gray-300",
+
+    editingItem: isDark
+      ? "bg-[#132233] border-primary/50"
+      : "bg-primary/5 border-primary/50",
+
+    featureText: isDark ? "text-gray-200" : "text-gray-800",
+    excludedText: isDark ? "text-gray-400" : "text-gray-500",
+
+    editButton: isDark
+      ? "text-gray-400 hover:text-white hover:bg-white/10"
+      : "text-gray-500 hover:text-gray-900 hover:bg-gray-100",
+
+    cancelEditButton: isDark
+      ? "bg-white/10 text-gray-300 hover:bg-white/20"
+      : "bg-gray-100 text-gray-600 hover:bg-gray-200",
+
+    sectionBorder: isDark ? "border-white/8" : "border-gray-200",
+  };
+
   const handleAddFeature = () => {
     const trimmed = newFeatureText.trim();
+
     if (!trimmed) {
       setInputError("Please enter feature text.");
       return;
     }
+
     if (trimmed.length < 2) {
       setInputError("Feature text must be at least 2 characters.");
       return;
@@ -54,11 +100,13 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
 
   const saveEditing = (id: string) => {
     const trimmed = editingText.trim();
+
     if (!trimmed) return;
 
     const updated = features.map((f) =>
-      f.id === id ? { ...f, name: trimmed } : f
+      f.id === id ? { ...f, name: trimmed } : f,
     );
+
     onChange(updated);
     setEditingId(null);
     setEditingText("");
@@ -71,8 +119,9 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
 
   const toggleIncluded = (id: string) => {
     const updated = features.map((f) =>
-      f.id === id ? { ...f, isIncluded: !f.isIncluded } : f
+      f.id === id ? { ...f, isIncluded: !f.isIncluded } : f,
     );
+
     onChange(updated);
   };
 
@@ -83,19 +132,24 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
 
   return (
     <div className="space-y-3">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold text-white flex items-center gap-2">
+        <label
+          className={`text-sm font-semibold flex items-center gap-2 ${theme.heading}`}
+        >
           <span>Plan Features</span>
-          <span className="px-2 py-0.5 text-xs rounded-full bg-white/10 text-gray-300">
+
+          <span className={`px-2 py-0.5 text-xs rounded-full ${theme.count}`}>
             {features.length}
           </span>
         </label>
-        <span className="text-xs text-[#8b9ab0]">
+
+        <span className={`text-xs ${theme.description}`}>
           Add and edit individual features below
         </span>
       </div>
 
-      {/* Add new feature input */}
+      {/* Add New Feature */}
       <div className="flex gap-2">
         <div className="relative flex-1">
           <input
@@ -107,13 +161,14 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
             }}
             onKeyDown={handleKeyDown}
             placeholder="e.g. Unlimited Video Consultations or EMR integration..."
-            className="w-full px-3.5 py-2.5 bg-[#0a111a] border border-white/10 rounded-xl text-white text-sm placeholder:text-gray-500 focus:border-[#1dc465]/60 focus:ring-1 focus:ring-[#1dc465]/30 outline-none transition-all"
+            className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:border-primary/60 focus:ring-1 focus:ring-primary/30 outline-none transition-all ${theme.input}`}
           />
         </div>
+
         <button
           type="button"
           onClick={handleAddFeature}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-[#1dc465] hover:bg-[#15a050] text-[#080d14] rounded-xl text-sm font-semibold transition-all cursor-pointer shadow-md hover:shadow-lg flex-shrink-0"
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-sm font-semibold transition-all cursor-pointer shadow-md hover:shadow-lg flex-shrink-0"
         >
           <Plus size={16} strokeWidth={2.5} />
           Add Feature
@@ -124,11 +179,14 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
         <p className="text-xs text-rose-400 font-medium">{inputError}</p>
       )}
 
-      {/* Feature list */}
+      {/* Feature List */}
       {features.length === 0 ? (
-        <div className="text-center py-6 px-4 border border-dashed border-white/10 rounded-xl bg-white/[0.02]">
-          <p className="text-xs text-gray-400">
-            No features added yet. Type a feature above and click &quot;Add Feature&quot;.
+        <div
+          className={`text-center py-6 px-4 border border-dashed rounded-xl ${theme.emptyState}`}
+        >
+          <p className="text-xs">
+            No features added yet. Type a feature above and click &quot;Add
+            Feature&quot;.
           </p>
         </div>
       ) : (
@@ -140,9 +198,7 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
               <div
                 key={feature.id}
                 className={`group flex items-center justify-between gap-3 p-2.5 rounded-xl border transition-all ${
-                  isEditing
-                    ? "bg-[#132233] border-[#1dc465]/50 shadow-inner"
-                    : "bg-[#0c1622] border-white/8 hover:border-white/15"
+                  isEditing ? theme.editingItem : theme.featureItem
                 }`}
               >
                 {isEditing ? (
@@ -161,20 +217,22 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
                         }
                       }}
                       autoFocus
-                      className="flex-1 px-3 py-1.5 bg-[#0a111a] border border-[#1dc465]/50 rounded-lg text-white text-xs outline-none"
+                      className={`flex-1 px-3 py-1.5 border border-primary/50 rounded-lg text-xs outline-none ${theme.input}`}
                     />
+
                     <button
                       type="button"
                       onClick={() => saveEditing(feature.id)}
-                      className="p-1.5 rounded-lg bg-[#1dc465] text-[#080d14] hover:bg-[#15a050] transition-colors"
+                      className="p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                       title="Save change"
                     >
                       <Check size={14} strokeWidth={3} />
                     </button>
+
                     <button
                       type="button"
                       onClick={cancelEditing}
-                      className="p-1.5 rounded-lg bg-white/10 text-gray-300 hover:bg-white/20 transition-colors"
+                      className={`p-1.5 rounded-lg transition-colors ${theme.cancelEditButton}`}
                       title="Cancel edit"
                     >
                       <X size={14} />
@@ -187,10 +245,14 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
                       <button
                         type="button"
                         onClick={() => toggleIncluded(feature.id)}
-                        title={feature.isIncluded ? "Mark as excluded" : "Mark as included"}
+                        title={
+                          feature.isIncluded
+                            ? "Mark as excluded"
+                            : "Mark as included"
+                        }
                         className={`flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
                           feature.isIncluded
-                            ? "bg-[#1dc465]/15 text-[#1dc465] hover:bg-[#1dc465]/25"
+                            ? "bg-primary/15 text-primary hover:bg-primary/25"
                             : "bg-rose-500/10 text-rose-400 hover:bg-rose-500/20"
                         }`}
                       >
@@ -200,14 +262,16 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
                           <XCircle size={14} />
                         )}
                       </button>
+
                       <span className="text-xs text-gray-500 select-none">
                         #{index + 1}
                       </span>
+
                       <span
                         className={`text-xs truncate ${
                           feature.isIncluded
-                            ? "text-gray-200"
-                            : "text-gray-400 line-through"
+                            ? theme.featureText
+                            : `${theme.excludedText} line-through`
                         }`}
                       >
                         {feature.name}
@@ -219,15 +283,20 @@ export const SubscriptionFeaturesManager: React.FC<SubscriptionFeaturesManagerPr
                         type="button"
                         onClick={() => startEditing(feature)}
                         title="Edit feature text"
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        className={`p-1.5 rounded-lg transition-colors ${theme.editButton}`}
                       >
                         <Pencil size={13} />
                       </button>
+
                       <button
                         type="button"
                         onClick={() => removeFeature(feature.id)}
                         title="Delete feature"
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          isDark
+                            ? "text-gray-400 hover:text-rose-400 hover:bg-rose-500/10"
+                            : "text-gray-500 hover:text-rose-600 hover:bg-rose-50"
+                        }`}
                       >
                         <Trash2 size={13} />
                       </button>

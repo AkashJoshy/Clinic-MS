@@ -4,15 +4,19 @@ import {
   departmentController,
   doctorWalletController,
   patientWalletController,
+  platformDataController,
 } from "../../container/modules/common.modules.ts";
 import { authenticateUser } from "../middlewares/authenticate-user.middleware.ts";
 import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 
 const router = Router();
 
-router.get(COMMON_ENDPOINTS["DEPARTMENTS"]["FETCH_ALL"], async (req, res, next) => {
-  await departmentController.getAll(req, res, next);
-});
+router.get(
+  COMMON_ENDPOINTS["DEPARTMENTS"]["FETCH_ALL"],
+  async (req, res, next) => {
+    await departmentController.getAll(req, res, next);
+  },
+);
 
 router.get(
   COMMON_ENDPOINTS["WALLET"]["FETCH_ONE"],
@@ -121,5 +125,9 @@ router.post(
     }
   },
 );
+
+router.get(COMMON_ENDPOINTS["PLATFORM"]["BASE"], async (req, res, next) => {
+  await platformDataController.getPlatformData(req, res, next);
+});
 
 export default router;

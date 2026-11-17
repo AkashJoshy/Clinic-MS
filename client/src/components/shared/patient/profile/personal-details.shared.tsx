@@ -19,6 +19,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const { patient: user } = useAuthStore((state) => state.users);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   if (!user || !patientProfile) {
     return <PersonalDetailsSkeleton />;
@@ -55,6 +56,16 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
 
   const errorText = "text-xs text-red-600 mt-1";
 
+  const primaryTint = {
+    backgroundColor: `color-mix(in srgb, ${primaryColor} 10%, white)`,
+    color: primaryColor,
+  };
+
+  const primaryButtonStyle = {
+    backgroundColor: primaryColor,
+    color: "#ffffff",
+  };
+
   return (
     <>
       <div className="bg-white rounded-[10px] shadow-lg border border-gray-100 p-6 md:p-8">
@@ -66,7 +77,8 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium rounded-lg transition-colors duration-200 text-sm"
+              className="flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors duration-200 text-sm"
+              style={primaryTint}
             >
               <Pencil className="w-4 h-4" />
               Edit
@@ -267,7 +279,8 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                     <button
                       type="button"
                       onClick={addAllergy}
-                      className="px-4 cursor-pointer py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg"
+                      className="px-4 cursor-pointer py-2 text-white text-sm font-semibold rounded-lg"
+                      style={primaryButtonStyle}
                     >
                       Add
                     </button>
@@ -277,13 +290,13 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                       {allergies.map((item) => (
                         <span
                           key={item}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-800 dark:text-primary-300"
                         >
                           {item}
                           <button
                             type="button"
                             onClick={() => removeAllergy(item)}
-                            className="hover:bg-emerald-100 rounded-full w-4 h-4 flex items-center justify-center text-emerald-800"
+                            className="flex h-4 w-4 items-center justify-center rounded-full text-primary-700 transition-colors hover:bg-primary/15 dark:text-primary-300 dark:hover:bg-primary/20"
                           >
                             ×
                           </button>
@@ -327,7 +340,8 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                     <button
                       type="button"
                       onClick={addChronic}
-                      className="px-4 cursor-pointer py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg"
+                      className="px-4 cursor-pointer py-2 text-white text-sm font-semibold rounded-lg"
+                      style={primaryButtonStyle}
                     >
                       Add
                     </button>
@@ -337,13 +351,13 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                       {chronicConditions.map((item) => (
                         <span
                           key={item}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-800"
                         >
                           {item}
                           <button
                             type="button"
                             onClick={() => removeChronic(item)}
-                            className="hover:bg-emerald-100 rounded-full w-4 h-4 flex items-center justify-center text-emerald-800"
+                            className="flex h-4 w-4 items-center justify-center rounded-full text-primary-700 transition-colors hover:bg-primary-100"
                           >
                             ×
                           </button>
@@ -378,7 +392,8 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-6 cursor-pointer py-2.5 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors w-full sm:w-auto shadow-sm"
+                className="px-6 cursor-pointer py-2.5 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors w-full sm:w-auto shadow-sm"
+                style={primaryButtonStyle}
               >
                 Save Changes
               </button>

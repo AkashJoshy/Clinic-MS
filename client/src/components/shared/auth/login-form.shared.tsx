@@ -9,6 +9,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { loginFormProps } from "@/types/auth";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
 
 const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
       role: role,
     },
   });
+
+  const { websiteName, primaryColor } = usePlatformConfig();
 
   const navigateToForgotPasswordPage =
     role === "PATIENT"
@@ -45,7 +49,7 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
           state: {
             email: data?.data?.email,
           },
-        })
+        });
       } else {
         navigate(to);
       }
@@ -87,7 +91,9 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
 
   return (
     <div>
-      <span className="font-bold text-white mt-5 bg-primary p-1 flex justify-end w-35 rounded ml-auto mr-2 px-4 py-1.5">
+      <span
+        className={`font-bold text-white mt-5 p-1 flex justify-end w-35 bg-primary rounded ml-auto mr-2 px-4 py-1.5`}
+      >
         {portal}
         {" Portal"}
       </span>
@@ -97,7 +103,7 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
             <span className="text-white text-lg">✦</span>
           </div>
           <h2 className="text-2xl font-bold mb-2 text-primary">
-            Healthixia Care
+            {websiteName}
           </h2>
 
           <form
@@ -120,7 +126,12 @@ const LoginForm = ({ portal, role, fn, to }: loginFormProps) => {
               </span>
             </p>
 
-            <Button type="submit" disabled={isPending} className="w-full">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full"
+              style={{ color: getContrastTextColor(primaryColor) }}
+            >
               {!isPending ? "Sign In" : "Signing in..."}
             </Button>
           </form>

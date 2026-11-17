@@ -1,6 +1,8 @@
+
 import React from "react";
-import { CreditCard, Plus, Search, Sparkles } from "lucide-react";
+import { CreditCard, Plus, Search } from "lucide-react";
 import type { PlanStatus } from "@/types/subscription";
+import AdminPageHeader from "../../page-header.shared";
 
 interface SubscriptionHeaderProps {
   searchQuery: string;
@@ -13,6 +15,7 @@ interface SubscriptionHeaderProps {
     active: number;
     inactive: number;
   };
+  isDark: boolean;
 }
 
 const FILTERS = [
@@ -28,6 +31,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
   onStatusFilterChange,
   onOpenCreateModal,
   counts,
+  isDark,
 }) => {
   const getCount = (filter: (typeof FILTERS)[number]["value"]) => {
     switch (filter) {
@@ -40,41 +44,49 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
     }
   };
 
+  const theme = {
+    searchInput: isDark
+      ? "border-white/10 bg-[#0c141e] text-white placeholder:text-gray-500"
+      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400",
+    searchIcon: isDark ? "text-[#8b9ab0]" : "text-gray-400",
+    filterContainer: isDark
+      ? "border-white/10 bg-[#0c141e]"
+      : "border-gray-200 bg-gray-50",
+    filterText: isDark
+      ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
+      : "text-gray-600 hover:bg-gray-200/70 hover:text-gray-900",
+    allSelected: isDark
+      ? "bg-white/10 text-white"
+      : "bg-white text-gray-900 shadow-sm",
+    activeSelected:
+      "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400",
+    inactiveSelected: isDark
+      ? "border border-rose-500/30 bg-rose-500/15 text-rose-300"
+      : "border border-rose-200 bg-rose-50 text-rose-600",
+    allCount: isDark
+      ? "bg-white/5 text-current"
+      : "bg-gray-200/70 text-gray-600",
+    activeCount: "bg-emerald-500/10 text-emerald-400",
+    inactiveCount: isDark
+      ? "bg-rose-500/10 text-rose-300"
+      : "bg-rose-100 text-rose-600",
+  };
+
   return (
     <header className="w-full min-w-0 space-y-5">
-      {/* Title and primary action */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#1dc465]/30 bg-[#1dc465]/10 sm:h-11 sm:w-11 sm:rounded-2xl">
-            <CreditCard
-              size={21}
-              className="text-[#1dc465]"
-              aria-hidden="true"
-            />
-          </div>
-
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg font-bold tracking-tight text-white sm:text-xl lg:text-2xl">
-                Subscription Plans
-              </h1>
-
-              <span className="hidden items-center gap-1 rounded-full border border-[#1dc465]/20 bg-[#1dc465]/10 px-2 py-0.5 text-[10px] font-semibold text-[#1dc465] sm:inline-flex">
-                <Sparkles size={10} aria-hidden="true" />
-                Active Billing
-              </span>
-            </div>
-
-            <p className="mt-1 text-xs leading-relaxed text-[#8b9ab0] sm:text-sm">
-              Create, configure, and manage clinic & doctor subscription tiers
-            </p>
-          </div>
+          <AdminPageHeader
+            icon={CreditCard}
+            title="Subscription Plans"
+            description="Create, configure, and manage clinic & doctor subscription tiers"
+          />
         </div>
 
         <button
           type="button"
           onClick={onOpenCreateModal}
-          className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1dc465] px-4 py-2.5 text-sm font-bold text-[#080d14] shadow-lg shadow-[#1dc465]/10 transition-colors hover:bg-[#15a050] active:scale-[0.98] sm:w-auto"
+          className={`inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/10 transition-colors hover:bg-primary/90 active:scale-[0.98] sm:w-auto`}
         >
           <Plus size={18} strokeWidth={2.5} aria-hidden="true" />
           <span>Create Subscription</span>
@@ -86,7 +98,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
         <div className="relative w-full min-w-0 lg:max-w-md">
           <Search
             size={17}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8b9ab0]"
+            className={`pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 ${theme.searchIcon}`}
             aria-hidden="true"
           />
 
@@ -96,7 +108,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
             placeholder="Search plans, features, keywords..."
             value={searchQuery}
             onChange={(event) => onSearchChange(event.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-[#0c141e] py-2.5 pl-10 pr-4 text-sm text-white outline-none transition-colors placeholder:text-gray-500 focus:border-[#1dc465]/50 focus:ring-1 focus:ring-[#1dc465]/30"
+            className={`w-full rounded-xl border py-2.5 pl-10 pr-4 text-sm outline-none transition-colors focus:border-primary/50 focus:ring-1 focus:ring-primary/30 ${theme.searchInput}`}
           />
         </div>
 
@@ -104,24 +116,22 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
         <div
           role="group"
           aria-label="Filter subscription plans by status"
-          className="flex w-full min-w-0 max-w-full items-center gap-1 overflow-x-auto rounded-xl border border-white/10 bg-[#0c141e] p-1 sm:w-fit"
+          className={`flex w-full min-w-0 max-w-full items-center gap-1 overflow-x-auto rounded-xl border p-1 sm:w-fit ${theme.filterContainer}`}
         >
           {FILTERS.map((filter) => {
             const isSelected = statusFilter === filter.value;
             const count = getCount(filter.value);
 
             const selectedStyles = {
-              ALL: "bg-white/10 text-white",
-              ACTIVE:
-                "border border-[#1dc465]/30 bg-[#1dc465]/15 text-[#1dc465]",
-              INACTIVE:
-                "border border-rose-500/30 bg-rose-500/15 text-rose-300",
+              ALL: theme.allSelected,
+              ACTIVE: theme.activeSelected,
+              INACTIVE: theme.inactiveSelected,
             }[filter.value];
 
             const countStyles = {
-              ALL: "bg-white/5 text-current",
-              ACTIVE: "bg-[#1dc465]/10 text-[#1dc465]",
-              INACTIVE: "bg-rose-500/10 text-rose-300",
+              ALL: theme.allCount,
+              ACTIVE: theme.activeCount,
+              INACTIVE: theme.inactiveCount,
             }[filter.value];
 
             return (
@@ -133,7 +143,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
                 className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs transition-colors ${
                   isSelected
                     ? `${selectedStyles} font-semibold`
-                    : "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
+                    : theme.filterText
                 }`}
               >
                 {filter.label}

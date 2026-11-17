@@ -1,5 +1,4 @@
-
-import type { AdminDoctorInfo, DoctorDetailsCardInfo, DoctorInfo, RejectedDoctor } from "@/types/doctor";
+import type { DoctorDetailsCardInfo, RejectedDoctor } from "@/types/doctor";
 import {
   Activity,
   ArrowRight,
@@ -12,19 +11,55 @@ import {
   UserRound,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store";
 
 interface RejectedDoctorCardProps {
   doctorInfo: DoctorDetailsCardInfo;
   setPreviewImage: (doc: string) => void;
   onReconsider?: (doctor: DoctorDetailsCardInfo) => void;
+  isDark: boolean
 }
 
 export const RejectedDoctorCard = ({
   doctorInfo,
   setPreviewImage,
   onReconsider,
+  isDark
 }: RejectedDoctorCardProps) => {
   const navigate = useNavigate();
+
+  const theme = {
+    card: isDark
+      ? "border-rose-500/20 bg-[#0d1a27] hover:border-rose-500/40"
+      : "border-rose-200 bg-white hover:border-rose-300",
+
+    heading: isDark ? "text-white" : "text-gray-900",
+    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
+    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+    label: isDark ? "text-[#607086]" : "text-gray-400",
+
+    divider: isDark ? "border-white/5" : "border-gray-100",
+
+    clinicCard: isDark
+      ? "border-white/5 bg-white/[0.02]"
+      : "border-gray-100 bg-gray-50",
+
+    iconWrapper: isDark ? "bg-white/4" : "bg-gray-100",
+
+    documentButton: isDark
+      ? "border-white/10 bg-white/3 text-[#9aa9bb] hover:border-white/20 hover:bg-white/6 hover:text-white"
+      : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-900",
+
+    footer: isDark ? "bg-black/10" : "bg-gray-50",
+
+    footerButton: isDark
+      ? "border-white/10 text-[#c1ccd9] hover:bg-white/5 hover:text-white"
+      : "border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+
+    reconsiderButton: isDark
+      ? "border-white/10 bg-white/4 text-[#c1ccd9] hover:bg-white/8 hover:text-white"
+      : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900",
+  };
 
   const { doctor, user, doctorClinicDetails } = doctorInfo;
 
@@ -64,7 +99,9 @@ export const RejectedDoctorCard = ({
   ];
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-rose-500/20 bg-[#0d1a27] transition-all duration-200 hover:border-rose-500/40">
+    <div
+      className={`group overflow-hidden rounded-2xl border transition-all duration-200 ${theme.card}`}
+    >
       {/* Header */}
       <div className="p-5 pb-4">
         <div className="flex items-start justify-between gap-4">
@@ -82,11 +119,11 @@ export const RejectedDoctorCard = ({
             </div>
 
             <div className="min-w-0">
-              <h3 className="truncate text-sm font-semibold text-white">
+              <h3 className={`truncate text-sm font-semibold ${theme.heading}`}>
                 {doctor?.displayName ?? "Unnamed Doctor"}
               </h3>
 
-              <div className="mt-1 flex items-center gap-1.5 text-[#8b9ab0]">
+              <div className={`mt-1 flex items-center gap-1.5 ${theme.muted}`}>
                 <Building2 size={12} />
 
                 <p className="truncate text-xs">
@@ -101,7 +138,7 @@ export const RejectedDoctorCard = ({
             </div>
           </div>
 
-          <span className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full bg-rose-500/15 px-2.5 py-1 text-[11px] font-semibold text-rose-400">
+          <span className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full bg-rose-500/15 px-2.5 py-1 text-[11px] font-semibold text-rose-500">
             <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
             Rejected
           </span>
@@ -110,7 +147,7 @@ export const RejectedDoctorCard = ({
 
       {/* Clinic Details */}
       <div className="px-5">
-        <div className="border-t border-white/5" />
+        <div className={`border-t ${theme.divider}`} />
 
         <div className="space-y-4 py-4">
           {doctorClinicDetails.map((doctorClinicDetail) => {
@@ -120,29 +157,33 @@ export const RejectedDoctorCard = ({
             return (
               <div
                 key={doctorClinic.id}
-                className="space-y-3 rounded-xl border border-white/5 bg-white/[0.02] p-3"
+                className={`space-y-3 rounded-xl border p-3 ${theme.clinicCard}`}
               >
                 {/* Clinic Name */}
                 <div className="flex items-center gap-2">
-                  <Building2 size={14} className="text-[#8b9ab0]" />
+                  <Building2 size={14} className={theme.muted} />
 
-                  <p className="text-xs font-semibold text-white">
+                  <p className={`text-xs font-semibold ${theme.heading}`}>
                     {clinic?.name ?? "Clinic not provided"}
                   </p>
                 </div>
 
                 {/* Location */}
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-white/4">
-                    <MapPin size={13} className="text-[#8b9ab0]" />
+                  <div
+                    className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconWrapper}`}
+                  >
+                    <MapPin size={13} className={theme.muted} />
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+                    <p
+                      className={`text-[10px] uppercase tracking-wide ${theme.label}`}
+                    >
                       Location
                     </p>
 
-                    <p className="mt-0.5 truncate text-xs text-[#c1ccd9]">
+                    <p className={`mt-0.5 truncate text-xs ${theme.text}`}>
                       {clinicAddress?.city
                         ? `${clinicAddress.city}, ${
                             clinicAddress.state ?? "-"
@@ -154,16 +195,20 @@ export const RejectedDoctorCard = ({
 
                 {/* Consultation */}
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-white/4">
-                    <Activity size={13} className="text-[#8b9ab0]" />
+                  <div
+                    className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconWrapper}`}
+                  >
+                    <Activity size={13} className={theme.muted} />
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+                    <p
+                      className={`text-[10px] uppercase tracking-wide ${theme.label}`}
+                    >
                       Consultation
                     </p>
 
-                    <p className="mt-0.5 text-xs text-[#c1ccd9]">
+                    <p className={`mt-0.5 text-xs ${theme.text}`}>
                       {doctorClinic.type ?? "Not specified"}
                     </p>
                   </div>
@@ -171,7 +216,9 @@ export const RejectedDoctorCard = ({
 
                 {/* Clinic Documents */}
                 <div>
-                  <p className="mb-2 text-[10px] uppercase tracking-wide text-[#607086]">
+                  <p
+                    className={`mb-2 text-[10px] uppercase tracking-wide ${theme.label}`}
+                  >
                     Clinic's Documents
                   </p>
 
@@ -184,7 +231,7 @@ export const RejectedDoctorCard = ({
                           key={key}
                           disabled={!url}
                           onClick={() => url && setPreviewImage(url)}
-                          className="group flex h-8 min-w-0 items-center gap-1.5 rounded-md border border-white/10 bg-white/3 px-2.5 text-[11px] font-medium text-[#9aa9bb] transition-all hover:border-white/20 hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                          className={`group flex h-8 min-w-0 items-center gap-1.5 rounded-md border px-2.5 text-[11px] font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40 ${theme.documentButton}`}
                         >
                           <FileText
                             size={13}
@@ -207,16 +254,18 @@ export const RejectedDoctorCard = ({
       {/* Phone */}
       <div className="px-5 pb-4">
         <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-white/4">
-            <Phone size={13} className="text-[#8b9ab0]" />
+          <div
+            className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconWrapper}`}
+          >
+            <Phone size={13} className={theme.muted} />
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+            <p className={`text-[10px] uppercase tracking-wide ${theme.label}`}>
               Phone
             </p>
 
-            <p className="mt-0.5 text-xs text-[#c1ccd9]">
+            <p className={`mt-0.5 text-xs ${theme.text}`}>
               {user?.phone ?? "Not available"}
             </p>
           </div>
@@ -232,11 +281,11 @@ export const RejectedDoctorCard = ({
           />
 
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wide text-rose-400/80">
+            <p className="text-[10px] uppercase tracking-wide text-rose-500">
               Rejection Reason
             </p>
 
-            <p className="mt-0.5 wrap-break-word text-xs text-[#c1ccd9]">
+            <p className={`mt-0.5 wrap-break-word text-xs ${theme.text}`}>
               {rejectionReason}
             </p>
           </div>
@@ -245,7 +294,9 @@ export const RejectedDoctorCard = ({
 
       {/* Doctor Documents */}
       <div className="px-5 pb-4">
-        <p className="mb-2 text-[10px] uppercase tracking-wide text-[#607086]">
+        <p
+          className={`mb-2 text-[10px] uppercase tracking-wide ${theme.label}`}
+        >
           Doctor's Documents
         </p>
 
@@ -255,7 +306,7 @@ export const RejectedDoctorCard = ({
               key={label}
               disabled={!url}
               onClick={() => url && setPreviewImage(url)}
-              className="group flex h-8 min-w-0 items-center gap-1.5 rounded-md border border-white/10 bg-white/3 px-2.5 text-[11px] font-medium text-[#9aa9bb] transition-all hover:border-white/20 hover:bg-white/6 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className={`group flex h-8 min-w-0 items-center gap-1.5 rounded-md border px-2.5 text-[11px] font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40 ${theme.documentButton}`}
             >
               <FileText
                 size={13}
@@ -270,14 +321,14 @@ export const RejectedDoctorCard = ({
       </div>
 
       {/* Footer */}
-      <div className="border-t border-white/5 bg-black/10 px-5 py-4">
+      <div className={`border-t px-5 py-4 ${theme.divider} ${theme.footer}`}>
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-[#607086]">
+            <p className={`text-[10px] uppercase tracking-wide ${theme.label}`}>
               Submitted
             </p>
 
-            <p className="mt-0.5 text-xs text-[#8b9ab0]">{submittedDate}</p>
+            <p className={`mt-0.5 text-xs ${theme.muted}`}>{submittedDate}</p>
           </div>
 
           <button
@@ -286,7 +337,7 @@ export const RejectedDoctorCard = ({
                 state: doctorInfo,
               })
             }
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-medium text-[#c1ccd9] transition-all hover:bg-white/5 hover:text-white"
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${theme.footerButton}`}
           >
             View Details
             <ArrowRight size={13} />
@@ -296,7 +347,7 @@ export const RejectedDoctorCard = ({
         {onReconsider && (
           <button
             onClick={() => onReconsider(doctorInfo)}
-            className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/4 py-2.5 text-xs font-semibold text-[#c1ccd9] transition-all duration-150 hover:bg-white/8 hover:text-white"
+            className={`flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-semibold transition-all duration-150 ${theme.reconsiderButton}`}
           >
             <RotateCcw size={14} />
             Reconsider Application

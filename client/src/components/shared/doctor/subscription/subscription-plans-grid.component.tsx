@@ -24,7 +24,7 @@ export const SubscriptionPlansGrid: React.FC<SubscriptionPlansGridProps> = ({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Layers size={17} className="text-[#1dc465]" />
+            <Layers size={17} className="text-primary" />
 
             <h3 className="text-base font-bold tracking-tight text-white uppercase">
               Explore Practice Tiers
@@ -45,7 +45,7 @@ export const SubscriptionPlansGrid: React.FC<SubscriptionPlansGridProps> = ({
               aria-pressed={billingCycle === cycle}
               className={`cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
                 billingCycle === cycle
-                  ? "bg-[#1dc465] text-[#080d14] shadow-sm"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-[#8b9ab0] hover:text-white"
               }`}
             >

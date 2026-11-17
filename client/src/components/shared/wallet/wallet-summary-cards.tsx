@@ -9,10 +9,14 @@ import {
 import { formatCurrency } from "@/helpers/wallet.helper";
 import type { WalletSummaryCardsProps } from "@/types/wallet";
 
+interface Props extends WalletSummaryCardsProps {
+  isDark?: boolean;
+}
 
-export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
+export const WalletSummaryCards: React.FC<Props> = ({
   stats,
-  wallet
+  wallet,
+  isDark = false,
 }) => {
   const cards = [
     {
@@ -21,10 +25,14 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
       value: formatCurrency(wallet.balance, wallet.currency),
       description: "Ready to withdraw or use",
       icon: Wallet,
-      iconColor: "text-emerald-600",
-      bgColor: "bg-emerald-50 border-emerald-100",
+      iconColor: isDark ? "text-emerald-400" : "text-emerald-600",
+      bgColor: isDark
+        ? "bg-emerald-500/10 border-emerald-500/20"
+        : "bg-emerald-50 border-emerald-100",
       badge: "Instant Access",
-      badgeColor: "bg-emerald-100/70 text-emerald-700",
+      badgeColor: isDark
+        ? "bg-emerald-500/15 text-emerald-400"
+        : "bg-emerald-100/70 text-emerald-700",
     },
     {
       id: "pending",
@@ -32,10 +40,14 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
       // value: formatCurrency(stats.pendingSettlement, stats.currency),
       description: "Expected within 24-48 hrs",
       icon: Clock,
-      iconColor: "text-amber-600",
-      bgColor: "bg-amber-50 border-amber-100",
+      iconColor: isDark ? "text-amber-400" : "text-amber-600",
+      bgColor: isDark
+        ? "bg-amber-500/10 border-amber-500/20"
+        : "bg-amber-50 border-amber-100",
       badge: "In Escrow",
-      badgeColor: "bg-amber-100/70 text-amber-700",
+      badgeColor: isDark
+        ? "bg-amber-500/15 text-amber-400"
+        : "bg-amber-100/70 text-amber-700",
     },
     {
       id: "earnings",
@@ -43,10 +55,10 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
       // value: formatCurrency(stats.totalEarnings, stats.currency),
       description: "Gross revenue recorded",
       icon: ArrowUpRight,
-      iconColor: "text-[#1DC465]",
-      bgColor: "bg-[#1DC465]/10 border-[#1DC465]/20",
+      iconColor: "text-primary",
+      bgColor: "bg-primary/10 border-primary/20",
       badge: `+${stats.earningsTrendPercent}% vs mo`,
-      badgeColor: "bg-[#1DC465]/15 text-[#118042]",
+      badgeColor: "bg-primary/15 text-primary",
       hasTrend: true,
     },
     {
@@ -55,10 +67,14 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
       // value: formatCurrency(stats.totalSpent, stats.currency),
       description: "Withdrawals & subscriptions",
       icon: ArrowDownRight,
-      iconColor: "text-rose-600",
-      bgColor: "bg-rose-50 border-rose-100",
+      iconColor: isDark ? "text-rose-400" : "text-rose-600",
+      bgColor: isDark
+        ? "bg-rose-500/10 border-rose-500/20"
+        : "bg-rose-50 border-rose-100",
       badge: "Outflow",
-      badgeColor: "bg-rose-100/70 text-rose-700",
+      badgeColor: isDark
+        ? "bg-rose-500/15 text-rose-400"
+        : "bg-rose-100/70 text-rose-700",
     },
   ];
 
@@ -66,15 +82,25 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {cards.map((card) => {
         const Icon = card.icon;
+
         return (
           <div
             key={card.id}
-            className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+            className={`rounded-2xl border p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${
+              isDark
+                ? "border-white/10 bg-[#0D1A27]"
+                : "border-slate-200/80 bg-white"
+            }`}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              <span
+                className={`text-xs font-medium uppercase tracking-wider ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
                 {card.label}
               </span>
+
               <div
                 className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${card.bgColor}`}
               >
@@ -83,15 +109,28 @@ export const WalletSummaryCards: React.FC<WalletSummaryCardsProps> = ({
             </div>
 
             <div className="my-2.5">
-              <span className="text-2xl font-bold tracking-tight text-[#0D1A27]">
+              <span
+                className={`text-2xl font-bold tracking-tight ${
+                  isDark ? "text-white" : "text-[#0D1A27]"
+                }`}
+              >
                 {card.value}
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-              <span className="text-slate-500 truncate max-w-[130px]">
+            <div
+              className={`flex items-center justify-between text-xs pt-2 border-t ${
+                isDark ? "border-white/10" : "border-slate-100"
+              }`}
+            >
+              <span
+                className={`truncate max-w-[130px] ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
                 {card.description}
               </span>
+
               <span
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${card.badgeColor}`}
               >

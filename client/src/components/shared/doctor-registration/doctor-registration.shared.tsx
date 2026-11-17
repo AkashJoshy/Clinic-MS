@@ -12,10 +12,13 @@ import VerificationDocs from "./verification-docs.shared";
 import { registerDoctor } from "@/services/doctor.service";
 import { useDepartments } from "@/hooks/use-departments.hook";
 import { useEffect } from "react";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 
 export default function DoctorRegistration() {
   const { step, goNext, goBack, onSubmit } = useDoctorRegistrationContext();
   const navigate = useNavigate();
+
+  const { websiteName } = usePlatformConfig()
 
   useEffect(() => {
     window.scrollTo({
@@ -45,7 +48,7 @@ export default function DoctorRegistration() {
   return (
     <div className="min-h-screen mt-15 bg-linear-to-br from-primary-50 via-white to-cyan-50 flex items-start justify-center py-10 px-4">
       <div className="w-full max-w-3xl">
-        <RegistrationHeader />
+        <RegistrationHeader websiteName={websiteName} />
 
         <div className="flex items-center justify-center gap-3 mb-8">
           {[1, 2, 3].map((s) => (

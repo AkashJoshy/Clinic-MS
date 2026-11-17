@@ -59,6 +59,14 @@ export const fullName = z
   .trim()
   .min(3, "Full name must be at least 3 characters long.");
 
+export const createName = (name: string, minLength = 3, maxLength = 100) => {
+  return z
+    .string()
+    .trim()
+    .min(minLength, `${name} must contain at least ${minLength} characters`)
+    .max(maxLength, `${name} cannot exceed ${maxLength} characters`);
+};
+
 export const strOptional = z.string().optional();
 
 export const yearEstablished = z
@@ -115,11 +123,16 @@ export const bloodGroup = z.enum(BLOODGROUPS, {
   message: "Select the blood group",
 });
 
-export const state = z.string("State is required").min(1, "Please select a state");
+export const state = z
+  .string("State is required")
+  .min(1, "Please select a state");
 
 export const city = z.string("City is required").min(1, "Please select a city");
 
-export const district = z.string("District is required").trim().min(1, "District is required ");
+export const district = z
+  .string("District is required")
+  .trim()
+  .min(1, "District is required ");
 
 export const pincode = z
   .string()
@@ -182,7 +195,8 @@ export const specialization = z
   .max(100, "Specialization must not exceed 100 characters");
 
 export const experienceYears = z.preprocess(
-  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  (value) =>
+    typeof value === "string" && value.trim() === "" ? undefined : value,
   z.coerce
     .number("Please enter your years of experience")
     .min(0, "Experience cannot be negative")
@@ -196,3 +210,42 @@ export const slotDuration = z.preprocess(
     .min(15, "Experience cannot be negative")
     .max(90, "Experience cannot exceed 60 years"),
 );
+
+export const selectColor = (message: string) => {
+  return z.string().regex(/^#[0-9A-Fa-f]{6}$/, message);
+};
+
+export const createPositiveInteger = (
+  fieldName: string,
+  min: number,
+  max: number,
+) => {
+  return z
+    .number({
+      error: `${fieldName} must be a number.`,
+    })
+    .int(`${fieldName} must be a whole number.`)
+    .min(min, `${fieldName} must be at least ${min}.`)
+    .max(max, `${fieldName} cannot exceed ${max}.`);
+};
+
+export const createNonNegativeInteger = (
+  fieldName: string,
+  max?: number,
+) => {
+  let schema = z
+    .number({
+      error: `${fieldName} must be a number.`,
+    })
+    .int(`${fieldName} must be a whole number.`)
+    .min(0, `${fieldName} cannot be negative.`);
+
+  if (max !== undefined) {
+    schema = schema.max(
+      max,
+      `${fieldName} cannot exceed ${max}.`,
+    );
+  }
+
+  return schema;
+};

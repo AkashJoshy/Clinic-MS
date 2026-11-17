@@ -1,4 +1,5 @@
 import type { DoctorManagementTab, PatientDetailsTab } from "@/types/admin";
+import type { DoctorFilterState } from "@/types/admin/doctor.types";
 
 export const PATIENT_TABS = [
   {
@@ -44,6 +45,11 @@ export const DOCUMENT_REJECTION_REASONS = [
   "OTHER",
 ] as const
 
+export const defaultDoctorFilters: DoctorFilterState = {
+  gender: "ALL",
+  department: [{ id: "1", name: "ALL" }],
+  sortBy: "NEWEST",
+};
 
 export const DOCTOR_REAPPLICATION_FIELDS = [
   {

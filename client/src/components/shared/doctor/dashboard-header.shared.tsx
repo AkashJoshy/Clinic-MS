@@ -1,36 +1,64 @@
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 import { useAuthStore } from "@/store";
 import type { RouteRoleProps } from "@/types/auth";
 import { Activity, User } from "lucide-react";
 
-
 export function DashboardHeader({ role }: { role: RouteRoleProps }) {
+  const { websiteName, primaryColor } = usePlatformConfig();
+  const users = useAuthStore((state) => state.users);
 
-  const users = useAuthStore(state => state.users)
+  const contrastColor = getContrastTextColor(primaryColor);
+
+  const firstName = role
+    ? (users[role]?.fullName?.split(" ")[0] ?? "Unavailable")
+    : "Unavailable";
 
   return (
-    <div className="sticky top-0 z-100 flex items-center justify-between border-b border-white/8 bg-primary p-3.5 shadow-[0_6px_16px_-8px_rgba(0,0,0,0.6)]">
+    <div
+      style={{
+        backgroundColor: primaryColor,
+        color: contrastColor,
+      }}
+      className="sticky top-0 z-100 flex items-center justify-between border-b border-black/10 p-3.5 shadow-[0_6px_16px_-8px_rgba(0,0,0,0.6)]"
+    >
 
       <div className="flex items-center gap-2">
-        <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10">
-          <Activity size={18} className="text-white" />
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-lg"
+          style={{ backgroundColor: `${contrastColor}15` }}
+        >
+          <Activity size={18} style={{ color: contrastColor }} />
         </div>
-        <h1 className="text-white font-semibold">
-          {import.meta.env.VITE_WEBSITE_NAME}
+
+        <h1 className="font-semibold" style={{ color: contrastColor }}>
+          {websiteName}
         </h1>
       </div>
 
-      <div  className="relative">
+      {/* User Information */}
+      <div className="relative">
         <div
-          className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3 py-1.5 cursor-pointer hover:bg-white/15 transition-colors"
+          className="flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 transition-colors"
+          style={{
+            borderColor: `${contrastColor}25`,
+            backgroundColor: `${contrastColor}10`,
+          }}
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/15">
-            <User size={14} className="text-white/80" />
+          <div
+            className="flex h-7 w-7 items-center justify-center rounded-md"
+            style={{ backgroundColor: `${contrastColor}15` }}
+          >
+            <User size={14} style={{ color: contrastColor }} />
           </div>
-          <span className="text-sm font-medium text-white max-w-20 truncate">
-            {role ? users[role]?.fullName.split(" ")[0] : "Unavailable"}
+
+          <span
+            className="max-w-20 truncate text-sm font-medium"
+            style={{ color: contrastColor }}
+          >
+            {firstName}
           </span>
         </div>
-
       </div>
     </div>
   );

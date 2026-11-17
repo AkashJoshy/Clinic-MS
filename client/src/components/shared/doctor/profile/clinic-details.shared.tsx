@@ -27,10 +27,9 @@ import type { DoctorConsultationDetails } from "@/types/doctor";
 import DoctorClinicDetailsSkeleton from "../../skeletons/doctor-clinic-details.skeleton";
 
 const FIELD_CLASSES =
-  "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80]";
+  "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80] focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
 
-const LABEL_CLASSES =
-  "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+const LABEL_CLASSES = "block text-xs font-medium text-[#8b9ab0] mb-1.5";
 
 const SETTING_FIELDS = [
   {
@@ -57,6 +56,7 @@ const DoctorClinicDetails: React.FC = () => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
   const { doctor: user } = useAuthStore((state) => state.users);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   const [editingClinicId, setEditingClinicId] = useState<string | null>(null);
 
@@ -75,11 +75,11 @@ const DoctorClinicDetails: React.FC = () => {
 
   const { mutate, isPending } = useMutate(updateDoctorConsultationDetails, {
     onSuccess(data) {
-      if (!data.data || !editingClinicId) return;
+      if (!data.data || !editingClinicId || !doctorProfile) return;
 
       updateDoctor({
-        ...doctorProfile!,
-        doctorClinicDetails: doctorProfile!.doctorClinicDetails.map(
+        ...doctorProfile,
+        doctorClinicDetails: doctorProfile.doctorClinicDetails.map(
           (clinicDetails) =>
             clinicDetails.id === editingClinicId
               ? {
@@ -101,9 +101,14 @@ const DoctorClinicDetails: React.FC = () => {
 
   const clinicDetails = doctorProfile.doctorClinicDetails ?? [];
 
-  const startEdit = (
-    details: (typeof clinicDetails)[number],
-  ) => {
+  const primaryTint = `color-mix(in srgb, ${primaryColor} 10%, transparent)`;
+  const primaryBorder = `color-mix(in srgb, ${primaryColor} 25%, transparent)`;
+
+  const primaryStyle = {
+    "--primary-color": primaryColor,
+  } as React.CSSProperties;
+
+  const startEdit = (details: (typeof clinicDetails)[number]) => {
     if (!user?.id || !doctorProfile.doctor.id || !details.clinic?.id) {
       return;
     }
@@ -114,7 +119,7 @@ const DoctorClinicDetails: React.FC = () => {
       doctorId: doctorProfile.doctor.id,
       clinicId: details.clinic.id,
       consultationFee: details.consultationFee,
-      slotDuration: details.slotDuration,
+      slotDuration: details.slotRules.sessionDuration,
       timeZone: details.timeZone,
       type: details.type,
       isActive: details.isActive,
@@ -131,9 +136,7 @@ const DoctorClinicDetails: React.FC = () => {
   const onSubmit = (data: ConsulationDetailsSchema) => {
     if (!user?.id) return;
 
-    const currentClinic = clinicDetails.find(
-      (clinic) => clinic.id === data.id,
-    );
+    const currentClinic = clinicDetails.find((clinic) => clinic.id === data.id);
 
     if (!currentClinic) return;
 
@@ -143,7 +146,7 @@ const DoctorClinicDetails: React.FC = () => {
       doctorId: doctorProfile.doctor.id,
       clinicId: currentClinic.clinic?.id,
       consultationFee: currentClinic.consultationFee,
-      slotDuration: currentClinic.slotDuration,
+      slotDuration: currentClinic.slotRules.sessionDuration,
       timeZone: currentClinic.timeZone,
       type: currentClinic.type,
       isActive: currentClinic.isActive,
@@ -177,9 +180,7 @@ const DoctorClinicDetails: React.FC = () => {
 
   const fieldClasses = cn(
     FIELD_CLASSES,
-    editingClinicId
-      ? "border-[#1dc465]/40 focus:border-[#1dc465] focus:ring-1 focus:ring-[#1dc465]/40"
-      : "border-white/8 cursor-default",
+    editingClinicId ? "border-white/10" : "border-white/8 cursor-default",
   );
 
   return (
@@ -200,13 +201,16 @@ const DoctorClinicDetails: React.FC = () => {
         return (
           <div
             key={details.id}
-            className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6"
+            className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6"
           >
             {/* Clinic */}
             <div>
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-white font-semibold text-base flex items-center gap-2">
-                  <Building className="w-4 h-4 text-[#1dc465]" />
+              <div className="mb-5 flex items-center justify-between">
+                <h3 className="flex items-center gap-2 text-base font-semibold text-white">
+                  <Building
+                    className="h-4 w-4"
+                    style={{ color: primaryColor }}
+                  />
                   Clinic details
                 </h3>
 
@@ -214,7 +218,8 @@ const DoctorClinicDetails: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => startEdit(details)}
-                    className="flex items-center gap-1.5 text-xs font-medium text-[#1dc465] hover:text-[#15a050] transition-colors cursor-pointer"
+                    className="flex cursor-pointer items-center gap-1.5 text-xs font-medium transition-colors hover:opacity-80"
+                    style={{ color: primaryColor }}
                   >
                     <Pencil size={13} />
                     Edit
@@ -224,7 +229,7 @@ const DoctorClinicDetails: React.FC = () => {
                     <button
                       type="button"
                       onClick={cancelEdit}
-                      className="flex items-center gap-1 text-xs font-medium text-[#8b9ab0] hover:text-white px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer"
+                      className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#8b9ab0] transition-colors hover:text-white"
                     >
                       <X size={13} />
                       Cancel
@@ -234,12 +239,12 @@ const DoctorClinicDetails: React.FC = () => {
                       type="button"
                       disabled={isPending}
                       onClick={handleSubmit(onSubmit)}
-                      className={cn(
-                        "flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors",
-                        isPending
-                          ? "bg-[#1dc465]/50 text-primary-100 cursor-not-allowed"
-                          : "bg-[#1dc465] text-[#0d1a27] hover:bg-[#15a050] cursor-pointer",
-                      )}
+                      className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
+                      style={{
+                        backgroundColor: isPending ? primaryTint : primaryColor,
+                        color: isPending ? primaryColor : "#0d1a27",
+                        opacity: isPending ? 0.6 : 1,
+                      }}
                     >
                       <Check size={13} />
                       Save
@@ -249,26 +254,35 @@ const DoctorClinicDetails: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#1dc465]/10 border border-[#1dc465]/20 flex items-center justify-center shrink-0">
-                  <span className="text-[#1dc465] font-semibold text-base">
+                <div
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border"
+                  style={{
+                    backgroundColor: primaryTint,
+                    borderColor: primaryBorder,
+                  }}
+                >
+                  <span
+                    className="text-base font-semibold"
+                    style={{ color: primaryColor }}
+                  >
                     {details.clinic?.name?.[0]?.toUpperCase() ?? "C"}
                   </span>
                 </div>
 
                 <div className="min-w-0">
-                  <p className="text-white font-medium text-sm">
+                  <p className="text-sm font-medium text-white">
                     {details.clinic?.name}
                   </p>
 
-                  <p className="text-[#8b9ab0] text-sm mt-1 leading-relaxed">
+                  <p className="mt-1 text-sm leading-relaxed text-[#8b9ab0]">
                     {details.clinic?.about || "No description available."}
                   </p>
                 </div>
               </div>
 
               {addressParts.length > 0 && (
-                <div className="flex items-start gap-2 mt-4 pt-4 border-t border-white/8">
-                  <MapPinned className="w-4 h-4 text-[#8b9ab0] mt-0.5 shrink-0" />
+                <div className="mt-4 flex items-start gap-2 border-t border-white/8 pt-4">
+                  <MapPinned className="mt-0.5 h-4 w-4 shrink-0 text-[#8b9ab0]" />
 
                   <p className="text-sm text-[#c3cddb]">
                     {addressParts.join(", ")}
@@ -281,16 +295,14 @@ const DoctorClinicDetails: React.FC = () => {
 
             {/* Consultation */}
             <div>
-              <h3 className="text-white font-semibold text-base mb-5">
+              <h3 className="mb-5 text-base font-semibold text-white">
                 Consultation settings
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {SETTING_FIELDS.map((field) => {
                   const Icon = field.icon;
-                  const value = details[
-                    field.key
-                  ] as number;
+                  const value = details[field.key] as number;
 
                   const error =
                     errors[field.key as keyof ConsulationDetailsSchema];
@@ -311,6 +323,7 @@ const DoctorClinicDetails: React.FC = () => {
                             min={field.min}
                             step={field.step}
                             className={fieldClasses}
+                            style={primaryStyle}
                             {...register(
                               field.key as keyof ConsulationDetailsSchema,
                               {
@@ -320,13 +333,13 @@ const DoctorClinicDetails: React.FC = () => {
                           />
 
                           {error && (
-                            <p className="text-red-500 text-[11px] mt-2">
+                            <p className="mt-2 text-[11px] text-red-500">
                               {error.message}
                             </p>
                           )}
                         </>
                       ) : (
-                        <p className="text-sm text-white px-3.5 py-2.5">
+                        <p className="px-3.5 py-2.5 text-sm text-white">
                           {field.display(value)}
                         </p>
                       )}
@@ -348,13 +361,10 @@ const DoctorClinicDetails: React.FC = () => {
                       type="text"
                       value={details.timeZone ?? "Not Set"}
                       readOnly
-                      className={cn(
-                        fieldClasses,
-                        "cursor-not-allowed",
-                      )}
+                      className={cn(fieldClasses, "cursor-not-allowed")}
                     />
                   ) : (
-                    <p className="text-sm text-white px-3.5 py-2.5">
+                    <p className="px-3.5 py-2.5 text-sm text-white">
                       {details.timeZone || "Not Set"}
                     </p>
                   )}
@@ -375,6 +385,7 @@ const DoctorClinicDetails: React.FC = () => {
                     <>
                       <select
                         className={fieldClasses}
+                        style={primaryStyle}
                         {...register("type")}
                       >
                         <option value="ONLINE">Online</option>
@@ -383,13 +394,13 @@ const DoctorClinicDetails: React.FC = () => {
                       </select>
 
                       {errors.type && (
-                        <p className="text-red-500 text-[11px] mt-2">
+                        <p className="mt-2 text-[11px] text-red-500">
                           {errors.type.message}
                         </p>
                       )}
                     </>
                   ) : (
-                    <p className="text-sm text-white px-3.5 py-2.5 capitalize">
+                    <p className="px-3.5 py-2.5 text-sm capitalize text-white">
                       {details.type.toLowerCase()}
                     </p>
                   )}
@@ -397,13 +408,13 @@ const DoctorClinicDetails: React.FC = () => {
               </div>
 
               {/* Appointment status */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/8">
+              <div className="mt-4 flex items-center justify-between border-t border-white/8 pt-4">
                 <div>
-                  <p className="text-sm text-white font-medium">
+                  <p className="text-sm font-medium text-white">
                     Accepting appointments
                   </p>
 
-                  <p className="text-xs text-[#8b9ab0] mt-0.5">
+                  <p className="mt-0.5 text-xs text-[#8b9ab0]">
                     Patients can only book slots while this is on.
                   </p>
                 </div>
@@ -419,19 +430,21 @@ const DoctorClinicDetails: React.FC = () => {
                     })
                   }
                   className={cn(
-                    "relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0",
-                    isActive ? "bg-[#1dc465]" : "bg-white/10",
+                    "relative flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200",
                     !isEditing
                       ? "cursor-not-allowed opacity-70"
                       : "cursor-pointer",
                   )}
+                  style={{
+                    backgroundColor: isActive
+                      ? primaryColor
+                      : "rgba(255,255,255,0.1)",
+                  }}
                 >
                   <span
                     className={cn(
-                      "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-200",
-                      isActive
-                        ? "translate-x-5"
-                        : "translate-x-0",
+                      "absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-200",
+                      isActive ? "translate-x-5" : "translate-x-0",
                     )}
                   />
                 </button>
@@ -442,14 +455,12 @@ const DoctorClinicDetails: React.FC = () => {
       })}
 
       {!clinicDetails.length && (
-        <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-8 text-center">
-          <Building className="w-8 h-8 text-[#5b6b80] mx-auto mb-3" />
+        <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-8 text-center">
+          <Building className="mx-auto mb-3 h-8 w-8 text-[#5b6b80]" />
 
-          <p className="text-white font-medium text-sm">
-            No clinics available
-          </p>
+          <p className="text-sm font-medium text-white">No clinics available</p>
 
-          <p className="text-[#8b9ab0] text-xs mt-1">
+          <p className="mt-1 text-xs text-[#8b9ab0]">
             Clinic details will appear here once a clinic is associated.
           </p>
         </div>

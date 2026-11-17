@@ -1,3 +1,4 @@
+
 import type { AddressDetailsProps } from "@/types/patient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -35,15 +36,13 @@ const fields = [
 
 const DoctorAddressDetails: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
+
   const doctorProfile = useAuthStore((state) => state.doctor);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
+  const { primaryColor } = useAuthStore((state) => state.platform);
 
   const { countries, states, cities, handleCountryChange, handleStateChange } =
     useLocationOptions();
-
-  if (!doctorProfile) {
-    return <DoctorAddressDetailsSkeleton />;
-  }
 
   const {
     register,
@@ -69,9 +68,22 @@ const DoctorAddressDetails: React.FC = () => {
     pincode: doctorProfile?.address?.pincode,
   };
 
+  const { mutate, isPending } = useAuthMutate(updateDoctorAddress, {
+    onSuccess(data) {
+      if (data?.data && doctorProfile) {
+        const updatedAddress = {
+          ...doctorProfile,
+          address: { ...data.data },
+        };
+
+        updateDoctor(updatedAddress);
+      }
+    },
+  });
+
   useEffect(() => {
     reset(address);
-  }, [reset]);
+  }, [reset, doctorProfile]);
 
   useEffect(() => {
     if (country) {
@@ -85,6 +97,10 @@ const DoctorAddressDetails: React.FC = () => {
     }
   }, [country, state]);
 
+  if (!doctorProfile) {
+    return <DoctorAddressDetailsSkeleton />;
+  }
+
   const startEdit = () => {
     reset(address);
     setIsEditing(true);
@@ -95,30 +111,27 @@ const DoctorAddressDetails: React.FC = () => {
     setIsEditing(false);
   };
 
-  const { mutate, isPending } = useAuthMutate(updateDoctorAddress, {
-    onSuccess(data) {
-      if (data?.data) {
-        const updatedAddress = {
-          ...doctorProfile,
-          address: { ...data?.data },
-        };
-        updateDoctor(updatedAddress);
-      }
-    },
-  });
-
   const inputClasses =
-    "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none " +
+    "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 " +
     "bg-[#101f2e] text-white placeholder:text-[#5b6b80] " +
-    "border-[#1dc465]/40 focus:border-[#1dc465] focus:ring-1 focus:ring-[#1dc465]/40";
+    "border-white/10 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
 
-  const errorText = "text-xs text-red-500 mt-1";
+  const errorText = "mt-1 text-xs text-red-500";
+
+  const primaryStyle = {
+    "--primary-color": primaryColor,
+  } as React.CSSProperties;
+
+  const primaryTint = `color-mix(in srgb, ${primaryColor} 10%, transparent)`;
 
   return (
-    <div className="bg-[#0d1a27] border border-white/8 rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-5">
-        <h3 className="text-white font-semibold text-base flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-[#1dc465]" />
+    <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <h3 className="flex items-center gap-2 text-base font-semibold text-white">
+          <MapPin
+            className="h-4 w-4"
+            style={{ color: primaryColor }}
+          />
           Address
         </h3>
 
@@ -126,7 +139,8 @@ const DoctorAddressDetails: React.FC = () => {
           <button
             type="button"
             onClick={startEdit}
-            className="flex items-center gap-1.5 text-xs font-medium text-[#1dc465] hover:text-[#15a050] cursor-pointer"
+            className="flex cursor-pointer items-center gap-1.5 text-xs font-medium transition-opacity hover:opacity-80"
+            style={{ color: primaryColor }}
           >
             <Pencil size={13} />
             Edit
@@ -136,7 +150,7 @@ const DoctorAddressDetails: React.FC = () => {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center gap-1 text-xs text-[#8b9ab0] hover:text-white cursor-pointer"
+              className="flex cursor-pointer items-center gap-1 text-xs text-[#8b9ab0] transition-colors hover:text-white"
             >
               <X size={13} />
               Cancel
@@ -146,11 +160,12 @@ const DoctorAddressDetails: React.FC = () => {
               type="submit"
               disabled={isPending}
               form="address-form"
-              className={`flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors ${
-                isPending
-                  ? "bg-[#1dc465]/50 text-primary-100 cursor-not-allowed"
-                  : "bg-[#1dc465] text-[#0d1a27] hover:bg-[#15a050] cursor-pointer"
-              }`}
+              className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: isPending ? primaryTint : primaryColor,
+                color: isPending ? primaryColor : "#0d1a27",
+                opacity: isPending ? 0.6 : 1,
+              }}
             >
               <Check size={13} />
               Save
@@ -184,7 +199,7 @@ const DoctorAddressDetails: React.FC = () => {
               ),
               {
                 position: "bottom-right",
-              },
+              }
             );
           } else {
             mutate(data);
@@ -193,55 +208,59 @@ const DoctorAddressDetails: React.FC = () => {
         })}
       >
         {!isEditing ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {fields.map(({ key, label }) => (
               <div
                 key={key}
                 className={key === "addressLine" ? "sm:col-span-2" : ""}
               >
-                <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+                <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                   {label}
                 </label>
 
-                <p className="text-sm text-white px-3.5 py-2.5">
+                <p className="px-3.5 py-2.5 text-sm text-white">
                   {address?.[key] || "—"}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                 Address Line
               </label>
 
               <div className="relative">
-                <Home className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8b9ab0]" />
+                <Home className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
 
                 <input
                   className={`${inputClasses} pl-10`}
+                  style={primaryStyle}
                   placeholder="House no, street, locality"
                   {...register("addressLine")}
                 />
               </div>
 
               {errors.addressLine && (
-                <p className={errorText}>{errors.addressLine.message}</p>
+                <p className={errorText}>
+                  {errors.addressLine.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                 Country
               </label>
 
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8b9ab0]" />
+                <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
 
                 <select
                   {...register("country")}
-                  className={`${inputClasses} pl-10 appearance-none`}
+                  className={`${inputClasses} appearance-none pl-10`}
+                  style={primaryStyle}
                 >
                   <option value="">Select Country</option>
 
@@ -254,24 +273,27 @@ const DoctorAddressDetails: React.FC = () => {
               </div>
 
               {errors.country && (
-                <p className={errorText}>{errors.country.message}</p>
+                <p className={errorText}>
+                  {errors.country.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                 State
               </label>
 
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8b9ab0]" />
+                <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
 
                 <select
                   {...register("state")}
                   disabled={!country}
-                  className={`${inputClasses} pl-10 appearance-none ${
-                    !country ? "opacity-50 cursor-not-allowed" : ""
+                  className={`${inputClasses} appearance-none pl-10 ${
+                    !country ? "cursor-not-allowed opacity-50" : ""
                   }`}
+                  style={primaryStyle}
                 >
                   <option value="">Select State</option>
 
@@ -284,29 +306,35 @@ const DoctorAddressDetails: React.FC = () => {
               </div>
 
               {errors.state && (
-                <p className={errorText}>{errors.state.message}</p>
+                <p className={errorText}>
+                  {errors.state.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                 City
               </label>
 
               <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8b9ab0]" />
+                <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
 
                 <select
                   {...register("city")}
                   disabled={!state}
-                  className={`${inputClasses} pl-10 appearance-none ${
-                    !state ? "opacity-50 cursor-not-allowed" : ""
+                  className={`${inputClasses} appearance-none pl-10 ${
+                    !state ? "cursor-not-allowed opacity-50" : ""
                   }`}
+                  style={primaryStyle}
                 >
                   <option value="">Select City</option>
 
                   {cities.map((city, index) => (
-                    <option key={`${city.name}-${index}`} value={city.name}>
+                    <option
+                      key={`${city.name}-${index}`}
+                      value={city.name}
+                    >
                       {city.name}
                     </option>
                   ))}
@@ -314,27 +342,32 @@ const DoctorAddressDetails: React.FC = () => {
               </div>
 
               {errors.city && (
-                <p className={errorText}>{errors.city.message}</p>
+                <p className={errorText}>
+                  {errors.city.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#8b9ab0] mb-1.5">
+              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
                 Pincode
               </label>
 
               <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8b9ab0]" />
+                <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
 
                 <input
                   {...register("pincode")}
                   className={`${inputClasses} pl-10`}
+                  style={primaryStyle}
                   placeholder="Postal / ZIP code"
                 />
               </div>
 
               {errors.pincode && (
-                <p className={errorText}>{errors.pincode.message}</p>
+                <p className={errorText}>
+                  {errors.pincode.message}
+                </p>
               )}
             </div>
           </div>

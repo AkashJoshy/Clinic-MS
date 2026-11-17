@@ -1,3 +1,5 @@
+import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
+import type { IPlatformSettingsRepository } from "../../../../domain/repositories/i-platform-settings.repository.ts";
 import type {
   LoginResponseDTO,
   LoginDTO,
@@ -15,12 +17,26 @@ export class AdminLoginUseCase implements ILoginUseCase {
     private _userExistenceService: IUserExistenceService,
     private _accesstokenGenerationService: IAccessTokenGenerationService,
     private _refreshtokenGenerationService: IRefreshTokenGenerationService,
+    private _platformSettingsRepository: IPlatformSettingsRepository,
   ) {}
 
   async execute(
     data: LoginDTO,
   ): Promise<LoginResponseDTO | LoginVerificationResponseDTO> {
     const user = await this._userExistenceService.execute(data);
+
+    const platformSettings =
+      await this._platformSettingsRepository.findSettings();
+
+    if (!platformSettings || !platformSettings.id) {
+      throw new NotFoundError("Platform Settings");
+    }
+
+    const {
+      general: {
+        appearance: { mode },
+      },
+    } = platformSettings;
 
     const { password, ...updatedUser } = user;
 
@@ -47,7 +63,7 @@ export class AdminLoginUseCase implements ILoginUseCase {
 
     let role = user.role.toLowerCase();
     return {
-      user,
+      user: { ...updatedUser, theme: mode },
       tokenPair,
       role,
     };

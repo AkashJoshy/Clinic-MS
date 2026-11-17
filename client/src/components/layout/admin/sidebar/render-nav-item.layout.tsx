@@ -38,26 +38,37 @@ const RenderNavItem: React.FC<Props> = ({ item, collapsed, role }) => {
     },
   });
 
+  const users = useAuthStore((state) => state.users);
+  const admin = users[role];
+
   const baseClasses = cn(
     "group relative flex items-center px-3 py-2.5 rounded-xl",
     collapsed ? "justify-center" : "justify-center lg:justify-start",
     "transition-all duration-200 cursor-pointer select-none",
     "text-sm font-medium",
     isActive
-      ? "bg-[#1dc465]/15 text-[#1dc465]"
-      : "text-[#8b9ab0] hover:bg-white/5 hover:text-white",
+      ? admin?.theme === "DARK"
+        ? "bg-primary/15 text-primary"
+        : "bg-primary/10 text-primary"
+      : admin?.theme === "DARK"
+        ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
+        : "text-gray-500 hover:bg-black/5 hover:text-gray-900",
   );
 
   const inner = (
     <>
       {isActive && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#1dc465] rounded-r-full" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
       )}
 
       <span
         className={cn(
           "shrink-0 flex items-center justify-center transition-colors duration-200",
-          isActive ? "text-[#1dc465]" : "text-[#8b9ab0] group-hover:text-white",
+          isActive
+            ? "text-primary"
+            : admin?.theme === "DARK"
+              ? "text-[#8b9ab0] group-hover:text-white"
+              : "text-gray-500 group-hover:text-gray-900",
         )}
       >
         {item.icon}
@@ -113,7 +124,7 @@ const RenderNavItem: React.FC<Props> = ({ item, collapsed, role }) => {
           open={showLogoutAlert}
           onOpenChange={setShowLogoutAlert}
           onConfirm={handleLogoutConfirm}
-          isDark={true}
+          isDark={admin?.theme === "DARK"}
         />
       </>
     );

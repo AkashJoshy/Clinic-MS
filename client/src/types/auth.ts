@@ -1,6 +1,6 @@
 import type { ClipboardEvent, KeyboardEvent, RefObject } from "react";
 import type { PatientProfile } from "./patient";
-import type { RegisterUser, User } from "./user";
+import type { RegisterUser, User, UserWithTheme } from "./user";
 import type { Doctor, DoctorInfo } from "./doctor";
 import type { ROLE_VALUES } from "@/constants/role.constants";
 
@@ -29,9 +29,15 @@ export interface Tokens {
 }
 
 export interface Users {
-  patient: User | null;
-  admin: User | null;
-  doctor: User | null;
+  patient: UserWithTheme | null;
+  admin: UserWithTheme | null;
+  doctor: UserWithTheme | null;
+}
+
+export interface PlatformData {
+  platformName: string;
+  primaryColor: string;
+  isMaintenanceMode: boolean;
 }
 
 export interface AuthStateDTO {
@@ -41,6 +47,7 @@ export interface AuthStateDTO {
   patients: PatientProfile[] | [];
   activePatient: PatientProfile | null;
   isAuthenticated: boolean;
+  platform: PlatformData;
   isLoading: boolean;
   error: string | null;
   _hasHydrated: boolean;

@@ -1,7 +1,10 @@
+
 import React, { useState } from "react";
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Wifi } from "lucide-react";
 
 import { formatCurrency } from "@/helpers/wallet.helper";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import { useAuthStore } from "@/store";
 
 interface WalletBalanceCardProps {
   totalBalance: number;
@@ -17,14 +20,27 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
   trendPercent = 12.5,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const { primaryColor } = useAuthStore((state) => state.platform);
+
+  const brandColor = primaryColor || "#1DC465";
+  const contrastColor = getContrastTextColor(brandColor);
+
+  const brandTint = (opacity: number) =>
+    `color-mix(in srgb, ${brandColor} ${opacity}%, transparent)`;
+
+  const cardGradient = `linear-gradient(
+    135deg,
+    #0D1A27 0%,
+    color-mix(in srgb, ${brandColor} 18%, #0D1A27) 48%,
+    color-mix(in srgb, ${brandColor} 38%, #0D1A27) 100%
+  )`;
 
   return (
     <div
       className="
         relative flex min-w-0 flex-col justify-between
         overflow-hidden rounded-3xl
-        border border-emerald-500/20
-        bg-gradient-to-br from-[#0D1A27] via-[#092b1f] to-[#044425]
+        border
         p-6 text-white
         shadow-xl shadow-slate-900/10
         transition-all hover:shadow-2xl
@@ -32,6 +48,11 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
         sm:min-h-[270px] sm:p-5
         md:min-h-[250px] md:p-6
       "
+      style={{
+        background: cardGradient,
+        borderColor: brandTint(25),
+        boxShadow: `0 20px 40px -20px ${brandTint(25)}`,
+      }}
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-15">
         <svg
@@ -50,16 +71,22 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
             cx="200"
             cy="200"
             r="180"
-            stroke="#1DC465"
+            stroke={brandColor}
             strokeWidth="1.5"
             strokeDasharray="4 4"
           />
 
-          <circle cx="200" cy="200" r="140" stroke="#1DC465" strokeWidth="1" />
+          <circle
+            cx="200"
+            cy="200"
+            r="140"
+            stroke={brandColor}
+            strokeWidth="1"
+          />
 
           <path
             d="M50,200 Q120,80 200,200 T350,200"
-            stroke="#1DC465"
+            stroke={brandColor}
             strokeWidth="2"
             fill="none"
           />
@@ -78,12 +105,16 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
           <div
             className="
               flex h-8 w-8 shrink-0 items-center justify-center
-              rounded-lg border border-[#1DC465]/40
-              bg-[#1DC465]/20 text-[#1DC465]
+              rounded-lg border
 
               sm:h-7 sm:w-7
               md:h-8 md:w-8
             "
+            style={{
+              borderColor: brandTint(45),
+              backgroundColor: brandTint(20),
+              color: brandColor,
+            }}
           >
             <ShieldCheck className="h-5 w-5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
           </div>
@@ -92,11 +123,12 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
             <span
               className="
                 block truncate text-xs font-bold
-                uppercase tracking-widest text-emerald-300
+                uppercase tracking-widest
 
                 sm:text-[11px] sm:tracking-wide
                 md:text-xs md:tracking-widest
               "
+              style={{ color: brandColor }}
             >
               Healthixia Care
             </span>
@@ -118,16 +150,19 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
           <span
             className="
               font-mono text-[10px] uppercase tracking-wider
-              text-emerald-400/80
 
               sm:text-[9px] sm:tracking-normal
               md:text-[10px] md:tracking-wider
             "
+            style={{ color: brandTint(85) }}
           >
             VIRTUAL
           </span>
 
-          <Wifi className="h-5 w-5 rotate-90 text-emerald-300/80 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+          <Wifi
+            className="h-5 w-5 rotate-90 sm:h-4 sm:w-4 md:h-5 md:w-5"
+            style={{ color: brandTint(85) }}
+          />
         </div>
       </div>
 
@@ -165,16 +200,25 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
           <div
             className="
               flex min-w-0 max-w-full items-center gap-1.5
-              rounded-full border border-emerald-400/30
-              bg-emerald-500/20 px-3 py-1
-              text-xs font-semibold text-emerald-300
+              rounded-full border
+              px-3 py-1
+              text-xs font-semibold
               backdrop-blur-sm
+              transition-colors
 
               sm:gap-1 sm:px-2 sm:text-[10px]
               md:gap-1.5 md:px-3 md:text-xs
             "
+            style={{
+              backgroundColor: brandColor,
+              borderColor: brandColor,
+              color: contrastColor,
+            }}
           >
-            <TrendingUp className="h-3.5 w-3.5 shrink-0 text-[#1DC465]" />
+            <TrendingUp
+              className="h-3.5 w-3.5 shrink-0"
+              style={{ color: contrastColor }}
+            />
 
             <span className="truncate">
               {trendPercent > 0 ? "+" : ""}
@@ -208,8 +252,12 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
               text-slate-400 transition-colors
               hover:text-white
               focus-visible:outline-none
-              focus-visible:ring-2 focus-visible:ring-emerald-400
+              focus-visible:ring-2
             "
+            style={{
+              outlineColor: brandColor,
+              ["--tw-ring-color" as string]: brandColor,
+            }}
           >
             {isVisible ? (
               <Eye className="h-3.5 w-3.5" />
@@ -222,7 +270,9 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
         <div
           className="
             break-words font-sans text-3xl font-extrabold
-            tracking-tight text-white xsxs:text-[16px] xxs:text-[18px] xs:text-[20px] sm:text-[28px] md:text-4xl
+            tracking-tight text-white
+            xsxs:text-[16px] xxs:text-[18px] xs:text-[20px]
+            sm:text-[28px] md:text-4xl
           "
         >
           {isVisible ? formatCurrency(totalBalance) : "••••••••"}
@@ -251,7 +301,9 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
           <span
             title={walletHolder}
             className="
-              block truncate font-semiboldtracking-wide text-slate-100 sm:text-[11px] md:text-xs"
+              block truncate font-semibold tracking-wide text-slate-100
+              sm:text-[11px] md:text-xs
+            "
           >
             {walletHolder}
           </span>
@@ -260,7 +312,8 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
         <div className="min-w-0 text-right">
           <span
             className="
-              mb-1 block text-[10px] uppercase tracking-wider text-slate-400"
+              mb-1 block text-[10px] uppercase tracking-wider text-slate-400
+            "
           >
             Wallet ID
           </span>
@@ -268,7 +321,10 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
           <span
             title={maskedId}
             className="
-              block truncate font-mono font-medium tracking-widest text-emerald-300 sm:text-[11px] sm:tracking-wide md:text-xs md:tracking-widest"
+              block truncate font-mono font-medium tracking-widest
+              sm:text-[11px] sm:tracking-wide md:text-xs md:tracking-widest
+            "
+            style={{ color: brandColor }}
           >
             {maskedId}
           </span>

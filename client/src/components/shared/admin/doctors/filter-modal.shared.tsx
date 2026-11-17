@@ -1,81 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, RefreshCcw, Stethoscope, Circle } from "lucide-react";
+import { X, Check, RefreshCcw, Stethoscope } from "lucide-react";
+
 import { Button } from "../../../ui/button";
-
-type DepartmentDetails = {
-  id: string;
-  name: string;
-};
-
-export interface DoctorFilterState {
-  gender: "ALL" | "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
-  department: DepartmentDetails[];
-  sortBy: "NEWEST" | "OLDEST" | "NAME_ASC" | "NAME_DESC";
-}
-
-export const defaultDoctorFilters: DoctorFilterState = {
-  gender: "ALL",
-  department: [{ id: "1", name: "ALL" }],
-  sortBy: "NEWEST",
-};
-
-export interface DoctorFilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  filters: DoctorFilterState;
-  onApplyFilters: (filters: DoctorFilterState) => void;
-  departments: DepartmentDetails[];
-}
-
-const SegmentedControl: React.FC<{
-  options: { value: string; label: string; icon?: React.ReactNode }[];
-  value: string;
-  onChange: (v: string) => void;
-}> = ({ options, value, onChange }) => (
-  <div className="flex gap-2">
-    {options.map((opt) => {
-      const active = value === opt.value;
-      return (
-        <button
-          key={opt.value}
-          type="button"
-          onClick={() => onChange(opt.value)}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-[13px] rounded-[10px] border transition-all ${
-            active
-              ? "bg-[#1dc465]/10 border-[#1dc465]/40 text-[#1dc465] font-semibold"
-              : "bg-[#080d14] border-white/8 text-[#8b9ab0] hover:text-white hover:border-white/20"
-          }`}
-        >
-          {opt.icon}
-          {opt.label}
-        </button>
-      );
-    })}
-  </div>
-);
-
-const RadioCard: React.FC<{
-  label: string;
-  checked: boolean;
-  onChange: () => void;
-}> = ({ label, checked, onChange }) => (
-  <label
-    className={`flex items-center gap-2.5 px-3 py-2.5 text-[13px] rounded-[10px] border cursor-pointer transition-all ${
-      checked
-        ? "bg-[#1dc465]/10 border-[#1dc465]/40 text-[#1dc465] font-semibold"
-        : "bg-[#080d14] border-white/8 text-[#8b9ab0] hover:text-white hover:border-white/20"
-    }`}
-  >
-    <input
-      type="radio"
-      checked={checked}
-      onChange={onChange}
-      className="accent-[#1dc465] w-3.5 h-3.5"
-    />
-    {label}
-  </label>
-);
+import { useAuthStore } from "@/store";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import {
+  type DepartmentDoctorFilterDetails,
+  type DoctorFilterModalProps,
+  type DoctorFilterState,
+} from "@/types/admin/doctor.types";
+import { defaultDoctorFilters } from "@/constants/admin.constant";
 
 export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
   isOpen,
@@ -83,120 +18,253 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
   filters: initialFilters,
   onApplyFilters,
   departments,
+  role,
+  isDark,
 }) => {
   const [localFilters, setLocalFilters] =
     useState<DoctorFilterState>(initialFilters);
 
   useEffect(() => {
-    if (isOpen) setLocalFilters(initialFilters);
+    if (isOpen) {
+      setLocalFilters(initialFilters);
+    }
   }, [isOpen, initialFilters]);
+
+  const primaryColor = useAuthStore((state) => state.platform.primaryColor);
+
+  const primaryTextColor = getContrastTextColor(primaryColor);
+
+  const colors = {
+    background: isDark ? "#0d1a27" : "#ffffff",
+    surface: isDark ? "#080d14" : "#f9fafb",
+    footer: isDark ? "rgba(255,255,255,0.02)" : "#f9fafb",
+    heading: isDark ? "#ffffff" : "#111827",
+    description: isDark ? "#8b9ab0" : "#6b7280",
+    text: isDark ? "#8b9ab0" : "#6b7280",
+    border: isDark ? "rgba(255,255,255,0.08)" : "#e5e7eb",
+    hoverBorder: isDark ? "rgba(255,255,255,0.2)" : "#d1d5db",
+    closeBackground: isDark ? "rgba(255,255,255,0.03)" : "#f3f4f6",
+    closeText: isDark ? "#8b9ab0" : "#6b7280",
+  };
 
   const handleApply = () => {
     onApplyFilters(localFilters);
     onClose();
   };
 
-  const handleReset = () => setLocalFilters(defaultDoctorFilters);
+  const handleReset = () => {
+    setLocalFilters(defaultDoctorFilters);
+  };
+
+  const updateGender = (gender: DoctorFilterState["gender"]) => {
+    setLocalFilters((prev) => ({
+      ...prev,
+      gender,
+    }));
+  };
+
+  const updateSortBy = (sortBy: DoctorFilterState["sortBy"]) => {
+    setLocalFilters((prev) => ({
+      ...prev,
+      sortBy,
+    }));
+  };
+
+  const toggleDepartment = (dept: DepartmentDoctorFilterDetails) => {
+    setLocalFilters((prev) => {
+      const isSelected = prev.department.some(
+        (department) => department.id === dept.id,
+      );
+
+      return {
+        ...prev,
+        department: isSelected
+          ? prev.department.filter((department) => department.id !== dept.id)
+          : [...prev.department, dept],
+      };
+    });
+  };
+
+  const genderOptions: {
+    value: DoctorFilterState["gender"];
+    label: string;
+  }[] = [
+    { value: "ALL", label: "All" },
+    { value: "MALE", label: "Male" },
+    { value: "FEMALE", label: "Female" },
+    { value: "OTHERS", label: "Others" },
+    { value: "PREFER NOT TO SAY", label: "Prefer Not To Say" },
+  ];
+
+  const sortOptions: {
+    value: DoctorFilterState["sortBy"];
+    label: string;
+  }[] = [
+    { value: "NEWEST", label: "Newest first" },
+    { value: "OLDEST", label: "Oldest first" },
+    { value: "NAME_ASC", label: "Name (A-Z)" },
+    { value: "NAME_DESC", label: "Name (Z-A)" },
+  ];
+
+  const getOptionStyle = (selected: boolean): React.CSSProperties => ({
+    borderColor: selected ? primaryColor : colors.border,
+    backgroundColor: selected
+      ? `color-mix(in srgb, ${primaryColor} 12%, transparent)`
+      : colors.surface,
+    color: selected ? primaryColor : colors.text,
+    fontWeight: selected ? 600 : 500,
+  });
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed -inset-6.25 bg-black/30 backdrop-blur-sm z-[100]"
+            className="fixed -inset-6.25 z-100 bg-black/30 backdrop-blur-sm"
           />
 
+          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 20 }}
             transition={{ type: "spring", duration: 0.45, bounce: 0.25 }}
-            className="
-              fixed z-[101] flex flex-col overflow-hidden
-              bg-[#0d1a27] border border-white/8 shadow-2xl
-
-              /* Mobile: centered modal */
-              left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-              w-[92vw] max-w-[440px] rounded-[16px] max-h-[88vh]
-            "
+            style={{
+              backgroundColor: colors.background,
+              borderColor: colors.border,
+            }}
+            className="fixed left-1/2 top-1/2 z-[101] flex max-h-[88vh] w-[92vw] max-w-[440px] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-[16px] border shadow-2xl"
           >
-            <div className="px-5 py-4 border-b border-white/8 shrink-0">
+            {/* Header */}
+            <div
+              style={{ borderColor: colors.border }}
+              className="shrink-0 border-b px-5 py-4"
+            >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-base font-bold text-white tracking-tight leading-none">
+                  <h2
+                    style={{ color: colors.heading }}
+                    className="text-base font-bold leading-none tracking-tight"
+                  >
                     Filter doctors
                   </h2>
-                  <p className="text-[13px] text-[#8b9ab0] mt-1.5 leading-snug">
+
+                  <p
+                    style={{ color: colors.description }}
+                    className="mt-1.5 text-[13px] leading-snug"
+                  >
                     Refine the directory by status, department and more
                   </p>
                 </div>
+
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 cursor-pointer rounded-[8px] flex items-center justify-center text-[#8b9ab0] hover:bg-white/5 hover:text-white transition-colors shrink-0 bg-white/[0.03]"
+                  style={{
+                    backgroundColor: colors.closeBackground,
+                    color: colors.closeText,
+                  }}
+                  className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-[8px] transition-opacity hover:opacity-75"
                 >
                   <X size={16} />
                 </button>
               </div>
             </div>
 
-            <div className="px-5 py-5 overflow-y-auto custom-scrollbar flex flex-col gap-5">
+            {/* Filter Options */}
+            <div
+              className={`custom-scrollbar flex flex-col gap-5 overflow-y-auto px-5 py-5 ${
+                isDark ? "scrollbar-dark" : "scrollbar-light"
+              }`}
+            >
+              {/* Gender */}
               <div>
-                <label className="text-[13px] font-semibold text-white mb-2 block">
+                <label
+                  style={{ color: colors.heading }}
+                  className="mb-2 block text-[13px] font-semibold"
+                >
                   Gender
                 </label>
-                <SegmentedControl
-                  value={localFilters.gender}
-                  onChange={(v) =>
-                    setLocalFilters({ ...localFilters, gender: v as any })
-                  }
-                  options={[
-                    { value: "ALL", label: "All" },
-                    { value: "MALE", label: "Male" },
-                    { value: "FEMALE", label: "Female" },
-                    { value: "OTHERS", label: "Others" },
-                    { value: "PREFER NOT TO SAY", label: "Prefer Not To Say" },
-                  ]}
-                />
+
+                <div className="flex flex-wrap gap-2">
+                  {genderOptions.map((option) => {
+                    const isSelected = localFilters.gender === option.value;
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => updateGender(option.value)}
+                        style={getOptionStyle(isSelected)}
+                        className="rounded-[9px] border px-3 py-2 text-[12px] transition-all hover:opacity-80"
+                        onMouseEnter={(event) => {
+                          if (!isSelected) {
+                            event.currentTarget.style.borderColor =
+                              primaryColor;
+                            event.currentTarget.style.backgroundColor = `color-mix(in srgb, ${primaryColor} 12%, transparent)`;
+                            event.currentTarget.style.color = primaryColor;
+                          }
+                        }}
+                        onMouseLeave={(event) => {
+                          if (!isSelected) {
+                            Object.assign(
+                              event.currentTarget.style,
+                              getOptionStyle(false),
+                            );
+                          }
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
+              {/* Department */}
               <div>
-                <label className="text-[13px] font-semibold text-white mb-2 block">
+                <label
+                  style={{ color: colors.heading }}
+                  className="mb-2 block text-[13px] font-semibold"
+                >
                   Department
                 </label>
 
                 <div className="grid grid-cols-2 gap-2">
                   {departments.map((dept) => {
                     const isSelected = localFilters.department.some(
-                      (d) => d.id == dept.id,
+                      (department) => department.id === dept.id,
                     );
 
                     return (
                       <button
                         key={dept.id}
                         type="button"
-                        onClick={() => {
-                          const updatedDepartments = isSelected
-                            ? localFilters.department.filter(
-                                (d) => d.name !== dept.name,
-                              )
-                            : [...localFilters.department, dept];
-
-                          setLocalFilters({
-                            ...localFilters,
-                            department: updatedDepartments,
-                          });
+                        onClick={() => toggleDepartment(dept)}
+                        style={getOptionStyle(isSelected)}
+                        className="flex items-center justify-center gap-2 rounded-[10px] border px-3 py-2.5 text-[13px] transition-all hover:opacity-80"
+                        onMouseEnter={(event) => {
+                          if (!isSelected) {
+                            event.currentTarget.style.borderColor =
+                              primaryColor;
+                            event.currentTarget.style.backgroundColor = `color-mix(in srgb, ${primaryColor} 12%, transparent)`;
+                            event.currentTarget.style.color = primaryColor;
+                          }
                         }}
-                        className={`flex items-center justify-center gap-2 px-3 py-2.5 text-[13px] rounded-[10px] border transition-all ${
-                          isSelected
-                            ? "bg-[#1dc465]/10 border-[#1dc465]/40 text-[#1dc465] font-semibold"
-                            : "bg-[#080d14] border-white/8 text-[#8b9ab0] hover:text-white hover:border-white/20"
-                        }`}
+                        onMouseLeave={(event) => {
+                          if (!isSelected) {
+                            Object.assign(
+                              event.currentTarget.style,
+                              getOptionStyle(false),
+                            );
+                          }
+                        }}
                       >
-                        <Stethoscope size={14} />
+                        <Stethoscope size={14} className="shrink-0" />
 
                         <span className="truncate">{dept.name}</span>
 
@@ -207,53 +275,77 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
                 </div>
               </div>
 
+              {/* Sort By */}
               <div>
-                <label className="text-[13px] font-semibold text-white mb-2 block">
+                <label
+                  style={{ color: colors.heading }}
+                  className="mb-2 block text-[13px] font-semibold"
+                >
                   Sort by
                 </label>
+
                 <div className="grid grid-cols-2 gap-2">
-                  <RadioCard
-                    label="Newest first"
-                    checked={localFilters.sortBy === "NEWEST"}
-                    onChange={() =>
-                      setLocalFilters({ ...localFilters, sortBy: "NEWEST" })
-                    }
-                  />
-                  <RadioCard
-                    label="Oldest first"
-                    checked={localFilters.sortBy === "OLDEST"}
-                    onChange={() =>
-                      setLocalFilters({ ...localFilters, sortBy: "OLDEST" })
-                    }
-                  />
-                  <RadioCard
-                    label="Name (A-Z)"
-                    checked={localFilters.sortBy === "NAME_ASC"}
-                    onChange={() =>
-                      setLocalFilters({ ...localFilters, sortBy: "NAME_ASC" })
-                    }
-                  />
-                  <RadioCard
-                    label="Name (Z-A)"
-                    checked={localFilters.sortBy === "NAME_DESC"}
-                    onChange={() =>
-                      setLocalFilters({ ...localFilters, sortBy: "NAME_DESC" })
-                    }
-                  />
+                  {sortOptions.map((option) => {
+                    const isSelected = localFilters.sortBy === option.value;
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => updateSortBy(option.value)}
+                        style={getOptionStyle(isSelected)}
+                        className="flex items-center justify-between gap-2 rounded-[10px] border px-3 py-3 text-[13px] transition-all hover:opacity-80"
+                        onMouseEnter={(event) => {
+                          if (!isSelected) {
+                            event.currentTarget.style.borderColor =
+                              primaryColor;
+                            event.currentTarget.style.backgroundColor = `color-mix(in srgb, ${primaryColor} 12%, transparent)`;
+                            event.currentTarget.style.color = primaryColor;
+                          }
+                        }}
+                        onMouseLeave={(event) => {
+                          if (!isSelected) {
+                            Object.assign(
+                              event.currentTarget.style,
+                              getOptionStyle(false),
+                            );
+                          }
+                        }}
+                      >
+                        <span>{option.label}</span>
+
+                        {isSelected && <Check size={15} className="shrink-0" />}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between px-5 py-4 border-t border-white/8 bg-white/[0.02] shrink-0">
+            <div
+              style={{
+                borderColor: colors.border,
+                backgroundColor: colors.footer,
+              }}
+              className="flex shrink-0 items-center justify-between border-t px-5 py-4"
+            >
               <button
                 onClick={handleReset}
-                className="flex cursor-pointer items-center gap-2 text-[13px] text-[#8b9ab0] hover:text-white transition-colors font-medium"
+                style={{ color: colors.text }}
+                className="flex cursor-pointer items-center gap-2 text-[13px] font-medium transition-opacity hover:opacity-70"
               >
                 <RefreshCcw size={15} />
                 Reset all
               </button>
 
-              <Button onClick={handleApply}>
+              <Button
+                onClick={handleApply}
+                style={{
+                  backgroundColor: primaryColor,
+                  color: primaryTextColor,
+                }}
+                className="transition-opacity hover:opacity-90"
+              >
                 <Check size={15} />
                 Show results
               </Button>
@@ -264,3 +356,5 @@ export const DoctorFilterModal: React.FC<DoctorFilterModalProps> = ({
     </AnimatePresence>
   );
 };
+
+export default DoctorFilterModal;

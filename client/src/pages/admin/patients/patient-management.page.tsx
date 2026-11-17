@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Users, Filter, Search } from "lucide-react";
 import toast from "react-hot-toast";
@@ -13,10 +14,15 @@ import {
 } from "@/components/shared/admin/patients/patient-filter-modal";
 import { PatientListItemSkeleton } from "@/components/shared/skeletons/patient-list-item.skeleton";
 import { AnimatePresence, motion } from "framer-motion";
+import AdminPageHeader from "@/components/shared/page-header.shared";
+import { useAuthStore } from "@/store";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function PatientManagementPage() {
+  const { admin } = useAuthStore((state) => state.users);
+  const isDark = admin?.theme === "DARK";
+
   const [patientDetails, setPatientDetails] = useState<PatientBasicInfo[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,20 +32,42 @@ export default function PatientManagementPage() {
   );
   const [page, setPage] = useState<number>(1);
 
+  const theme = {
+    container: isDark
+      ? "border-white/10 bg-white/[0.02]"
+      : "border-gray-200 bg-gray-50",
+
+    searchIcon: "text-[#4a5568] group-focus-within:text-primary",
+
+    searchInput: isDark
+      ? "border-white/8 bg-[#0d1a27] text-white placeholder:text-[#4a5568]"
+      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400",
+
+    totalText: isDark ? "text-[#8b9ab0]" : "text-gray-500",
+
+    countBadge: isDark
+      ? "bg-gray-800 text-primary"
+      : "bg-primary/10 text-primary",
+
+    filterButton: isDark
+      ? "border-white/8 bg-[#0d1a27] text-[#8b9ab0] hover:text-white hover:bg-primary/5"
+      : "border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:bg-primary/5",
+
+    filterHover: "hover:border-primary/50",
+  };
+
   const fetchPatients = async () => {
     try {
       setIsLoading(true);
+
       const getPatients = await getAllPatients();
       const data = getPatients.data;
-      if (data) {
-        setPatientDetails(data);
-        setIsLoading(false);
-      } else {
-        setPatientDetails([]);
-        setIsLoading(false);
-      }
+
+      setPatientDetails(data ?? []);
     } catch (error: any) {
-      toast.error(error?.message);
+      toast.error(error?.message || "Failed to fetch patients.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,14 +92,16 @@ export default function PatientManagementPage() {
     ) {
       return false;
     }
+
     const activeStatus = det.user
-      ? det.user?.isActive === true
+      ? det.user.isActive === true
         ? "ACTIVE"
         : "INACTIVE"
       : "INACTIVE";
 
-    if (filters.status !== "ALL" && filters.status !== activeStatus)
+    if (filters.status !== "ALL" && filters.status !== activeStatus) {
       return false;
+    }
 
     return true;
   });
@@ -92,37 +122,34 @@ export default function PatientManagementPage() {
     } else if (filters.sortBy === "NAME_DESC") {
       return b.patient?.displayName.localeCompare(a.patient?.displayName);
     }
+
     return 0;
   });
 
   const totalPages = Math.ceil(filteredPatients.length / ITEMS_PER_PAGE);
+
   const paginatedPatients = filteredPatients.slice(
     (page - 1) * ITEMS_PER_PAGE,
     page * ITEMS_PER_PAGE,
   );
 
   return (
-    <div className="min-h-full p-6 lg:p-8 space-y-6 relative border border-white/10 bg-white/2 shadow-2xs">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 ">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#1dc465]/15 border border-[#1dc465]/25 flex items-center justify-center shrink-0">
-            <Users size={24} className="text-[#1dc465]" />
-          </div>
-          <div>
-            <h1 className="text-white text-2xl font-bold tracking-tight">
-              Patient Management
-            </h1>
-            <p className="text-[#8b9ab0] text-sm mt-0.5">
-              Monitor and manage all registered patients
-            </p>
-          </div>
-        </div>
+    <div
+      className={`relative min-h-full space-y-6 border p-6 shadow-2xs lg:p-8 ${theme.container}`}
+    >
+      <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+        <AdminPageHeader
+          icon={Users}
+          title="Patient Management"
+          description="Monitor and manage all registered patients"
+        />
 
-        <div className="relative group w-full lg:max-w-md">
+        <div className="group relative w-full lg:max-w-md">
           <Search
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4a5568] group-focus-within:text-[#1dc465] transition-colors"
+            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${theme.searchIcon}`}
           />
+
           <input
             type="text"
             placeholder="Search by Patient name or email..."
@@ -131,22 +158,28 @@ export default function PatientManagementPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full bg-[#0d1a27] border border-white/8 rounded-xl py-3.5 pl-11 pr-4 text-white text-sm focus:border-[#1dc465]/50 focus:ring-1 focus:ring-[#1dc465]/20 outline-none transition-all placeholder:text-[#4a5568] shadow-sm"
+            className={`w-full rounded-xl border py-3.5 pl-11 pr-4 text-sm shadow-sm outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-primary/20 ${theme.searchInput}`}
           />
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-[#8b9ab0] text-sm font-bold">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div
+          className={`flex items-center gap-2 text-sm font-bold ${theme.totalText}`}
+        >
           <span>Total Patients</span>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gray-800 text-primary">
+
+          <span
+            className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${theme.countBadge}`}
+          >
             {filteredPatients.length}
           </span>
         </div>
 
         <button
+          type="button"
           onClick={() => setIsFilterOpen(true)}
-          className="flex cursor-pointer items-center justify-center gap-2 px-6 py-3 bg-[#0d1a27] border border-white/8 rounded-xl text-[#8b9ab0] text-sm font-bold hover:text-white hover:border-[#1dc465]/50 hover:bg-[#1dc465]/5 transition-all w-full md:w-auto"
+          className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border px-6 py-3 text-sm font-bold transition-all md:w-auto ${theme.filterButton} ${theme.filterHover}`}
         >
           <Filter size={18} />
           <span>Filters</span>
@@ -161,18 +194,17 @@ export default function PatientManagementPage() {
           setFilters(newFilters);
           setPage(1);
         }}
+        isDark={isDark}
       />
 
       {isLoading ? (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <PatientListItemSkeleton key={i} />
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PatientListItemSkeleton key={i} isDark={admin?.theme === "DARK"} />
+          ))}
+        </div>
       ) : paginatedPatients.length === 0 ? (
-        <AllApprovals icon={Users} name="Patients" />
+        <AllApprovals icon={Users} name="Patients" isDark={isDark} />
       ) : (
         <AnimatePresence mode="wait">
           <motion.div
@@ -196,7 +228,7 @@ export default function PatientManagementPage() {
             }}
             className="space-y-3"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {paginatedPatients.map((det) => (
                 <motion.div
                   key={det.patient?.id}
@@ -224,9 +256,9 @@ export default function PatientManagementPage() {
                   }}
                 >
                   <PatientListItem
-                    key={det.patient?.id}
                     patientInfo={det}
                     setPatientInfo={setPatientDetails}
+                    isDark={isDark}
                   />
                 </motion.div>
               ))}
@@ -242,7 +274,7 @@ export default function PatientManagementPage() {
           totalItems={filteredPatients.length}
           itemsPerPage={ITEMS_PER_PAGE}
           onPageChange={setPage}
-          colorCode="WHITE"
+          isDark={isDark}
         />
       )}
     </div>

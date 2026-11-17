@@ -3,6 +3,7 @@ const DEPARTMENTS_BASE = "/departments";
 const DOCTORS_BASE = "/doctors";
 const PATIENTS_BASE = "/patients";
 const SUBSCRIPTIONS_BASE = "/subscriptions";
+const PLATFORM_SETTINGS_BASE = "/platform-settings";
 
 export const ADMIN_ENDPOINTS = {
   DEPARTMENTS: {
@@ -36,6 +37,11 @@ export const ADMIN_ENDPOINTS = {
     FETCH_ALL: SUBSCRIPTIONS_BASE,
     UPDATE_ONE: `${SUBSCRIPTIONS_BASE}/:subscriptionId`,
     UPDATE_STATUS: `${SUBSCRIPTIONS_BASE}/:subscriptionId/status`
+  },
+  PLATFORM_SETTINGS: {
+    BASE: PLATFORM_SETTINGS_BASE,
+    FETCH: PLATFORM_SETTINGS_BASE,
+    UPDATE: PLATFORM_SETTINGS_BASE
   },
   USERS: {
     BASE: "/users"

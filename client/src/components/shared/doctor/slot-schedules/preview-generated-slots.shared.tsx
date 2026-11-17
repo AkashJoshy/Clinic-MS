@@ -38,10 +38,12 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
   });
 
   return (
-    <div className="relative w-full min-w-0 rounded-lg border border-[#1dc465]/30 bg-[#0d1a27] p-3 text-[#8b9ab0] shadow-[0_0_20px_rgba(29,196,101,0.05)] sm:p-5 lg:p-6">
+    <div className="relative w-full min-w-0 rounded-lg border border-primary/30 bg-[#0d1a27] p-3 text-[#8b9ab0] shadow-[0_0_20px_color-mix(in_srgb,var(--primary)_5%,transparent)] sm:p-5 lg:p-6">
       <div className="mb-5 flex min-w-0 flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-2">
-          <NumberBadge number={4} className="shrink-0" />
+          <div className="shrink-0 [&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
+            <NumberBadge number={4} className="shrink-0" />
+          </div>
 
           <h2 className="min-w-0 text-base font-semibold leading-snug text-white sm:text-lg lg:text-xl">
             Preview Generated Slots
@@ -60,9 +62,7 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
           </button>
 
           <span className="min-w-0 flex-1 px-1 text-center text-xs font-medium text-white sm:min-w-[140px] sm:px-2 sm:text-sm">
-            {index === 0 && (
-              <span className="mr-1 text-[#1dc465]">Today ·</span>
-            )}
+            {index === 0 && <span className="mr-1 text-primary">Today ·</span>}
 
             {date.toLocaleDateString(undefined, {
               weekday: "short",
@@ -89,7 +89,7 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
           <span className="font-bold text-white">{slots.length}</span>
         </p>
 
-        <span className="rounded bg-[#1dc465]/10 px-2 py-1 text-[10px] text-[#1dc465] sm:text-xs">
+        <span className="rounded bg-primary/10 px-2 py-1 text-[10px] text-primary sm:text-xs">
           Day {index + 1} of {TOTAL_DAYS}
         </span>
       </div>
@@ -98,7 +98,7 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
         <div className="min-w-0 space-y-5 pr-3 sm:space-y-6">
           <section className="min-w-0">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#1dc465]">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
                 Available ({availableSlots.length})
               </h3>
 
@@ -126,12 +126,12 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
                       aria-pressed={selected}
                       className={`${slotCardCls} ${
                         selected
-                          ? "border-[#1dc465] bg-[#1dc465]/15 ring-1 ring-[#1dc465]"
+                          ? "border-primary bg-primary/15 ring-1 ring-primary"
                           : "border-white/10 bg-white/5 hover:bg-white/10"
                       }`}
                     >
                       <span className="flex min-w-0 items-start gap-2 text-xs font-medium text-white sm:text-sm">
-                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#1dc465]" />
+                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
 
                         <span className="min-w-0 wrap-break-word">
                           {slot.startTime} - {slot.endTime}
@@ -230,7 +230,7 @@ export const PreviewGeneratedSlots: React.FC<PreviewGeneratedSlotsProps> = ({
           type="button"
           onClick={onConfirm}
           disabled={isPending}
-          className="w-full rounded-lg cursor-pointer bg-[#1dc465] px-3 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#19a955] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:text-base"
+          className="w-full cursor-pointer rounded-lg bg-primary px-3 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:text-base"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

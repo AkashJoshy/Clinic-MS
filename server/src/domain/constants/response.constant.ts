@@ -13,6 +13,7 @@ export const RESPONSE_MESSAGE = {
   ACCOUNT_CREATED: "Account created successfully",
   ACCOUNT_UPDATED: "Account updated successfully",
   ACCOUNT_DEACTIVATED: "Account deactivated successfully",
+  ACCOUNT_DENIED: "Account Access Denied",
   LOGIN_SUCCESS: "Login successful",
   LOGOUT_SUCCESS: "Logout successful",
   INVALID_CREDENTIALS: "Invalid email or password",

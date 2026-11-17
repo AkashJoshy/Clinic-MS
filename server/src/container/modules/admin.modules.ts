@@ -24,6 +24,7 @@ import {
   mongooseDoctorReapplicationRepository,
   mongooseDoctorRepository,
   mongoosePatientRepository,
+  mongoosePlatformSettingsRepository,
   mongooseSubscriptionPlanRepository,
   mongooseUserRepository,
   nodeMailService,
@@ -37,6 +38,9 @@ import { DoctorController } from "../../presentation/controllers/admin/doctor.co
 import { PatientController } from "../../presentation/controllers/admin/patient.controller.ts";
 import { SubscriptionPlanController } from "../../presentation/controllers/admin/subscription-plan.controller.ts";
 import { UpdateSubscriptionPlanStatusUseCase } from "../../application/use-cases/admin/subscription-management/update-subscription-plan-status.usecase.ts";
+import { PlatformSettingsController } from "../../presentation/controllers/admin/platform-settings.controller.ts";
+import { GetPlatformSettingsUseCase } from "../../application/use-cases/admin/platform-settings/get-platform-settings.use-case.ts";
+import { UpdatePlatformSettingsUseCase } from "../../application/use-cases/admin/platform-settings/update-platform-settings.use-case.ts";
 
 // Service-Usecase
 
@@ -121,8 +125,13 @@ const getAllSubscriptionPlansUseCase = new GetAllSubscriptionPlansUseCase(
 const editSubscriptionPlanUseCase = new EditSubscriptionPlanUseCase(
   mongooseSubscriptionPlanRepository,
 );
-const updateSubscriptionPlanStatusUseCase = new UpdateSubscriptionPlanStatusUseCase(
-  mongooseSubscriptionPlanRepository,
+const updateSubscriptionPlanStatusUseCase =
+  new UpdateSubscriptionPlanStatusUseCase(mongooseSubscriptionPlanRepository);
+const getPlatformSettingsUseCase = new GetPlatformSettingsUseCase(
+  mongoosePlatformSettingsRepository,
+);
+const updatePlatformSettingsUseCase = new UpdatePlatformSettingsUseCase(
+  mongoosePlatformSettingsRepository,
 );
 // const searchDoctorsUsecase = new SearchDoctorsUsecase(
 //   mongooseUserRepository,
@@ -157,5 +166,10 @@ export const adminSubscriptionPlanController = new SubscriptionPlanController(
   createSubscriptionPlanUseCase,
   editSubscriptionPlanUseCase,
   getAllSubscriptionPlansUseCase,
-  updateSubscriptionPlanStatusUseCase
+  updateSubscriptionPlanStatusUseCase,
+);
+
+export const platformSettingsController = new PlatformSettingsController(
+  getPlatformSettingsUseCase,
+  updatePlatformSettingsUseCase
 );
