@@ -88,6 +88,12 @@ export type ResetPasswordDto = OtpDto & {
   role: Role;
 };
 
+export type ChangePasswordDto = {
+  userId: string
+  newPassword: string;
+  currentpassword: string;
+};
+
 export type loginFormProps = {
   portal: "Admin" | "Clinic" | "Doctor";
   role: "ADMIN" | "CLINIC" | "DOCTOR" | "PATIENT";

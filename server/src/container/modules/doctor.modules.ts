@@ -40,6 +40,9 @@ import {
   mongooseSubscriptionPlanRepository,
   mongooseWalletTransactionRepository,
   subscriptionChangeCalculationService,
+  mongooseKycRepository,
+  kycEncryptionService,
+  mongooseDoctorSettingsRepository,
 } from "../index.ts";
 import { UpdateReapplicationDetailsUseCase } from "../../application/use-cases/doctor/reapplication/update-doctor-reapplication.use-case.ts";
 import { GetSubscriptionOverview } from "../../application/use-cases/doctor/subscription/get-subscription-overview.usecase.ts";
@@ -51,6 +54,18 @@ import { GetDoctorDashboardOverviewUseCase } from "../../application/use-cases/d
 import { DashboardController } from "../../presentation/controllers/doctor/dashboard.controller.ts";
 import { GetDoctorCalendarUseCase } from "../../application/use-cases/doctor/dashboard/get-doctor-calendar.usecase.ts";
 import { InitializeCalendarDateRangeUseCase } from "../../application/services/dashboard/doctor/initialize-calendar-date-range.service.ts";
+import { DoctorKycController } from "../../presentation/controllers/doctor/kyc.controller.ts";
+import { UpdateDoctorPanDetailsUseCase } from "../../application/use-cases/doctor/kyc/update-doctor-pan-details.usecase.ts";
+import { UpdateDoctorBankDetailsUseCase } from "../../application/use-cases/doctor/kyc/update-doctor-bank-details.usecase.ts";
+import { UpdateDoctorAadhaarDetailsUseCase } from "../../application/use-cases/doctor/kyc/update-doctor-aadhaar-details.usecase.ts";
+import { GetDoctorAadhaarDetailsUseCase } from "../../application/use-cases/doctor/kyc/get-doctor-aadhaar-details.usecase.ts";
+import { GetDoctorPanDetailsUseCase } from "../../application/use-cases/doctor/kyc/get-doctor-pan-details.usecase.ts";
+import { GetDoctorBankDetailsUseCase } from "../../application/use-cases/doctor/kyc/get-doctor-bank-details.usecase.ts";
+import { GetDoctorKycDetailsUseCase } from "../../application/use-cases/doctor/kyc/get-doctor-kyc-details.usecase.ts";
+import { UpdateDoctorPersonalUseCase } from "../../application/use-cases/doctor/profile/update-doctor-personal.usecase.ts";
+import { DoctorSettingsController } from "../../presentation/controllers/doctor/doctor-settings.controller.ts";
+import { UpdateDoctorSettingsUseCase } from "../../application/use-cases/doctor/settings/update-doctor-settings.use-case.ts";
+import { GetDoctorSettingsUseCase } from "../../application/use-cases/doctor/settings/get-doctor-settings.use-case.ts";
 
 // Service-Usecase
 const walletCreationService = new WalletCreationService(
@@ -79,7 +94,8 @@ const getDoctorDetailsContextService = new GetDoctorDetailsContextService(
   mongooseAddressRepository,
 );
 
-const initializeCalendarDateRangeUseCase = new InitializeCalendarDateRangeUseCase()
+const initializeCalendarDateRangeUseCase =
+  new InitializeCalendarDateRangeUseCase();
 
 // Use-cases
 const doctorProfileUseCase = new DoctorProfileUseCase(
@@ -160,7 +176,7 @@ export const buySubscriptionWithWalletUseCase = new BuySubscriptionWithWallet(
   mongooseDoctorSubscriptionRepository,
   mongooseWalletRepository,
   mongooseWalletTransactionRepository,
-  subscriptionChangeCalculationService
+  subscriptionChangeCalculationService,
 );
 
 export const getSubscriptionUpgradeOptionsUseCase =
@@ -168,7 +184,7 @@ export const getSubscriptionUpgradeOptionsUseCase =
     mongooseDoctorRepository,
     mongooseDoctorSubscriptionRepository,
     mongooseSubscriptionPlanRepository,
-    subscriptionChangeCalculationService
+    subscriptionChangeCalculationService,
   );
 
 export const cancelSubscriptionUseCase = new CancelSubscriptionUseCase(
@@ -179,19 +195,82 @@ export const cancelSubscriptionUseCase = new CancelSubscriptionUseCase(
   mongooseWalletTransactionRepository,
 );
 
-export const getDoctorDashboardOverviewUseCase = new GetDoctorDashboardOverviewUseCase(
-  mongooseDoctorRepository,
-  mongooseSlotRepository,
-  mongooseClinicRepository,
-  mongooseDoctorClinicRepository
-);
+export const getDoctorDashboardOverviewUseCase =
+  new GetDoctorDashboardOverviewUseCase(
+    mongooseDoctorRepository,
+    mongooseSlotRepository,
+    mongooseClinicRepository,
+    mongooseDoctorClinicRepository,
+  );
 
 export const getDoctorCalendarUseCase = new GetDoctorCalendarUseCase(
   mongooseSlotRepository,
   mongooseDoctorRepository,
   mongooseClinicRepository,
   mongooseDoctorClinicRepository,
-  initializeCalendarDateRangeUseCase
+  initializeCalendarDateRangeUseCase,
+);
+
+export const updateDoctorPanDetailsUseCase = new UpdateDoctorPanDetailsUseCase(
+  mongooseDoctorRepository,
+  mongooseKycRepository,
+  kycEncryptionService,
+);
+
+export const updateDoctorBankDetailsUseCase =
+  new UpdateDoctorBankDetailsUseCase(
+    mongooseDoctorRepository,
+    mongooseKycRepository,
+    kycEncryptionService,
+  );
+
+export const updateDoctorAadhaarDetailsUseCase =
+  new UpdateDoctorAadhaarDetailsUseCase(
+    mongooseDoctorRepository,
+    mongooseKycRepository,
+    kycEncryptionService,
+  );
+
+export const getDoctorAadhaarDetailsUseCase =
+  new GetDoctorAadhaarDetailsUseCase(
+    mongooseDoctorRepository,
+    mongooseKycRepository,
+    kycEncryptionService,
+  );
+
+export const getDoctorKycDetailsUseCase = new GetDoctorKycDetailsUseCase(
+  mongooseDoctorRepository,
+  mongooseKycRepository,
+  kycEncryptionService,
+);
+
+export const getDoctorPanDetailsUseCase = new GetDoctorPanDetailsUseCase(
+  mongooseDoctorRepository,
+  mongooseKycRepository,
+  kycEncryptionService,
+);
+
+export const getDoctorBankDetailsUseCase = new GetDoctorBankDetailsUseCase(
+  mongooseDoctorRepository,
+  mongooseKycRepository,
+  kycEncryptionService,
+);
+
+export const updateDoctorPersonalUseCase = new UpdateDoctorPersonalUseCase(
+  mongooseUserRepository,
+  mongooseDoctorRepository,
+  mongooseDoctorSettingsRepository
+);
+
+export const updateDoctorSettingsUseCase = new UpdateDoctorSettingsUseCase(
+  mongooseDoctorRepository,
+  mongooseDoctorSettingsRepository
+);
+
+export const getDoctorSettingsUseCase = new GetDoctorSettingsUseCase(
+  mongooseUserRepository,
+  mongooseDoctorRepository,
+  mongooseDoctorSettingsRepository
 );
 
 // Controllers
@@ -201,6 +280,7 @@ export const doctorController = new DoctorController(
   updateDoctorConsultationDetailsUseCase,
   updateDoctorProfessionalDetailsUseCase,
   updateDoctorProfilePictureUseCase,
+  updateDoctorPersonalUseCase
 );
 
 export const doctorReapplicationController = new ReapplicationController(
@@ -219,7 +299,23 @@ export const doctorSubscriptionController = new SubscriptionController(
   cancelSubscriptionUseCase,
   getSubscriptionUpgradeOptionsUseCase,
 );
+
 export const doctorDashboardController = new DashboardController(
   getDoctorDashboardOverviewUseCase,
-  getDoctorCalendarUseCase
+  getDoctorCalendarUseCase,
+);
+
+export const doctorKycController = new DoctorKycController(
+  updateDoctorPanDetailsUseCase,
+  updateDoctorBankDetailsUseCase,
+  updateDoctorAadhaarDetailsUseCase,
+  getDoctorPanDetailsUseCase,
+  getDoctorBankDetailsUseCase,
+  getDoctorAadhaarDetailsUseCase,
+  getDoctorKycDetailsUseCase,
+);
+
+export const doctorSettingsController = new DoctorSettingsController(
+  getDoctorSettingsUseCase,
+  updateDoctorSettingsUseCase,
 );

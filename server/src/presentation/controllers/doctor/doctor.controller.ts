@@ -9,6 +9,7 @@ import type { IDoctorProfessionalUseCase } from "../../../application/interfaces
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import type { IUpdateProfilePictureUseCase } from "../../../application/interfaces/repositories/shared/i-update-profile-picture.usecase.ts";
 import type User from "../../../domain/entities/user.entity.ts";
+import type { IUpdateDoctorPersonalUseCase } from "../../../application/interfaces/repositories/doctor/profile/i-update-doctor-personal.usecase.ts";
 
 export class DoctorController {
   constructor(
@@ -17,6 +18,7 @@ export class DoctorController {
     private readonly _updateConsultation: IDoctorConsultationUseCase,
     private readonly _updateProfessional: IDoctorProfessionalUseCase,
     private readonly _updateProfilePicture: IUpdateProfilePictureUseCase,
+    private readonly _updatePersonal: IUpdateDoctorPersonalUseCase,
   ) {}
 
   async getProfile(req: Request, res: Response, next: NextFunction) {
@@ -126,6 +128,32 @@ export class DoctorController {
         message: RESPONSE_MESSAGE.ACCOUNT_UPDATED.replace(
           "Account",
           "Doctor Details",
+        ),
+        data: response,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async updatePersonalDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const data = req.body;
+
+      const response = await this._updatePersonal.execute(
+        (req.user as User)?.id!,
+        data
+      );
+
+      return res.status(ResponseStatusCode.ACCEPTED).json({
+        success: true,
+        message: RESPONSE_MESSAGE.ACCOUNT_UPDATED.replace(
+          "Account",
+          "Doctor Profesonal",
         ),
         data: response,
       });

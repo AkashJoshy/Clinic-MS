@@ -12,6 +12,7 @@ export const ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     RESET_DOCTOR_PASSWORD: "/auth/doctor/reset-password",
     RESET_ADMIN_PASSWORD: "/auth/admin/reset-password",
+    CHANGE_DOCTOR_PASSWORD: (userId: string) => `/auth/doctor/${userId}/change-password`,
     REFRESH_TOKEN: "/auth/refresh",
     LOGOUT: "/auth/logout",
     GOOGLE: "/auth/google",
@@ -65,7 +66,15 @@ export const ENDPOINTS = {
     BUY_SUBSCRIPTION_WITH_WALLET: `/doctor/subscriptions/purchase/wallet`,
     BUY_SUBSCRIPTION_WITH_RAZORPAY: `/doctor/subscriptions/purchase/razorpay`,
     VERIFY_SUBSCRIPTION_RAZORPAY: `/doctor/subscriptions/purchase/razorpay/verify`,
-    CALENDAR_SLOTS_BY_DATE: (from: Date, to: Date) => `/doctor/calendar/slots?from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(to.toISOString())}`,
+    GET_KYC_DETAILS: `/doctor/kyc`,
+    UPDATE_PAN_DETAILS: `/doctor/kyc/pan`,
+    UPDATE_BANK_DETAILS: `/doctor/kyc/bank`,
+    UPDATE_AADHAAR_DETAILS: `/doctor/kyc/aadhaar`,
+    UPDATE_PERSONAL_DETAILS: `/doctor/personal-details`,
+    GET_DOCTOR_SETTINGS: `/doctor/doctor-settings/`,
+    UPDATE_DOCTOR_SETTINGS: `/doctor/doctor-settings/`,
+    CALENDAR_SLOTS_BY_DATE: (from: Date, to: Date) =>
+      `/doctor/calendar/slots?from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(to.toISOString())}`,
     SUBSCRIPTION_UPGRADE_OPTIONS: (doctorId: string) =>
       `/doctor/subscriptions/${doctorId}/upgrade-options`,
     CANCEL_SUBSCRIPTION: (planId: string) =>

@@ -2,14 +2,13 @@ import type { ZodType } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
 export const validateFile =
-  (schema: ZodType<Express.Multer.File>) =>
+  (schema: ZodType<Express.Multer.File | undefined>) =>
   (req: Request, res: Response, next: NextFunction) => {
-    
+    console.log("Result from Validate File Middleware");
+    console.log(req.file);
+
     const result = schema.safeParse(req.file);
 
-    console.log(`Result from Validate Middleware`);
-    console.log(result);
-    
     if (!result.success) {
       return res.status(400).json({
         success: false,

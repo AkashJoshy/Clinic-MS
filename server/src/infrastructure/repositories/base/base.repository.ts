@@ -24,7 +24,8 @@ export abstract class BaseRepository<
       id,
       { $set: data as any },
       { returnDocument: "after", runValidators: true },
-    );
+    ).lean()
+    
     if (!doc) return null;
     return this.toDomain(doc);
   }

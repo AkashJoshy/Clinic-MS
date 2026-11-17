@@ -45,6 +45,7 @@ import PatientWalletPage from "./pages/patient/wallet.page";
 import DoctorWalletPage from "./pages/doctor/wallet.page";
 import DoctorSubscriptionPage from "./pages/doctor/subscription.page";
 import DoctorDashboardPage from "./pages/doctor/dashboard.page";
+import DoctorSettingsPage from "./pages/doctor/settings.page";
 import AdminSettingsPage from "./pages/admin/settings.page";
 import PlatformConfigInitializer from "./components/layout/platform-config-initializer.layout";
 
@@ -298,13 +299,7 @@ const router = createBrowserRouter([
                   },
                   {
                     path: "/doctor/settings",
-                    element: (
-                      <UnderConstruction
-                        title="Settings"
-                        backTo="/doctor/dashboard"
-                        backLabel={"Back to Dashboard"}
-                      />
-                    ),
+                    element: <DoctorSettingsPage />,
                   },
                 ],
               },

@@ -2,7 +2,11 @@ import type { ZodType } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
 export const validate =
-  (schema: ZodType) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodType) => (req: Request, res: Response, next: NextFunction) => {  
+    
+    console.log(`Req.Body`)
+    console.log(req.body)
+
     const result = schema.safeParse(req.body);
 
     console.log(`Result from Validate Middleware`);

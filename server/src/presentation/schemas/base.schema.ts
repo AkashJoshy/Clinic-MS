@@ -29,6 +29,14 @@ export const fullName = z
     message: "Full name cannot exceed 20 characters",
   });
 
+export const createName = (name: string, minLength = 3, maxLength = 100) => {
+  return z
+    .string()
+    .trim()
+    .min(minLength, `${name} must contain at least ${minLength} characters`)
+    .max(maxLength, `${name} cannot exceed ${maxLength} characters`);
+};
+
 export const gender = z.enum(GENDER, {
   message: "Please select a gender",
 });
@@ -151,16 +159,26 @@ export const documentField = (
   fieldName: string,
   maxSize: number,
   size: number,
-) =>
-  z
-    .any()
-    .refine((file) => file instanceof File, `${fieldName} is required`)
-    .refine((file) => file?.size <= maxSize, {
-      message: `Max file size is ${size}MB`,
-    })
-    .refine((file) => ALLOWED_DOCUMENT_TYPES.includes(file?.type), {
-      message: "Only PDF, JPG, PNG allowed",
-    });
+  isOptional = false,
+) => {
+  const schema = z
+    .custom<Express.Multer.File>(
+      (file) =>
+        file !== undefined &&
+        file !== null &&
+        typeof file === "object" &&
+        "mimetype" in file &&
+        "buffer" in file,
+      `${fieldName} is required`,
+    )
+    .refine((file) => file.size <= maxSize, `Max file size is ${size}MB`)
+    .refine(
+      (file) => ALLOWED_DOCUMENT_TYPES.includes(file.mimetype),
+      "Only PDF, JPG, PNG, WEBP allowed",
+    );
+
+  return isOptional ? schema.optional() : schema;
+};
 
 export const bio = z
   .string()

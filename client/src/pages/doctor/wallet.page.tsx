@@ -14,7 +14,17 @@ import WalletActivity from "@/components/shared/wallet/wallet-activity";
 import type { RouteRoleProps } from "@/types/auth";
 import useWallet from "@/hooks/use-wallet.hook";
 import { useAuthStore } from "@/store";
-
+import {
+  WalletDesign02,
+  WalletDesign04,
+  WalletDesign07,
+  WalletDesign08,
+  WalletDesign10,
+  WalletDesign11,
+  WalletDesign12,
+  WalletDesign15,
+  WalletDesign16,
+} from "@/components/shared/wallet/wallet-card-designs.shared";
 export const DoctorWalletPage = ({
   roleOverride,
 }: {
@@ -41,8 +51,8 @@ export const DoctorWalletPage = ({
     walletHolder,
   } = useWallet(roleOverride);
 
-  const user = useAuthStore(state => state.users[roleOverride])
-  const isDark = user?.theme === "DARK"
+  const user = useAuthStore((state) => state.users[roleOverride]);
+  const isDark = user?.theme === "DARK";
 
   return (
     <div className="relative min-h-full space-y-6 border border-white/10 bg-white/[0.02] p-6 shadow-2xs lg:p-8">
@@ -63,8 +73,94 @@ export const DoctorWalletPage = ({
           />
         </div>
 
+        {/* <div className="mt-4 grid grid-cols-1 gap-6 ">
+       
+          <div>
+            <WalletDesign02
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign04
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign07
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign08
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign10
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign11
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign12
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign15
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+
+          <div>
+            <WalletDesign16
+              totalBalance={125000}
+              walletHolder="Dr. Akash Joshy"
+              maskedId="•••• 4829"
+              trendPercent={12.5}
+            />
+          </div>
+        </div> */}
+
         <div className="lg:col-span-7 h-full flex flex-col justify-between">
-          {wallet && <WalletSummaryCards wallet={wallet} stats={stats} isDark={true} />}
+          {wallet && (
+            <WalletSummaryCards wallet={wallet} stats={stats} isDark={true} />
+          )}
         </div>
       </div>
 

@@ -427,3 +427,10 @@ export interface FormState {
   reason?: string;
 }
 
+export interface DoctorPersonalDetails {
+  displayName: string;
+  acceptNewPatients: boolean;
+  emergencyContactPhone: string;
+  publicProfileVisible: boolean;
+  section: "PROFILE_INFO";
+}

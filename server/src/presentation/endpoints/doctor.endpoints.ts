@@ -1,5 +1,6 @@
 const PROFILE_BASE = "/profile";
 const PROFESSIONAL_DETAILS_BASE = "/professional-details";
+const PERSONAL_DETAILS_BASE = "/personal-details";
 const CONSULTATION_DETAILS_BASE = "/consultation-details";
 const ADDRESSES_BASE = "/addresses";
 const PROFILE_PICTURE_BASE = "/profile-picture";
@@ -7,6 +8,9 @@ const REAPPLICATIONS_BASE = "/reapplications";
 const CLINICS_BASE = "/clinics";
 const SUBSCRIPTION_BASE = "/subscriptions";
 const SUBSCRIPTION_PURCHASE_BASE = `${SUBSCRIPTION_BASE}/purchase`;
+const KYC_BASE = "/kyc";
+const SETTINGS_BASE = "/doctor-settings";
+
 
 export const DOCTOR_ENDPOINTS = {
   DASHBOARD: {
@@ -21,6 +25,10 @@ export const DOCTOR_ENDPOINTS = {
   PROFESSIONAL_DETAILS: {
     BASE: PROFESSIONAL_DETAILS_BASE,
     UPDATE_ONE: `/:userId${PROFESSIONAL_DETAILS_BASE}`,
+  },
+  PERSONAL_DETAILS: {
+    BASE: PERSONAL_DETAILS_BASE,
+    UPDATE_ONE: PERSONAL_DETAILS_BASE,
   },
   CONSULTATION_DETAILS: {
     BASE: CONSULTATION_DETAILS_BASE,
@@ -59,4 +67,25 @@ export const DOCTOR_ENDPOINTS = {
       },
     },
   },
+  KYC: {
+    BASE: KYC_BASE,
+    GET: KYC_BASE,
+    PAN: {
+      BASE: `${KYC_BASE}/pan`,
+      UPDATE: `${KYC_BASE}/pan`
+    },
+    BANK: {
+      BASE: `${KYC_BASE}/bank`,
+      UPDATE: `${KYC_BASE}/bank`
+    },
+    AADHAAR: {
+      BASE: `${KYC_BASE}/aadhaar`,
+      UPDATE: `${KYC_BASE}/aadhaar`
+    }
+  },
+  SETTINGS: {
+    BASE: SETTINGS_BASE,
+    UPDATE_ONE: `${SETTINGS_BASE}`,
+    FETCH_ONE: `${SETTINGS_BASE}`
+  }
 };

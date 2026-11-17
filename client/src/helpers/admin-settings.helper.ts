@@ -12,3 +12,4 @@ export const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export const sectionId = (key: string) => `settings-${key.toLowerCase()}`;
+

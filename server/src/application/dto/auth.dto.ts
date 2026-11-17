@@ -29,7 +29,10 @@ export interface GoogleLoginDTO {
   provider: AuthProvider;
 }
 
-export type SafeUser = Omit<User, "password" | "block" | "unblock" | "updateName" | "updatePhone">;
+export type SafeUser = Omit<
+  User,
+  "password" | "block" | "unblock" | "updateName" | "updatePhone"
+>;
 
 export type UserWithTheme = SafeUser & {
   theme: ThemeMode;
@@ -43,8 +46,7 @@ export type RefreshPayloadDto = Pick<User, "id"> & { tokenId: string };
 
 export type BaseUserDto = Pick<User, "id" | "role" | "isBlocked" | "isActive">;
 
-export type TokenResponseDto = string | void
-
+export type TokenResponseDto = string | void;
 
 export interface TokenPair {
   access: string;
@@ -60,11 +62,11 @@ export interface LoginResponseDTO {
 
 export interface LoginVerificationResponseDTO {
   token: string;
-  email: string
-  role: Role
+  email: string;
+  role: Role;
 }
 
-export type VerificationResponseDto = LoginVerificationResponseDTO
+export type VerificationResponseDto = LoginVerificationResponseDTO;
 
 export interface RefreshTokenResponseDto {
   user: BaseUserDto | null;
@@ -111,6 +113,12 @@ export interface ResetPasswordDto extends VerificationTokenDto {
   role: Role;
 }
 
+export interface ChangePasswordDto {
+  userId: string;
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface VerifyOtpDTO extends VerificationTokenDto {
   otp: string;
 }
@@ -126,4 +134,4 @@ export type EmailVerificationDto = {
   role: Role;
 };
 
-export type EmailVerificationResponseDto = string
+export type EmailVerificationResponseDto = string;

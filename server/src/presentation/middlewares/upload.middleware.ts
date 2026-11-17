@@ -32,3 +32,7 @@ export const doctorUpload = upload.fields([
 
 
 export const profileupload = upload.single("profilePicture")
+
+export const doctorPanUpload = upload.single("panCardDoc")
+
+export const doctorAadhaarUpload = upload.single("aadhaarCardDoc");

@@ -1,5 +1,6 @@
 import type {
   DoctorConsultationDetails,
+  DoctorPersonalDetails,
   DoctorProffesionalDetails,
 } from "@/types/doctor";
 import api from "../api/interceptors";
@@ -12,6 +13,8 @@ import type {
   CancelSubscriptionData,
 } from "@/types/doctor-subscription";
 import type { CalendarDateRange } from "@/types/doctor-dashboard";
+import type { BankAccountData, PanFormValues } from "@/schemas/doctor/settings";
+import type { UpdateDoctorSettingsData } from "@/types/doctor-settings";
 
 export const registerDoctor = async (doctorData: FormData) => {
   try {
@@ -129,6 +132,30 @@ export const updateDoctorConsultationDetails = async (
     const res = await api.put(
       ENDPOINTS.DOCTOR.CONSULTATION_DETAILS(userId),
       data,
+      {
+        authRole: ROLE_VALUES.lower.DOCTOR,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateDoctorPersonalDetails = async (
+  doctorData: DoctorPersonalDetails,
+) => {
+  try {
+    const res = await api.patch(
+      ENDPOINTS.DOCTOR.UPDATE_PERSONAL_DETAILS,
+      doctorData,
       {
         authRole: ROLE_VALUES.lower.DOCTOR,
       },
@@ -350,6 +377,118 @@ export const getCalendarSlotsByDate = async (data: CalendarDateRange) => {
         authRole: ROLE_VALUES.lower.DOCTOR,
       },
     );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getDoctorKycDetails = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.DOCTOR.GET_KYC_DETAILS, {
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updatePanDetails = async (data: FormData) => {
+  try {
+    const res = await api.patch(ENDPOINTS.DOCTOR.UPDATE_PAN_DETAILS, data, {
+      headers: { "Content-Type": "multipart/formData" },
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateBankDetails = async (data: BankAccountData) => {
+  try {
+    const res = await api.patch(ENDPOINTS.DOCTOR.UPDATE_BANK_DETAILS, data, {
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateAadhaarDetails = async (data: FormData) => {
+  try {
+    const res = await api.patch(ENDPOINTS.DOCTOR.UPDATE_AADHAAR_DETAILS, data, {
+      headers: { "Content-Type": "multipart/formData" },
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const updateDoctorSettingsDetails = async (
+  data: UpdateDoctorSettingsData,
+) => {
+  try {
+    const res = await api.patch(ENDPOINTS.DOCTOR.UPDATE_DOCTOR_SETTINGS, data, {
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getDoctorSettingsDetails = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.DOCTOR.GET_DOCTOR_SETTINGS, {
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
     return res.data;
   } catch (error: any) {
     if (error.response) {

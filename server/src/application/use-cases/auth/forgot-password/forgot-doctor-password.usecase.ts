@@ -11,10 +11,12 @@ import type { ForgotRolePasswordDto } from "../../../dto/auth.dto.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import type { IForgotPasswordUseCase } from "../../../interfaces/repositories/auth/i-forgot-password.usecase.ts";
 import { ForbiddenError } from "../../../../domain/errors/forbidden.error.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 
 export class ForgotDoctorPasswordUseCase implements IForgotPasswordUseCase {
   constructor(
     private readonly _userRepository: IUserRepository,
+    private readonly _doctorRepository: IDoctorRepository,
     private readonly _cacheService: ICacheService,
     private readonly _mailService: IMailService,
   ) {}
@@ -43,11 +45,17 @@ export class ForgotDoctorPasswordUseCase implements IForgotPasswordUseCase {
       throw new ForbiddenError("Account is currently blocked");
     }
 
+    const doctor = await this._doctorRepository.findOneBy({ userId: user?.id })
+
+    if (!doctor || !doctor.id) {
+      throw new NotFoundError("Doctor")
+    }
+
     const resetToken = generateVerificationToken();
 
     await this._cacheService.set(`reset:${resetToken}`, { email }, 3600);
 
-    const resetLink = `${process.env.CLIENT_ORIGIN}/clinic/change-password?token=${resetToken}`;
+    const resetLink = `${process.env.CLIENT_ORIGIN}/doctor/change-password?token=${resetToken}`;
 
     const emailBody = `
       ${EMAIL_BODY.RESET_PASSWORD}

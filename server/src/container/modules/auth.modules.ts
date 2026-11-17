@@ -42,6 +42,7 @@ import {
   redisService,
 } from "../infrastructure.container.ts";
 import { AccessTokenGenerationService } from "../../application/services/shared/token/access-token.service.ts";
+import { ChangeDoctorPasswordUseCase } from "../../application/use-cases/auth/change-password/change-doctor-password.usecase.ts";
 
 // Service-Usecase
 const walletCreationService = new WalletCreationService(
@@ -95,7 +96,7 @@ const adminLoginUseCase = new AdminLoginUseCase(
   userExistenceService,
   accessTokenGenerationService,
   refreshTokenGenerationService,
-  mongoosePlatformSettingsRepository
+  mongoosePlatformSettingsRepository,
 );
 
 const doctorLoginUseCase = new DoctorLoginUseCase(
@@ -138,6 +139,7 @@ const forgotPasswordUseCase = new ForgotPasswordUseCase(
 
 const forgotDoctorPasswordUseCase = new ForgotDoctorPasswordUseCase(
   mongooseUserRepository,
+  mongooseDoctorRepository,
   redisService,
   nodeMailService,
 );
@@ -157,6 +159,7 @@ const resetPasswordUseCase = new ResetPasswordUseCase(
 
 const resetDoctorPasswordUseCase = new ResetDoctorPasswordUseCase(
   mongooseUserRepository,
+  mongooseDoctorRepository,
   redisService,
   argonHashService,
 );
@@ -164,6 +167,12 @@ const resetDoctorPasswordUseCase = new ResetDoctorPasswordUseCase(
 const resetAdminPasswordUseCase = new ResetAdminPasswordUseCase(
   mongooseUserRepository,
   redisService,
+  argonHashService,
+);
+
+const changeDoctorPasswordUseCase = new ChangeDoctorPasswordUseCase(
+  mongooseUserRepository,
+  mongooseDoctorRepository,
   argonHashService,
 );
 
@@ -200,7 +209,12 @@ export const logoutController = new LogoutController(logoutUseCase);
 
 export const passwordController = new PasswordController(
   forgotPasswordUseCase,
+  forgotDoctorPasswordUseCase,
+  forgotAdminPasswordUseCase,
   resetPasswordUseCase,
+  resetDoctorPasswordUseCase,
+  resetAdminPasswordUseCase,
+  changeDoctorPasswordUseCase,
 );
 
 export const tokenController = new TokenController(refreshTokenUseCase);

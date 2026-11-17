@@ -26,6 +26,9 @@ export const AUTH_ENDPOINTS = {
     DOCTOR: `${DOCTOR_BASE}/reset-password`,
     ADMIN: `${ADMIN_BASE}/reset-password`,
   },
+  CHANGE_PASSWORD: {
+    DOCTOR: `${DOCTOR_BASE}/:userId/change-password`
+  },
   GOOGLE: {
     BASE: "/google",
     CALLBACK: "/google/callback",

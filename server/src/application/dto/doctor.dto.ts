@@ -107,7 +107,7 @@ export type AdminDoctorFullInfoDto = Omit<
   address: BaseAddress | null;
 };
 
-export type AdminDoctorFullInfoResponseDto = AdminDoctorFullInfoDto
+export type AdminDoctorFullInfoResponseDto = AdminDoctorFullInfoDto;
 
 export type PatientDoctorDetailsDto = Omit<
   AdminDoctorFullInfoDto,
@@ -265,7 +265,7 @@ export type DoctorProfessionalDto = Pick<
   | "updatedAt"
 > & { userId: string };
 
-export type DoctorProfessionalResponseDto = DoctorProfessionalDto
+export type DoctorProfessionalResponseDto = DoctorProfessionalDto;
 
 export type UpdateDoctorDto = Partial<
   Pick<
@@ -353,3 +353,13 @@ export interface DoctorExistsResponseDto {
   clinic: Clinic;
   doctorClinic: DoctorClinic;
 }
+
+export interface UpdateDoctorPersonalDto {
+  displayName: string;
+  acceptNewPatients: boolean;
+  emergencyContactPhone: string;
+  publicProfileVisible: boolean;
+  section: "PROFILE_INFO";
+}
+
+export type DoctorPersonalResponseDto = Omit<UpdateDoctorPersonalDto, "section">;

@@ -30,6 +30,9 @@ import { RedisCacheService } from "../infrastructure/services/redis-cache.servic
 import { DoctorSubscriptionRepository } from "../infrastructure/repositories/doctor-subscription.repository.ts";
 import { SubscriptionChangeCalculationService } from "../application/services/subscription/subscription-change-calculation.service.ts";
 import { PlatformSettingsRepository } from "../infrastructure/repositories/platform-settings.repository.ts";
+import { KycEncryptionService } from "../application/services/kyc/kyc-encryption.service.ts";
+import { KycRepository } from "../infrastructure/repositories/kyc.repository.ts";
+import { DoctorSettingsRepository } from "../infrastructure/repositories/doctor-settings.repository.ts";
 
 // DB Repo's
 export const mongooseUserRepository = new UserRepository();
@@ -48,8 +51,12 @@ export const mongooseWalletTransactionRepository =
   new WalletTransactionRepository();
 export const mongooseSubscriptionPlanRepository =
   new SubscriptionPlanRepository();
-export const mongooseDoctorSubscriptionRepository = new DoctorSubscriptionRepository()
-export const mongoosePlatformSettingsRepository = new PlatformSettingsRepository()
+export const mongooseDoctorSubscriptionRepository =
+  new DoctorSubscriptionRepository();
+export const mongoosePlatformSettingsRepository =
+  new PlatformSettingsRepository();
+export const mongooseKycRepository = new KycRepository();
+export const mongooseDoctorSettingsRepository = new DoctorSettingsRepository();
 
 // Services
 export const argonHashService = new ArgonHashService();
@@ -97,4 +104,6 @@ export const doctorExistsService = new DoctorExistsService(
 export const walletTransactionsDetailsService =
   new WalletTransactionsDetailsService(mongooseWalletTransactionRepository);
 
-export const subscriptionChangeCalculationService = new SubscriptionChangeCalculationService()
+export const subscriptionChangeCalculationService =
+  new SubscriptionChangeCalculationService();
+export const kycEncryptionService = new KycEncryptionService();

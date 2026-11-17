@@ -13,5 +13,7 @@ export const MODEL_NAMES = {
   SUBSCRIPTION_PLAN: "SubscriptionPlan",
   WALLET_TRANSACTION: "WalletTransaction",
   DOCTOR_REAPPLICATION: "DoctorReapplication",
-  PLATFORM_SETTINGS: "PlatformSettings"
+  PLATFORM_SETTINGS: "PlatformSettings",
+  DOCTOR_SETTINGS: "DoctorSettings",
+  KYC: "Kyc"  
 } as const;

@@ -6,10 +6,12 @@ import type { ResetPasswordDto } from "../../../dto/auth.dto.ts";
 import type { IResetPasswordUseCase } from "../../../interfaces/repositories/auth/i-reset-password.usecase.ts";
 import { NotFoundError } from "../../../../domain/errors/not-found.error.ts";
 import { TokenExpiredAppError } from "../../../../domain/errors/token-expired.error.ts";
+import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
 
 export class ResetDoctorPasswordUseCase implements IResetPasswordUseCase {
   constructor(
     private readonly _userRepository: IUserRepository,
+    private readonly _doctorRepository: IDoctorRepository,
     private readonly _cacheService: ICacheService,
     private readonly _passwordService: IHashService,
   ) {}
@@ -44,17 +46,11 @@ export class ResetDoctorPasswordUseCase implements IResetPasswordUseCase {
       throw new AppError("User is inactive or blocked");
     }
 
-    // const clinic = await this._clinicRepository.findByUserId(user.id);
+    const doctor = await this._doctorRepository.findOneBy({ userId: user?.id });
 
-    // if (!clinic) {
-    //   throw new NotFoundError("Clinic");
-    // }
-
-    // if (!clinic.isActive || clinic.status === "PENDING") {
-    //   throw new AppError(
-    //     "Clinic is under review. You can change your password after approval.",
-    //   );
-    // }
+    if (!doctor || !doctor.id) {
+      throw new NotFoundError("Doctor");
+    }
 
     const hashedPassword = await this._passwordService.hash(
       password,

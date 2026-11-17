@@ -1,5 +1,6 @@
 import api from "@/api/interceptors";
 import type {
+  ChangePasswordDto,
   ForgotPasswordDto,
   GoogleAuthMode,
   LoginDto,
@@ -181,6 +182,25 @@ export const resetAdminPassword = async (data: ResetPasswordDto) => {
   }
 };
 
+export const changeDoctorPassword = async (data: ChangePasswordDto) => {
+  try {
+    const { userId, ...updatedData } = data;
+    const res = await api.patch(
+      ENDPOINTS.AUTH.CHANGE_DOCTOR_PASSWORD(userId),
+      updatedData,
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
 export const loginDoctor = async (data: LoginDto) => {
   try {
     const res = await api.post(ENDPOINTS.AUTH.DOCTOR_LOGIN, data);
@@ -199,9 +219,13 @@ export const loginDoctor = async (data: LoginDto) => {
 
 export const refreshAccessToken = async (role: RouteRoleProps) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN, {}, {
-      authRole: role
-    });
+    const res = await api.post(
+      ENDPOINTS.AUTH.REFRESH_TOKEN,
+      {},
+      {
+        authRole: role,
+      },
+    );
     return res.data;
   } catch (error: any) {
     if (error.response) {
@@ -217,11 +241,15 @@ export const refreshAccessToken = async (role: RouteRoleProps) => {
 
 export const logoutUser = async (role: RouteRoleProps) => {
   try {
-    const res = await api.post(ENDPOINTS.AUTH.LOGOUT, {
-      role
-    }, {
-      authRole: role
-    })
+    const res = await api.post(
+      ENDPOINTS.AUTH.LOGOUT,
+      {
+        role,
+      },
+      {
+        authRole: role,
+      },
+    );
     return res.data;
   } catch (error: any) {
     if (error.response) {

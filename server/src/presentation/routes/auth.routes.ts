@@ -12,7 +12,15 @@ import {
 } from "../schemas/auth/auth.schema.ts";
 import { doctorRegistrationSchema } from "../schemas/doctor/doctor-register.schema.ts";
 import { doctorUpload } from "../middlewares/upload.middleware.ts";
-import { emailVerificationController, loginController, logoutController, passwordController, registerController, tokenController } from "../../container/index.ts";
+import {
+  emailVerificationController,
+  loginController,
+  logoutController,
+  passwordController,
+  registerController,
+  tokenController,
+} from "../../container/index.ts";
+import { changePasswordSchema } from "../schemas/auth/change-password.schema.ts";
 
 const router = Router();
 
@@ -91,7 +99,7 @@ router.post(
   AUTH_ENDPOINTS["FORGOT_PASSWORD"]["DOCTOR"],
   validate(forgotPasswordSchema),
   async (req, res, next) => {
-    await passwordController.forgotPassword(req, res, next);
+    await passwordController.forgotDoctorPassword(req, res, next);
   },
 );
 
@@ -99,28 +107,41 @@ router.post(
   AUTH_ENDPOINTS["FORGOT_PASSWORD"]["ADMIN"],
   validate(forgotPasswordSchema),
   async (req, res, next) => {
-    await passwordController.forgotPassword(req, res, next);
+    await passwordController.forgotAdminPassword(req, res, next);
   },
 );
 
-router.patch(AUTH_ENDPOINTS["RESET_PASSWORD"]["PATIENT"], async (req, res, next) => {
-  (validate(resetPasswordSchema),
-    await passwordController.resetPassword(req, res, next));
-});
+router.patch(
+  AUTH_ENDPOINTS["RESET_PASSWORD"]["PATIENT"],
+  async (req, res, next) => {
+    (validate(resetPasswordSchema),
+      await passwordController.resetPassword(req, res, next));
+  },
+);
 
 router.patch(
   AUTH_ENDPOINTS["RESET_PASSWORD"]["DOCTOR"],
   validate(resetPasswordSchema),
   async (req, res, next) => {
-    await passwordController.resetPassword(req, res, next);
+    await passwordController.resetDoctorPassword(req, res, next);
   },
 );
 
+router.patch(
+  AUTH_ENDPOINTS["RESET_PASSWORD"]["ADMIN"],
+  async (req, res, next) => {
+    (validate(resetPasswordSchema),
+      await passwordController.resetAdminPassword(req, res, next));
+  },
+);
 
-router.patch(AUTH_ENDPOINTS["RESET_PASSWORD"]["ADMIN"], async (req, res, next) => {
-  (validate(resetPasswordSchema),
-    await passwordController.resetPassword(req, res, next));
-});
+router.patch(
+  AUTH_ENDPOINTS["CHANGE_PASSWORD"]["DOCTOR"],
+  async (req, res, next) => {
+    (validate(changePasswordSchema),
+      await passwordController.changeDoctorPassword(req, res, next));
+  },
+);
 
 router.get(AUTH_ENDPOINTS["GOOGLE"]["BASE"], (req, res, next) => {
   const mode = req.query.mode === "signup" ? "signup" : "login";

@@ -15,6 +15,8 @@ export type EntityStatus = "ACTIVE" | "INACTIVE";
 
 export type RestrictionStatus = "PENDING" | "REJECTED"
 
+export type VerifiedStatus = RestrictionStatus | "VERIFIED"
+
 export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";

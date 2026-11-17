@@ -4,6 +4,8 @@ import { authenticateUser } from "../middlewares/authenticate-user.middleware.ts
 import { authorizeUser } from "../middlewares/authorize-user.middleware.ts";
 import { validate } from "../middlewares/validate.middleware.ts";
 import {
+  doctorAadhaarUpload,
+  doctorPanUpload,
   doctorUpload,
   profileupload,
 } from "../middlewares/upload.middleware.ts";
@@ -19,10 +21,21 @@ import { confirmedSlotsSchema } from "../schemas/doctor/confirm-slots.schema.ts"
 import {
   doctorController,
   doctorDashboardController,
+  doctorKycController,
   doctorReapplicationController,
+  doctorSettingsController,
   doctorSlotController,
   doctorSubscriptionController,
 } from "../../container/modules/doctor.modules.ts";
+import {
+  aadhaarDetailsSchema,
+  aadhaarFileSchema,
+  bankAccountDetailsSchema,
+  panDetailsSchema,
+  panFileSchema,
+} from "../schemas/doctor/kyc.schema.ts";
+import { personalDetailsSchema } from "../schemas/doctor/personal-details.schema.ts";
+import { updateDoctorSettingsSchema } from "../schemas/doctor/update-doctor-settings.schema.ts";
 
 const router = Router();
 
@@ -180,6 +193,93 @@ router.get(
   authorizeUser,
   async (req, res, next) => {
     await doctorDashboardController.getCalendarSlotsByDate(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["KYC"]["GET"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorKycController.getDoctorKycDetails(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["KYC"]["PAN"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorKycController.getPanDetails(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["KYC"]["BANK"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorKycController.getBankDetails(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["KYC"]["AADHAAR"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorKycController.getAadhaarDetails(req, res, next);
+  },
+);
+//
+router.patch(
+  DOCTOR_ENDPOINTS["KYC"]["PAN"]["UPDATE"],
+  doctorPanUpload,
+  authenticateUser,
+  authorizeUser,
+  validate(panDetailsSchema),
+  validateFile(panFileSchema),
+  async (req, res, next) => {
+    await doctorKycController.updatePanDetails(req, res, next);
+  },
+);
+
+router.patch(
+  DOCTOR_ENDPOINTS["KYC"]["BANK"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  validate(bankAccountDetailsSchema),
+  async (req, res, next) => {
+    await doctorKycController.updateBankDetails(req, res, next);
+  },
+);
+
+router.patch(
+  DOCTOR_ENDPOINTS["PERSONAL_DETAILS"]["UPDATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validate(personalDetailsSchema),
+  async (req, res, next) => {
+    await doctorController.updatePersonalDetails(req, res, next);
+  },
+);
+
+router.get(
+  DOCTOR_ENDPOINTS["SETTINGS"]["FETCH_ONE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSettingsController.getDoctorSettings(req, res, next);
+  },
+);
+
+router.patch(
+  DOCTOR_ENDPOINTS["SETTINGS"]["UPDATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validate(updateDoctorSettingsSchema),
+  async (req, res, next) => {
+    await doctorSettingsController.updateDoctorSettings(req, res, next);
   },
 );
 
