@@ -13,15 +13,15 @@ export type ServiceMode = "ONLINE" | "OFFLINE" | "BOTH";
 
 export type EntityStatus = "ACTIVE" | "INACTIVE";
 
-export type RestrictionStatus = "PENDING" | "REJECTED"
+export type RestrictionStatus = "PENDING" | "REJECTED";
 
-export type VerifiedStatus = RestrictionStatus | "VERIFIED"
+export type VerifiedStatus = RestrictionStatus | "VERIFIED";
 
 export type ApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export type AccountStatus = "APPROVED" | "SUSPENDED";
 
-export type PaymentStatus = "SUCCESS" | "FAILED"
+export type PaymentStatus = "SUCCESS" | "FAILED";
 
 export type SessionStatus =
   | "AVAILABLE"
@@ -44,8 +44,8 @@ export type ImageData = {
 };
 
 export type VerifyImageData = ImageData & {
-  status: ApprovalStatus
-}
+  status: ApprovalStatus;
+};
 
 export interface QueryOptions {
   select?: string;
@@ -57,7 +57,7 @@ export type PlainUrl = {
 
 export type ApprovalPlainUrl = {
   url: string;
-  status: ApprovalStatus
+  status: ApprovalStatus;
 };
 
 export interface BulkWriteInsertOne<T> {
@@ -70,7 +70,7 @@ export interface BulkWriteUpdateOne<T> {
   updateOne: {
     filter: Record<string, unknown>;
     update: Partial<T>;
-    upsert: boolean
+    upsert: boolean;
   };
 }
 
@@ -78,7 +78,7 @@ export interface BulkWriteUpdateMany<T> {
   updateMany: {
     filter: Record<string, unknown>;
     update: Partial<T>;
-    upsert: boolean
+    upsert: boolean;
   };
 }
 
@@ -108,3 +108,10 @@ export type BulkWriteOperation<T> =
   | BulkWriteReplaceOne<T>
   | BulkWriteDeleteOne
   | BulkWriteDeleteMany;
+
+export interface RecordHttpRequestParams {
+  method: string;
+  route: string;
+  statusCode: number;
+  durationSeconds: number;
+}

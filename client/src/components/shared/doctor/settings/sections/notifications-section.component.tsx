@@ -14,6 +14,7 @@ import {
 import { initialDoctorSettings } from "@/constants/doctor-settings.constant";
 import { notificationsSettingsSchema } from "@/schemas/doctor/settings/notifications-settings.schema";
 import type { DoctorSettingsValues } from "@/types/doctor-settings";
+import FeatureUnderConstruction from "@/components/shared/feature-under-construction.shared";
 
 export interface NotificationsSectionProps {
   isDark: boolean;
@@ -62,8 +63,8 @@ export const NotificationsSection: React.FC<NotificationsSectionProps> = ({
   };
 
   return (
+    <>
     <div className="space-y-6">
-      {/* Appointment & Patient Alerts */}
       <div
         className={`p-5 sm:p-6 rounded-2xl border space-y-4 transition-colors ${
           isDark
@@ -305,6 +306,7 @@ export const NotificationsSection: React.FC<NotificationsSectionProps> = ({
         </button>
       </div>
     </div>
+    </>
   );
 };
 

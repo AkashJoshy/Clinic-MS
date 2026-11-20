@@ -118,11 +118,9 @@ export class SubscriptionPlan {
 
   updateActiveSubscribersCount(count: number): void {
     if (!Number.isSafeInteger(count) || count < 0) {
-      throw new Error(
-        "Active subscribers count must be a non-negative integer.",
-      );
+      throw new Error("Active subscribers count must be a non-negative integer.");
     }
-
+   
     this.activeSubscribersCount = count;
   }
 }

@@ -14,8 +14,10 @@ import {
   adminDoctorController,
   adminPatientController,
   adminSubscriptionPlanController,
+  colorPaletteController,
   platformSettingsController,
 } from "../../container/index.ts";
+import { validateAdminAccess } from "../middlewares/validate-admin-access.middleware.ts";
 
 const router = Router();
 
@@ -199,6 +201,56 @@ router.patch(
   authorizeUser,
   async (req, res, next) =>
     await platformSettingsController.updatePlatformSettings(req, res, next),
+);
+
+router.get(
+  ADMIN_ENDPOINTS["PLATFORM_SETTINGS"]["FETCH"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) =>
+    await platformSettingsController.getPlatformSettings(req, res, next),
+);
+
+router.post(
+  ADMIN_ENDPOINTS["COLOR_PALETTE"]["BASE"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => await colorPaletteController.create(req, res, next),
+);
+
+router.get(
+  ADMIN_ENDPOINTS["COLOR_PALETTE"]["FETCH"]["FETCH_ALL"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => await colorPaletteController.getAll(req, res, next),
+);
+
+router.get(
+  ADMIN_ENDPOINTS["COLOR_PALETTE"]["FETCH"]["FETCH_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => await colorPaletteController.getOne(req, res, next),
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["COLOR_PALETTE"]["UPDATE"]["UPDATE_ONE"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => await colorPaletteController.edit(req, res, next),
+);
+
+router.patch(
+  ADMIN_ENDPOINTS["COLOR_PALETTE"]["UPDATE"]["TOGGLE_STATUS"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => {
+     await colorPaletteController.toggleStatus(req, res, next)
+  },
 );
 
 export default router;

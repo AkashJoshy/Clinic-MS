@@ -95,7 +95,6 @@ const WeeklyScheduleCalendar = ({
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
   }, [filteredSlots]);
 
-  // Get slots for a particular calendar cell
   const getSlotsForCell = (date: Date, startTime: string, endTime: string) => {
     const dateString = getLocalDateString(date);
 

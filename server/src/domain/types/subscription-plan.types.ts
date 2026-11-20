@@ -4,13 +4,6 @@ export type BillingCycle = "MONTHLY" | "QUARTERLY" | "YEARLY" | "LIFETIME";
 
 export type SubscriptionPlanStatus = "ACTIVE" | "INACTIVE";
 
-export type SubscriptionColorTheme =
-  | "emerald"
-  | "blue"
-  | "violet"
-  | "amber"
-  | "rose";
-
 export interface SubscriptionFeature {
   id: string;
   name: string;
@@ -25,7 +18,7 @@ export interface SubscriptionPlanProps {
   price: number;
   currency: string;
   billingCycle: BillingCycle;
-  colorTheme: SubscriptionColorTheme | string;
+  colorTheme: string;
   badgeText: string | null;
   isPopular: boolean;
   status: SubscriptionPlanStatus;

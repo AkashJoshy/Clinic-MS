@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Pencil, Users, Power, Flame } from "lucide-react";
 import type { SubscriptionPlan } from "@/types/subscription";
@@ -11,6 +10,11 @@ interface SubscriptionCardProps {
   isDark: boolean;
 }
 
+const DEFAULT_COLOR = "#10B981";
+
+const isValidHexColor = (color?: string) =>
+  Boolean(color && /^#[0-9A-F]{6}$/i.test(color));
+
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plan,
   onEdit,
@@ -19,6 +23,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 }) => {
   const isPopular = plan.isPopular;
   const isActive = plan.status === "ACTIVE";
+
+  const planColor = isValidHexColor(plan.colorTheme)
+    ? plan.colorTheme
+    : DEFAULT_COLOR;
 
   const billingLabel =
     plan.billingCycle === "MONTHLY"
@@ -41,21 +49,28 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       : isDark
         ? "border-white/8 bg-[#0b131d]/90 shadow-lg hover:border-white/15 hover:shadow-xl"
         : "border-gray-200 bg-white shadow-sm hover:border-gray-300 hover:shadow-md",
+
     heading: isDark ? "text-white" : "text-gray-900",
     description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
     muted: isDark ? "text-gray-400" : "text-gray-600",
     subtle: isDark ? "text-gray-500" : "text-gray-500",
+
     badge: isDark
       ? "border-white/10 bg-white/5 text-[#8b9ab0]"
       : "border-gray-200 bg-gray-100 text-gray-600",
+
     divider: isDark ? "border-white/8" : "border-gray-200",
+
     subscriber: isDark
       ? "bg-white/5 text-[#c9d5e4]"
       : "bg-gray-100 text-gray-700",
+
     featureHeading: isDark ? "text-gray-300" : "text-gray-700",
+
     actionButton: isDark
       ? "border-white/10 bg-white/5 text-white hover:border-white/20 hover:bg-white/10"
       : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-300 hover:bg-gray-100",
+
     inactiveButton: isDark
       ? "border-white/10 text-gray-400 hover:border-amber-400/30 hover:bg-amber-400/5 hover:text-amber-400"
       : "border-gray-200 text-gray-500 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-600",
@@ -63,8 +78,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   return (
     <article
-      className={`relative flex h-full min-w-0 flex-col rounded-2xl border p-4 transition-all duration-300 sm:p-5 lg:p-6 ${theme.card}`}
+      className={`relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border p-4 transition-all duration-300 sm:p-5 lg:p-6 ${theme.card}`}
     >
+      {/* Plan color top bar */}
+      <div
+        className="absolute inset-x-0 top-0 h-1"
+        style={{ backgroundColor: planColor }}
+      />
+
       {/* Status and badges */}
       <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -96,16 +117,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
         {isPopular && (
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-md shadow-primary/20 sm:px-3 sm:text-[11px]">
-            <Flame
-              size={12}
-              fill="currentColor"
-              aria-hidden="true"
-            />
+            <Flame size={12} fill="currentColor" aria-hidden="true" />
             POPULAR
           </span>
         )}
       </div>
 
+      {/* Plan details */}
       <div className="min-w-0 space-y-1.5">
         <h3
           className={`break-words text-lg font-bold tracking-tight sm:text-xl ${theme.heading}`}
@@ -126,6 +144,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </p>
       </div>
 
+      {/* Pricing and subscribers */}
       <div
         className={`my-4 grid min-w-0 grid-cols-1 gap-4 border-y py-4 sm:my-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center ${theme.divider}`}
       >
@@ -146,7 +165,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             </span>
           </div>
 
-          <p className={`mt-1 text-[10px] leading-relaxed sm:text-[11px] ${theme.subtle}`}>
+          <p
+            className={`mt-1 text-[10px] leading-relaxed sm:text-[11px] ${theme.subtle}`}
+          >
             Auto-renewed · Cancel anytime
           </p>
         </div>
@@ -160,9 +181,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               className="shrink-0 text-primary"
               aria-hidden="true"
             />
-            <span className="tabular-nums">
-              {plan.activeSubscribersCount}
-            </span>
+
+            <span className="tabular-nums">{plan.activeSubscribersCount}</span>
+
             <span>doctors</span>
           </div>
 
@@ -170,12 +191,16 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </div>
       </div>
 
+      {/* Included features */}
       <div className="mb-5 min-w-0 flex-1 space-y-2.5 sm:mb-6">
         <div
           className={`flex min-w-0 items-center justify-between gap-2 text-xs font-semibold ${theme.featureHeading}`}
         >
           <span>Included Features</span>
-          <span className={`shrink-0 text-[10px] sm:text-[11px] ${theme.description}`}>
+
+          <span
+            className={`shrink-0 text-[10px] sm:text-[11px] ${theme.description}`}
+          >
             {includedFeatures} / {plan.features.length}
           </span>
         </div>
@@ -191,6 +216,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </ul>
       </div>
 
+      {/* Actions */}
       <div
         className={`mt-auto flex min-w-0 items-center gap-2 border-t pt-4 ${theme.divider}`}
       >
@@ -218,6 +244,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             className="shrink-0 text-primary"
             aria-hidden="true"
           />
+
           <span className="truncate">Edit Plan</span>
         </button>
       </div>

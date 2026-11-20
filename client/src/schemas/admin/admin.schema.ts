@@ -8,6 +8,7 @@ import type {
   settingsSectionSchema,
 } from "./settings/platform-settings.schema";
 import type { systemSettingsSchema } from "./settings/system-settings.schema";
+import type { colorPaletteSchema } from "./color-palette.schema";
 
 export type DepartmentFormData = z.input<typeof departmentSchema>;
 export type DepartmentUpdateFormData = z.input<typeof updateDepartmentSchema>;
@@ -17,3 +18,4 @@ export type BusinessSettings = z.infer<typeof businessSettingsSchema>;
 export type SettingsSection = z.infer<typeof settingsSectionSchema>;
 export type SystemSettings = z.infer<typeof systemSettingsSchema>;
 export type PlatformSettings = z.infer<typeof platformSettingsSchema>;
+export type ColorPaletteFormData = z.infer<typeof colorPaletteSchema>;

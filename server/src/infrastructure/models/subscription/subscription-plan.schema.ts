@@ -65,7 +65,6 @@ export const subscriptionPlanSchema = new Schema<ISubscriptionPlanPersistence>(
     colorTheme: {
       type: String,
       required: true,
-      default: "emerald",
     },
     badgeText: {
       type: String,

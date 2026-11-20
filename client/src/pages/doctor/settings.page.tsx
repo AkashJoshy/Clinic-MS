@@ -16,6 +16,7 @@ import {
   AppearanceSection,
   AccountManagementSection,
 } from "@/components/shared/doctor/settings";
+import FeatureUnderConstruction from "@/components/shared/feature-under-construction.shared";
 
 const DoctorSettingsPage: React.FC = () => {
   const doctor = useAuthStore((state) => state.users.doctor);
@@ -32,7 +33,7 @@ const DoctorSettingsPage: React.FC = () => {
     handleNavigation,
     methods,
     mutate,
-    isPending
+    isPending,
   } = useDoctorSettings();
 
   const renderSectionContent = (item: DoctorNavItem) => {
@@ -42,9 +43,20 @@ const DoctorSettingsPage: React.FC = () => {
       case "KYC":
         return <KycSection isDark={isDark} />;
       case "SECURITY":
-        return <SecuritySection isDark={isDark} role="doctor" mutateFn={mutate} isMutateFn={isPending} />;
+        return (
+          <SecuritySection
+            isDark={isDark}
+            role="doctor"
+            mutateFn={mutate}
+            isMutateFn={isPending}
+          />
+        );
       case "NOTIFICATIONS":
-        return <NotificationsSection isDark={isDark} />;
+        return (
+          <FeatureUnderConstruction>
+            <NotificationsSection isDark={isDark} />;
+          </FeatureUnderConstruction>
+        )
       case "APPEARANCE":
         return <AppearanceSection isDark={isDark} />;
       case "ACCOUNT_MANAGEMENT":
@@ -119,10 +131,9 @@ const DoctorSettingsPage: React.FC = () => {
           isDark={isDark}
         />
 
-        {/* Main Grid: Sidebar + Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[250px_minmax(0,1fr)] gap-6 items-start">
           <aside
-            className={`hidden lg:block border rounded-2xl p-4 transition-colors ${
+            className={`hidden lg:block sticky top-6 self-start h-fit border rounded-2xl p-4 transition-colors ${
               isDark
                 ? "bg-[#0d1a27] border-white/[0.08]"
                 : "bg-white border-gray-200"

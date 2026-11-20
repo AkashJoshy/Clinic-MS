@@ -15,5 +15,6 @@ export const MODEL_NAMES = {
   DOCTOR_REAPPLICATION: "DoctorReapplication",
   PLATFORM_SETTINGS: "PlatformSettings",
   DOCTOR_SETTINGS: "DoctorSettings",
-  KYC: "Kyc"  
+  KYC: "Kyc",
+  COLOR_PALETTE: "ColorPalette"
 } as const;

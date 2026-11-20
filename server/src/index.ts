@@ -5,6 +5,7 @@ import patientRouter from "./presentation/routes/patient.routes.ts";
 import adminRouter from "./presentation/routes/admin.routes.js";
 import doctorRouter from "./presentation/routes/doctor.routes.ts";
 import commonRouter from "./presentation/routes/common.routes.ts";
+import metricsRouter from "./presentation/routes/metrics.routes.ts";
 import connectDB from "./infrastructure/database/config.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -13,6 +14,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { startCronJobs } from "./infrastructure/cron/index.js";
 import passport from "./infrastructure/passport/passport.config.ts";
+import { metricsMiddleware } from "./presentation/middlewares/metrics.middleware.ts";
 const PORT = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(path.dirname(__filename));
@@ -27,12 +29,14 @@ app.use(
     credentials: true,
   }),
 );
+app.use(metricsMiddleware);
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/patient", patientRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/doctor", doctorRouter);
 app.use("/api/v1/common", commonRouter);
+app.use("/api/v1/metrics", metricsRouter);
 
 app.use(errorMiddleware);
 

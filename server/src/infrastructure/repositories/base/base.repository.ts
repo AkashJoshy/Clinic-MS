@@ -33,23 +33,25 @@ export abstract class BaseRepository<
   async findById(id: string, options?: QueryOptions): Promise<TEntity | null> {
     let doc = await this.model
       .findById(id)
-      .select(options?.select ? options?.select : "");
+      .select(options?.select ? options?.select : "").lean()
+
     return doc ? this.toDomain(doc) : null;
   }
 
   async save(entity: TEntity): Promise<TEntity> {
-    const doc = await this.model.create(this.toPersistence(entity));
+    const doc = await this.model.create(this.toPersistence(entity))
     return this.toDomain(doc);
   }
 
   async find(): Promise<TEntity[]> {
-    const docs = await this.model.find();
+    const docs = await this.model.find().lean()
     if (docs.length <= 0) return [];
     return docs.map((doc) => this.toDomain(doc));
   }
 
   async findBy(filter: Partial<TEntity>): Promise<TEntity[]> {
-    const docs = await this.model.find(filter);
+    const docs = await this.model.find(filter).lean()
+
     if (docs.length <= 0) return [];
     return docs.map((doc) => this.toDomain(doc));
   }
@@ -58,7 +60,7 @@ export abstract class BaseRepository<
     filter: string | Record<string, any>,
   ): Promise<TEntity | null> {
     const query = typeof filter === "string" ? { _id: filter } : filter;
-    const doc = await this.model.findOne(query);
+    const doc = await this.model.findOne(query).lean()
     if (!doc) return null;
     return this.toDomain(doc);
   }
@@ -69,7 +71,7 @@ export abstract class BaseRepository<
     const queryField = field === "id" ? "_id" : field;
     const docs = await this.model.find({
       [queryField]: { $in: ids },
-    });
+    }).lean()
 
     return docs.map((doc) => this.toDomain(doc));
   }
@@ -83,7 +85,8 @@ export abstract class BaseRepository<
       query as Record<string, any>,
       update,
       { returnDocument: "after" },
-    );
+    ).lean()
+
     if (!doc) return null;
     return this.toDomain(doc);
   }
@@ -93,7 +96,7 @@ export abstract class BaseRepository<
     update: UpdateQuery<TDocument>,
   ): Promise<void> {
     const query = typeof filter === "string" ? { _id: filter } : filter;
-    await this.model.updateMany(query as Record<string, any>, update);
+    await this.model.updateMany(query as Record<string, any>, update).lean()
   }
 
   async bulkWrite(operations: BulkWriteOperation<TDocument>[]): Promise<void> {
@@ -148,7 +151,7 @@ export abstract class BaseRepository<
   }
 
   async delete(id: string): Promise<void> {
-    await this.model.findByIdAndDelete(id);
+    await this.model.findByIdAndDelete(id).lean()
   }
 
   protected abstract toDomain(doc: TDocument): TEntity;

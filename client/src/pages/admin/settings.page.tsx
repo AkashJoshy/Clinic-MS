@@ -131,7 +131,7 @@ const AdminSettingsPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-[240px_minmax(0,1fr)] gap-6 items-start">
           <aside
-            className={`hidden lg:block border rounded-2xl p-3 transition-colors ${
+            className={`hidden lg:block sticky top-6 border rounded-2xl p-3 transition-colors ${
               isDark
                 ? "bg-[#0d1a27] border-white/[0.08]"
                 : "bg-white border-gray-200"

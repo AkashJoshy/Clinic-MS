@@ -41,7 +41,7 @@ export const subscriptionSchema = z.object({
     .trim()
     .max(30, "Badge text cannot exceed 30 characters.")
     .optional(),
-  colorTheme: z.enum(["emerald", "blue", "purple", "amber"]).default("emerald"),
+  colorTheme: z.string(),
   features: z
     .array(featureSchema)
     .min(1, "Please add at least one feature to this plan."),

@@ -19,6 +19,7 @@ import {
   jwtService,
   mongooseAddressRepository,
   mongooseClinicRepository,
+  mongooseColorPaletteRepository,
   mongooseDepartmentRepository,
   mongooseDoctorClinicRepository,
   mongooseDoctorReapplicationRepository,
@@ -41,6 +42,12 @@ import { UpdateSubscriptionPlanStatusUseCase } from "../../application/use-cases
 import { PlatformSettingsController } from "../../presentation/controllers/admin/platform-settings.controller.ts";
 import { GetPlatformSettingsUseCase } from "../../application/use-cases/admin/platform-settings/get-platform-settings.use-case.ts";
 import { UpdatePlatformSettingsUseCase } from "../../application/use-cases/admin/platform-settings/update-platform-settings.use-case.ts";
+import { ColorPaletteController } from "../../presentation/controllers/doctor/color-palette.controller.ts";
+import { CreateColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/create-color-palette.usecase.ts";
+import { EditColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/edit-color-palette.usecase.ts";
+import { GetAllColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/get-all-color-palette.usecase.ts";
+import { GetColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/get-color-palette.usecase.ts";
+import { ToggleColorPaletteStatusUseCase } from "../../application/use-cases/admin/color-palette/toggle-color-palette-status.usecase.ts";
 
 // Service-Usecase
 
@@ -59,32 +66,40 @@ const actionTokenGenerationService = new ActionTokenGenerationService(
 const getDepartmentUseCase = new GetDepartmentUseCase(
   mongooseDepartmentRepository,
 );
+
 const addDepartmentUseCase = new AddDepartmentUseCase(
   mongooseDepartmentRepository,
 );
+
 const editDepartmentUseCase = new EditDepartmentUseCase(
   mongooseDepartmentRepository,
 );
+
 const updateDepartmentStatusUseCase = new UpdateDepartmentStatusUseCase(
   mongooseDepartmentRepository,
 );
+
 const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
   mongooseDoctorRepository,
   doctorDetailsService,
 );
+
 const getDoctorUseCase = new GetDoctorUseCase(
   mongooseDoctorRepository,
   doctorDetailsService,
 );
+
 const getAllPatientsUseCase = new GetAllPatientsUseCase(
   mongoosePatientRepository,
   patientDetailsService,
 );
+
 const getPatientUseCase = new GetPatientUseCase(
   mongoosePatientRepository,
   mongooseAddressRepository,
   mongooseUserRepository,
 );
+
 const approveDoctorUseCase = new ApproveDoctorUseCase(
   mongooseDoctorRepository,
   mongooseClinicRepository,
@@ -92,6 +107,7 @@ const approveDoctorUseCase = new ApproveDoctorUseCase(
   mongooseUserRepository,
   nodeMailService,
 );
+
 const rejectDoctorUseCase = new RejectDoctorUseCase(
   mongooseDoctorRepository,
   mongooseUserRepository,
@@ -102,41 +118,66 @@ const rejectDoctorUseCase = new RejectDoctorUseCase(
   nodeMailService,
   actionTokenGenerationService,
 );
+
 const updatePatientStatusUseCase = new UpdatePatientStatusUseCase(
   mongoosePatientRepository,
   mongooseUserRepository,
 );
+
 const updateDoctorStatusUseCase = new UpdateDoctorStatusUseCase(
   mongooseDoctorRepository,
   mongooseUserRepository,
 );
+
 const verifyDoctorDocumentUseCase = new VerifyDoctorDocumentUseCase(
   mongooseDoctorRepository,
 );
+
 const verifyClinicDocumentUseCase = new VerifyClinicDocumentUseCase(
   mongooseClinicRepository,
 );
+
 const createSubscriptionPlanUseCase = new CreateSubscriptionPlanUseCase(
   mongooseSubscriptionPlanRepository,
 );
+
 const getAllSubscriptionPlansUseCase = new GetAllSubscriptionPlansUseCase(
   mongooseSubscriptionPlanRepository,
 );
+
 const editSubscriptionPlanUseCase = new EditSubscriptionPlanUseCase(
   mongooseSubscriptionPlanRepository,
 );
+
 const updateSubscriptionPlanStatusUseCase =
   new UpdateSubscriptionPlanStatusUseCase(mongooseSubscriptionPlanRepository);
 const getPlatformSettingsUseCase = new GetPlatformSettingsUseCase(
   mongoosePlatformSettingsRepository,
 );
+
 const updatePlatformSettingsUseCase = new UpdatePlatformSettingsUseCase(
   mongoosePlatformSettingsRepository,
 );
-// const searchDoctorsUsecase = new SearchDoctorsUsecase(
-//   mongooseUserRepository,
-//   mongooseDoctorRepository,
-// );
+
+const createColorPaletteUseCase = new CreateColorPaletteUseCase(
+  mongooseColorPaletteRepository,
+);
+
+const editColorPaletteUseCase = new EditColorPaletteUseCase(
+  mongooseColorPaletteRepository,
+);
+
+const getAllColorPaletteUseCase = new GetAllColorPaletteUseCase(
+  mongooseColorPaletteRepository,
+);
+
+const getColorPaletteUseCase = new GetColorPaletteUseCase(
+  mongooseColorPaletteRepository,
+);
+
+const toggleColorPaletteStatusUseCase = new ToggleColorPaletteStatusUseCase(
+  mongooseColorPaletteRepository,
+);
 
 // Controllers
 export const adminDepartmentController = new DepartmentController(
@@ -171,5 +212,13 @@ export const adminSubscriptionPlanController = new SubscriptionPlanController(
 
 export const platformSettingsController = new PlatformSettingsController(
   getPlatformSettingsUseCase,
-  updatePlatformSettingsUseCase
+  updatePlatformSettingsUseCase,
+);
+
+export const colorPaletteController = new ColorPaletteController(
+  createColorPaletteUseCase,
+  getAllColorPaletteUseCase,
+  getColorPaletteUseCase,
+  editColorPaletteUseCase,
+  toggleColorPaletteStatusUseCase,
 );

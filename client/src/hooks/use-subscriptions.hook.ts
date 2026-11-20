@@ -207,6 +207,8 @@ export const useSubscriptions = () => {
 
   const handleSubmitForm = useCallback(
     (values: SubscriptionFormValues) => {
+      console.log(`Values: `)
+      console.log(values)
       if (editingPlan) {
         editPlan({
           ...values,

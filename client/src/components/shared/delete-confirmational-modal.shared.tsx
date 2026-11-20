@@ -56,7 +56,7 @@ function DeleteConfirmationalModal({
               className={`flex h-10 w-10 items-center justify-center rounded-full ${
                 isDanger
                   ? "bg-rose-500/10 text-rose-500"
-                  : "bg-[#1dc465]/10 text-[#1dc465]"
+                  : "bg-primary/10 text-primary"
               }`}
             >
               {isDanger ? (
@@ -91,7 +91,7 @@ function DeleteConfirmationalModal({
             Are you sure you want to{" "}
             <span
               className={`font-semibold ${
-                isDanger ? "text-rose-400" : "text-[#1dc465]"
+                isDanger ? "text-rose-400" : "text-primary"
               }`}
             >
               {action.toLowerCase()}
@@ -116,7 +116,7 @@ function DeleteConfirmationalModal({
             className={
               isDanger
                 ? "bg-rose-500 text-white hover:bg-rose-600"
-                : "bg-[#1dc465] text-black hover:bg-[#18ad58]"
+                : "bg-primary/75 text-black hover:bg-primary"
             }
           >
             {updatedAction}

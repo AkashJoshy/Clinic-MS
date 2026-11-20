@@ -45,7 +45,7 @@ export class DoctorSettingsController {
           "Doctor Settings",
         ),
         data: doctorSettings
-      });
+      })
     } catch (error) {
       return next(error);
     }

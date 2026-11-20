@@ -13,11 +13,11 @@ export const authenticateUser = async (
 ) => {
   try {
     const authHeader = req.headers.authorization;
-
+    
     if (!authHeader?.startsWith("Bearer ")) {
       throw new AuthError("Unauthorized");
     }
-
+    
     const token = authHeader.split(" ")[1];
 
     if (!token) {

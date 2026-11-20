@@ -1,3 +1,4 @@
+import { CALENDAR_STATUSES } from "@/constants/color-palette.constant";
 import {
   ALLOWED_DOC_TYPES,
   ALLOWED_IMG_TYPES,
@@ -229,10 +230,7 @@ export const createPositiveInteger = (
     .max(max, `${fieldName} cannot exceed ${max}.`);
 };
 
-export const createNonNegativeInteger = (
-  fieldName: string,
-  max?: number,
-) => {
+export const createNonNegativeInteger = (fieldName: string, max?: number) => {
   let schema = z
     .number({
       error: `${fieldName} must be a number.`,
@@ -241,11 +239,18 @@ export const createNonNegativeInteger = (
     .min(0, `${fieldName} cannot be negative.`);
 
   if (max !== undefined) {
-    schema = schema.max(
-      max,
-      `${fieldName} cannot exceed ${max}.`,
-    );
+    schema = schema.max(max, `${fieldName} cannot exceed ${max}.`);
   }
 
   return schema;
 };
+
+export const hexColorSchema = z
+  .string()
+  .regex(/^#([0-9A-Fa-f]{6})$/, "Please enter a valid HEX color.");
+
+export const paletteColorsSchema = z.object(
+  Object.fromEntries(
+    CALENDAR_STATUSES.map((status) => [status, hexColorSchema]),
+  ) as Record<(typeof CALENDAR_STATUSES)[number], typeof hexColorSchema>,
+);

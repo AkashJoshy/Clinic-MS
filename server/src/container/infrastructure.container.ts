@@ -33,6 +33,7 @@ import { PlatformSettingsRepository } from "../infrastructure/repositories/platf
 import { KycEncryptionService } from "../application/services/kyc/kyc-encryption.service.ts";
 import { KycRepository } from "../infrastructure/repositories/kyc.repository.ts";
 import { DoctorSettingsRepository } from "../infrastructure/repositories/doctor-settings.repository.ts";
+import { ColorPaletteRepository } from "../infrastructure/repositories/color-palette.repository.ts";
 
 // DB Repo's
 export const mongooseUserRepository = new UserRepository();
@@ -57,6 +58,7 @@ export const mongoosePlatformSettingsRepository =
   new PlatformSettingsRepository();
 export const mongooseKycRepository = new KycRepository();
 export const mongooseDoctorSettingsRepository = new DoctorSettingsRepository();
+export const mongooseColorPaletteRepository = new ColorPaletteRepository();
 
 // Services
 export const argonHashService = new ArgonHashService();

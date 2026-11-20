@@ -20,7 +20,7 @@ export const DoctorSettingsNavigation: React.FC<DoctorSettingsNavigationProps> =
   onNavigate,
   isDark,
 }) => (
-  <nav aria-label="Doctor Settings Navigation" className="space-y-6">
+  <nav aria-label="Doctor Settings Navigation" className="space-y-6 ">
     {doctorNavigation.map((group) => {
       const groupActive = group.id === activeSection;
 

@@ -18,6 +18,8 @@ import type {
   SubscriptionPlan,
   UpdateSubscriptionStatusData,
 } from "@/types/subscription";
+import type { ColorPalette } from "@/types/admin/color-palette.types";
+import type { ColorPaletteFormData } from "@/schemas/admin/admin.schema";
 
 export const addDepartment = async (data: Omit<DepartmentData, "id">) => {
   try {
@@ -431,6 +433,83 @@ export const updatePlatformSettings = async (
         authRole: ROLE_VALUES.lower.ADMIN,
       },
     );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const createColorPalette = async (data: ColorPaletteFormData) => {
+  try {
+    const res = await api.post(ENDPOINTS.ADMIN.CREATE_COLOR_PALETTE, data, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getAllColorPalettes = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.GET_ALL_COLOR_PALETTES, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const editColorPalette = async (data: ColorPaletteFormData) => {
+  try {
+    const { id, ...rest } = data;
+    const res = await api.patch(ENDPOINTS.ADMIN.EDIT_COLOR_PALETTE(id!), rest, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const toggleColorPaletteStatus = async (id: string) => {
+  try {
+    const res = await api.patch(ENDPOINTS.ADMIN.TOGGLE_COLOR_PALETTE(id!), {}, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+
     return res.data;
   } catch (error: any) {
     if (error.response) {

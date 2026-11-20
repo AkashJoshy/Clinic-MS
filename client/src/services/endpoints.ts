@@ -24,6 +24,10 @@ export const ENDPOINTS = {
     PATIENTS: "/admin/patients",
     SUBSCRIPTION: "/admin/subscriptions",
     PLATFORM_SETTINGS: "/admin/platform-settings",
+    CREATE_COLOR_PALETTE: "/admin/color-palette",
+    GET_ALL_COLOR_PALETTES: "/admin/color-palette",
+    EDIT_COLOR_PALETTE: (id: string) => `/admin/color-palette/${id}`,
+    TOGGLE_COLOR_PALETTE: (id: string) => `/admin/color-palette/${id}/status`,
     UPDATE_SUBSCRIPTION: (planId: string) => `/admin/subscriptions/${planId}`,
     UPDATE_SUBSCRIPTION_STATUS: (planId: string) =>
       `/admin/subscriptions/${planId}/status`,

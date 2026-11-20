@@ -5,3 +5,7 @@ export { SubscriptionFeatureItem } from "./subscription-feature-item.component";
 export { SubscriptionFeaturesManager } from "./subscription-features-manager.component";
 export { SubscriptionFormModal } from "./subscription-form-modal.component";
 export { SubscriptionStatusModal } from "./subscription-status.modal";
+export { default as ColorPaletteManagement } from "./color-palettes/color-palette-management.component";
+export { default as ColorPaletteCard } from "./color-palettes/color-palette-card.component";
+export { default as ColorPaletteFormModal } from "./color-palettes/color-palette-form-modal.component";
+export { default as ColorPalettePreview } from "./color-palettes/color-palette-preview.component";

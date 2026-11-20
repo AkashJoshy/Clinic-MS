@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +25,30 @@ interface SubscriptionFormModalProps {
   isDark: boolean;
 }
 
+const DEFAULT_COLOR = "#10B981";
+
+const isValidHexColor = (color?: string) =>
+  Boolean(color && /^#[0-9A-F]{6}$/i.test(color));
+
+const getPlanColor = (color?: string) =>
+  isValidHexColor(color) ? color!.toUpperCase() : DEFAULT_COLOR;
+
+const getDefaultValues = (
+  data?: SubscriptionPlan | null,
+): SubscriptionFormValues => ({
+  name: data?.name ?? "",
+  tagline: data?.tagline ?? "",
+  description: data?.description ?? "",
+  price: data?.price ?? 2999,
+  currency: data?.currency ?? "INR",
+  billingCycle: data?.billingCycle ?? "MONTHLY",
+  status: data?.status ?? "ACTIVE",
+  isPopular: data?.isPopular ?? false,
+  badgeText: data?.badgeText ?? "",
+  colorTheme: getPlanColor(data?.colorTheme),
+  features: data?.features ?? [],
+});
+
 export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
   isOpen,
   onClose,
@@ -36,20 +59,6 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
 }) => {
   const isEditing = Boolean(initialData);
 
-  const defaultValues: SubscriptionFormValues = {
-    name: initialData?.name || "",
-    tagline: initialData?.tagline || "",
-    description: initialData?.description || "",
-    price: initialData?.price ?? 2999,
-    currency: initialData?.currency || "INR",
-    billingCycle: initialData?.billingCycle || "MONTHLY",
-    status: initialData?.status || "ACTIVE",
-    isPopular: initialData?.isPopular || false,
-    badgeText: initialData?.badgeText || "",
-    colorTheme: initialData?.colorTheme || "emerald",
-    features: initialData?.features || [],
-  };
-
   const {
     register,
     handleSubmit,
@@ -59,23 +68,21 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
     formState: { errors },
   } = useForm<SubscriptionFormInput, any, SubscriptionFormValues>({
     resolver: zodResolver(subscriptionSchema),
-    defaultValues,
+    defaultValues: getDefaultValues(initialData),
   });
 
   const isPopularWatch = watch("isPopular");
 
   useEffect(() => {
     if (isOpen) {
-      reset(defaultValues);
+      reset(getDefaultValues(initialData));
     }
   }, [isOpen, initialData, reset]);
 
   if (!isOpen) return null;
 
   const theme = {
-    modal: isDark
-      ? "border-white/10 bg-[#0c141f]"
-      : "border-gray-200 bg-white",
+    modal: isDark ? "border-white/10 bg-[#0c141f]" : "border-gray-200 bg-white",
 
     header: isDark
       ? "border-white/8 bg-white/[0.02]"
@@ -99,9 +106,9 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
       ? "bg-white/[0.02] border-white/8"
       : "bg-gray-50 border-gray-200",
 
-    popularLabel: isDark ? "text-white" : "text-gray-800",
-
     divider: isDark ? "border-white/8" : "border-gray-200",
+
+    popularLabel: isDark ? "text-white" : "text-gray-800",
 
     cancelButton: isDark
       ? "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
@@ -127,15 +134,13 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
-              {isEditing ? (
-                <CreditCard size={20} />
-              ) : (
-                <Sparkles size={20} />
-              )}
+              {isEditing ? <CreditCard size={20} /> : <Sparkles size={20} />}
             </div>
 
             <div>
-              <h2 className={`text-lg font-bold tracking-tight ${theme.heading}`}>
+              <h2
+                className={`text-lg font-bold tracking-tight ${theme.heading}`}
+              >
                 {isEditing
                   ? "Edit Subscription Plan"
                   : "Create New Subscription"}
@@ -167,8 +172,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className={labelClass}>
-                Subscription Plan Name{" "}
-                <span className="text-rose-400">*</span>
+                Subscription Plan Name <span className="text-rose-400">*</span>
               </label>
 
               <input
@@ -221,7 +225,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
                   min="0"
                   {...register("price")}
                   placeholder="2999"
-                  className={`pl-8 pr-3.5 ${inputClass}`}
+                  className={`pl-8 ${inputClass}`}
                 />
               </div>
 
@@ -295,16 +299,83 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
             )}
           </div>
 
+          <Controller
+            name="colorTheme"
+            control={control}
+            render={({ field }) => {
+              const color = isValidHexColor(field.value)
+                ? field.value
+                : DEFAULT_COLOR;
+
+              return (
+                <div className="space-y-1.5">
+                  <label className={labelClass}>Plan Color</label>
+
+                  <div
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border ${theme.section}`}
+                  >
+                    {/* Color Picker */}
+                    <label
+                      className="relative w-10 h-10 shrink-0 rounded-lg overflow-hidden cursor-pointer border border-white/20 shadow-sm"
+                      style={{ backgroundColor: color }}
+                      title="Choose plan color"
+                    >
+                      <input
+                        type="color"
+                        value={color}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.toUpperCase())
+                        }
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        aria-label="Choose subscription plan color"
+                      />
+                    </label>
+
+                    {/* HEX Input */}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <p
+                        className={`text-[11px] font-medium ${theme.description}`}
+                      >
+                        Selected color
+                      </p>
+
+                      <input
+                        type="text"
+                        value={field.value ?? DEFAULT_COLOR}
+                        onChange={(event) =>
+                          field.onChange(event.target.value.toUpperCase())
+                        }
+                        placeholder="#10B981"
+                        maxLength={7}
+                        className={`w-full bg-transparent text-sm font-semibold tracking-wide outline-none ${theme.heading}`}
+                      />
+                    </div>
+
+                    {/* Color Indicator */}
+                    <div
+                      className="w-7 h-7 rounded-full border border-white/20 shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                  </div>
+
+                  {errors.colorTheme && (
+                    <p className="text-xs text-rose-400 font-medium">
+                      {errors.colorTheme.message}
+                    </p>
+                  )}
+                </div>
+              );
+            }}
+          />
+
           {/* Popular Plan */}
-          <div
-            className={`p-4 rounded-xl border space-y-3 ${theme.section}`}
-          >
+          <div className={`p-4 rounded-xl border space-y-3 ${theme.section}`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   {...register("isPopular")}
-                  className="w-4 h-4 rounded text-primary border-gray-300 focus:ring-0 cursor-pointer accent-primary"
+                  className="w-4 h-4 rounded accent-primary cursor-pointer"
                 />
 
                 <span
@@ -315,21 +386,20 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
                 </span>
               </label>
 
-              <div className="flex-1 sm:max-w-xs space-y-1">
-                <input
-                  type="text"
-                  {...register("badgeText")}
-                  placeholder={
-                    isPopularWatch
-                      ? "e.g. Most Popular"
-                      : "Badge label (optional)"
-                  }
-                  className={`w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-primary/60 transition-all ${theme.input}`}
-                />
-              </div>
+              <input
+                type="text"
+                {...register("badgeText")}
+                placeholder={
+                  isPopularWatch
+                    ? "e.g. Most Popular"
+                    : "Badge label (optional)"
+                }
+                className={`w-full sm:max-w-xs px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-primary/60 ${theme.input}`}
+              />
             </div>
           </div>
 
+          {/* Features */}
           <div className={`pt-2 border-t ${theme.divider}`}>
             <Controller
               name="features"
