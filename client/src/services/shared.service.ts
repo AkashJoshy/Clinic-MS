@@ -10,7 +10,6 @@ import type {
   RazorpayOptions,
   RazorpayPaymentResponse,
 } from "@/types/razorpay";
-import type { RouteRoleProps } from "@/types/auth";
 
 export const getAllDepartments = async () => {
   try {
@@ -73,7 +72,6 @@ export const createWalletTopUpOrder = async (
 ) => {
   try {
     const { amount, authRole } = data;
-    console.log(`Reaching.... ${authRole} & ${amount}`);
     const res = await api.post(
       ENDPOINTS.COMMON.CREATE_WALLET_TOPUP_ORDER,
       { amount },

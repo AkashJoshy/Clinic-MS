@@ -3,15 +3,38 @@ import type { IUpdateAddressUseCase } from "../../../interfaces/repositories/sha
 import type { UpdateAddressDto } from "../../../dto/shared.dto.ts";
 import type { IAddressRepository } from "../../../../domain/repositories/i-address.repository.ts";
 import type { IDoctorRepository } from "../../../../domain/repositories/i-doctor.repository.ts";
+import type { IClinicRepository } from "../../../../domain/repositories/i-clinic.repository.ts";
+import type { IDoctorClinicRepository } from "../../../../domain/repositories/i-doctor-clinic.repository.ts";
 
 export class UpdateDoctorAddressUseCase implements IUpdateAddressUseCase {
   constructor(
     private readonly _doctorRepository: IDoctorRepository,
+    private readonly _clinicRepository: IClinicRepository,
+    private readonly _doctorClinicRepository: IDoctorClinicRepository,
     private readonly _addressRepository: IAddressRepository,
   ) {}
 
   async execute(data: UpdateAddressDto): Promise<UpdateAddressDto> {
-    const doctor = await this._doctorRepository.findById(data.ownerId!);
+    const clinic = await this._clinicRepository.findById(data.ownerId!);
+
+    if (!clinic || !clinic.id) {
+      throw new NotFoundError("Clinic");
+    }
+
+    const doctorClinic = await this._doctorClinicRepository.findOneBy({
+      clinicId: clinic.id,
+    });
+
+    if (
+      !doctorClinic ||
+      !doctorClinic.id ||
+      !doctorClinic.clinicId ||
+      !doctorClinic.doctorId
+    ) {
+      throw new NotFoundError("Doctor clinic");
+    }
+
+    const doctor = await this._doctorRepository.findById(doctorClinic.doctorId);
 
     if (!doctor || !doctor.id) {
       throw new NotFoundError("Doctor");

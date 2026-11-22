@@ -137,6 +137,8 @@ const updateDoctorConsultationDetailsUseCase =
 
 const updateDoctorAddressUseCase = new UpdateDoctorAddressUseCase(
   mongooseDoctorRepository,
+  mongooseClinicRepository,
+  mongooseDoctorClinicRepository,
   mongooseAddressRepository,
 );
 

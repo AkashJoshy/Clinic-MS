@@ -7,8 +7,7 @@ export const consultationDetailsSchema = z.object({
   doctorId: z.string().min(1, "Doctor Clinic Id is required"),
   clinicId: z.string().min(1, "Clinic Id is required"),
   consultationFee,
-  type: mode, 
-  slotDuration,
+  type: mode,
   timeZone: z.string().min(1, "TimeZone is required"),
   isActive: z.boolean(),
 });

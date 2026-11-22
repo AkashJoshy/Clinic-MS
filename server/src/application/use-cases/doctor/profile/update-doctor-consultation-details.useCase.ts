@@ -70,11 +70,12 @@ export class UpdateDoctorConsultationDetailsUseCase implements IDoctorConsultati
       DoctorConsultationMapper.toDomain(doctorClinic),
     );
 
-    return DoctorConsultationMapper.toDoctorConsultationDetails({
+    const response = DoctorConsultationMapper.toDoctorConsultationDetails({
       doctorClinic,
       userId,
       doctorUpdatedAt: doctor.updatedAt,
     })
     
+    return response
   }
 }

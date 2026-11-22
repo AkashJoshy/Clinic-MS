@@ -129,6 +129,7 @@ export const updateDoctorConsultationDetails = async (
 ) => {
   try {
     const { userId, ...data } = doctorClinicData;
+ 
     const res = await api.put(
       ENDPOINTS.DOCTOR.CONSULTATION_DETAILS(userId),
       data,
@@ -179,6 +180,7 @@ export const updateDoctorAddress = async (addressData: ProfileAddress) => {
     const res = await api.put(ENDPOINTS.DOCTOR.UPDATE_ADDRESS(ownerId), data, {
       authRole: ROLE_VALUES.lower.DOCTOR,
     });
+
     return res.data;
   } catch (error: any) {
     if (error.response) {

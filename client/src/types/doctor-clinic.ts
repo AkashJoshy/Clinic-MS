@@ -257,3 +257,16 @@ export type CalendarClinicDetails = {
   name: string
   color: string
 }
+
+type DoctorProfile = NonNullable<
+  ReturnType<typeof import("@/store").useAuthStore.getState>["doctor"]
+>;
+
+type DoctorClinicDetails = NonNullable<
+  DoctorProfile["doctorClinicDetails"]
+>[number];
+
+export interface DoctorAddressDetailsProps {
+  doctorProfile: DoctorProfile;
+  clinicDetails: DoctorClinicDetails;
+}

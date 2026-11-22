@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Building,
-  MapPinned,
   Pencil,
   X,
   Check,
   Wallet,
-  Timer,
-  Globe,
   Video,
   Building2,
   Info,
@@ -15,23 +12,23 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-
 import { useAuthStore } from "@/store";
 import { cn } from "@/lib/utils";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { consultationDetailsSchema } from "@/schemas/doctor/consultation-details.schema";
-import type { ConsulationDetailsSchema } from "@/schemas/doctor/doctor.schema";
 import { updateDoctorConsultationDetails } from "@/services/doctor.service";
 import type { DoctorConsultationDetails } from "@/types/doctor";
-
 import DoctorClinicDetailsSkeleton from "../../skeletons/doctor-clinic-details.skeleton";
+import ConsultationDetails from "./consulations-details.shared";
+import type { ConsulationDetailsSchema } from "@/schemas/doctor/doctor.schema";
+import DoctorAddressDetails from "./address-details.shared";
 
 const FIELD_CLASSES =
   "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80] focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
 
-const LABEL_CLASSES = "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+export const LABEL_CLASSES = "block text-xs font-medium text-[#8b9ab0] mb-1.5";
 
-const SETTING_FIELDS = [
+export const SETTING_FIELDS = [
   {
     key: "consultationFee",
     label: "Consultation fee",
@@ -40,15 +37,6 @@ const SETTING_FIELDS = [
     input: "number",
     min: 10,
     step: 10,
-  },
-  {
-    key: "slotDuration",
-    label: "Slot duration",
-    icon: Timer,
-    display: (value: number) => `${value} min`,
-    input: "number",
-    min: 5,
-    step: 5,
   },
 ] as const;
 
@@ -65,6 +53,7 @@ const DoctorClinicDetails: React.FC = () => {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<ConsulationDetailsSchema>({
     resolver: zodResolver(consultationDetailsSchema),
@@ -77,18 +66,24 @@ const DoctorClinicDetails: React.FC = () => {
     onSuccess(data) {
       if (!data.data || !editingClinicId || !doctorProfile) return;
 
-      updateDoctor({
-        ...doctorProfile,
-        doctorClinicDetails: doctorProfile.doctorClinicDetails.map(
-          (clinicDetails) =>
-            clinicDetails.id === editingClinicId
-              ? {
-                  ...clinicDetails,
-                  ...data.data,
-                }
-              : clinicDetails,
-        ),
-      });
+      const { isActive, timeZone, consultationFee, type } = data.data;
+
+      if (data.data)
+        updateDoctor({
+          ...doctorProfile,
+          doctorClinicDetails: doctorProfile.doctorClinicDetails.map(
+            (clinicDetails) =>
+              clinicDetails.id === editingClinicId
+                ? {
+                    ...clinicDetails,
+                    isActive,
+                    timeZone,
+                    consultationFee,
+                    type,
+                  }
+                : clinicDetails,
+          ),
+        });
 
       setEditingClinicId(null);
       reset();
@@ -115,11 +110,10 @@ const DoctorClinicDetails: React.FC = () => {
 
     reset({
       id: details.id!,
-      userId: user.id!,
+      userId: user.id,
       doctorId: doctorProfile.doctor.id,
       clinicId: details.clinic.id,
       consultationFee: details.consultationFee,
-      slotDuration: details.slotRules.sessionDuration,
       timeZone: details.timeZone,
       type: details.type,
       isActive: details.isActive,
@@ -146,7 +140,6 @@ const DoctorClinicDetails: React.FC = () => {
       doctorId: doctorProfile.doctor.id,
       clinicId: currentClinic.clinic?.id,
       consultationFee: currentClinic.consultationFee,
-      slotDuration: currentClinic.slotRules.sessionDuration,
       timeZone: currentClinic.timeZone,
       type: currentClinic.type,
       isActive: currentClinic.isActive,
@@ -154,7 +147,6 @@ const DoctorClinicDetails: React.FC = () => {
 
     const hasChanges =
       currentData.consultationFee !== data.consultationFee ||
-      currentData.slotDuration !== data.slotDuration ||
       currentData.timeZone !== data.timeZone ||
       currentData.type !== data.type ||
       currentData.isActive !== data.isActive;
@@ -188,13 +180,6 @@ const DoctorClinicDetails: React.FC = () => {
       {clinicDetails.map((details) => {
         const isEditing = editingClinicId === details.id;
 
-        const addressParts = [
-          details.clinicAddress?.addressLine,
-          details.clinicAddress?.city,
-          details.clinicAddress?.state,
-          details.clinicAddress?.country,
-        ].filter(Boolean);
-
         const consultationTypeIcon =
           details.type === "ONLINE" ? Video : Building2;
 
@@ -203,7 +188,6 @@ const DoctorClinicDetails: React.FC = () => {
             key={details.id}
             className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6"
           >
-            {/* Clinic */}
             <div>
               <div className="mb-5 flex items-center justify-between">
                 <h3 className="flex items-center gap-2 text-base font-semibold text-white">
@@ -279,177 +263,34 @@ const DoctorClinicDetails: React.FC = () => {
                   </p>
                 </div>
               </div>
-
-              {addressParts.length > 0 && (
-                <div className="mt-4 flex items-start gap-2 border-t border-white/8 pt-4">
-                  <MapPinned className="mt-0.5 h-4 w-4 shrink-0 text-[#8b9ab0]" />
-
-                  <p className="text-sm text-[#c3cddb]">
-                    {addressParts.join(", ")}
-                  </p>
-                </div>
-              )}
             </div>
 
-            <div className="my-6 border-t border-white/8" />
+            <ConsultationDetails
+              details={{
+                clinicId: details.clinic?.id!,
+                doctorId: doctorProfile.doctor.id!,
+                consultationFee: details.consultationFee,
+                id: details.id!,
+                isActive: details.isActive,
+                timeZone: details.timeZone,
+                type: details.type,
+                userId: user?.id!,
+              }}
+              isEditing={isEditing}
+              primaryColor={primaryColor}
+              primaryStyle={primaryStyle}
+              fieldClasses={fieldClasses}
+              errors={errors}
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              consultationTypeIcon={consultationTypeIcon}
+            />
 
-            {/* Consultation */}
-            <div>
-              <h3 className="mb-5 text-base font-semibold text-white">
-                Consultation settings
-              </h3>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {SETTING_FIELDS.map((field) => {
-                  const Icon = field.icon;
-                  const value = details[field.key] as number;
-
-                  const error =
-                    errors[field.key as keyof ConsulationDetailsSchema];
-
-                  return (
-                    <div key={field.key}>
-                      <label className={LABEL_CLASSES}>
-                        <span className="inline-flex items-center gap-1.5">
-                          <Icon size={12} />
-                          {field.label}
-                        </span>
-                      </label>
-
-                      {isEditing ? (
-                        <>
-                          <input
-                            type={field.input}
-                            min={field.min}
-                            step={field.step}
-                            className={fieldClasses}
-                            style={primaryStyle}
-                            {...register(
-                              field.key as keyof ConsulationDetailsSchema,
-                              {
-                                valueAsNumber: true,
-                              },
-                            )}
-                          />
-
-                          {error && (
-                            <p className="mt-2 text-[11px] text-red-500">
-                              {error.message}
-                            </p>
-                          )}
-                        </>
-                      ) : (
-                        <p className="px-3.5 py-2.5 text-sm text-white">
-                          {field.display(value)}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {/* Time zone */}
-                <div>
-                  <label className={LABEL_CLASSES}>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Globe size={12} />
-                      Time zone
-                    </span>
-                  </label>
-
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={details.timeZone ?? "Not Set"}
-                      readOnly
-                      className={cn(fieldClasses, "cursor-not-allowed")}
-                    />
-                  ) : (
-                    <p className="px-3.5 py-2.5 text-sm text-white">
-                      {details.timeZone || "Not Set"}
-                    </p>
-                  )}
-                </div>
-
-                {/* Consultation type */}
-                <div>
-                  <label className={LABEL_CLASSES}>
-                    <span className="inline-flex items-center gap-1.5">
-                      {React.createElement(consultationTypeIcon, {
-                        size: 12,
-                      })}
-                      Consultation type
-                    </span>
-                  </label>
-
-                  {isEditing ? (
-                    <>
-                      <select
-                        className={fieldClasses}
-                        style={primaryStyle}
-                        {...register("type")}
-                      >
-                        <option value="ONLINE">Online</option>
-                        <option value="OFFLINE">Offline</option>
-                        <option value="BOTH">Both</option>
-                      </select>
-
-                      {errors.type && (
-                        <p className="mt-2 text-[11px] text-red-500">
-                          {errors.type.message}
-                        </p>
-                      )}
-                    </>
-                  ) : (
-                    <p className="px-3.5 py-2.5 text-sm capitalize text-white">
-                      {details.type.toLowerCase()}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Appointment status */}
-              <div className="mt-4 flex items-center justify-between border-t border-white/8 pt-4">
-                <div>
-                  <p className="text-sm font-medium text-white">
-                    Accepting appointments
-                  </p>
-
-                  <p className="mt-0.5 text-xs text-[#8b9ab0]">
-                    Patients can only book slots while this is on.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={!isEditing}
-                  onClick={() =>
-                    isEditing &&
-                    reset({
-                      ...watch(),
-                      isActive: !isActive,
-                    })
-                  }
-                  className={cn(
-                    "relative flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200",
-                    !isEditing
-                      ? "cursor-not-allowed opacity-70"
-                      : "cursor-pointer",
-                  )}
-                  style={{
-                    backgroundColor: isActive
-                      ? primaryColor
-                      : "rgba(255,255,255,0.1)",
-                  }}
-                >
-                  <span
-                    className={cn(
-                      "absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform duration-200",
-                      isActive ? "translate-x-5" : "translate-x-0",
-                    )}
-                  />
-                </button>
-              </div>
-            </div>
+            <DoctorAddressDetails
+              doctorProfile={doctorProfile}
+              clinicDetails={details}
+            />
           </div>
         );
       })}

@@ -48,8 +48,8 @@ export class DoctorController {
 
   async updateAddress(req: Request, res: Response, next: NextFunction) {
     try {
-      const idsParam = req.params.onwerId;
-      const ownerId = Array.isArray(idsParam) ? idsParam[0] : idsParam;
+      let ownerId = req.params.ownerId;
+      ownerId = Array.isArray(ownerId) ? ownerId[0] : ownerId;
 
       const {
         addressLine,
@@ -136,17 +136,13 @@ export class DoctorController {
     }
   }
 
-  async updatePersonalDetails(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async updatePersonalDetails(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
 
       const response = await this._updatePersonal.execute(
         (req.user as User)?.id!,
-        data
+        data,
       );
 
       return res.status(ResponseStatusCode.ACCEPTED).json({

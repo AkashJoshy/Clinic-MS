@@ -13,7 +13,6 @@ const DoctorProfilePage: React.FC = () => {
   const [data, setData] = useState<DoctorProfileData>(initialData);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
-  const doctor = useAuthStore((state) => state.users.doctor);
   const { primaryColor } = useAuthStore((state) => state.platform);
 
   const isDark = true
@@ -79,7 +78,7 @@ const DoctorProfilePage: React.FC = () => {
         <div className="space-y-6 lg:col-span-2">
           <DoctorBioDetails />
           <DoctorClinicDetails />
-          <DoctorAddressDetails />
+          {/* <DoctorAddressDetails /> */}
         </div>
       </div>
     </div>
