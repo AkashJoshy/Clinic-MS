@@ -10,6 +10,7 @@ import {
 import { validate } from "../middlewares/validate.middleware.ts";
 import { updateUserSchema } from "../schemas/shared/shared.schema.ts";
 import {
+  adminDashboardController,
   adminDepartmentController,
   adminDoctorController,
   adminPatientController,
@@ -250,6 +251,26 @@ router.patch(
   validateAdminAccess,
   async (req, res, next) => {
      await colorPaletteController.toggleStatus(req, res, next)
+  },
+);
+
+router.get(
+  ADMIN_ENDPOINTS["DASHBOARD"]["DEPARTMENT_DISTRIBUTION"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => {
+     await adminDashboardController.getDepartmentDistribution(req, res, next)
+  },
+);
+
+router.get(
+  ADMIN_ENDPOINTS["DASHBOARD"]["DASHBOARD_STATS"],
+  authenticateUser,
+  authorizeUser,
+  validateAdminAccess,
+  async (req, res, next) => {
+     await adminDashboardController.getDashboardStats(req, res, next)
   },
 );
 

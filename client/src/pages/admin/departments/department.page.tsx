@@ -39,6 +39,7 @@ const DepartmentPage: React.FC = () => {
       const response = await getAllDepartments();
       const data = response.data;
 
+      
       if (data) {
         setAllDepartments(data);
       } else {
@@ -53,6 +54,10 @@ const DepartmentPage: React.FC = () => {
 
   useEffect(() => {
     fetchDepartments();
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0
+    })
   }, []);
 
   const { mutate } = useMutate(updateDepartment, {
@@ -102,7 +107,7 @@ const DepartmentPage: React.FC = () => {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
-    <div
+    <div id="department-page"
       className={`min-h-full p-6 lg:p-8 space-y-6 border shadow-2xs ${
         isDark ? "border-white/10 bg-white/2" : "border-gray-200 bg-white"
       }`}

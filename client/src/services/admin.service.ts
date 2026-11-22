@@ -506,7 +506,49 @@ export const editColorPalette = async (data: ColorPaletteFormData) => {
 
 export const toggleColorPaletteStatus = async (id: string) => {
   try {
-    const res = await api.patch(ENDPOINTS.ADMIN.TOGGLE_COLOR_PALETTE(id!), {}, {
+    const res = await api.patch(
+      ENDPOINTS.ADMIN.TOGGLE_COLOR_PALETTE(id!),
+      {},
+      {
+        authRole: ROLE_VALUES.lower.ADMIN,
+      },
+    );
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const departmentDistribution = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.DEPARTMENT_DISTRIBUTION, {
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const dashboardStats = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.DASHBOARD_STATS, {
       authRole: ROLE_VALUES.lower.ADMIN,
     });
 

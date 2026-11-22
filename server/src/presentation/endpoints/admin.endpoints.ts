@@ -1,3 +1,4 @@
+const DASHBOARD_BASE = "/dashboard";
 const DEPARTMENTS_BASE = "/departments";
 const DOCTORS_BASE = "/doctors";
 const PATIENTS_BASE = "/patients";
@@ -6,6 +7,11 @@ const PLATFORM_SETTINGS_BASE = "/platform-settings";
 const COLOR_PALETTE_BASE = "/color-palette";
 
 export const ADMIN_ENDPOINTS = {
+  DASHBOARD: {
+    BASE: DASHBOARD_BASE,
+    DEPARTMENT_DISTRIBUTION: `${DASHBOARD_BASE}/department-distribution`,
+    DASHBOARD_STATS: `${DASHBOARD_BASE}/stats`
+  },
   DEPARTMENTS: {
     BASE: DEPARTMENTS_BASE,
     ADD_ONE: DEPARTMENTS_BASE,

@@ -48,6 +48,9 @@ import { EditColorPaletteUseCase } from "../../application/use-cases/admin/color
 import { GetAllColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/get-all-color-palette.usecase.ts";
 import { GetColorPaletteUseCase } from "../../application/use-cases/admin/color-palette/get-color-palette.usecase.ts";
 import { ToggleColorPaletteStatusUseCase } from "../../application/use-cases/admin/color-palette/toggle-color-palette-status.usecase.ts";
+import { AdminDashboardController } from "../../presentation/controllers/admin/dashboard.controller.ts";
+import { GetDepartmentDistributionUseCase } from "../../application/use-cases/admin/dashboard/get-department-distribution.usecase.ts";
+import { GetDashboardStatsUseCase } from "../../application/use-cases/admin/dashboard/get-dashboard-stats.usecase.ts";
 
 // Service-Usecase
 
@@ -179,6 +182,19 @@ const toggleColorPaletteStatusUseCase = new ToggleColorPaletteStatusUseCase(
   mongooseColorPaletteRepository,
 );
 
+const getDepartmentDistributionUseCase = new GetDepartmentDistributionUseCase(
+  mongooseDepartmentRepository,
+  mongooseDoctorRepository,
+);
+
+const getDashboardStatsUseCase = new GetDashboardStatsUseCase(
+  mongooseUserRepository,
+  mongooseDepartmentRepository,
+  mongooseDoctorRepository,
+  mongoosePatientRepository,
+  mongooseSubscriptionPlanRepository,
+);
+
 // Controllers
 export const adminDepartmentController = new DepartmentController(
   addDepartmentUseCase,
@@ -221,4 +237,9 @@ export const colorPaletteController = new ColorPaletteController(
   getColorPaletteUseCase,
   editColorPaletteUseCase,
   toggleColorPaletteStatusUseCase,
+);
+
+export const adminDashboardController = new AdminDashboardController(
+  getDepartmentDistributionUseCase,
+  getDashboardStatsUseCase,
 );

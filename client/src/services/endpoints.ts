@@ -26,6 +26,8 @@ export const ENDPOINTS = {
     PLATFORM_SETTINGS: "/admin/platform-settings",
     CREATE_COLOR_PALETTE: "/admin/color-palette",
     GET_ALL_COLOR_PALETTES: "/admin/color-palette",
+    DEPARTMENT_DISTRIBUTION: "/admin/dashboard/department-distribution",
+    DASHBOARD_STATS: "/admin/dashboard/stats",
     EDIT_COLOR_PALETTE: (id: string) => `/admin/color-palette/${id}`,
     TOGGLE_COLOR_PALETTE: (id: string) => `/admin/color-palette/${id}/status`,
     UPDATE_SUBSCRIPTION: (planId: string) => `/admin/subscriptions/${planId}`,

@@ -13,7 +13,7 @@ export const validateAdminAccess = async (
   try {
     const userId = (req.user as User)?.id!;
     const admin = await mongooseUserRepository.findById(userId);
-
+    
     if (!admin || !admin.id) {
       throw new AuthError("Access Denied");
     }
