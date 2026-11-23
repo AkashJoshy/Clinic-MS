@@ -1,6 +1,5 @@
 import React from "react";
 import { ArrowRight, Check, CreditCard, Wallet, X } from "lucide-react";
-
 import type {
   SubscriptionFeature,
   SubscriptionUpgradeModalProps,
@@ -11,6 +10,7 @@ import {
   BILLING_SUFFIXES,
 } from "@/constants/doctor-subscription.constant";
 import { formatINR } from "@/helpers/wallet.helper";
+import { useAuthStore } from "@/store";
 
 const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
   plan,
@@ -22,6 +22,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
   onClose,
   onWalletPay,
   walletDetails,
+  isDark,
 }) => {
   const [isProcessing, setIsProcessing] = React.useState(false);
 
@@ -77,6 +78,16 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
     onWalletPay();
   };
 
+  const modalBg = isDark ? "bg-[#0d1520]" : "bg-white";
+  const headerBg = isDark ? "bg-[#0d1520]" : "bg-white";
+  const textPrimary = isDark ? "text-white" : "text-slate-900";
+  const textSecondary = isDark ? "text-gray-400" : "text-slate-600";
+  const textMuted = isDark ? "text-gray-500" : "text-slate-500";
+  const textBody = isDark ? "text-gray-300" : "text-slate-700";
+  const borderClass = isDark ? "border-white/10" : "border-slate-200";
+  const subtleBg = isDark ? "bg-white/[0.03]" : "bg-slate-50";
+  const hoverBg = isDark ? "hover:bg-white/10" : "hover:bg-slate-100";
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
@@ -90,10 +101,12 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="subscription-upgrade-title"
-        className="flex max-h-[90dvh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1520] text-white shadow-2xl"
+        className={`flex max-h-[90dvh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border ${borderClass} ${modalBg} ${textPrimary} shadow-2xl`}
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 px-5 py-4 sm:px-6">
+        <header
+          className={`flex shrink-0 items-center justify-between gap-4 border-b ${borderClass} ${headerBg} px-5 py-4 sm:px-6`}
+        >
           <div className="min-w-0">
             <h2
               id="subscription-upgrade-title"
@@ -102,7 +115,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
               Upgrade subscription
             </h2>
 
-            <p className="mt-1 text-xs text-gray-400">
+            <p className={`mt-1 text-xs ${textSecondary}`}>
               Review your plan and choose a payment method.
             </p>
           </div>
@@ -112,18 +125,19 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
             onClick={onClose}
             disabled={isProcessing}
             aria-label="Close upgrade modal"
-            className="shrink-0 rounded-lg p-2 text-gray-400 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className={`shrink-0 rounded-lg p-2 ${textSecondary} transition ${hoverBg} hover:${textPrimary} disabled:cursor-not-allowed disabled:opacity-50`}
           >
             <X size={18} />
           </button>
         </header>
 
+        {/* Scrollable Content */}
         <div
-          className="custom-scrollbar scrollbar-dark min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain"
+          className={`custom-scrollbar ${isDark ? "scrollbar-dark" : "scrollbar-light"} min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain`}
           style={{ scrollbarGutter: "stable" }}
         >
-          <div className="space-y-5 p-5 text-sm text-gray-300 sm:p-6">
-            {/* Selected plan */}
+          <div className={`space-y-5 p-5 text-sm ${textBody} sm:p-6`}>
+            {/* Selected Plan */}
             <div className="rounded-xl border border-primary/30 bg-primary/[0.07] p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -131,36 +145,40 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                     Selected plan
                   </p>
 
-                  <h3 className="mt-2 break-words text-lg font-semibold text-white">
+                  <h3
+                    className={`mt-2 break-words text-lg font-semibold ${textPrimary}`}
+                  >
                     {plan.name ?? "Subscription plan"}
                   </h3>
 
                   {plan.tagline && (
-                    <p className="mt-1 text-xs text-gray-400">{plan.tagline}</p>
+                    <p className={`mt-1 text-xs ${textSecondary}`}>
+                      {plan.tagline}
+                    </p>
                   )}
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <p className="text-lg font-bold text-white">
+                  <p className={`text-lg font-bold ${textPrimary}`}>
                     {formatINR(price)}
                   </p>
 
-                  <p className="mt-1 text-[11px] text-gray-400">
+                  <p className={`mt-1 text-[11px] ${textSecondary}`}>
                     {billingSuffix}
                   </p>
                 </div>
               </div>
 
               {plan.description && (
-                <p className="mt-3 text-xs leading-5 text-gray-400">
+                <p className={`mt-3 text-xs leading-5 ${textSecondary}`}>
                   {plan.description}
                 </p>
               )}
             </div>
 
-            {/* Plan features */}
+            {/* Plan Features */}
             <div>
-              <h3 className="mb-3 text-sm font-semibold text-white">
+              <h3 className={`mb-3 text-sm font-semibold ${textPrimary}`}>
                 Plan features
               </h3>
 
@@ -174,7 +192,9 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                       <span
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                           feature.isIncluded === false
-                            ? "bg-white/5 text-gray-500"
+                            ? isDark
+                              ? "bg-white/5 text-gray-500"
+                              : "bg-slate-100 text-slate-400"
                             : "bg-primary/15 text-primary"
                         }`}
                       >
@@ -187,9 +207,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
 
                       <span
                         className={
-                          feature.isIncluded === false
-                            ? "text-gray-500"
-                            : "text-gray-300"
+                          feature.isIncluded === false ? textMuted : textBody
                         }
                       >
                         {feature.name}
@@ -198,48 +216,49 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                   ))}
                 </ul>
               ) : (
-                <p className="text-xs text-gray-500">
+                <p className={`text-xs ${textMuted}`}>
                   No feature details are available for this plan.
                 </p>
               )}
             </div>
 
-            {/* Current subscription */}
+            {/* Current Subscription */}
             {currentSubscription && (
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-xs font-medium text-gray-400">
+              <div
+                className={`rounded-xl border ${borderClass} ${subtleBg} p-4`}
+              >
+                <p className={`text-xs font-medium ${textSecondary}`}>
                   Your current subscription
                 </p>
 
-                <p className="mt-2 font-medium text-white">
+                <p className={`mt-2 font-medium ${textPrimary}`}>
                   {currentPlanName || "Current plan"}
                 </p>
 
-                <p className="mt-1 text-xs leading-5 text-gray-400">
+                <p className={`mt-1 text-xs leading-5 ${textSecondary}`}>
                   Review the new plan details before confirming your
                   subscription change.
                 </p>
               </div>
             )}
 
-            {/* Payment summary */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <h3 className="mb-3 font-semibold text-white">Payment summary</h3>
+            {/* Payment Summary */}
+            <div className={`rounded-xl border ${borderClass} ${subtleBg} p-4`}>
+              <h3 className={`mb-3 font-semibold ${textPrimary}`}>
+                Payment summary
+              </h3>
 
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">New plan price</span>
-
-                  <span className="text-gray-200">{formatINR(price)}</span>
+                  <span className={textSecondary}>New plan price</span>
+                  <span className={textBody}>{formatINR(price)}</span>
                 </div>
 
-                {/* Subscription credit */}
                 {credit > 0 && (
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-gray-400">Subscription credit</p>
-
-                      <p className="mt-1 text-[10px] text-gray-500">
+                      <p className={textSecondary}>Subscription credit</p>
+                      <p className={`mt-1 text-[10px] ${textMuted}`}>
                         Unused value from your current plan
                       </p>
                     </div>
@@ -251,22 +270,20 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                 )}
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">Payable amount</span>
-
-                  <span className="font-semibold text-white">
+                  <span className={textSecondary}>Payable amount</span>
+                  <span className={`font-semibold ${textPrimary}`}>
                     {formatINR(payable)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">GST (0%)</span>
-
-                  <span className="text-gray-200">{formatINR(tax)}</span>
+                  <span className={textSecondary}>GST (0%)</span>
+                  <span className={textBody}>{formatINR(tax)}</span>
                 </div>
 
-                <div className="border-t border-white/10 pt-3">
+                <div className={`border-t ${borderClass} pt-3`}>
                   <div className="flex items-center justify-between gap-4">
-                    <span className="font-semibold text-white">
+                    <span className={`font-semibold ${textPrimary}`}>
                       Total to pay
                     </span>
 
@@ -278,31 +295,31 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
               </div>
             </div>
 
-            {/* Wallet balance after subscription change */}
+            {/* Wallet Balance After Subscription Change */}
             {credit > 0 && walletDetails && (
               <div className="rounded-xl border border-primary/20 bg-primary/[0.05] p-4">
                 <div className="mb-3 flex items-center gap-2">
                   <Wallet size={17} className="text-primary" />
 
-                  <h3 className="font-semibold text-white">
+                  <h3 className={`font-semibold ${textPrimary}`}>
                     Wallet balance after upgrade
                   </h3>
                 </div>
 
                 <div className="space-y-3 text-xs">
                   <div className="flex items-center justify-between gap-4">
-                    <span className="text-gray-400">
+                    <span className={textSecondary}>
                       Current wallet balance
                     </span>
 
-                    <span className="font-medium text-gray-200">
+                    <span className={`font-medium ${textBody}`}>
                       {formatINR(walletBalance)}
                     </span>
                   </div>
 
                   {creditAmount > 0 && (
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-gray-400">Refund to wallet</span>
+                      <span className={textSecondary}>Refund to wallet</span>
 
                       <span className="font-semibold text-[#1dc465]">
                         + {formatINR(creditAmount)}
@@ -311,7 +328,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                   )}
 
                   <div className="flex items-center justify-between gap-4 border-t border-primary/20 pt-3">
-                    <span className="font-semibold text-white">
+                    <span className={`font-semibold ${textPrimary}`}>
                       Expected wallet balance
                     </span>
 
@@ -321,7 +338,7 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
                   </div>
                 </div>
 
-                <p className="mt-3 text-[10px] leading-4 text-gray-500">
+                <p className={`mt-3 text-[10px] leading-4 ${textMuted}`}>
                   This is an estimate. Your final wallet balance depends on the
                   subscription change and the transactions confirmed by the
                   server.
@@ -329,7 +346,8 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
               </div>
             )}
 
-            <p className="text-[11px] leading-5 text-gray-500">
+            {/* Disclaimer */}
+            <p className={`text-[11px] leading-5 ${textMuted}`}>
               The displayed amount is an estimate based on your subscription
               billing calculation. The server will validate the final payable
               amount before payment.
@@ -337,7 +355,10 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
           </div>
         </div>
 
-        <footer className="flex shrink-0 flex-col gap-2 border-t border-white/10 bg-[#0d1520] p-4 sm:p-5 md:gap-3 md:p-5">
+        {/* Footer Actions */}
+        <footer
+          className={`flex shrink-0 flex-col gap-2 border-t ${borderClass} ${headerBg} p-4 sm:p-5 md:gap-3`}
+        >
           <div className="flex flex-col gap-2 md:flex-row md:gap-3">
             <button
               type="button"
@@ -371,7 +392,11 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="w-full rounded-lg px-4 py-2 text-xs font-medium text-gray-400 transition hover:bg-white/5 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 md:mx-auto md:w-full"
+            className={`w-full rounded-lg px-4 py-2 text-xs font-medium ${textSecondary} transition ${
+              isDark
+                ? "hover:bg-white/5 hover:text-white"
+                : "hover:bg-slate-100 hover:text-slate-900"
+            } disabled:cursor-not-allowed disabled:opacity-50`}
           >
             Cancel
           </button>

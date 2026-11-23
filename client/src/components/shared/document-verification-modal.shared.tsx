@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getDocumentVerificationModalTheme } from "@/helpers/admin/doctors.helper";
 import { CheckCircle, X, XCircle } from "lucide-react";
 
 export interface DocumentVerificationModalProps {
@@ -20,25 +21,7 @@ const DocumentVerificationModal = ({
 }: DocumentVerificationModalProps) => {
   const isReject = action === "REJECT";
 
-  const theme = {
-    modal: isDark
-      ? "border-white/10 bg-[#111827]"
-      : "border-gray-200 bg-white",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    subtitle: isDark ? "text-gray-400" : "text-gray-500",
-    description: isDark ? "text-gray-400" : "text-gray-600",
-    documentName: isDark ? "text-white" : "text-gray-900",
-    note: "text-gray-500",
-
-    closeButton: isDark
-      ? "text-gray-400 hover:bg-white/5 hover:text-white"
-      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-
-    cancelButton: isDark
-      ? "border-white/10 bg-transparent text-gray-300 hover:bg-white/5 hover:text-white"
-      : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-  };
+  const theme = getDocumentVerificationModalTheme(isDark);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
@@ -55,11 +38,7 @@ const DocumentVerificationModal = ({
                   : "bg-[#1dc465]/10 text-[#1dc465]"
               }`}
             >
-              {isReject ? (
-                <XCircle size={20} />
-              ) : (
-                <CheckCircle size={20} />
-              )}
+              {isReject ? <XCircle size={20} /> : <CheckCircle size={20} />}
             </div>
 
             <div>

@@ -37,7 +37,6 @@ export interface NavGroup {
 
 export type BillingCycle = "MONTHLY" | "QUARTERLY" | "YEARLY";
 
-
 export interface GeneralSettings {
   platformName: string;
   supportEmail: string;
@@ -90,7 +89,7 @@ export interface PlatformDetailsProps {
 
 export interface AppearanceSettingsProps {
   primaryBrandColor: string;
-  mode: ThemeMode ;
+  mode: ThemeMode;
 }
 
 export interface NotificationSettingsProps {
@@ -111,4 +110,43 @@ export interface GeneralSettingsData {
   appearance: AppearanceSettingsProps;
   notifications: NotificationSettingsProps;
   security: SecuritySettingsProps;
+}
+
+export interface GeneralSettingsSectionProps {
+  sectionKey: SettingsKey;
+  isDark: boolean;
+}
+
+export interface BusinessSettingsSectionProps {
+  sectionKey: SettingsKey;
+  business: BusinessSettings;
+  currency: string;
+  isDark: boolean;
+  updateBusiness: <K extends keyof BusinessSettings>(
+    key: K,
+    value: BusinessSettings[K],
+  ) => void;
+}
+
+export interface SubscriptionSettingsProps {
+  trialEnabled: boolean;
+  autoRenewal: boolean;
+  prorateUpgrades: boolean;
+  trialDays: number;
+  gracePeriodDays: number;
+  isDark: boolean;
+  onUpdateBusiness: <K extends keyof BusinessSettings>(
+    key: K,
+    value: BusinessSettings[K],
+  ) => void;
+}
+
+export interface SystemSettingsSectionProps {
+  sectionKey: SettingsKey;
+  system: SystemSettings;
+  isDark: boolean;
+  updateSystem: <K extends keyof SystemSettings>(
+    key: K,
+    value: SystemSettings[K],
+  ) => void;
 }

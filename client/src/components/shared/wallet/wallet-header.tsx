@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Plus,
@@ -10,6 +9,7 @@ import {
   Wallet,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import DoctorPageHeader from "../page-header.shared";
 
 interface WalletHeaderProps {
   onAddMoney: () => void;
@@ -17,6 +17,7 @@ interface WalletHeaderProps {
   onOpenPaymentMethods: () => void;
   onRefresh?: () => void;
   roleTitle?: string;
+  isDark: boolean
 }
 
 export const WalletHeader: React.FC<WalletHeaderProps> = ({
@@ -25,6 +26,7 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
   onOpenPaymentMethods,
   onRefresh,
   roleTitle = "My Wallet",
+  isDark
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(2);
@@ -47,29 +49,16 @@ export const WalletHeader: React.FC<WalletHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-xs">
-          <Wallet className="w-6 h-6" />
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-primary">
-              {roleTitle}
-            </h1>
-
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/15 text-primary">
-              Live
-            </span>
-          </div>
-
-          <p className="text-sm text-slate-500">
-            Manage your balance, track your earnings, and monitor your transactions.
-          </p>
-        </div>
+        
+        <DoctorPageHeader
+          icon={Wallet}
+          title={roleTitle}
+          description="Manage your weekly appointment slots"
+          isDark={isDark}
+        />
       </div>
 
       <div className="flex items-center gap-2.5 self-start sm:self-auto">
-        {/* Notification Bell */}
         <button
           type="button"
           onClick={handleNotificationClick}

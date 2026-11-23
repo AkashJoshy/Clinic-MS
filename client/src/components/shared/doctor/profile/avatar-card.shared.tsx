@@ -17,6 +17,7 @@ import { useMutate } from "@/hooks/use-mutate.hook";
 import { updateDoctorProfilePicture } from "@/services/doctor.service";
 import toast from "react-hot-toast";
 import DoctorAvatarCardSkeleton from "../../skeletons/doctor-avatar-card.skeleton";
+import type { ThemeProps } from "@/types/common";
 
 const statusStyles: Record<
   Doctor["status"],
@@ -44,7 +45,7 @@ const statusStyles: Record<
   },
 };
 
-const DoctorAvatarCard: React.FC = () => {
+const DoctorAvatarCard: React.FC<ThemeProps> = ({ isDark }) => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
   const { primaryColor } = useAuthStore((state) => state.platform);
@@ -127,7 +128,13 @@ const DoctorAvatarCard: React.FC = () => {
     "/default-doctor.png";
 
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-white/10 bg-[#0d1a27] p-6 text-center">
+    <div
+      className={`flex flex-col items-center rounded-2xl border p-6 text-center transition-shadow duration-200 ${
+        isDark
+          ? "border-none bg-[#0d1a27] shadow-lg shadow-black/20"
+          : "border-none bg-white shadow-lg shadow-slate-200/70"
+      }`}
+    >
       <input
         type="file"
         ref={fileInputRef}
@@ -146,7 +153,13 @@ const DoctorAvatarCard: React.FC = () => {
         }}
         className="group relative mb-4 cursor-pointer"
       >
-        <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-[#101f2e] shadow-lg ring-1 ring-white/10">
+        <div
+          className={`h-28 w-28 overflow-hidden rounded-full border-4 shadow-lg ring-1 ${
+            isDark
+              ? "border-[#101f2e] ring-white/10"
+              : "border-slate-100 ring-slate-200"
+          }`}
+        >
           <img
             src={avatarSrc}
             alt={doctorProfile.doctor?.displayName}
@@ -159,7 +172,9 @@ const DoctorAvatarCard: React.FC = () => {
         </div>
 
         <div
-          className="pointer-events-none absolute bottom-0 right-1 rounded-full border-2 border-[#0d1a27] p-1.5 shadow-md"
+          className={`pointer-events-none absolute bottom-0 right-1 rounded-full border-2 p-1.5 shadow-md ${
+            isDark ? "border-[#0d1a27]" : "border-white"
+          }`}
           style={{
             backgroundColor: primaryColor,
             color: "#ffffff",
@@ -175,11 +190,19 @@ const DoctorAvatarCard: React.FC = () => {
         </p>
       )}
 
-      <h2 className="text-lg font-semibold text-white">
+      <h2
+        className={`text-lg font-semibold ${
+          isDark ? "text-white" : "text-slate-900"
+        }`}
+      >
         Dr. {doctorProfile?.doctor.displayName}
       </h2>
 
-      <p className="mt-0.5 text-sm text-[#8b9ab0]">
+      <p
+        className={`mt-0.5 text-sm ${
+          isDark ? "text-[#8b9ab0]" : "text-slate-600"
+        }`}
+      >
         {doctorProfile.doctor?.specialization}
       </p>
 
@@ -191,26 +214,54 @@ const DoctorAvatarCard: React.FC = () => {
           {status.label}
         </span>
 
-        <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-[#8b9ab0]">
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+            isDark ? "bg-white/5 text-[#8b9ab0]" : "bg-slate-100 text-slate-600"
+          }`}
+        >
           <Star size={12} className="fill-amber-400 text-amber-400" />
           {doctorProfile.doctor?.averageRating.toFixed(1)} (
           {doctorProfile.doctor?.totalReviews})
         </span>
       </div>
 
-      <div className="my-5 w-full border-t border-white/10" />
+      <div
+        className={`my-5 w-full border-t ${
+          isDark ? "border-white/10" : "border-slate-200"
+        }`}
+      />
 
       <div className="grid w-full grid-cols-2 gap-3 text-left">
         <div>
-          <p className="text-xs text-[#8b9ab0]">Doctor code</p>
-          <p className="mt-0.5 text-sm font-medium text-white">
+          <p
+            className={`text-xs ${
+              isDark ? "text-[#8b9ab0]" : "text-slate-500"
+            }`}
+          >
+            Doctor code
+          </p>
+          <p
+            className={`mt-0.5 text-sm font-medium ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}
+          >
             {doctorProfile.doctor?.doctorCode}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-[#8b9ab0]">Qualification</p>
-          <p className="mt-0.5 text-sm font-medium text-white">
+          <p
+            className={`text-xs ${
+              isDark ? "text-[#8b9ab0]" : "text-slate-500"
+            }`}
+          >
+            Qualification
+          </p>
+          <p
+            className={`mt-0.5 text-sm font-medium ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}
+          >
             {doctorProfile.doctor?.qualification}
           </p>
         </div>

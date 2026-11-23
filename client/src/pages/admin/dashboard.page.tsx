@@ -15,12 +15,14 @@ import {
   getAllPatients,
   getAllSubscriptionPlans,
 } from "@/services/admin.service";
-import { getAllDepartments } from "@/services/shared.service";
 import { useAuthStore } from "@/store";
 
 import type { DoctorDetailsCardInfo } from "@/types/doctor";
 import type { PatientBasicInfo } from "@/types/patient";
-import type { DepartmentData } from "@/types/admin";
+import type {
+  DepartmentDistributtonData,
+  DashboardStatsData,
+} from "@/types/admin/dashboard.types";
 import type { SubscriptionPlan } from "@/types/subscription";
 
 import {
@@ -33,15 +35,14 @@ import {
   QuickActions,
   DashboardSkeleton,
 } from "@/components/shared/admin/dashboard";
-import type {
-  DashboardStatsData,
-  DepartmentDistributtonData,
-} from "@/types/admin/dashboard.types";
 import FeatureUnderConstruction from "@/components/shared/feature-under-construction.shared";
+import { getAdminDashboardTheme } from "@/helpers/admin/dashboard.helper";
 
 const AdminDashboardPage: React.FC = () => {
   const { admin } = useAuthStore((state) => state.users);
   const isDark = admin?.theme === "DARK";
+
+  const theme = getAdminDashboardTheme(isDark);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -64,21 +65,17 @@ const AdminDashboardPage: React.FC = () => {
       } else {
         setIsLoading(true);
       }
+
       setError(null);
 
-      const [
-        docsRes,
-        ptsRes,
-        plansRes,
-        departRes,
-        statsRes,
-      ] = await Promise.allSettled([
-        getAllDoctors(),
-        getAllPatients(),
-        getAllSubscriptionPlans(),
-        departmentDistribution(),
-        dashboardStats(),
-      ]);
+      const [docsRes, ptsRes, plansRes, departRes, statsRes] =
+        await Promise.allSettled([
+          getAllDoctors(),
+          getAllPatients(),
+          getAllSubscriptionPlans(),
+          departmentDistribution(),
+          dashboardStats(),
+        ]);
 
       if (docsRes.status === "fulfilled" && docsRes.value?.data) {
         setDoctors(docsRes.value.data);
@@ -88,12 +85,13 @@ const AdminDashboardPage: React.FC = () => {
 
       if (departRes.status === "fulfilled" && departRes.value?.data) {
         console.log(departRes.value.data);
+
         setDepartments({
           totalDoctors: departRes.value.data.totalDoctors,
-          departments: departRes.value.data.departments
+          departments: departRes.value.data.departments,
         });
-      } else if (ptsRes.status === "rejected") {
-        console.warn("Patients fetch warning:", ptsRes.reason);
+      } else if (departRes.status === "rejected") {
+        console.warn("Departments fetch warning:", departRes.reason);
       }
 
       if (ptsRes.status === "fulfilled" && ptsRes.value?.data) {
@@ -105,7 +103,7 @@ const AdminDashboardPage: React.FC = () => {
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {
         setStats(statsRes.value.data);
       } else if (statsRes.status === "rejected") {
-        console.warn("Departments fetch warning:", statsRes.reason);
+        console.warn("Dashboard stats fetch warning:", statsRes.reason);
       }
 
       if (plansRes.status === "fulfilled" && plansRes.value?.data) {
@@ -142,26 +140,23 @@ const AdminDashboardPage: React.FC = () => {
 
   return (
     <div
-      className={`min-h-full p-5 lg:p-8 space-y-6 border shadow-2xs ${
-        isDark ? "border-white/10 bg-white/2" : "border-gray-200 bg-white"
-      }`}
+      className={`min-h-full p-5 lg:p-8 space-y-6 border shadow-2xs ${theme.container}`}
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/5">
+      <div
+        className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b ${theme.headerDivider}`}
+      >
         <PageHeader
           icon={LayoutDashboard}
           title="Dashboard"
           description={`Welcome back, ${
             admin?.fullName || "Administrator"
           } • Healthcare System Management & Monitoring`}
+          isDark={isDark}
         />
 
         <div className="flex items-center gap-3 self-start md:self-auto">
           <div
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium ${
-              isDark
-                ? "bg-white/5 border-white/10 text-gray-300"
-                : "bg-gray-100 border-gray-200 text-gray-700"
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium ${theme.dateBadge}`}
           >
             <Calendar size={14} className="text-primary" />
             <span>{currentDateDisplay}</span>
@@ -171,11 +166,7 @@ const AdminDashboardPage: React.FC = () => {
             onClick={() => fetchDashboardData(true)}
             disabled={isRefreshing || isLoading}
             title="Refresh dashboard metrics"
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-              isDark
-                ? "bg-white/5 border-white/10 text-gray-200 hover:border-primary/50 hover:bg-white/10"
-                : "bg-white border-gray-200 text-gray-700 hover:border-primary/50 hover:bg-gray-50 shadow-2xs"
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${theme.refreshButton}`}
           >
             <RefreshCw
               size={14}
@@ -192,16 +183,13 @@ const AdminDashboardPage: React.FC = () => {
 
       {error && (
         <div
-          className={`flex items-center justify-between p-4 rounded-xl border ${
-            isDark
-              ? "bg-rose-500/10 border-rose-500/25 text-rose-300"
-              : "bg-rose-50 border-rose-200 text-rose-900"
-          }`}
+          className={`flex items-center justify-between p-4 rounded-xl border ${theme.errorContainer}`}
         >
           <div className="flex items-center gap-2.5 text-xs font-medium">
             <AlertTriangle size={16} className="text-rose-500 shrink-0" />
             <span>{error}</span>
           </div>
+
           <button
             onClick={() => fetchDashboardData()}
             className="text-xs font-bold underline hover:no-underline"
@@ -236,16 +224,17 @@ const AdminDashboardPage: React.FC = () => {
 
           <QuickActions isDark={isDark} />
 
-          <FeatureUnderConstruction>
-          <RecentActivities
-            doctors={doctors}
-            patients={patients}
-            isDark={isDark}
-          />
+          <FeatureUnderConstruction isDark={isDark}>
+            <RecentActivities
+              doctors={doctors}
+              patients={patients}
+              isDark={isDark}
+            />
           </FeatureUnderConstruction>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 min-w-0">
             <RegisteredDoctorsWidget doctors={doctors} isDark={isDark} />
+
             <RegisteredPatientsWidget patients={patients} isDark={isDark} />
           </div>
         </div>

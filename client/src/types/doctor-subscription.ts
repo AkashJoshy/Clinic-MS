@@ -50,13 +50,6 @@ export interface DoctorSubscription {
   updatedAt: string | null;
 }
 
-export type CancellationReason =
-  | "TOO_EXPENSIVE"
-  | "TEMPORARILY_CLOSING_CLINIC"
-  | "MISSING_FEATURES"
-  | "SWITCHING_PLATFORM"
-  | "OTHER";
-
 export type BillingCycles = (typeof BILLING_CYCLES)[number];
 
 export type HistoryItemStatus = "PAID" | "PENDING" | "FAILED" | "REFUNDED";
@@ -133,6 +126,7 @@ export interface CurrentPlanCardProps {
   onToggleAutoRenew: () => void;
   onOpenCancelModal: () => void;
   onOpenPaymentMethods: () => void;
+  isDark: boolean
 }
 
 export interface SubscriptionAdjustmentSummaryProps {
@@ -151,12 +145,14 @@ export interface SubscriptionHeaderProps {
   subscription: DoctorSubscription | null;
   onOpenUpgradeModal: () => void;
   onOpenPaymentMethods: () => void;
+  isDark: boolean
 }
 
 export interface SubscriptionHistoryRowProps {
   item: SubscriptionHistory;
   onViewInvoice: (item: SubscriptionHistory) => void;
   onDownloadInvoice: (item: SubscriptionHistory) => void;
+  isDark: boolean
 }
 
 export interface SubscriptionHistoryTableProps {
@@ -169,6 +165,7 @@ export interface SubscriptionHistoryTableProps {
   onResetFilters: () => void;
   onViewInvoice: (item: SubscriptionHistory) => void;
   onDownloadInvoice: (item: SubscriptionHistory) => void;
+  isDark: boolean
 }
 
 export interface SubscriptionInvoiceModalProps {
@@ -176,11 +173,13 @@ export interface SubscriptionInvoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDownload: (invoice: SubscriptionHistory) => void;
+  isDark: boolean
 }
 
 export interface SubscriptionPlanFeaturesListProps {
   features: SubscriptionFeature[];
   planName: string;
+  isDark: boolean
 }
 
 export interface SubscriptionPlanCardProps {
@@ -188,6 +187,7 @@ export interface SubscriptionPlanCardProps {
   billingCycle: BillingCycle;
   isCurrent: boolean;
   onSelectPlan: (plan: AvailablePlanOption) => void;
+  isDark: boolean
 }
 
 export interface SubscriptionPaymentOptionsProps {
@@ -205,6 +205,7 @@ export interface ManagePaymentMethodModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdatePaymentMethod: (brand: string, last4: string, expiry: string) => void;
+  isDark: boolean
 }
 
 export interface SubscriptionPaymentModalProps {
@@ -231,6 +232,7 @@ export interface SubscriptionPlansGridProps {
   billingCycle: BillingCycles;
   onBillingCycleChange: (cycle: BillingCycles) => void;
   onSelectPlan: (plan: AvailablePlanOption) => void;
+  isDark: boolean;
 }
 
 export interface SubscriptionUpgradeModalProps {
@@ -242,10 +244,53 @@ export interface SubscriptionUpgradeModalProps {
   currentPlanName: string;
   onClose: () => void;
   onWalletPay: () => void;
+  isDark: boolean;
   // onConfirmUpgrade: (
   //   plan: AvailablePlanOption,
   //   cycle: BillingCycle,
   //   paymentMethod: PaymentMethod,
   // ) => Promise<void> | void;
   walletDetails: WalletBalance | null;
+}
+
+export interface SubscriptionUsageMetricsProps {
+  usage: DoctorSubscriptionUsage | null;
+  isDark: boolean;
+}
+
+export interface SubscriptionWalletPaymentModalProps {
+  plan: AvailablePlanOption | null;
+  currentSubscription: DoctorSubscription | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirmPayment: (
+    plan: AvailablePlanOption,
+    payableAmount: number,
+  ) => Promise<void> | void;
+  walletDetails: WalletBalance | null;
+  creditAmount: number;
+  payableAmount: number;
+  isDark: boolean;
+}
+
+export interface WalletBalanceCardProps {
+  balance: number;
+  unavailable: boolean;
+  isDark: boolean;
+}
+
+export type CancellationReason =
+  | "TOO_EXPENSIVE"
+  | "TEMPORARILY_CLOSING_CLINIC"
+  | "MISSING_FEATURES"
+  | "SWITCHING_PLATFORM"
+  | "OTHER";
+
+export interface SubscriptionCancelModalProps {
+  subscription: DoctorSubscription | null;
+  isOpen: boolean;
+  isDark: boolean;
+  onClose: () => void;
+  onConfirmCancel: (reason: CancellationReason, message?: string) => void;
+  onDisableAutoRenewInstead: () => void;
 }

@@ -1,66 +1,59 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Users, ArrowUpRight, ExternalLink, ShieldAlert, CheckCircle2 } from "lucide-react";
+import {
+  Users,
+  ArrowUpRight,
+  ExternalLink,
+  ShieldAlert,
+  CheckCircle2,
+} from "lucide-react";
 import type { PatientBasicInfo } from "@/types/patient";
+import { getRegisteredPatientsWidgetTheme } from "@/helpers/admin/dashboard.helper";
 
 interface RegisteredPatientsWidgetProps {
   patients: PatientBasicInfo[];
   isDark: boolean;
 }
 
-export const RegisteredPatientsWidget: React.FC<RegisteredPatientsWidgetProps> = ({
-  patients,
-  isDark,
-}) => {
+export const RegisteredPatientsWidget: React.FC<
+  RegisteredPatientsWidgetProps
+> = ({ patients, isDark }) => {
+  const theme = getRegisteredPatientsWidgetTheme(isDark);
+
   return (
     <div
-      className={`p-5 lg:p-6 rounded-2xl border transition-all ${
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200"
-      }`}
+      className={`p-5 lg:p-6 rounded-2xl border transition-all ${theme.container}`}
     >
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2
-              className={`text-base font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className={`text-base font-bold ${theme.heading}`}>
               Registered Patients
             </h2>
+
             <span
-              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                isDark
-                  ? "bg-sky-500/15 text-sky-400 border border-sky-500/25"
-                  : "bg-sky-50 text-sky-700 border border-sky-200"
-              }`}
+              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${theme.registeredBadge}`}
             >
               {patients.length} Registered
             </span>
           </div>
-          <p
-            className={`text-xs mt-0.5 ${
-              isDark ? "text-[#8b9ab0]" : "text-gray-500"
-            }`}
-          >
+
+          <p className={`text-xs mt-0.5 ${theme.description}`}>
             Recently registered patients and health profile overview
           </p>
         </div>
 
-        <Link
-          to="/admin/patients"
-          className="text-primary hover:underline text-xs font-semibold flex items-center gap-1 shrink-0"
-        >
+        <Link to="/admin/patients" className={theme.viewAllLink}>
           View All <ArrowUpRight size={14} />
         </Link>
       </div>
 
-      {/* Patient List */}
       {patients.length === 0 ? (
         <div className="text-center py-10">
-          <Users className="mx-auto size-10 text-gray-500 mb-2 opacity-40" />
-          <p className="text-sm font-medium text-gray-400">
+          <Users
+            className={`mx-auto size-10 mb-2 opacity-40 ${theme.emptyIcon}`}
+          />
+          <p className={`text-sm font-medium ${theme.emptyMessage}`}>
             No registered patients yet.
           </p>
         </div>
@@ -82,13 +75,8 @@ export const RegisteredPatientsWidget: React.FC<RegisteredPatientsWidgetProps> =
             return (
               <div
                 key={pt?.id || idx}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all ${
-                  isDark
-                    ? "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]"
-                    : "bg-gray-50/70 border-gray-100 hover:border-gray-200 hover:bg-gray-50"
-                }`}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all ${theme.patientCard}`}
               >
-                {/* Patient Avatar and Details */}
                 <div className="flex items-center gap-3">
                   {pt?.imageUrl?.url ? (
                     <img
@@ -104,34 +92,33 @@ export const RegisteredPatientsWidget: React.FC<RegisteredPatientsWidgetProps> =
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <p
-                        className={`text-sm font-bold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
+                      <p className={`text-sm font-bold ${theme.patientName}`}>
                         {pt?.displayName || "Patient Member"}
                       </p>
+
                       {pt?.patientNumber && (
                         <span
-                          className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                            isDark
-                              ? "bg-white/5 text-[#8b9ab0]"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
+                          className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${theme.patientNumber}`}
                         >
                           {pt.patientNumber}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5 text-xs text-[#8b9ab0]">
-                      <span className="capitalize">{pt?.gender?.toLowerCase() || "Individual"}</span>
+
+                    <div
+                      className={`flex items-center gap-2 mt-0.5 text-xs ${theme.patientDetails}`}
+                    >
+                      <span className="capitalize">
+                        {pt?.gender?.toLowerCase() || "Individual"}
+                      </span>
                       <span>•</span>
-                      <span>{user?.email || user?.phone || "Account verified"}</span>
+                      <span>
+                        {user?.email || user?.phone || "Account verified"}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Status and Action */}
                 <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
                   <span
                     className={`text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center gap-1 ${
@@ -153,11 +140,7 @@ export const RegisteredPatientsWidget: React.FC<RegisteredPatientsWidgetProps> =
 
                   <Link
                     to={pt?.id ? `/admin/patients/${pt.id}` : "/admin/patients"}
-                    className={`px-3 py-1.5 border rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${
-                      isDark
-                        ? "border-white/10 hover:border-primary/40 hover:text-primary text-gray-300"
-                        : "border-gray-300 hover:border-primary/40 hover:text-primary text-gray-700"
-                    }`}
+                    className={`px-3 py-1.5 border rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${theme.detailsButton}`}
                   >
                     Details <ExternalLink size={12} />
                   </Link>

@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Trash, XCircle } from "lucide-react";
 import { MdRestoreFromTrash } from "react-icons/md";
 import { createPortal } from "react-dom";
+import { getDeleteConfirmationalModalTheme } from "@/helpers/common.helper";
 
 export interface DeleteModelProps {
   id: string;
@@ -28,22 +29,7 @@ function DeleteConfirmationalModal({
 
   const isDanger = action === "DELETE" || action === "BLOCK";
 
-  const theme = {
-    modal: isDark ? "border-white/10 bg-[#111827]" : "border-gray-200 bg-white",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    subtitle: isDark ? "text-gray-400" : "text-gray-500",
-    description: isDark ? "text-gray-400" : "text-gray-600",
-    name: isDark ? "text-white" : "text-gray-900",
-
-    closeButton: isDark
-      ? "text-gray-400 hover:bg-white/5 hover:text-white"
-      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-
-    cancelButton: isDark
-      ? "border-white/10 bg-transparent text-gray-300 hover:bg-white/5 hover:text-white"
-      : "border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-  };
+  const theme = getDeleteConfirmationalModalTheme(isDark)
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">

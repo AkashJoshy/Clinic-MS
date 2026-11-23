@@ -2,6 +2,10 @@ import { Award, Briefcase, FileText, ExternalLink } from "lucide-react";
 
 import type { DoctorQualificationsCardProps } from "@/types/doctor";
 import { useAuthStore } from "@/store";
+import {
+  getDoctorQualificationsCardTheme,
+  getDocumentStatusStyles,
+} from "@/helpers/admin/doctors.helper";
 
 export const DoctorQualificationsCard = ({
   doctor,
@@ -13,48 +17,13 @@ export const DoctorQualificationsCard = ({
   const user = useAuthStore((state) => state.users[role]);
   const isDark = user?.theme === "DARK";
 
-  const theme = {
-    card: isDark
-      ? "border-white/8 bg-[#0d1a27]"
-      : "border-gray-200 bg-white shadow-sm",
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    divider: isDark ? "border-white/5" : "border-gray-200",
-    document: isDark
-      ? "border-white/8 bg-white/[0.03]"
-      : "border-gray-200 bg-gray-50",
-    documentHover: isDark ? "hover:bg-primary/[0.03]" : "hover:bg-primary/5",
-    iconHover: isDark ? "group-hover:text-white" : "group-hover:text-gray-900",
-  };
+  const theme = getDoctorQualificationsCardTheme(isDark);
 
-  const getStatusStyles = (status?: string) => {
-    if (status === "APPROVED") {
-      return {
-        wrapper: "border-emerald-500/20 bg-emerald-500/10 text-emerald-500",
-        dot: "bg-emerald-500",
-        label: "Verified",
-      };
-    }
+  const registrationStatus = getDocumentStatusStyles(
+    doctor.registrationDoc?.status,
+  );
 
-    if (status === "REJECTED") {
-      return {
-        wrapper: "border-red-400/20 bg-red-400/10 text-red-400",
-        dot: "bg-red-400",
-        label: "Rejected",
-      };
-    }
-
-    return {
-      wrapper: "border-amber-400/20 bg-amber-400/10 text-amber-400",
-      dot: "bg-amber-400",
-      label: "Pending",
-    };
-  };
-
-  const registrationStatus = getStatusStyles(doctor.registrationDoc?.status);
-
-  const medicalLicenceStatus = getStatusStyles(
+  const medicalLicenceStatus = getDocumentStatusStyles(
     doctor.medicalLicenceDoc?.status,
   );
 

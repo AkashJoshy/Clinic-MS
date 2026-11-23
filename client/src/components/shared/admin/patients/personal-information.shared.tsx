@@ -1,4 +1,3 @@
-
 import {
   Clock,
   ShieldAlert,
@@ -10,26 +9,14 @@ import {
 } from "lucide-react";
 import type { PatientPersonalInformation } from "@/types/patient";
 import { cn } from "@/lib/utils";
+import { getPatientPersonalInformationTheme } from "@/helpers/admin/patients.helper";
+import { formatDate } from "@/helpers/wallet.helper";
 
 export const PersonalInformation = ({
   patient,
   address,
   isDark,
 }: PatientPersonalInformation) => {
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "N/A";
-
-    const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) return "N/A";
-
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   const calculateAge = (dobString: string) => {
     if (!dobString) return "";
 
@@ -44,21 +31,7 @@ export const PersonalInformation = ({
     return `${years} years`;
   };
 
-  const theme = {
-    card: isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200",
-    heading: isDark
-      ? "text-white border-white/5"
-      : "text-gray-900 border-gray-100",
-    label: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    value: isDark ? "text-white" : "text-gray-900",
-    divider: isDark ? "border-white/5" : "border-gray-100",
-    empty: isDark
-      ? "border-white/10 bg-white/2 text-[#8b9ab0]"
-      : "border-gray-200 bg-gray-50 text-gray-500",
-    emptyBadge: isDark
-      ? "border-white/5 bg-white/5 text-white"
-      : "border-gray-200 bg-gray-50 text-gray-700",
-  };
+  const theme = getPatientPersonalInformationTheme(isDark);
 
   return (
     <div className="space-y-6 lg:col-span-8">

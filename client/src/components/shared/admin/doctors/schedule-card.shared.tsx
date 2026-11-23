@@ -1,3 +1,4 @@
+import { getDoctorScheduleCardTheme } from "@/helpers/admin/doctors.helper";
 import { Clock } from "lucide-react";
 
 interface DoctorScheduleCardProps {
@@ -9,33 +10,10 @@ export const DoctorScheduleCard = ({
   isDark,
   schedule,
 }: DoctorScheduleCardProps) => {
-  const theme = {
-    container: isDark
-      ? "bg-[#0d1a27] border-white/8"
-      : "bg-white border-gray-200 shadow-sm",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    divider: isDark ? "border-white/5" : "border-gray-200",
-
-    dayCard: isDark
-      ? "bg-white/[0.02] border-white/5"
-      : "bg-gray-50 border-gray-200",
-
-    session: isDark
-      ? "bg-[#080d14] border-white/10 text-white"
-      : "bg-white border-gray-200 text-gray-700",
-
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    empty: isDark
-      ? "border-white/10 bg-white/[0.02]"
-      : "border-gray-300 bg-gray-50",
-  };
+  const theme = getDoctorScheduleCardTheme(isDark);
 
   return (
-    <div
-      className={`m-4 rounded-2xl border p-6 ${theme.container}`}
-    >
+    <div className={`m-4 rounded-2xl border p-6 ${theme.container}`}>
       <h3
         className={`mb-4 flex items-center gap-2 border-b pb-3 text-base font-semibold ${theme.heading} ${theme.divider}`}
       >

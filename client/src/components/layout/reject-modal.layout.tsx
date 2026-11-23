@@ -8,6 +8,7 @@ import {
 import type { RejectPatientData } from "@/schemas/admin/admin.schema";
 import { rejectDoctorSchema } from "@/schemas/admin/doctor.schema";
 import toast from "react-hot-toast";
+import { getRejectModalTheme } from "@/helpers/common.helper";
 
 interface RejectModalProps<T> {
   id: string;
@@ -45,24 +46,7 @@ export const RejectModal = <T,>({
   const fieldsToDelete = watch("fields") ?? [];
   const rejectedReason = watch("rejectedReason");
 
-  const theme = {
-    modal: isDark
-      ? "border-white/10 bg-[#0d1a27]"
-      : "border-gray-200 bg-white",
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    input: isDark
-      ? "border-white/10 bg-[#080d14] text-white placeholder:text-[#4a5568]"
-      : "border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-400",
-    inputFocus: "focus:border-[#1dc465]/50",
-    closeButton: isDark
-      ? "text-[#8b9ab0] hover:text-white"
-      : "text-gray-500 hover:text-gray-900",
-    cancelButton: isDark
-      ? "border-white/8 bg-white/5 text-[#8b9ab0] hover:bg-white/10 hover:text-white"
-      : "border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900",
-  };
+  const theme = getRejectModalTheme(isDark)
 
   const handleFieldSelect = (
     e: React.ChangeEvent<HTMLSelectElement>,

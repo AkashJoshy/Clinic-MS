@@ -63,6 +63,7 @@ export interface PageHeaderProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  isDark: boolean
 }
 
 export interface DocumentPreviewModalProps {

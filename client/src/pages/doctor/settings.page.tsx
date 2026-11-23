@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Settings, ChevronRight, Menu } from "lucide-react";
 import { FormProvider } from "react-hook-form";
 import { useAuthStore } from "@/store";
@@ -36,6 +36,15 @@ const DoctorSettingsPage: React.FC = () => {
     isPending,
   } = useDoctorSettings();
 
+  useEffect(() => {
+    const element = document.getElementById(doctorSectionId(activeSetting));
+
+    element?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [activeSetting]);
+
   const renderSectionContent = (item: DoctorNavItem) => {
     switch (item.id) {
       case "PROFILE_INFO":
@@ -53,12 +62,18 @@ const DoctorSettingsPage: React.FC = () => {
         );
       case "NOTIFICATIONS":
         return (
-          <FeatureUnderConstruction>
+          <FeatureUnderConstruction isDark={isDark}>
             <NotificationsSection isDark={isDark} />;
           </FeatureUnderConstruction>
-        )
+        );
       case "APPEARANCE":
-        return <AppearanceSection isDark={isDark} />;
+        return (
+          <AppearanceSection
+            mutateFn={mutate}
+            isMutateFn={isPending}
+            isDark={isDark}
+          />
+        );
       case "ACCOUNT_MANAGEMENT":
         return <AccountManagementSection isDark={isDark} />;
       default:

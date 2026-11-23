@@ -1,32 +1,18 @@
-
 import { Stethoscope, Star } from "lucide-react";
 import type { DoctorProfileCardProps } from "@/types/doctor";
 import { useAuthStore } from "@/store";
+import { getDoctorProfileCardTheme } from "@/helpers/admin/doctors.helper";
 
 export const DoctorProfileCard = ({
   doctor,
   department,
   isBlocked,
-  role
+  role,
 }: DoctorProfileCardProps) => {
   const user = useAuthStore((state) => state.users[role]);
   const isDark = user?.theme === "DARK";
 
-  const theme = {
-    card: isDark
-      ? "bg-[#0d1a27] border-white/8"
-      : "bg-white border-gray-200 shadow-sm",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    divider: isDark ? "border-white/5" : "border-gray-200",
-
-    code: isDark
-      ? "bg-white/5 border-white/10 text-[#8b9ab0]"
-      : "bg-gray-100 border-gray-200 text-gray-600",
-  };
+  const theme = getDoctorProfileCardTheme(isDark);
 
   return (
     <div

@@ -2,6 +2,7 @@ import { Mail, Phone, Languages, MapPin } from "lucide-react";
 import type { BaseAddress } from "@/types/patient";
 import { useAuthStore } from "@/store";
 import type { RouteRoleProps } from "@/types/auth";
+import { getDoctorContactCardTheme } from "@/helpers/admin/doctors.helper";
 
 interface DoctorContactCardProps {
   email?: string;
@@ -21,16 +22,7 @@ export const DoctorContactCard = ({
   const user = useAuthStore((state) => state.users[role]);
   const isDark = user?.theme === "DARK";
 
-  const theme = {
-    card: isDark
-      ? "bg-[#0d1a27] border-white/8"
-      : "bg-white border-gray-200 shadow-sm",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    divider: isDark ? "border-white/5" : "border-gray-200",
-  };
+  const theme = getDoctorContactCardTheme(isDark);
 
   const InfoItem = ({
     icon: Icon,

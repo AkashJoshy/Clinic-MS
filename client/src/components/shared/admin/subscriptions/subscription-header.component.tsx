@@ -1,8 +1,8 @@
-
 import React from "react";
 import { CreditCard, Plus, Search } from "lucide-react";
 import type { PlanStatus } from "@/types/subscription";
 import AdminPageHeader from "../../page-header.shared";
+import { getSubscriptionHeaderTheme } from "@/helpers/admin/subscription.helper";
 
 interface SubscriptionHeaderProps {
   searchQuery: string;
@@ -44,33 +44,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
     }
   };
 
-  const theme = {
-    searchInput: isDark
-      ? "border-white/10 bg-[#0c141e] text-white placeholder:text-gray-500"
-      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400",
-    searchIcon: isDark ? "text-[#8b9ab0]" : "text-gray-400",
-    filterContainer: isDark
-      ? "border-white/10 bg-[#0c141e]"
-      : "border-gray-200 bg-gray-50",
-    filterText: isDark
-      ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
-      : "text-gray-600 hover:bg-gray-200/70 hover:text-gray-900",
-    allSelected: isDark
-      ? "bg-white/10 text-white"
-      : "bg-white text-gray-900 shadow-sm",
-    activeSelected:
-      "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400",
-    inactiveSelected: isDark
-      ? "border border-rose-500/30 bg-rose-500/15 text-rose-300"
-      : "border border-rose-200 bg-rose-50 text-rose-600",
-    allCount: isDark
-      ? "bg-white/5 text-current"
-      : "bg-gray-200/70 text-gray-600",
-    activeCount: "bg-emerald-500/10 text-emerald-400",
-    inactiveCount: isDark
-      ? "bg-rose-500/10 text-rose-300"
-      : "bg-rose-100 text-rose-600",
-  };
+  const theme = getSubscriptionHeaderTheme(isDark);
 
   return (
     <header className="w-full min-w-0 space-y-5">
@@ -80,6 +54,7 @@ export const SubscriptionHeader: React.FC<SubscriptionHeaderProps> = ({
             icon={CreditCard}
             title="Subscription Plans"
             description="Create, configure, and manage clinic & doctor subscription tiers"
+            isDark={isDark}
           />
         </div>
 

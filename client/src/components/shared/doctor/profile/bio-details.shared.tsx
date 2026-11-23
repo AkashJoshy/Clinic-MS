@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Pencil, X, Check, Plus, Info } from "lucide-react";
 import type {
@@ -16,8 +15,9 @@ import toast from "react-hot-toast";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { updateDoctorProfessionalDetails } from "@/services/doctor.service";
 import DoctorBioDetailsSkeleton from "../../skeletons/doctor-bio-details.skeleton";
+import type { ThemeProps } from "@/types/common";
 
-const DoctorBioDetails: React.FC = () => {
+const DoctorBioDetails: React.FC<ThemeProps> = ({ isDark }) => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const { doctor: user } = useAuthStore((state) => state.users);
   const { primaryColor } = useAuthStore((state) => state.platform);
@@ -25,7 +25,7 @@ const DoctorBioDetails: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [languages, setLanguages] = useState<string[]>(
-    doctorProfile?.doctor.languages ?? []
+    doctorProfile?.doctor.languages ?? [],
   );
   const [languageInput, setLanguageInput] = useState("");
 
@@ -118,22 +118,49 @@ const DoctorBioDetails: React.FC = () => {
     });
   };
 
-  const fieldClasses = `w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80] ${
+  const fieldClasses = `w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition-all duration-200 placeholder:opacity-100 ${
+    isDark
+      ? "bg-[#101f2e] text-white placeholder:text-[#5b6b80]"
+      : "bg-white text-slate-900 placeholder:text-slate-400"
+  } ${
     isEditing
-      ? "border-white/10 focus:ring-1"
-      : "border-white/8 cursor-default"
+      ? isDark
+        ? "border-none focus:ring-1"
+        : "border-none focus:ring-1"
+      : isDark
+        ? "border-none cursor-default"
+        : "border-none cursor-default"
   }`;
 
-  const labelClasses =
-    "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+  const labelClasses = `mb-1.5 block text-xs font-medium ${
+    isDark ? "text-[#8b9ab0]" : "text-slate-600"
+  }`;
+
+  const valueClasses = `px-3.5 py-2.5 text-sm ${
+    isDark ? "text-white" : "text-slate-900"
+  }`;
+
+  const mutedValueClasses = `px-3.5 py-2.5 text-sm leading-relaxed ${
+    isDark ? "text-[#c3cddb]" : "text-slate-700"
+  }`;
 
   const primaryTint = `color-mix(in srgb, ${primaryColor} 10%, transparent)`;
   const primaryBorder = `color-mix(in srgb, ${primaryColor} 40%, transparent)`;
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6">
+    <div
+      className={`rounded-2xl border p-6 shadow-lg transition-shadow duration-200 ${
+        isDark
+          ? "border-none bg-[#0d1a27] shadow-black/20"
+          : "border-none bg-white shadow-slate-200/70"
+      }`}
+    >
       <div className="mb-5 flex items-center justify-between">
-        <h3 className="text-base font-semibold text-white">
+        <h3
+          className={`text-base font-semibold ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}
+        >
           Professional details
         </h3>
 
@@ -151,7 +178,11 @@ const DoctorBioDetails: React.FC = () => {
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#8b9ab0] transition-colors hover:text-white"
+              className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                isDark
+                  ? "text-[#8b9ab0] hover:text-white"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
             >
               <X size={13} /> Cancel
             </button>
@@ -191,7 +222,7 @@ const DoctorBioDetails: React.FC = () => {
                       .sort()
                       .every(
                         (value, index) =>
-                          value === [...data.languages].sort()[index]
+                          value === [...data.languages].sort()[index],
                       );
 
                   if (isSameData && isSame) {
@@ -208,7 +239,7 @@ const DoctorBioDetails: React.FC = () => {
                       ),
                       {
                         position: "bottom-right",
-                      }
+                      },
                     );
                   } else {
                     mutate(data as DoctorProffesionalDetails);
@@ -217,7 +248,7 @@ const DoctorBioDetails: React.FC = () => {
                 },
                 () => {
                   toast.error("Data is incomplete for the updation");
-                }
+                },
               )}
               className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed"
               style={{
@@ -259,7 +290,7 @@ const DoctorBioDetails: React.FC = () => {
               )}
             </>
           ) : (
-            <p className="px-3.5 py-2.5 text-sm text-white">
+            <p className={valueClasses}>
               {doctorProfile.doctor.gender.charAt(0) +
                 doctorProfile.doctor.gender.slice(1).toLowerCase()}
             </p>
@@ -284,7 +315,7 @@ const DoctorBioDetails: React.FC = () => {
               )}
             </>
           ) : (
-            <p className="px-3.5 py-2.5 text-sm text-white">
+            <p className={valueClasses}>
               {doctorProfile.doctor.experienceYears} years
             </p>
           )}
@@ -310,7 +341,7 @@ const DoctorBioDetails: React.FC = () => {
             )}
           </>
         ) : (
-          <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
+          <p className={mutedValueClasses}>
             {doctorProfile.doctor.bio || "No bio added yet."}
           </p>
         )}
@@ -334,7 +365,7 @@ const DoctorBioDetails: React.FC = () => {
             )}
           </>
         ) : (
-          <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
+          <p className={mutedValueClasses}>
             {doctorProfile.doctor.licenceNumber ||
               "Licence Number not provided"}
           </p>
@@ -360,7 +391,7 @@ const DoctorBioDetails: React.FC = () => {
               )}
             </>
           ) : (
-            <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
+            <p className={mutedValueClasses}>
               {doctorProfile.doctor.qualification ||
                 "Licence Number not provided"}
             </p>
@@ -385,7 +416,7 @@ const DoctorBioDetails: React.FC = () => {
               )}
             </>
           ) : (
-            <p className="px-3.5 py-2.5 text-sm leading-relaxed text-[#c3cddb]">
+            <p className={mutedValueClasses}>
               {doctorProfile.doctor.specialization ||
                 "Licence Number not provided"}
             </p>
@@ -430,7 +461,11 @@ const DoctorBioDetails: React.FC = () => {
         <div className="flex flex-wrap gap-2 px-1">
           {(isEditing ? languages : doctorProfile.doctor.languages).length ===
             0 && (
-            <span className="text-sm text-[#5b6b80]">
+            <span
+              className={`text-sm ${
+                isDark ? "text-[#5b6b80]" : "text-slate-400"
+              }`}
+            >
               No languages added
             </span>
           )}
@@ -439,7 +474,11 @@ const DoctorBioDetails: React.FC = () => {
             (lang) => (
               <span
                 key={lang}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-xs font-medium text-[#c3cddb]"
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
+                  isDark
+                    ? "bg-white/5 text-[#c3cddb]"
+                    : "bg-slate-100 text-slate-700"
+                }`}
               >
                 {lang}
 
@@ -454,7 +493,7 @@ const DoctorBioDetails: React.FC = () => {
                   </button>
                 )}
               </span>
-            )
+            ),
           )}
         </div>
       </div>

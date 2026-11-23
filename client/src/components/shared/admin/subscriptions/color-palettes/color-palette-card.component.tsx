@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Pencil, Trash2 } from "lucide-react";
 
 import ColorPalettePreview from "./color-palette-preview.component";
 import type { ColorPalette } from "@/types/admin/color-palette.types";
+import { getColorPaletteCardTheme } from "@/helpers/admin/subscription.helper";
 
 interface ColorPaletteCardProps {
   palette: ColorPalette;
@@ -34,29 +34,7 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
   const entries = Object.entries(palette.colors);
   const active = entries.find(([key]) => key === activeKey);
 
-  const theme = {
-    card: isDark
-      ? "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.05]"
-      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    value: isDark ? "text-gray-200" : "text-gray-700",
-
-    swatchRing: isDark ? "ring-white/10" : "ring-black/5",
-
-    action: isDark
-      ? "text-gray-400 hover:bg-white/10 hover:text-white focus-visible:ring-white/40"
-      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus-visible:ring-gray-400",
-
-    delete: isDark
-      ? "text-gray-400 hover:bg-red-400/10 hover:text-red-400 focus-visible:ring-red-400/50"
-      : "text-gray-500 hover:bg-red-50 hover:text-red-600 focus-visible:ring-red-400",
-
-    preview: isDark
-      ? "border-white/10 bg-[#080d14]"
-      : "border-gray-100 bg-gray-50",
-  };
+  const theme = getColorPaletteCardTheme(isDark);
 
   return (
     <motion.div
@@ -66,7 +44,6 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
       exit={{ opacity: 0, scale: 0.96 }}
       className={`group min-w-0 overflow-hidden rounded-2xl border p-3 transition-colors duration-200 sm:p-4 ${theme.card}`}
     >
-      {/* Color Swatches */}
       <div
         className={`flex h-16 gap-1 overflow-hidden rounded-xl ring-1 ring-inset sm:h-20 ${theme.swatchRing}`}
         onMouseLeave={() => setActiveKey(null)}
@@ -87,14 +64,10 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
         ))}
       </div>
 
-      {/* Palette Information */}
       <div className="mt-3 flex items-start justify-between gap-3 px-1">
         <div className="min-w-0">
-          {/* Palette Name & Status */}
           <div className="flex items-center gap-2">
-            <h3
-              className={`truncate text-sm font-semibold ${theme.heading}`}
-            >
+            <h3 className={`truncate text-sm font-semibold ${theme.heading}`}>
               {palette.name}
             </h3>
 
@@ -109,7 +82,6 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
             </span>
           </div>
 
-          {/* Active Color Information */}
           <p
             className={`mt-0.5 flex h-4 items-center gap-1.5 truncate text-xs ${theme.muted}`}
             aria-live="polite"
@@ -125,9 +97,7 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
                   {humanize(active[0])}
                 </span>
 
-                <span className="font-mono tabular-nums">
-                  {active[1]}
-                </span>
+                <span className="font-mono tabular-nums">{active[1]}</span>
               </>
             ) : (
               `${entries.length} status colors`
@@ -135,7 +105,6 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
           </p>
         </div>
 
-        {/* Edit & Delete Actions */}
         <div className="flex shrink-0 items-center gap-0.5 transition-opacity duration-200 sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100">
           <button
             type="button"
@@ -159,13 +128,8 @@ const ColorPaletteCard: React.FC<ColorPaletteCardProps> = ({
         </div>
       </div>
 
-      {/* Calendar Preview */}
       <div className={`mt-3 rounded-xl border p-3 ${theme.preview}`}>
-        <ColorPalettePreview
-          colors={palette.colors}
-          isDark={isDark}
-          compact
-        />
+        <ColorPalettePreview colors={palette.colors} isDark={isDark} compact />
       </div>
     </motion.div>
   );

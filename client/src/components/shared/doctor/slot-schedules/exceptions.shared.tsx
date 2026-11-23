@@ -1,17 +1,18 @@
 import { Button } from "@/components/ui/button";
-import type { ExceptionsData, ExceptionsProps } from "@/types/doctor-clinic";
-import { LockKeyhole, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import type { ExceptionsProps } from "@/types/doctor-clinic";
+import { Plus, Trash2 } from "lucide-react";
 import { NumberBadge } from "../../number-badge.shared";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { LockedOverlay } from "./locked-overlay.shared";
 import { useExceptions } from "@/hooks/use-exceptions.hook";
+import { ExceptionTabs } from "./exception-tabs.shared";
 
 export const Exceptions: React.FC<ExceptionsProps> = ({
   exceptions,
   onChange,
   generateSlots,
   disabled,
+  isDark,
 }) => {
   const {
     activeTab,
@@ -30,7 +31,6 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
     resetBreakForm,
     resetDateForm,
     resetOverrideForm,
-    setActiveTab,
     setBreakForm,
     setDateForm,
     setOverrideForm,
@@ -40,12 +40,48 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
     showOverrideForm,
   } = useExceptions(exceptions, onChange);
 
+  const headingClass = isDark ? "text-white" : "text-slate-900";
+  const labelClass = isDark ? "text-[#8b9ab0]" : "text-slate-600";
+  const descriptionClass = isDark ? "text-[#8b9ab0]" : "text-slate-500";
+
+  const cardClass = isDark
+    ? "bg-[#0d1a27] border-white/10"
+    : "bg-white border-slate-200";
+
+  const inputClass = isDark
+    ? "bg-[#0d1a27] border-white/10 text-white placeholder:text-gray-600 [color-scheme:dark]"
+    : "bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 [color-scheme:light]";
+
+  const formClass = isDark
+    ? "bg-white/5 border-white/10"
+    : "bg-slate-50 border-slate-200";
+
+  const emptyClass = isDark
+    ? "border-white/10 text-[#8b9ab0]"
+    : "border-slate-200 text-slate-500";
+
+  const entryClass = isDark
+    ? "bg-white/5 text-white"
+    : "bg-slate-50 text-slate-800";
+
+  const tabInactiveClass = isDark
+    ? "text-slate-400 hover:border-white/20 hover:text-white"
+    : "text-slate-500 hover:border-slate-300 hover:text-slate-900";
+
+  const countInactiveClass = isDark
+    ? "border-white/10 bg-white/[0.04] text-white/80 group-hover:border-white/20 group-hover:bg-white/[0.08]"
+    : "border-slate-200 bg-slate-100 text-slate-600 group-hover:bg-slate-200";
+
+  const iconButtonClass = isDark
+    ? "text-[#8b9ab0] hover:text-red-400"
+    : "text-slate-500 hover:text-red-500";
+
   return (
     <div className="relative">
       <div
         className={`
-          rounded-lg border border-white/10 bg-[#0d1a27] p-6
-          text-[#8b9ab0] transition-all duration-300
+          rounded-lg border p-6 transition-all duration-300
+          ${cardClass}
           ${disabled ? "select-none" : ""}
         `}
       >
@@ -56,68 +92,46 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
               <NumberBadge number={3} />
             </div>
 
-            <h2 className="ml-2 text-xl font-semibold text-white">
+            <h2 className={`ml-2 text-xl font-semibold ${headingClass}`}>
               Exceptions & Overrides
             </h2>
           </div>
 
-          <span className="rounded bg-white/10 px-2 py-1 text-xs xsxs:hidden sm:block">
+          <span
+            className={`rounded px-2 py-1 text-xs xsxs:hidden sm:block ${
+              isDark
+                ? "bg-white/10 text-slate-300"
+                : "bg-slate-100 text-slate-600"
+            }`}
+          >
             Optional
           </span>
 
-          <span className="rounded bg-white/10 px-2 py-1 text-xs xsxs:block sm:hidden">
+          <span
+            className={`rounded px-2 py-1 text-xs xsxs:block sm:hidden ${
+              isDark
+                ? "bg-white/10 text-slate-300"
+                : "bg-slate-100 text-slate-600"
+            }`}
+          >
             Opt.
           </span>
         </div>
 
+        {/* Tabs */}
         <ScrollArea className="mb-5 w-full whitespace-nowrap">
-          <div className="mb-4 flex gap-1 overflow-x-auto border-b border-white/10 pb-0 scrollbar-hide">
-            {(["breaks", "vacations", "blackouts", "holidays"] as const).map(
-              (tab) => {
-                const isActive = activeTab === tab;
-                const count =
-                  exceptions[tab].length > 9
-                    ? `${exceptions[tab].length}+`
-                    : exceptions[tab].length;
-
-                return (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => handleTabChange(tab)}
-                    className={`
-                      group inline-flex shrink-0 items-center gap-2
-                      whitespace-nowrap border-b-2 px-3 py-3
-                      text-xs font-medium capitalize
-                      transition-all duration-200 sm:px-4 sm:text-sm
-                      ${
-                        isActive
-                          ? "border-primary text-primary"
-                          : "border-transparent text-slate-400 hover:border-white/20 hover:text-white"
-                      }
-                    `}
-                  >
-                    <span>{tab}</span>
-
-                    <span
-                      className={`
-                        inline-flex h-[22px] min-w-[22px] items-center
-                        justify-center rounded-md px-1.5
-                        text-[11px] font-semibold tabular-nums
-                        transition-colors duration-200
-                        ${
-                          isActive
-                            ? "border border-primary/30 bg-primary/15 text-primary"
-                            : "border border-white/10 bg-white/[0.04] text-white/80 group-hover:border-white/20 group-hover:bg-white/[0.08]"
-                        }
-                      `}
-                    >
-                      {count}
-                    </span>
-                  </button>
-                );
-              },
-            )}
+          <div
+            className={`mb-4 flex gap-1 overflow-x-auto border-b pb-0 scrollbar-hide ${
+              isDark ? "border-white/10" : "border-slate-200"
+            }`}
+          >
+            <ExceptionTabs
+              activeTab={activeTab}
+              exceptions={exceptions}
+              onTabChange={handleTabChange}
+              tabInactiveClass={tabInactiveClass}
+              countInactiveClass={countInactiveClass}
+            />
           </div>
 
           <ScrollBar orientation="horizontal" />
@@ -125,7 +139,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
         <div className="min-h-[120px]">
           {exceptions[activeTab].length === 0 ? (
-            <div className="rounded border border-dashed border-white/10 py-6 text-center text-sm">
+            <div
+              className={`rounded border border-dashed py-6 text-center text-sm ${emptyClass}`}
+            >
               No {activeTab} configured.
             </div>
           ) : (
@@ -134,9 +150,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                 {exceptions[activeTab].map((item: any) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between rounded bg-white/5 p-3"
+                    className={`flex items-center justify-between rounded p-3 ${entryClass}`}
                   >
-                    <span className="text-sm text-white">
+                    <span className="text-sm">
                       {item.label || item.reason || "Entry"} •{" "}
                       {item.startTime
                         ? `${item.startTime} - ${item.endTime}`
@@ -146,7 +162,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                     <button
                       type="button"
                       onClick={() => deleteItem(activeTab, item.id)}
-                      className="text-[#8b9ab0] transition-colors hover:text-red-400"
+                      className={`transition-colors ${iconButtonClass}`}
+                      aria-label="Delete exception"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -171,11 +188,10 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
           {/* Break Form */}
           {activeTab === "breaks" && showForm && (
-            <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-4">
+            <div className={`mt-4 rounded-lg border p-4 ${formClass}`}>
               <div className="grid gap-3 sm:grid-cols-3">
-                {/* Label */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Label
                   </label>
 
@@ -189,13 +205,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         label: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* Start Time */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Start Time
                   </label>
 
@@ -208,13 +223,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* End Time */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     End Time
                   </label>
 
@@ -227,7 +241,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
               </div>
@@ -258,11 +272,10 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
 
           {/* Vacation / Blackout / Holiday Form */}
           {activeTab !== "breaks" && showForm && (
-            <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-4">
+            <div className={`mt-4 rounded-lg border p-4 ${formClass}`}>
               <div className="grid gap-3 sm:grid-cols-3">
-                {/* Reason */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Reason
                   </label>
 
@@ -282,13 +295,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         reason: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none placeholder:text-gray-600 focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* Start Date */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Start Date
                   </label>
 
@@ -302,13 +314,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startDate: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* End Date */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     End Date
                   </label>
 
@@ -322,7 +333,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endDate: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
               </div>
@@ -358,13 +369,19 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
         </div>
 
         {/* One-Time Extra Availability */}
-        <div className="mt-8 border-t border-white/10 pt-6">
-          <h3 className="mb-4 font-medium text-white">
+        <div
+          className={`mt-8 border-t pt-6 ${
+            isDark ? "border-white/10" : "border-slate-200"
+          }`}
+        >
+          <h3 className={`mb-4 font-medium ${headingClass}`}>
             One-Time Extra Availability
           </h3>
 
           {exceptions.overrides.length === 0 ? (
-            <div className="mb-3 rounded border border-dashed border-white/10 py-4 text-center text-xs">
+            <div
+              className={`mb-3 rounded border border-dashed py-4 text-center text-xs ${emptyClass}`}
+            >
               No overrides configured.
             </div>
           ) : (
@@ -381,7 +398,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <button
                     type="button"
                     onClick={() => deleteItem("overrides", override.id)}
-                    className="text-[#8b9ab0] transition-colors hover:text-red-400"
+                    className={`transition-colors ${iconButtonClass}`}
+                    aria-label="Delete override"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -394,9 +412,8 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
           {showOverrideForm && (
             <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
               <div className="grid gap-3 sm:grid-cols-3">
-                {/* Date */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Date
                   </label>
 
@@ -410,13 +427,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         date: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* Start Time */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     Start Time
                   </label>
 
@@ -429,13 +445,12 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         startTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
 
-                {/* End Time */}
                 <div>
-                  <label className="mb-1 block text-xs text-[#8b9ab0]">
+                  <label className={`mb-1 block text-xs ${labelClass}`}>
                     End Time
                   </label>
 
@@ -448,7 +463,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                         endTime: e.target.value,
                       }))
                     }
-                    className="w-full rounded-md border border-white/10 bg-[#0d1a27] px-3 py-2 text-sm text-white outline-none focus:border-primary"
+                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
                   />
                 </div>
               </div>
@@ -491,7 +506,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
           <Button
             type="submit"
             onClick={() => {
-              console.log(`Clicked!!`);
+              console.log("Clicked!!");
               generateSlots();
             }}
             className="mt-4 w-full text-lg font-semibold"
@@ -506,6 +521,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
           disabled={disabled}
           title="Exceptions & Overrides Locked"
           description="Configure your slot and booking rules first to manage exceptions and overrides."
+          isDark={isDark}
         />
       )}
     </div>

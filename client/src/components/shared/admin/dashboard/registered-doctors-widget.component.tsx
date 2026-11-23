@@ -10,16 +10,19 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { DoctorDetailsCardInfo } from "@/types/doctor";
+import { getRegisteredDoctorsWidgetTheme } from "@/helpers/admin/dashboard.helper";
 
 interface RegisteredDoctorsWidgetProps {
   doctors: DoctorDetailsCardInfo[];
   isDark: boolean;
 }
 
-export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = ({
-  doctors,
-  isDark,
-}) => {
+
+export const RegisteredDoctorsWidget: React.FC<
+  RegisteredDoctorsWidgetProps
+> = ({ doctors, isDark }) => {
+  const theme = getRegisteredDoctorsWidgetTheme(isDark);
+
   const [filter, setFilter] = useState<"ALL" | "PENDING" | "APPROVED">("ALL");
 
   const filteredDoctors = doctors.filter((doc) => {
@@ -30,36 +33,24 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
 
   return (
     <div
-      className={`p-5 lg:p-6 rounded-2xl border transition-all ${
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200"
-      }`}
+      className={`p-5 lg:p-6 rounded-2xl border transition-all ${theme.container}`}
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2
-              className={`text-base font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className={`text-base font-bold ${theme.heading}`}>
               Registered Doctors
             </h2>
+
             <span
-              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                isDark
-                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-                  : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-              }`}
+              className={`text-xs px-2 py-0.5 rounded-full font-semibold ${theme.registeredBadge}`}
             >
               {doctors.length} Registered
             </span>
           </div>
-          <p
-            className={`text-xs mt-0.5 ${
-              isDark ? "text-[#8b9ab0]" : "text-gray-500"
-            }`}
-          >
+
+          <p className={`text-xs mt-0.5 ${theme.description}`}>
             Review applications and status updates for medical staff
           </p>
         </div>
@@ -67,11 +58,7 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
         <div className="flex items-center gap-2">
           {/* Quick Filter */}
           <div
-            className={`flex items-center p-0.5 rounded-xl border text-xs ${
-              isDark
-                ? "bg-white/5 border-white/8"
-                : "bg-gray-100 border-gray-200"
-            }`}
+            className={`flex items-center p-0.5 rounded-xl border text-xs ${theme.filterContainer}`}
           >
             {(["ALL", "PENDING", "APPROVED"] as const).map((tab) => (
               <button
@@ -79,23 +66,20 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
                 onClick={() => setFilter(tab)}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
                   filter === tab
-                    ? isDark
-                      ? "bg-primary text-slate-950 font-bold"
-                      : "bg-white text-gray-900 font-bold shadow-xs"
-                    : isDark
-                    ? "text-[#8b9ab0] hover:text-white"
-                    : "text-gray-500 hover:text-gray-900"
+                    ? theme.filterActive
+                    : theme.filterInactive
                 }`}
               >
-                {tab === "ALL" ? "All" : tab === "PENDING" ? "Pending" : "Active"}
+                {tab === "ALL"
+                  ? "All"
+                  : tab === "PENDING"
+                    ? "Pending"
+                    : "Active"}
               </button>
             ))}
           </div>
 
-          <Link
-            to="/admin/doctors"
-            className="text-primary hover:underline text-xs font-semibold flex items-center gap-1 shrink-0"
-          >
+          <Link to="/admin/doctors" className={theme.manageLink}>
             Manage <ArrowUpRight size={14} />
           </Link>
         </div>
@@ -104,8 +88,10 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
       {/* Doctor List */}
       {filteredDoctors.length === 0 ? (
         <div className="text-center py-10">
-          <Stethoscope className="mx-auto size-10 text-gray-500 mb-2 opacity-40" />
-          <p className="text-sm font-medium text-gray-400">
+          <Stethoscope
+            className={`mx-auto size-10 mb-2 opacity-40 ${theme.emptyIcon}`}
+          />
+          <p className={`text-sm font-medium ${theme.emptyMessage}`}>
             No doctors found matching this filter.
           </p>
         </div>
@@ -130,11 +116,7 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
             return (
               <div
                 key={doc?.id || idx}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all ${
-                  isDark
-                    ? "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]"
-                    : "bg-gray-50/70 border-gray-100 hover:border-gray-200 hover:bg-gray-50"
-                }`}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border transition-all ${theme.doctorCard}`}
               >
                 {/* Doctor Avatar and Details */}
                 <div className="flex items-center gap-3">
@@ -152,25 +134,19 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <p
-                        className={`text-sm font-bold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
+                      <p className={`text-sm font-bold ${theme.doctorName}`}>
                         Dr. {doc?.displayName || "Medical Specialist"}
                       </p>
+
                       {doc?.doctorCode && (
                         <span
-                          className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                            isDark
-                              ? "bg-white/5 text-[#8b9ab0]"
-                              : "bg-gray-200 text-gray-700"
-                          }`}
+                          className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${theme.doctorCode}`}
                         >
                           {doc.doctorCode}
                         </span>
                       )}
                     </div>
+
                     <div className="flex items-center gap-2 mt-0.5 text-xs text-[#8b9ab0]">
                       <span>{dept?.name || "General Medicine"}</span>
                       <span>•</span>
@@ -186,8 +162,8 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
                       isPending
                         ? "bg-amber-500/15 text-amber-500 border border-amber-500/30"
                         : isApproved
-                        ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
-                        : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
+                          ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
+                          : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
                     }`}
                   >
                     {isPending ? (
@@ -201,20 +177,15 @@ export const RegisteredDoctorsWidget: React.FC<RegisteredDoctorsWidgetProps> = (
                   </span>
 
                   {isPending ? (
-                    <Link
-                      to="/admin/doctors"
-                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded-lg transition-colors flex items-center gap-1 shadow-xs"
-                    >
+                    <Link to="/admin/doctors" className={theme.reviewButton}>
                       <ShieldCheck size={14} /> Review
                     </Link>
                   ) : (
                     <Link
-                      to={doc?.id ? `/admin/doctors/${doc.id}` : "/admin/doctors"}
-                      className={`px-3 py-1.5 border rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${
-                        isDark
-                          ? "border-white/10 hover:border-primary/40 hover:text-primary text-gray-300"
-                          : "border-gray-300 hover:border-primary/40 hover:text-primary text-gray-700"
-                      }`}
+                      to={
+                        doc?.id ? `/admin/doctors/${doc.id}` : "/admin/doctors"
+                      }
+                      className={`px-3 py-1.5 border rounded-lg text-xs font-semibold transition-colors flex items-center gap-1 ${theme.profileButton}`}
                     >
                       Profile <ExternalLink size={12} />
                     </Link>

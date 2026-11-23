@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, RotateCcw, Save, Palette } from "lucide-react";
@@ -16,6 +17,7 @@ import { ColorRow } from "./color-row.shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { colorPaletteSchema } from "@/schemas/admin/color-palette.schema";
 import type { ColorPaletteFormData } from "@/schemas/admin/admin.schema";
+import { getColorPaletteFormModalTheme } from "@/helpers/admin/subscription.helper";
 
 interface ColorPaletteFormModalProps {
   isOpen: boolean;
@@ -51,8 +53,9 @@ const ColorPaletteFormModal: React.FC<ColorPaletteFormModalProps> = ({
   });
 
   const isEditing = Boolean(initialData);
-
   const colors = watch("colors");
+
+  const theme = getColorPaletteFormModalTheme(isDark);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -65,29 +68,10 @@ const ColorPaletteFormModal: React.FC<ColorPaletteFormModalProps> = ({
     });
   }, [isOpen, initialData, reset]);
 
-  const theme = {
-    overlay: "bg-black/60 backdrop-blur-sm",
-
-    modal: isDark ? "border-white/10 bg-[#111b28]" : "border-gray-200 bg-white",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    input: isDark
-      ? "border-white/10 bg-[#080d14] text-white placeholder:text-[#6b7c93]"
-      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400",
-
-    section: isDark
-      ? "border-white/10 bg-white/[0.025]"
-      : "border-gray-100 bg-gray-50",
-
-    secondaryButton: isDark
-      ? "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"
-      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100",
-  };
-
-  const handleColorChange = (status: keyof PaletteColors, value: string) => {
+  const handleColorChange = (
+    status: keyof PaletteColors,
+    value: string,
+  ) => {
     setValue(`colors.${status}`, value, {
       shouldDirty: true,
       shouldValidate: true,
@@ -130,7 +114,7 @@ const ColorPaletteFormModal: React.FC<ColorPaletteFormModalProps> = ({
             aria-labelledby="palette-modal-title"
             className={`my-auto w-full max-w-3xl overflow-hidden rounded-2xl border shadow-2xl ${theme.modal}`}
           >
-            <form className="" onSubmit={handleSubmit(handleFormSubmit)}>
+            <form onSubmit={handleSubmit(handleFormSubmit)}>
               <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -156,11 +140,7 @@ const ColorPaletteFormModal: React.FC<ColorPaletteFormModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg transition-colors ${
-                    isDark
-                      ? "text-gray-400 hover:bg-white/10 hover:text-white"
-                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
+                  className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg transition-colors ${theme.iconButton}`}
                 >
                   <X size={17} />
                 </button>
@@ -233,7 +213,10 @@ const ColorPaletteFormModal: React.FC<ColorPaletteFormModalProps> = ({
                   </div>
 
                   <div className={`rounded-xl border p-4 ${theme.section}`}>
-                    <ColorPalettePreview colors={colors} isDark={isDark} />
+                    <ColorPalettePreview
+                      colors={colors}
+                      isDark={isDark}
+                    />
                   </div>
                 </div>
               </div>

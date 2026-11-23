@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Bell, ClipboardList, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+
 import DoctorPageHeader from "@/components/shared/page-header.shared";
 import type {
   DashboardOverview,
@@ -19,6 +20,8 @@ import {
   mapCalendarSlots,
 } from "@/helpers/doctor-calendar.helper";
 import WeeklyScheduleCalendar from "@/components/shared/doctor/slot-schedules/weekly-schedule-calendar.shared";
+import { useAuthStore } from "@/store";
+import { QuickActions } from "@/components/shared/doctor/dashboard/quick-actions.shared";
 
 const DoctorDashboardPage: React.FC = () => {
   const [dashboard, setDashboard] = useState<DashboardOverview | null>(null);
@@ -26,9 +29,13 @@ const DoctorDashboardPage: React.FC = () => {
     useState<GetDoctorCalendarData | null>(null);
   const [weekDates, setWeekDates] = useState<Date[]>([]);
 
+  const doctor = useAuthStore((state) => state.users.doctor);
+  const isDark = doctor?.theme === "DARK";
+
   const fetchDashboard = async () => {
     try {
       const response = await getDashboardOverview();
+
       if (response.data) {
         setDashboard(response.data);
       }
@@ -45,10 +52,10 @@ const DoctorDashboardPage: React.FC = () => {
   const { mutate, isPending } = useMutate(getCalendarSlotsByDate, {
     onSuccess(data) {
       const res = data.data;
+
       if (res) {
-        console.log(`Result from the Calendar API`);
         setScheduleSlot(res);
-        console.log(res.slots);
+
         const weekSlotKeys = Object.keys(res.slots).map((s) => new Date(s));
 
         setWeekDates(weekSlotKeys);
@@ -58,6 +65,7 @@ const DoctorDashboardPage: React.FC = () => {
 
   useEffect(() => {
     fetchDashboard();
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -67,7 +75,7 @@ const DoctorDashboardPage: React.FC = () => {
     from.setDate(today.getDate() - diff);
 
     const to = new Date(today);
-    to.setDate(to.getDate() - diff + 7);
+    to.setDate(today.getDate() - diff + 7);
 
     fetchSlotsByweek(from, to);
   }, []);
@@ -82,27 +90,49 @@ const DoctorDashboardPage: React.FC = () => {
     [scheduleSlot],
   );
 
+  const headingClass = isDark ? "text-white" : "text-slate-900";
+
+  const descriptionClass = isDark ? "text-slate-400" : "text-slate-500";
+
+  const cardClass = isDark
+    ? "border-white/10 bg-white/[0.03] hover:border-primary/30 hover:bg-primary/[0.04]"
+    : "border-slate-200 bg-white hover:border-primary/40 hover:bg-primary/[0.03]";
+
+  const iconWrapperClass = isDark ? "bg-primary/10" : "bg-primary/10";
+
+  const arrowClass = isDark ? "text-slate-500" : "text-slate-400";
+
   return (
-    <div className="relative min-h-full space-y-6 border border-white/10 bg-white/[0.02] p-6 shadow-2xs lg:p-8">
+    <div
+      className={`relative min-h-full space-y-6 border p-4 shadow-2xs sm:p-6 lg:p-8 ${
+        isDark
+          ? "border-white/10 bg-white/[0.02]"
+          : "border-slate-200 bg-slate-50"
+      }`}
+    >
       <DoctorPageHeader
         icon={LayoutDashboard}
         title="Dashboard"
         description="Overview of your appointments, schedule and earnings"
+        isDark={isDark}
       />
 
-      <DoctorDashboardStats data={dashboard} />
+      <DoctorDashboardStats data={dashboard} isDark={isDark} />
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold text-white">Session Calendar</h2>
+          <h2 className={`text-lg font-semibold ${headingClass}`}>
+            Session Calendar
+          </h2>
 
-          <p className="mt-1 text-sm text-slate-400">
+          <p className={`mt-1 text-sm ${descriptionClass}`}>
             View and manage your weekly sessions
           </p>
         </div>
 
         {weekDates.length > 0 && (
           <WeeklyScheduleCalendar
+            isDark={isDark}
             slots={calendarSlots}
             clinics={calendarClinics}
             weekDates={weekDates}
@@ -116,62 +146,12 @@ const DoctorDashboardPage: React.FC = () => {
         )}
       </section>
 
-      <RecentAppointments appointments={dashboard?.recentAppointments ?? []} />
+      <RecentAppointments
+        appointments={dashboard?.recentAppointments ?? []}
+        isDark={isDark}
+      />
 
-      <section className="space-y-4">
-        <div>
-          <h2 className="text-lg font-semibold text-white">Quick Actions</h2>
-
-          <p className="mt-1 text-sm text-slate-400">
-            Quickly access your frequently used features
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Link
-            to="/doctor/session-management"
-            className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all hover:border-primary/30 hover:bg-primary/[0.04]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="rounded-xl bg-primary/10 p-3">
-                <ClipboardList className="size-6 text-primary" />
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-white">Manage Sessions</h3>
-
-                <p className="mt-1 text-sm text-slate-400">
-                  Manage your weekly schedule and slots
-                </p>
-              </div>
-            </div>
-
-            <ArrowRight className="size-5 text-slate-500 transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-          </Link>
-
-          <Link
-            to="/doctor/notifications"
-            className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all hover:border-primary/30 hover:bg-primary/[0.04]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="rounded-xl bg-primary/10 p-3">
-                <Bell className="size-6 text-primary" />
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-white">Notifications</h3>
-
-                <p className="mt-1 text-sm text-slate-400">
-                  Check your latest updates and alerts
-                </p>
-              </div>
-            </div>
-
-            <ArrowRight className="size-5 text-slate-500 transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-          </Link>
-        </div>
-      </section>
-
+      <QuickActions isDark={isDark} />
     </div>
   );
 };

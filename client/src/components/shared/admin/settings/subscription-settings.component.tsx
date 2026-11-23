@@ -1,27 +1,11 @@
 import React from "react";
-
 import { Field, SettingRow } from "./settings-ui.component";
-
 import { inputClass } from "../../../../constants/admin-settings.constant";
+import type {
+  SubscriptionSettingsProps,
+} from "../../../../types/admin-settings";
 
-import type { BusinessSettings } from "../../../../types/admin-settings";
-
-export interface SubscriptionSettingsProps {
-  trialEnabled: boolean;
-  autoRenewal: boolean;
-  prorateUpgrades: boolean;
-  trialDays: number;
-  gracePeriodDays: number;
-  isDark: boolean;
-  onUpdateBusiness: <K extends keyof BusinessSettings>(
-    key: K,
-    value: BusinessSettings[K],
-  ) => void;
-}
-
-export const SubscriptionSettings: React.FC<
-  SubscriptionSettingsProps
-> = ({
+export const SubscriptionSettings: React.FC<SubscriptionSettingsProps> = ({
   trialEnabled,
   autoRenewal,
   prorateUpgrades,
@@ -38,7 +22,6 @@ export const SubscriptionSettings: React.FC<
 
   return (
     <div className="space-y-8">
-      {/* Billing rules */}
       <div className="pt-1">
         <h4
           className={`text-sm font-semibold mb-1 ${

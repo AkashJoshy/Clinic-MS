@@ -18,13 +18,18 @@ import { StatCard } from "./stat-card.shared";
 
 const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
   data,
+  isDark,
 }) => {
   if (!data?.appointments || !data?.schedule || !data?.earnings) {
     return null;
   }
 
+  const headingClass = isDark ? "text-slate-300" : "text-slate-700";
+  const mutedClass = isDark ? "text-slate-500" : "text-slate-500";
+
   const stats: StatCardProps[] = [
     {
+      isDark: isDark,
       title: "Appointments",
       value: String(data.appointments.today.total),
       icon: CalendarCheck,
@@ -59,27 +64,27 @@ const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
       ],
       footer: (
         <div className="space-y-3">
-          <p className="text-sm font-semibold text-slate-300">
+          <p className={`text-sm font-semibold ${headingClass}`}>
             Overall Performance
           </p>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <p className="text-xs text-slate-500">Total</p>
+              <p className={`text-xs ${mutedClass}`}>Total</p>
               <p className="mt-1 text-xl font-bold tracking-tight text-blue-400">
                 {data.appointments.overall.total.toLocaleString("en-IN")}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-slate-500">Completed</p>
+              <p className={`text-xs ${mutedClass}`}>Completed</p>
               <p className="mt-1 text-xl font-bold tracking-tight text-emerald-400">
                 {data.appointments.overall.completed.toLocaleString("en-IN")}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-slate-500">Cancelled</p>
+              <p className={`text-xs ${mutedClass}`}>Cancelled</p>
               <p className="mt-1 text-xl font-bold tracking-tight text-rose-400">
                 {data.appointments.overall.cancelled.toLocaleString("en-IN")}
               </p>
@@ -89,8 +94,8 @@ const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
       ),
       index: 0,
     },
-
     {
+      isDark: isDark,
       title: "Today's Schedule",
       value: String(data.schedule.today.availableSlots),
       icon: Clock3,
@@ -119,8 +124,8 @@ const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
       ],
       index: 1,
     },
-
     {
+      isDark: isDark,
       title: "Total Earnings",
       value: formatINR(data.earnings.total),
       icon: IndianRupee,
@@ -149,10 +154,10 @@ const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
       ],
       footer: (
         <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-300">
+          <p className={`text-sm font-medium ${headingClass}`}>
             Earnings Overview
           </p>
-          <p className="text-xs text-slate-500">
+          <p className={`text-xs ${mutedClass}`}>
             Lifetime earnings from all recorded appointments
           </p>
         </div>
@@ -164,7 +169,7 @@ const DoctorDashboardStats: React.FC<DoctorDashboardStatsProps> = ({
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {stats.map((stat) => (
-        <StatCard key={stat.title} {...stat} />
+        <StatCard key={stat.title} {...stat} isDark={isDark} />
       ))}
     </div>
   );

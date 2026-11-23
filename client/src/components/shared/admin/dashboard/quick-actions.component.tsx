@@ -7,12 +7,12 @@ import {
   ArrowRight,
   ShieldCheck,
 } from "lucide-react";
+import type { ThemeProps } from "@/types/common";
+import { getQuickActionsTheme } from "@/helpers/admin/dashboard.helper";
 
-interface QuickActionsProps {
-  isDark: boolean;
-}
+export const QuickActions: React.FC<ThemeProps> = ({ isDark }) => {
+  const theme = getQuickActionsTheme(isDark);
 
-export const QuickActions: React.FC<QuickActionsProps> = ({ isDark }) => {
   const actions = [
     {
       title: "Add Department",
@@ -50,23 +50,13 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ isDark }) => {
 
   return (
     <div
-      className={`p-5 lg:p-6 rounded-2xl border transition-all ${
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200"
-      }`}
+      className={`p-5 lg:p-6 rounded-2xl border transition-all ${theme.container}`}
     >
       <div className="mb-4">
-        <h2
-          className={`text-base font-bold ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
-        >
+        <h2 className={`text-base font-bold ${theme.heading}`}>
           Administrative Shortcuts
         </h2>
-        <p
-          className={`text-xs mt-0.5 ${
-            isDark ? "text-[#8b9ab0]" : "text-gray-500"
-          }`}
-        >
+        <p className={`text-xs mt-0.5 ${theme.description}`}>
           Quick navigation to frequently performed operations
         </p>
       </div>
@@ -74,15 +64,12 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ isDark }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {actions.map((act) => {
           const Icon = act.icon;
+
           return (
             <Link
               key={act.title}
               to={act.link}
-              className={`group p-4 rounded-xl border transition-all flex flex-col justify-between ${
-                isDark
-                  ? "bg-white/[0.02] border-white/5 hover:border-primary/40 hover:bg-primary/[0.04]"
-                  : "bg-gray-50/70 border-gray-100 hover:border-primary/40 hover:bg-primary/[0.04]"
-              }`}
+              className={`group p-4 rounded-xl border transition-all flex flex-col justify-between ${theme.actionCard}`}
             >
               <div className="flex items-start justify-between gap-2 mb-3">
                 <div
@@ -90,25 +77,18 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ isDark }) => {
                 >
                   <Icon size={20} className={act.iconColor} />
                 </div>
-                <ArrowRight
-                  size={16}
-                  className="text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all"
-                />
+
+                <ArrowRight size={16} className={theme.arrow} />
               </div>
 
               <div>
                 <p
-                  className={`text-sm font-bold group-hover:text-primary transition-colors ${
-                    isDark ? "text-white" : "text-gray-900"
-                  }`}
+                  className={`text-sm font-bold group-hover:text-primary transition-colors ${theme.actionTitle}`}
                 >
                   {act.title}
                 </p>
-                <p
-                  className={`text-xs mt-1 ${
-                    isDark ? "text-[#8b9ab0]" : "text-gray-500"
-                  }`}
-                >
+
+                <p className={`text-xs mt-1 ${theme.actionDescription}`}>
                   {act.description}
                 </p>
               </div>

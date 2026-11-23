@@ -1,9 +1,7 @@
-
 import type {
   SlotRules,
   SlotRulesPreferencesProps,
 } from "@/types/doctor-clinic";
-import { LockKeyhole } from "lucide-react";
 import { NumberBadge } from "../../number-badge.shared";
 import { LockedOverlay } from "./locked-overlay.shared";
 
@@ -12,6 +10,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
   onChange,
   disabled,
   error,
+  isDark,
 }) => {
   const handleChange = <K extends keyof SlotRules>(
     key: K,
@@ -23,12 +22,87 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
     });
   };
 
+  const headingClass = isDark ? "text-white" : "text-slate-900";
+  const labelClass = isDark ? "text-[#8b9ab0]" : "text-slate-600";
+  const descriptionClass = isDark ? "text-[#8b9ab0]" : "text-slate-500";
+
+  const cardClass = isDark
+    ? "bg-[#0d1a27] border-white/10"
+    : "bg-white border-slate-200";
+
+  const inputClass = isDark
+    ? "bg-black/20 border-white/10 text-white [color-scheme:dark]"
+    : "bg-slate-50 border-slate-300 text-slate-900 [color-scheme:light]";
+
+  const toggleCardClass = isDark
+    ? "border-white/10 bg-white/5"
+    : "border-slate-200 bg-slate-50";
+
+  const renderToggle = (
+    key: "autoConfirmBookings" | "allowReschedule",
+    label: string,
+    description: string,
+  ) => {
+    const enabled = rules[key];
+
+    return (
+      <div
+        className={`flex items-center justify-between rounded border p-4 md:col-span-2 ${toggleCardClass}`}
+      >
+        <div className="min-w-0 pr-3">
+          <p className={`font-medium ${headingClass}`}>{label}</p>
+          <p className={`mt-1 text-xs ${descriptionClass}`}>{description}</p>
+
+          <button
+            type="button"
+            role="switch"
+            aria-checked={enabled}
+            aria-label={label}
+            onClick={() => handleChange(key, !enabled)}
+            className={`relative mt-2 h-6 w-11 rounded-full transition-colors xsxs:block md:hidden ${
+              enabled ? "bg-primary" : "bg-gray-600"
+            }`}
+          >
+            <div
+              className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform ${
+                enabled ? "translate-x-5" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled}
+          aria-label={label}
+          onClick={() => handleChange(key, !enabled)}
+          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors xsxs:hidden md:block ${
+            enabled ? "bg-primary" : "bg-gray-600"
+          }`}
+        >
+          <div
+            className={`absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-transform ${
+              enabled ? "translate-x-5" : ""
+            }`}
+          />
+        </button>
+
+        {error?.[key]?.message && (
+          <p className="mt-1 text-sm text-red-500" role="alert">
+            {error[key]?.message}
+          </p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="relative">
       <div
         className={`
-          rounded-lg border border-white/10 bg-[#0d1a27] p-6
-          text-[#8b9ab0] transition-all duration-300
+          rounded-lg border p-6 transition-all duration-300
+          ${cardClass}
           ${disabled ? "select-none" : ""}
         `}
       >
@@ -37,14 +111,16 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
             <NumberBadge number={2} />
           </div>
 
-          <h2 className="ml-2 text-xl font-semibold text-white">
+          <h2 className={`ml-2 text-xl font-semibold ${headingClass}`}>
             Slot & Booking Rules
           </h2>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Session Duration (minutes)</label>
+            <label className={`text-sm ${labelClass}`}>
+              Session Duration (minutes)
+            </label>
 
             <input
               type="number"
@@ -53,8 +129,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("sessionDuration", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
+
             {error?.sessionDuration?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.sessionDuration.message}
@@ -63,7 +140,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Buffer Time (minutes)</label>
+            <label className={`text-sm ${labelClass}`}>
+              Buffer Time (minutes)
+            </label>
 
             <input
               type="number"
@@ -72,8 +151,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("bufferTime", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
+
             {error?.bufferTime?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.bufferTime.message}
@@ -82,7 +162,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Max Sessions Per Day</label>
+            <label className={`text-sm ${labelClass}`}>
+              Max Sessions Per Day
+            </label>
 
             <input
               type="number"
@@ -91,8 +173,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("maxSessionsPerDay", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
+
             {error?.maxSessionsPerDay?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.maxSessionsPerDay.message}
@@ -101,7 +184,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Min Advance Notice (hours)</label>
+            <label className={`text-sm ${labelClass}`}>
+              Min Advance Notice (hours)
+            </label>
 
             <input
               type="number"
@@ -110,8 +195,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("minAdvanceNotice", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
+
             {error?.minAdvanceNotice?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.minAdvanceNotice.message}
@@ -120,7 +206,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Booking Window (days ahead)</label>
+            <label className={`text-sm ${labelClass}`}>
+              Booking Window (days ahead)
+            </label>
 
             <input
               type="number"
@@ -129,8 +217,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
               onChange={(e) =>
                 handleChange("bookingWindow", Number(e.target.value))
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
+
             {error?.bookingWindow?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.bookingWindow.message}
@@ -139,7 +228,9 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm">Slot Interval Calculation</label>
+            <label className={`text-sm ${labelClass}`}>
+              Slot Interval Calculation
+            </label>
 
             <select
               value={rules.slotInterval}
@@ -149,11 +240,12 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
                   e.target.value as SlotRules["slotInterval"],
                 )
               }
-              className="rounded border border-white/10 bg-black/20 px-3 py-2 text-white outline-none transition focus:border-primary/50 xsxs:text-[10px] xs:text-[14px]"
+              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 xsxs:text-[10px] xs:text-[14px] ${inputClass}`}
             >
               <option value="AUTO">Auto (Continuous)</option>
               <option value="FIXED">Fixed On the Hour/Half-Hour</option>
             </select>
+
             {error?.slotInterval?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
                 {error.slotInterval.message}
@@ -161,124 +253,24 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-between rounded border border-white/10 bg-white/5 p-4 md:col-span-2">
-            <div>
-              <p className="font-medium text-white">Auto-Confirm Bookings</p>
+          {renderToggle(
+            "autoConfirmBookings",
+            "Auto-Confirm Bookings",
+            "Automatically accept appointments without manual review.",
+          )}
 
-              <p className="mt-1 text-xs">
-                Automatically accept appointments without manual review.
-              </p>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleChange(
-                    "autoConfirmBookings",
-                    !rules.autoConfirmBookings,
-                  )
-                }
-                className={`
-                  relative mt-2 h-6 w-11 rounded-full
-                  transition-colors xsxs:block md:hidden
-                  ${rules.autoConfirmBookings ? "bg-primary" : "bg-gray-600"}
-                `}
-              >
-                <div
-                  className={`
-                    absolute left-1 top-1 h-4 w-4 rounded-full bg-white
-                    transition-transform
-                    ${rules.autoConfirmBookings ? "translate-x-5" : ""}
-                  `}
-                />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={() =>
-                handleChange("autoConfirmBookings", !rules.autoConfirmBookings)
-              }
-              className={`
-                relative h-6 w-11 shrink-0 rounded-full
-                transition-colors xsxs:hidden md:block
-                ${rules.autoConfirmBookings ? "bg-primary" : "bg-gray-600"}
-              `}
-            >
-              <div
-                className={`
-                  absolute left-1 top-1 h-4 w-4 rounded-full bg-white
-                  transition-transform
-                  ${rules.autoConfirmBookings ? "translate-x-5" : ""}
-                `}
-              />
-            </button>
-            {error?.autoConfirmBookings?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.autoConfirmBookings.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between rounded border border-white/10 bg-white/5 p-4 md:col-span-2">
-            <div>
-              <p className="font-medium text-white">Allow Rescheduling</p>
-
-              <p className="mt-1 text-xs">
-                Allow patients to reschedule existing appointments.
-              </p>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleChange("allowReschedule", !rules.allowReschedule)
-                }
-                className={`
-                  relative mt-2 h-6 w-11 rounded-full
-                  transition-colors xsxs:block md:hidden
-                  ${rules.allowReschedule ? "bg-primary" : "bg-gray-600"}
-                `}
-              >
-                <div
-                  className={`
-                    absolute left-1 top-1 h-4 w-4 rounded-full bg-white
-                    transition-transform
-                    ${rules.allowReschedule ? "translate-x-5" : ""}
-                  `}
-                />
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={() =>
-                handleChange("allowReschedule", !rules.allowReschedule)
-              }
-              className={`
-                relative h-6 w-11 shrink-0 rounded-full
-                transition-colors xsxs:hidden md:block
-                ${rules.allowReschedule ? "bg-primary" : "bg-gray-600"}
-              `}
-            >
-              <div
-                className={`
-                  absolute left-1 top-1 h-4 w-4 rounded-full bg-white
-                  transition-transform
-                  ${rules.allowReschedule ? "translate-x-5" : ""}
-                `}
-              />
-            </button>
-            {error?.allowReschedule?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.allowReschedule.message}
-              </p>
-            )}
-          </div>
+          {renderToggle(
+            "allowReschedule",
+            "Allow Rescheduling",
+            "Allow patients to reschedule existing appointments.",
+          )}
         </div>
       </div>
 
       {disabled && (
         <LockedOverlay
           disabled={disabled}
+          isDark={isDark}
           title="Slot & Booking Rules Locked"
           description="Complete the weekly schedule setup first to configure your slot and booking rules."
         />

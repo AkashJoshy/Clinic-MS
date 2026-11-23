@@ -30,10 +30,22 @@ export type UpdateDoctorSettingsDto =
     };
 
 export type UpdateDoctorSettingsResponseDto =
-  | DoctorAppearanceSettings
-  | DoctorNotificationSettings
-  | DoctorSecuritySettings
-  | DoctorProfileSettings;
+  | {
+      section: "PROFILE";
+      data: DoctorProfileSettings;
+    }
+  | {
+      section: "SECURITY";
+      data: DoctorSecuritySettings;
+    }
+  | {
+      section: "NOTIFICATIONS";
+      data: DoctorNotificationSettings;
+    }
+  | {
+      section: "APPEARANCE";
+      data: DoctorAppearanceSettings;
+    };
 
 export type GetDoctorSettingsResponseDto = SafeDoctorSettings & {
   displayName: string;

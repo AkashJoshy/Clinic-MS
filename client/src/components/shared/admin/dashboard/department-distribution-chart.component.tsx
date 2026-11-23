@@ -7,12 +7,15 @@ import type {
   DepartmentDistributionChartProps,
   DepartmentDistributtonItem,
 } from "@/types/admin/dashboard.types";
+import { getDepartmentDistributionChartTheme } from "@/helpers/admin/dashboard.helper";
 
 export const DepartmentDistributionChart: React.FC<
   DepartmentDistributionChartProps
 > = ({ departmentsDetails, isDark }) => {
   const [hoveredDept, setHoveredDept] =
     useState<DepartmentDistributtonItem | null>(null);
+
+  const theme = getDepartmentDistributionChartTheme(isDark);
 
   const departments = departmentsDetails.departments;
 
@@ -26,26 +29,16 @@ export const DepartmentDistributionChart: React.FC<
 
   return (
     <div
-      className={`w-full min-w-0 p-3 sm:p-4 lg:p-6 rounded-2xl border transition-all ${
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200"
-      }`}
+      className={`w-full min-w-0 p-3 sm:p-4 lg:p-6 rounded-2xl border transition-all ${theme.container}`}
     >
       {/* Header */}
       <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2 sm:gap-3 mb-5">
         <div className="min-w-0">
-          <h2
-            className={`text-sm sm:text-base font-bold ${
-              isDark ? "text-white" : "text-gray-900"
-            }`}
-          >
+          <h2 className={`text-sm sm:text-base font-bold ${theme.heading}`}>
             Specialty Distribution
           </h2>
 
-          <p
-            className={`text-[11px] sm:text-xs mt-0.5 ${
-              isDark ? "text-[#8b9ab0]" : "text-gray-500"
-            }`}
-          >
+          <p className={`text-[11px] sm:text-xs mt-0.5 ${theme.description}`}>
             Doctor allocation across departments
           </p>
         </div>
@@ -114,17 +107,13 @@ export const DepartmentDistributionChart: React.FC<
             {/* Center Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
               <span
-                className={`text-[8px] sm:text-[10px] font-medium uppercase tracking-wider max-w-[100px] truncate ${
-                  isDark ? "text-[#8b9ab0]" : "text-gray-500"
-                }`}
+                className={`text-[8px] sm:text-[10px] font-medium uppercase tracking-wider max-w-[100px] truncate ${theme.centerLabel}`}
               >
                 {activeSlice ? activeSlice.name.slice(0, 12) : "Total Doctors"}
               </span>
 
               <span
-                className={`text-lg sm:text-xl font-extrabold ${
-                  isDark ? "text-white" : "text-gray-900"
-                }`}
+                className={`text-lg sm:text-xl font-extrabold ${theme.centerValue}`}
               >
                 {activeSlice
                   ? `${activeSlice.percentage}%`
@@ -151,13 +140,7 @@ export const DepartmentDistributionChart: React.FC<
                     setHoveredDept(hoveredDept?.id === dept.id ? null : dept)
                   }
                   className={`min-w-0 p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
-                    isHovered
-                      ? isDark
-                        ? "bg-white/10 border-white/20"
-                        : "bg-gray-100 border-gray-300"
-                      : isDark
-                        ? "bg-white/[0.02] border-white/5 hover:border-white/15"
-                        : "bg-gray-50 border-gray-100 hover:border-gray-200"
+                    isHovered ? theme.legendItemHovered : theme.legendItem
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 text-[11px] sm:text-xs mb-1.5 min-w-0">
@@ -168,9 +151,7 @@ export const DepartmentDistributionChart: React.FC<
                       />
 
                       <span
-                        className={`font-semibold truncate min-w-0 ${
-                          isDark ? "text-white" : "text-gray-800"
-                        }`}
+                        className={`font-semibold truncate min-w-0 ${theme.legendName}`}
                       >
                         {dept.name}
                       </span>
@@ -178,9 +159,7 @@ export const DepartmentDistributionChart: React.FC<
 
                     <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                       <span
-                        className={`whitespace-nowrap ${
-                          isDark ? "text-[#8b9ab0]" : "text-gray-500"
-                        }`}
+                        className={`whitespace-nowrap ${theme.legendCount}`}
                       >
                         {dept.count} docs
                       </span>
@@ -195,7 +174,9 @@ export const DepartmentDistributionChart: React.FC<
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full h-1 sm:h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className={`w-full h-1 sm:h-1.5 rounded-full overflow-hidden ${theme.progressTrack}`}
+                  >
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{

@@ -23,8 +23,8 @@ const fields = [
 const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
   doctorProfile,
   clinicDetails,
+  isDark,
 }) => {
-  
   const {
     register,
     errors,
@@ -44,11 +44,16 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
   } = useDoctorAddress({ doctorProfile, clinicDetails });
 
   const inputClasses =
-    "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 " +
-    "bg-[#101f2e] text-white placeholder:text-[#5b6b80] " +
-    "border-white/10 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
+    "w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition-all duration-200 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)] " +
+    (isDark
+      ? "bg-[#101f2e] text-white placeholder:text-[#5b6b80] border-white/10"
+      : "bg-white text-slate-900 placeholder:text-slate-400 border-slate-300");
 
   const errorText = "mt-1 text-xs text-red-500";
+
+  const labelClasses = `mb-1.5 block text-xs font-medium ${
+    isDark ? "text-[#8b9ab0]" : "text-slate-600"
+  }`;
 
   const primaryStyle = {
     "--primary-color": primaryColor,
@@ -58,10 +63,18 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
   const primaryBorder = `color-mix(in srgb, ${primaryColor} 25%, transparent)`;
 
   return (
-    <div className="mt-5 border-t border-white/8 pt-5">
+    <div
+      className={`mt-5 border-t pt-5 ${
+        isDark ? "border-white/8" : "border-slate-200"
+      }`}
+    >
       {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-3">
-        <h3 className="flex items-center gap-2 text-base font-semibold text-white">
+        <h3
+          className={`flex items-center gap-2 text-base font-semibold ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}
+        >
           <MapPin className="h-4 w-4" style={{ color: primaryColor }} />
           Clinic address
         </h3>
@@ -70,7 +83,9 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
           <button
             type="button"
             onClick={startEdit}
-            className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all hover:bg-white/5"
+            className={`flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+              isDark ? "hover:bg-white/5" : "hover:bg-slate-100"
+            }`}
             style={{ color: primaryColor }}
           >
             <Pencil size={13} />
@@ -81,7 +96,11 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
             <button
               type="button"
               onClick={cancelEdit}
-              className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#8b9ab0] transition-colors hover:bg-white/5 hover:text-white"
+              className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                isDark
+                  ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
               <X size={13} />
               Cancel
@@ -134,11 +153,19 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-[#8b9ab0]">
+                      <p
+                        className={`mb-1 text-[11px] font-semibold uppercase tracking-wider ${
+                          isDark ? "text-[#8b9ab0]" : "text-slate-600"
+                        }`}
+                      >
                         Street address
                       </p>
 
-                      <p className="break-words text-sm font-medium leading-relaxed text-white">
+                      <p
+                        className={`break-words text-sm font-medium leading-relaxed ${
+                          isDark ? "text-white" : "text-slate-900"
+                        }`}
+                      >
                         {address.addressLine || "Address line not provided"}
                       </p>
                     </div>
@@ -153,18 +180,38 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
                     return (
                       <div
                         key={key}
-                        className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/6 bg-[#101f2e]/70 p-3.5 transition-colors hover:border-white/12 hover:bg-[#142638]"
+                        className={`group flex min-w-0 items-center gap-3 rounded-xl border p-3.5 transition-colors ${
+                          isDark
+                            ? "border-white/6 bg-[#101f2e]/70 hover:border-white/12 hover:bg-[#142638]"
+                            : "border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-slate-100"
+                        }`}
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                          <Icon className="h-4 w-4 text-[#8b9ab0]" />
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                            isDark ? "bg-white/5" : "bg-white"
+                          }`}
+                        >
+                          <Icon
+                            className={`h-4 w-4 ${
+                              isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                            }`}
+                          />
                         </div>
 
                         <div className="min-w-0">
-                          <p className="text-[11px] font-medium text-[#718198]">
+                          <p
+                            className={`text-[11px] font-medium ${
+                              isDark ? "text-[#718198]" : "text-slate-500"
+                            }`}
+                          >
                             {label}
                           </p>
 
-                          <p className="mt-0.5 truncate text-sm font-medium text-[#e2e8f0]">
+                          <p
+                            className={`mt-0.5 truncate text-sm font-medium ${
+                              isDark ? "text-[#e2e8f0]" : "text-slate-900"
+                            }`}
+                          >
                             {value || "Not provided"}
                           </p>
                         </div>
@@ -175,16 +222,40 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
               </>
             ) : (
               /* Empty address state */
-              <div className="rounded-xl border border-dashed border-white/10 bg-[#101f2e]/50 px-5 py-8 text-center">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-white/8 bg-white/5">
-                  <MapPin className="h-5 w-5 text-[#718198]" />
+              <div
+                className={`rounded-xl border border-dashed px-5 py-8 text-center ${
+                  isDark
+                    ? "border-white/10 bg-[#101f2e]/50"
+                    : "border-slate-300 bg-slate-50"
+                }`}
+              >
+                <div
+                  className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border ${
+                    isDark
+                      ? "border-white/8 bg-white/5"
+                      : "border-slate-200 bg-white"
+                  }`}
+                >
+                  <MapPin
+                    className={`h-5 w-5 ${
+                      isDark ? "text-[#718198]" : "text-slate-400"
+                    }`}
+                  />
                 </div>
 
-                <p className="text-sm font-medium text-white">
+                <p
+                  className={`text-sm font-medium ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
+                >
                   No clinic address added
                 </p>
 
-                <p className="mt-1 text-xs text-[#8b9ab0]">
+                <p
+                  className={`mt-1 text-xs ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-600"
+                  }`}
+                >
                   Add this clinic's location to help patients find it easily.
                 </p>
 
@@ -209,12 +280,14 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Address Line */}
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
-                Address Line
-              </label>
+              <label className={labelClasses}>Address Line</label>
 
               <div className="relative">
-                <Home className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
+                <Home
+                  className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                  }`}
+                />
 
                 <input
                   className={`${inputClasses} pl-10`}
@@ -231,12 +304,14 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
 
             {/* Country */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
-                Country
-              </label>
+              <label className={labelClasses}>Country</label>
 
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
+                <Globe
+                  className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                  }`}
+                />
 
                 <select
                   {...register("country")}
@@ -260,12 +335,14 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
 
             {/* State */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
-                State
-              </label>
+              <label className={labelClasses}>State</label>
 
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
+                <MapPin
+                  className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                  }`}
+                />
 
                 <select
                   {...register("state")}
@@ -292,12 +369,14 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
 
             {/* City */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
-                City
-              </label>
+              <label className={labelClasses}>City</label>
 
               <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
+                <Building2
+                  className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                  }`}
+                />
 
                 <select
                   {...register("city")}
@@ -324,12 +403,14 @@ const DoctorAddressDetails: React.FC<DoctorAddressDetailsProps> = ({
 
             {/* Pincode */}
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8b9ab0]">
-                Pincode
-              </label>
+              <label className={labelClasses}>Pincode</label>
 
               <div className="relative">
-                <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b9ab0]" />
+                <Hash
+                  className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                    isDark ? "text-[#8b9ab0]" : "text-slate-500"
+                  }`}
+                />
 
                 <input
                   {...register("pincode")}

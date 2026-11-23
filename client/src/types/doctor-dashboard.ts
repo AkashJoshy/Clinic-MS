@@ -58,6 +58,7 @@ export interface TodayAppointment {
 
 export interface DoctorDashboardStatsProps {
   data: DashboardOverview | null;
+  isDark: boolean;
 }
 
 export interface StatCardProps {
@@ -81,6 +82,7 @@ export interface StatCardProps {
     background: string;
     accent: string;
   };
+  isDark: boolean
 }
 
 export interface CalendarDateRange {
@@ -124,4 +126,73 @@ export type DoctorCalendarSlots = Record<string, DoctorCalendarSlot[]>;
 export interface GetDoctorCalendarData {
   slots: DoctorCalendarSlots;
   clinicsCount: number;
+}
+
+export interface CalendarSlot {
+  id: string | null;
+  doctorId: string | null;
+  clinicId: string | null;
+  clinicName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: SlotStatus;
+  mode: ServiceMode;
+  patientName?: string;
+}
+
+export type CalendarClinicDetails = {
+  id: string | null,
+  name: string
+  color: string
+}
+
+export interface WeeklyScheduleCalendarProps {
+  slots: CalendarSlot[];
+  clinics: CalendarClinicDetails[];
+  weekDates: Date[];
+  handleSlotByWeek: (from: Date, to: Date) => void;
+  ishandleSlotByWeek: boolean;
+  isDark: boolean;
+  onSlotClick?: (slot: CalendarSlot, date: Date) => void;
+}
+
+export interface WeeklyScheduleCalendarControlsProps {
+  clinics: CalendarClinicDetails[];
+  selectedClinic: string;
+  selectedStatus: SlotStatus | "ALL";
+  statusOrder: SlotStatus[];
+  weekDates: Date[];
+  filteredSlotsCount: number;
+  setSelectedClinic: (clinicId: string) => void;
+  setSelectedStatus: (status: SlotStatus | "ALL") => void;
+  clearFilters: () => void;
+  goToToday: () => void;
+  goToPreviousWeek: () => void;
+  goToNextWeek: () => void;
+  isDark: boolean;
+}
+
+export interface WeeklyScheduleCalendarGridProps {
+  slots: CalendarSlot[];
+  clinics: CalendarClinicDetails[];
+  weekDates: Date[];
+  timeSlots: {
+    startTime: string;
+    endTime: string;
+  }[];
+  statusOrder: SlotStatus[];
+  clinicColorMap: ReadonlyMap<string | null, string>;
+  getSlotsForCell: (
+    date: Date,
+    startTime: string,
+    endTime: string,
+  ) => CalendarSlot[];
+  onSlotClick?: (slot: CalendarSlot, date: Date) => void;
+  isDark: boolean
+}
+
+export interface RecentAppointmentsProps {
+  appointments: RecentAppointment[];
+  isDark: boolean;
 }

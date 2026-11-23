@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -20,6 +19,7 @@ import { cn } from "@/lib/utils";
 import type { PatientDetailsTab } from "@/types/admin";
 import type { RouteRoleProps } from "@/types/auth";
 import { useAuthStore } from "@/store";
+import { getPatientDetailsTheme } from "@/helpers/admin/patients.helper";
 
 export default function PatientDetailsPage({ role }: { role: RouteRoleProps }) {
   const { patientId } = useParams<{ patientId: string }>();
@@ -35,43 +35,7 @@ export default function PatientDetailsPage({ role }: { role: RouteRoleProps }) {
 
   const isDark = userTheme === "DARK";
 
-  const theme = {
-    page: isDark ? "border-white/10 bg-white/2" : "border-gray-200 bg-gray-50",
-
-    card: isDark ? "border-white/8 bg-[#0d1a27]" : "border-gray-200 bg-white",
-
-    text: isDark ? "text-white" : "text-gray-900",
-
-    mutedText: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    hoverText: isDark ? "hover:text-white" : "hover:text-gray-900",
-
-    tabContainer: isDark
-      ? "border-white/8 bg-[#0d1a27]"
-      : "border-gray-200 bg-white",
-
-    tabActive: "bg-primary text-primary-foreground shadow-lg shadow-primary/20",
-
-    tabInactive: isDark
-      ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
-      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-
-    countActive: "bg-white/20 text-white",
-
-    countInactive: isDark
-      ? "bg-white/8 text-[#8b9ab0]"
-      : "bg-gray-100 text-gray-500",
-
-    backButton: isDark
-      ? "text-[#8b9ab0] hover:text-white"
-      : "text-gray-500 hover:text-gray-900",
-
-    blockButton:
-      "border-rose-500/20 bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white",
-
-    restoreButton:
-      "border-primary/20 bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground",
-  };
+  const theme = getPatientDetailsTheme(isDark);
 
   const fetchPatientDetails = async () => {
     if (!patientId) return;
@@ -188,7 +152,6 @@ export default function PatientDetailsPage({ role }: { role: RouteRoleProps }) {
         theme.page,
       )}
     >
-      {/* Header */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <button
           onClick={() => navigate("/admin/patients")}
@@ -296,7 +259,11 @@ export default function PatientDetailsPage({ role }: { role: RouteRoleProps }) {
             />
           </div>
 
-          <PersonalInformation address={address} patient={patient} isDark={isDark} />
+          <PersonalInformation
+            address={address}
+            patient={patient}
+            isDark={isDark}
+          />
         </div>
       )}
 

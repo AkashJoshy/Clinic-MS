@@ -8,47 +8,15 @@ import {
   StatusPill,
   Toggle,
 } from "./settings-ui.component";
-
 import { inputClass } from "../../../../constants/admin-settings.constant";
+import type { SystemSettingsSectionProps } from "@/types/admin-settings";
+import { getSystemSettingsSectionTheme } from "@/helpers/admin/settings.helper";
 
-import type {
-  SystemSettings,
-  SettingsKey,
-} from "../../../../types/admin-settings";
-
-export interface SystemSettingsSectionProps {
-  sectionKey: SettingsKey;
-  system: SystemSettings;
-  isDark: boolean;
-  updateSystem: <K extends keyof SystemSettings>(
-    key: K,
-    value: SystemSettings[K],
-  ) => void;
-}
 
 export const SystemSettingsSection: React.FC<
   SystemSettingsSectionProps
-> = ({
-  sectionKey,
-  system,
-  updateSystem,
-  isDark,
-}) => {
-  const cardClass = isDark
-    ? "border-white/8 bg-[#091420]"
-    : "border-gray-200 bg-white";
-
-  const titleClass = isDark ? "text-white" : "text-gray-900";
-
-  const descriptionClass = isDark
-    ? "text-[#8b9ab0]"
-    : "text-gray-500";
-
-  const themedInputClass = `${inputClass} ${
-    isDark
-      ? "!bg-[#080d14] !text-white !border-white/10 placeholder:!text-[#6b7c93]"
-      : "!bg-white !text-gray-900 !border-gray-200 placeholder:!text-gray-400"
-  }`;
+> = ({ sectionKey, system, updateSystem, isDark }) => {
+  const theme = getSystemSettingsSectionTheme(isDark, inputClass);
 
   switch (sectionKey) {
     case "INTEGRATIONS":
@@ -86,7 +54,7 @@ export const SystemSettingsSection: React.FC<
               return (
                 <div
                   key={integration.title}
-                  className={`flex items-center gap-3.5 p-4 rounded-xl border ${cardClass}`}
+                  className={`flex items-center gap-3.5 p-4 rounded-xl border ${theme.card}`}
                 >
                   <div className="w-10 h-10 shrink-0 rounded-xl bg-[#1dc465]/10 flex items-center justify-center">
                     <IntegrationIcon
@@ -96,11 +64,11 @@ export const SystemSettingsSection: React.FC<
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${titleClass}`}>
+                    <p className={`text-sm font-medium ${theme.title}`}>
                       {integration.title}
                     </p>
 
-                    <p className={`text-xs mt-0.5 ${descriptionClass}`}>
+                    <p className={`text-xs mt-0.5 ${theme.description}`}>
                       {integration.description}
                     </p>
                   </div>
@@ -137,7 +105,7 @@ export const SystemSettingsSection: React.FC<
           <div className="mt-5 max-w-sm">
             <Field label="Backup frequency" isDark={isDark}>
               <select
-                className={`${themedInputClass} disabled:opacity-50`}
+                className={`${theme.input} disabled:opacity-50`}
                 disabled={!system.autoBackup}
                 value={system.backupFrequency}
                 onChange={(e) =>
@@ -152,14 +120,14 @@ export const SystemSettingsSection: React.FC<
           </div>
 
           <div
-            className={`mt-6 p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${cardClass}`}
+            className={`mt-6 p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${theme.card}`}
           >
             <div>
-              <p className={`text-sm font-medium ${titleClass}`}>
+              <p className={`text-sm font-medium ${theme.title}`}>
                 Backup management
               </p>
 
-              <p className={`text-xs mt-1 ${descriptionClass}`}>
+              <p className={`text-xs mt-1 ${theme.description}`}>
                 Connect your backup service to view and restore backups.
               </p>
             </div>
@@ -172,15 +140,15 @@ export const SystemSettingsSection: React.FC<
     case "LOGS":
       return (
         <div
-          className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${cardClass}`}
+          className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${theme.card}`}
         >
           <div>
-            <p className={`text-sm font-medium ${titleClass}`}>
+            <p className={`text-sm font-medium ${theme.title}`}>
               Audit & activity logs
             </p>
 
             <p
-              className={`text-xs mt-1 leading-relaxed ${descriptionClass}`}
+              className={`text-xs mt-1 leading-relaxed ${theme.description}`}
             >
               Connect your audit logging module to browse records, filter
               events and investigate issues.

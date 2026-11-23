@@ -39,6 +39,7 @@ import { changeDoctorPassword } from "@/services/auth.service";
 import type { RouteRoleProps } from "@/types/auth";
 import { useAuthStore } from "@/store";
 import ActiveSessions from "./active-sessions.shared";
+import FeatureUnderConstruction from "@/components/shared/feature-under-construction.shared";
 
 export interface SecuritySectionProps {
   isDark: boolean;
@@ -124,7 +125,6 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({
     });
   };
 
-  // Update security preferences.
   const handleUpdateSecurityPreferences = () => {
     if (!isSecurityDirty || isMutateFn) return;
 
@@ -147,7 +147,6 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({
     });
   };
 
-  // Reset security preferences to the form's original values.
   const handleResetSecurity = () => {
     resetField("security");
     toast("Security preferences reset to default", {
@@ -157,7 +156,6 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Change Password Card */}
       <div
         className={`p-5 sm:p-6 rounded-2xl border transition-colors ${
           isDark
@@ -304,7 +302,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({
         </form>
       </div>
 
-      {/* Authentication & Session Security */}
+      <FeatureUnderConstruction>
       <div
         className={`p-5 sm:p-6 rounded-2xl border space-y-4 transition-colors ${
           isDark
@@ -418,6 +416,8 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({
       </div>
 
       <ActiveSessions isDark={isDark} />
+      </FeatureUnderConstruction>
+
     </div>
   );
 };

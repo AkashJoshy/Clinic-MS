@@ -125,6 +125,7 @@ export interface WeeklyScheduleProps {
   scheduleLength: number
   selectedClinicId: string
   error?: FieldErrors<ScheduleFormSchemaFormData>["weeklySchedule"]
+  isDark: boolean
 }
 
 export interface SlotRulesPreferencesProps {
@@ -132,6 +133,7 @@ export interface SlotRulesPreferencesProps {
   onChange: (updatedRules: SlotRules) => void;
   disabled: boolean;
   error?: FieldErrors<ScheduleFormSchemaFormData>["slotRules"]
+  isDark: boolean
 }
 
 export interface ExceptionsProps {
@@ -140,6 +142,16 @@ export interface ExceptionsProps {
   disabled: boolean;
   generateSlots: () => void
   optional?: boolean;
+  isDark: boolean;
+}
+
+export interface LockedOverlayProps {
+  disabled: boolean;
+  title: string;
+  description: string;
+  isDark: boolean;
+  isPreviousWarns?: boolean;
+  previousWarnMessage?: string;
 }
 
 export interface PreviewGeneratedSlotsProps {
@@ -154,6 +166,7 @@ export interface PreviewGeneratedSlotsProps {
   isPending: boolean;
   onUnlock?: () => void;
   existingBookings?: { slotId: string; date: string; startTime: string; patientName: string }[];
+  isDark: boolean
 }
 
 export type ActiveTab = "breaks" | "vacations" | "blackouts" | "holidays";
@@ -252,11 +265,7 @@ export interface UsePreviewGeneratedSlotsReturn {
   go: (step: number) => void;
 }
 
-export type CalendarClinicDetails = {
-  id: string | null,
-  name: string
-  color: string
-}
+
 
 type DoctorProfile = NonNullable<
   ReturnType<typeof import("@/store").useAuthStore.getState>["doctor"]
@@ -269,4 +278,15 @@ type DoctorClinicDetails = NonNullable<
 export interface DoctorAddressDetailsProps {
   doctorProfile: DoctorProfile;
   clinicDetails: DoctorClinicDetails;
+  isDark: boolean
+}
+
+export type ExceptionTab = "breaks" | "vacations" | "blackouts" | "holidays";
+
+export interface ExceptionTabsProps {
+  activeTab: ExceptionTab;
+  exceptions: Record<ExceptionTab, unknown[]>;
+  onTabChange: (tab: ExceptionTab) => void;
+  tabInactiveClass: string;
+  countInactiveClass: string;
 }

@@ -2,6 +2,7 @@
 import { Mail, Phone, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PatientContactCardProps } from "@/types/patient";
+import { getPatientContactCardTheme } from "@/helpers/admin/patients.helper";
 
 export const PatientContactCard = ({
   email,
@@ -23,17 +24,7 @@ export const PatientContactCard = ({
     });
   };
 
-  const theme = {
-    card: isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200",
-
-    heading: isDark
-      ? "text-white border-white/5"
-      : "text-gray-900 border-gray-100",
-
-    label: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    value: isDark ? "text-white" : "text-gray-900",
-  };
+  const theme = getPatientContactCardTheme(isDark)
 
   return (
     <div className={cn("rounded-2xl border p-6 space-y-4", theme.card)}>

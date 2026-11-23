@@ -12,36 +12,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
-
 import type {
   AvailablePlanOption,
   DoctorSubscription,
+  SubscriptionWalletPaymentModalProps,
   WalletBalance,
 } from "@/types/doctor-subscription";
-
 import WalletBalanceCard from "./wallet-balance-card.component";
 import { useDoctorSubscription } from "@/hooks/use-doctor-subscription.hook";
-
-interface SubscriptionWalletPaymentModalProps {
-  plan: AvailablePlanOption | null;
-  currentSubscription: DoctorSubscription | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirmPayment: (
-    plan: AvailablePlanOption,
-    payableAmount: number,
-  ) => Promise<void> | void;
-  walletDetails: WalletBalance | null;
-  creditAmount: number;
-  payableAmount: number;
-}
-
-const formatINR = (amount: number) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 2,
-  }).format(amount);
+import { formatINR } from "@/helpers/wallet.helper";
 
 const amountOf = (value: unknown) => Math.max(0, Number(value) || 0);
 
@@ -56,6 +35,7 @@ const SubscriptionWalletPaymentModal: React.FC<
   currentSubscription,
   creditAmount,
   payableAmount,
+  isDark,
 }) => {
   const [isProcessing, setIsProcessing] = React.useState(false);
 
@@ -158,6 +138,16 @@ const SubscriptionWalletPaymentModal: React.FC<
     }
   };
 
+  // Theme classes
+  const modalBg = isDark ? "bg-[#0d1520]" : "bg-white";
+  const textPrimary = isDark ? "text-white" : "text-slate-900";
+  const textSecondary = isDark ? "text-gray-400" : "text-slate-600";
+  const textMuted = isDark ? "text-gray-500" : "text-slate-500";
+  const textBody = isDark ? "text-gray-300" : "text-slate-700";
+  const borderClass = isDark ? "border-white/10" : "border-slate-200";
+  const subtleBg = isDark ? "bg-white/[0.025]" : "bg-slate-50";
+  const iconBg = isDark ? "bg-white/[0.04]" : "bg-slate-100";
+
   return (
     <div
       className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-5"
@@ -171,10 +161,13 @@ const SubscriptionWalletPaymentModal: React.FC<
         role="dialog"
         aria-modal="true"
         aria-labelledby="wallet-payment-title"
-        className="flex max-h-[calc(100dvh-1.5rem)] min-h-0 w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1520] text-white shadow-2xl sm:max-h-[85dvh]"
+        className={`flex max-h-[calc(100dvh-1.5rem)] min-h-0 w-full max-w-lg flex-col overflow-hidden rounded-2xl border ${borderClass} ${modalBg} ${textPrimary} shadow-2xl sm:max-h-[85dvh]`}
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <header className="flex shrink-0 items-center gap-3 border-b border-white/10 px-4 py-4 sm:px-5">
+        {/* Header */}
+        <header
+          className={`flex shrink-0 items-center gap-3 border-b ${borderClass} px-4 py-4 sm:px-5`}
+        >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Wallet size={20} />
           </div>
@@ -184,7 +177,7 @@ const SubscriptionWalletPaymentModal: React.FC<
               Review plan change
             </h2>
 
-            <p className="mt-1 text-xs text-gray-400">{title} · Wallet</p>
+            <p className={`mt-1 text-xs ${textSecondary}`}>{title} · Wallet</p>
           </div>
 
           <button
@@ -192,22 +185,33 @@ const SubscriptionWalletPaymentModal: React.FC<
             onClick={onClose}
             disabled={isProcessing}
             aria-label="Close modal"
-            className="rounded-lg p-2 text-gray-400 transition hover:bg-white/10 hover:text-white disabled:opacity-50"
+            className={`rounded-lg p-2 transition disabled:opacity-50 ${
+              isDark
+                ? "text-gray-400 hover:bg-white/10 hover:text-white"
+                : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            }`}
           >
             <X size={18} />
           </button>
         </header>
 
+        {/* Scrollable Content */}
         <div className="custom-scrollbar scrollbar-dark min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
           <div className="space-y-5 p-4 sm:p-5">
             <WalletBalanceCard
               balance={walletBalance}
               unavailable={walletUnavailable}
+              isDark={isDark}
             />
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.025] p-4">
+            {/* Selected Plan */}
+            <div
+              className={`rounded-2xl border ${borderClass} ${subtleBg} p-4`}
+            >
               <div className="mb-3 flex items-center justify-between gap-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-500">
+                <p
+                  className={`text-[11px] font-semibold uppercase tracking-[0.14em] ${textMuted}`}
+                >
                   Selected plan
                 </p>
 
@@ -220,36 +224,42 @@ const SubscriptionWalletPaymentModal: React.FC<
 
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h3 className="break-words text-lg font-semibold">
+                  <h3
+                    className={`break-words text-lg font-semibold ${textPrimary}`}
+                  >
                     {plan.name ?? "Subscription plan"}
                   </h3>
 
                   {plan.tagline && (
-                    <p className="mt-1 text-xs leading-5 text-gray-400">
+                    <p className={`mt-1 text-xs leading-5 ${textSecondary}`}>
                       {plan.tagline}
                     </p>
                   )}
                 </div>
 
-                <p className="shrink-0 text-lg font-bold">
+                <p className={`shrink-0 text-lg font-bold ${textPrimary}`}>
                   {formatINR(selectedPrice)}
                 </p>
               </div>
 
               {hasExistingSubscription && (
                 <>
-                  <div className="my-4 border-t border-dashed border-white/10" />
+                  <div
+                    className={`my-4 border-t border-dashed ${borderClass}`}
+                  />
 
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-[11px] text-gray-500">Current plan</p>
+                      <p className={`text-[11px] ${textMuted}`}>Current plan</p>
 
-                      <p className="mt-1 truncate text-sm font-medium text-gray-300">
+                      <p
+                        className={`mt-1 truncate text-sm font-medium ${textBody}`}
+                      >
                         {currentPlanName || "Current plan"}
                       </p>
                     </div>
 
-                    <p className="shrink-0 text-sm font-semibold text-gray-300">
+                    <p className={`shrink-0 text-sm font-semibold ${textBody}`}>
                       {formatINR(currentPrice)}
                     </p>
                   </div>
@@ -257,6 +267,7 @@ const SubscriptionWalletPaymentModal: React.FC<
               )}
             </div>
 
+            {/* Payment Status */}
             <div
               className={`flex items-start gap-3 rounded-xl border p-4 ${
                 walletUnavailable
@@ -268,7 +279,9 @@ const SubscriptionWalletPaymentModal: React.FC<
                       : "border-primary/20 bg-primary/[0.05]"
               }`}
             >
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.04]">
+              <div
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconBg}`}
+              >
                 {walletUnavailable || !enoughBalance ? (
                   <AlertCircle size={19} className="text-red-400" />
                 ) : isDowngrade ? (
@@ -281,7 +294,7 @@ const SubscriptionWalletPaymentModal: React.FC<
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold">
+                <p className={`text-sm font-semibold ${textPrimary}`}>
                   {walletUnavailable
                     ? "Wallet unavailable"
                     : !enoughBalance
@@ -293,7 +306,7 @@ const SubscriptionWalletPaymentModal: React.FC<
                           : "Ready for plan change"}
                 </p>
 
-                <p className="mt-1 text-xs leading-5 text-gray-400">
+                <p className={`mt-1 text-xs leading-5 ${textSecondary}`}>
                   {walletUnavailable
                     ? "Your wallet is inactive or unavailable."
                     : !enoughBalance
@@ -309,26 +322,27 @@ const SubscriptionWalletPaymentModal: React.FC<
               </div>
             </div>
 
+            {/* Wallet Balance Overview */}
             <div className="rounded-xl border border-primary/20 bg-primary/[0.05] p-4">
               <div className="mb-3 flex items-center gap-2">
                 <Wallet size={17} className="text-primary" />
 
-                <h3 className="font-semibold text-white">
+                <h3 className={`font-semibold ${textPrimary}`}>
                   Wallet balance overview
                 </h3>
               </div>
 
               <div className="space-y-3 text-xs">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">Current wallet balance</span>
+                  <span className={textSecondary}>Current wallet balance</span>
 
-                  <span className="font-medium text-gray-200">
+                  <span className={`font-medium ${textBody}`}>
                     {formatINR(walletBalance)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">Subscription credit</span>
+                  <span className={textSecondary}>Subscription credit</span>
 
                   <span className="font-semibold text-[#1dc465]">
                     + {formatINR(credit)}
@@ -336,15 +350,15 @@ const SubscriptionWalletPaymentModal: React.FC<
                 </div>
 
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-gray-400">Amount payable</span>
+                  <span className={textSecondary}>Amount payable</span>
 
-                  <span className="font-medium text-gray-200">
+                  <span className={`font-medium ${textBody}`}>
                     − {formatINR(amountToPay)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-4 border-t border-primary/20 pt-3">
-                  <span className="font-semibold text-white">
+                  <span className={`font-semibold ${textPrimary}`}>
                     Projected wallet balance
                   </span>
 
@@ -354,7 +368,7 @@ const SubscriptionWalletPaymentModal: React.FC<
                 </div>
               </div>
 
-              <p className="mt-3 text-[10px] leading-4 text-gray-500">
+              <p className={`mt-3 text-[10px] leading-4 ${textMuted}`}>
                 This is an estimate, not your available balance after payment.
                 The subscription credit and payable amount are shown separately;
                 the server determines the final wallet balance after processing
@@ -362,13 +376,14 @@ const SubscriptionWalletPaymentModal: React.FC<
               </p>
             </div>
 
+            {/* Security Notice */}
             <div className="flex items-start gap-2 px-1">
               <ShieldCheck
                 size={15}
-                className="mt-0.5 shrink-0 text-gray-500"
+                className={`mt-0.5 shrink-0 ${textMuted}`}
               />
 
-              <p className="text-[11px] leading-5 text-gray-500">
+              <p className={`text-[11px] leading-5 ${textMuted}`}>
                 Your actual wallet balance remains unchanged until the
                 transaction succeeds. The server validates the final
                 subscription adjustment.
@@ -377,7 +392,10 @@ const SubscriptionWalletPaymentModal: React.FC<
           </div>
         </div>
 
-        <footer className="flex shrink-0 flex-col gap-2 border-t border-white/10 bg-[#0d1520] p-4 sm:p-5">
+        {/* Footer Actions */}
+        <footer
+          className={`flex shrink-0 flex-col gap-2 border-t ${borderClass} ${modalBg} p-4 sm:p-5`}
+        >
           <button
             type="button"
             onClick={handleConfirm}
@@ -405,7 +423,11 @@ const SubscriptionWalletPaymentModal: React.FC<
             type="button"
             onClick={onClose}
             disabled={isProcessing}
-            className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className={`w-full rounded-xl border ${borderClass} px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${
+              isDark
+                ? "text-gray-300 hover:bg-white/[0.04] hover:text-white"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            }`}
           >
             Cancel
           </button>

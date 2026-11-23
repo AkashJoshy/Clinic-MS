@@ -1,3 +1,4 @@
+
 import type { StatCardProps } from "@/types/doctor-dashboard";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,7 +11,32 @@ export const StatCard: React.FC<StatCardProps> = ({
   footer,
   index,
   theme,
+  isDark,
 }) => {
+  const cardClass = isDark
+    ? "bg-[#111c2b] shadow-black/10"
+    : "bg-white shadow-slate-200/60";
+
+  const titleClass = isDark
+    ? "text-slate-300"
+    : "text-slate-700";
+
+  const descriptionClass = isDark
+    ? "text-slate-500"
+    : "text-slate-500";
+
+  const detailLabelClass = isDark
+    ? "text-slate-400"
+    : "text-slate-500";
+
+  const detailValueClass = isDark
+    ? "text-slate-200"
+    : "text-slate-700";
+
+  const footerClass = isDark
+    ? "border-white/[0.07]"
+    : "border-slate-200";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -24,20 +50,28 @@ export const StatCard: React.FC<StatCardProps> = ({
         y: -5,
         transition: { duration: 0.2 },
       }}
-      className={`group relative min-h-[190px] overflow-hidden rounded-[10px] border ${theme.border} bg-[#111c2b] p-5 shadow-lg shadow-black/10 transition-all duration-300 hover:shadow-xl`}
+      className={`group relative min-h-[190px] overflow-hidden rounded-[10px] border ${theme.border} ${cardClass} p-5 shadow-lg transition-all duration-300 hover:shadow-xl`}
     >
+      {/* Background Glow */}
       <div
         className={`pointer-events-none absolute -right-12 -top-12 size-36 rounded-full ${theme.glow} opacity-10 blur-3xl transition-opacity duration-300 group-hover:opacity-25`}
       />
 
+      {/* Top Accent */}
       <div
         className={`absolute left-0 top-0 h-[2px] w-full ${theme.accent} opacity-70`}
       />
 
+      {/* Header */}
       <div className="relative flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-400">{title}</p>
-          <p className="mt-1 text-xs text-slate-500">{description}</p>
+          <p className={`text-sm font-medium ${titleClass}`}>
+            {title}
+          </p>
+
+          <p className={`mt-1 text-xs ${descriptionClass}`}>
+            {description}
+          </p>
         </div>
 
         <motion.div
@@ -49,12 +83,15 @@ export const StatCard: React.FC<StatCardProps> = ({
             stiffness: 200,
             damping: 12,
           }}
-          className={`rounded-xl border border-white/5 p-3 ${theme.icon}`}
+          className={`rounded-xl border p-3 ${
+            isDark ? "border-white/5" : "border-slate-100"
+          } ${theme.icon}`}
         >
           <Icon className="size-5" />
         </motion.div>
       </div>
 
+      {/* Main Value */}
       <div className="relative mt-5">
         <AnimatePresence mode="wait">
           <motion.h3
@@ -70,6 +107,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         </AnimatePresence>
       </div>
 
+      {/* Details */}
       <div className="relative mt-5 flex flex-wrap gap-x-5 gap-y-3">
         {details.map((item, detailIndex) => {
           const DetailIcon = item.icon;
@@ -86,15 +124,24 @@ export const StatCard: React.FC<StatCardProps> = ({
               className="flex items-center gap-1.5 text-xs"
             >
               <DetailIcon className={`size-3.5 ${item.color}`} />
-              <span className="text-slate-500">{item.label}</span>
-              <span className="font-semibold text-slate-200">{item.value}</span>
+
+              <span className={detailLabelClass}>
+                {item.label}
+              </span>
+
+              <span className={`font-semibold ${detailValueClass}`}>
+                {item.value}
+              </span>
             </motion.div>
           );
         })}
       </div>
 
+      {/* Footer */}
       {footer && (
-        <div className="relative mt-4 border-t border-white/[0.07] pt-3 text-xs leading-relaxed text-slate-500">
+        <div
+          className={`relative mt-4 border-t ${footerClass} pt-3 text-xs leading-relaxed text-slate-500`}
+        >
           {footer}
         </div>
       )}

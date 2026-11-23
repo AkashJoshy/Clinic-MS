@@ -1,9 +1,4 @@
-
-import {
-  Clock3,
-  Video,
-  MapPin,
-} from "lucide-react";
+import { Clock3, Video, MapPin } from "lucide-react";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
@@ -15,65 +10,26 @@ import {
 
 import { LegendItem } from "./legend-item.shared";
 
-import {
-  formatTime,
-  isSameDay,
-} from "@/helpers/session-slot.helper";
+import { formatTime, isSameDay } from "@/helpers/session-slot.helper";
 
 import {
   CALENDAR_STATUS_PARTS,
   STATUS_LABELS,
 } from "@/constants/doctor-dashboard.constant";
 
-import type { CalendarClinicDetails, SlotStatus } from "@/types/doctor-clinic";
+import type { SlotStatus } from "@/types/doctor-clinic";
 import type { ServiceMode } from "@/types/common";
-
-export interface CalendarSlot {
-  id: string | null;
-  doctorId: string | null;
-  clinicId: string | null;
-  clinicName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: SlotStatus;
-  mode: ServiceMode;
-  patientName?: string;
-}
-
-interface WeeklyScheduleCalendarGridProps {
-  slots: CalendarSlot[];
-  clinics: CalendarClinicDetails[];
-  weekDates: Date[];
-  timeSlots: {
-    startTime: string;
-    endTime: string;
-  }[];
-  statusOrder: SlotStatus[];
-  clinicColorMap: ReadonlyMap<string | null, string>;
-  getSlotsForCell: (
-    date: Date,
-    startTime: string,
-    endTime: string,
-  ) => CalendarSlot[];
-  onSlotClick?: (slot: CalendarSlot, date: Date) => void;
-}
+import type {
+  CalendarSlot,
+  WeeklyScheduleCalendarGridProps,
+} from "@/types/doctor-dashboard";
 
 const DEFAULT_PATIENT_NAME = "No-Name";
-
-const getLocalDateString = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-};
 
 const getPatientName = (slot: CalendarSlot) =>
   slot.patientName?.trim() || DEFAULT_PATIENT_NAME;
 
 const WeeklyScheduleCalendarGrid = ({
-  slots,
   clinics,
   weekDates,
   timeSlots,
@@ -81,14 +37,29 @@ const WeeklyScheduleCalendarGrid = ({
   clinicColorMap,
   getSlotsForCell,
   onSlotClick,
+  isDark,
 }: WeeklyScheduleCalendarGridProps) => {
+  const borderClass = isDark ? "border-white/8" : "border-slate-200";
+  const mutedTextClass = isDark ? "text-[#8b9ab0]" : "text-slate-500";
+  const primaryTextClass = isDark ? "text-white" : "text-slate-800";
+
   return (
     <>
-      <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-white/8 bg-[#0d1a27] shadow-xl shadow-black/10">
+      {/* Calendar Grid */}
+      <div
+        className={`w-full min-w-0 overflow-hidden rounded-2xl border shadow-xl shadow-black/10 ${
+          isDark ? "border-white/8 bg-[#0d1a27]" : "border-slate-200 bg-white"
+        }`}
+      >
         <ScrollArea className="h-120 w-full" type="always">
           <div className="min-w-255">
-            <div className="sticky top-0 z-20 grid grid-cols-[100px_repeat(7,minmax(120px,1fr))] border-b border-white/8 bg-[#0d1a27]">
-              <div className="border-r border-white/8 p-4" />
+            {/* Week Header */}
+            <div
+              className={`sticky top-0 z-20 grid grid-cols-[100px_repeat(7,minmax(120px,1fr))] border-b ${borderClass} ${
+                isDark ? "bg-[#0d1a27]" : "bg-white"
+              }`}
+            >
+              <div className={`border-r ${borderClass} p-4`} />
 
               {weekDates.map((date) => {
                 const today = isSameDay(date, new Date());
@@ -96,7 +67,7 @@ const WeeklyScheduleCalendarGrid = ({
                 return (
                   <div
                     key={date.toISOString()}
-                    className={`relative border-r border-white/8 p-3 text-center last:border-r-0 transition-colors ${
+                    className={`relative border-r ${borderClass} p-3 text-center transition-colors last:border-r-0 ${
                       today
                         ? "bg-primary/10 shadow-[inset_0_-2px_0_var(--primary)]"
                         : ""
@@ -104,7 +75,7 @@ const WeeklyScheduleCalendarGrid = ({
                   >
                     <p
                       className={`text-[11px] font-semibold tracking-wider ${
-                        today ? "text-primary" : "text-[#8b9ab0]"
+                        today ? "text-primary" : mutedTextClass
                       }`}
                     >
                       {date
@@ -119,7 +90,7 @@ const WeeklyScheduleCalendarGrid = ({
                         className={`flex h-8 min-w-8 items-center justify-center rounded-full text-lg font-bold transition-all ${
                           today
                             ? "bg-primary text-primary-foreground shadow-[0_0_14px_color-mix(in_srgb,var(--primary)_35%,transparent)]"
-                            : "text-white"
+                            : primaryTextClass
                         }`}
                       >
                         {date.getDate()}
@@ -134,19 +105,31 @@ const WeeklyScheduleCalendarGrid = ({
               })}
             </div>
 
+            {/* Time Slots */}
             <div className="relative">
               {timeSlots.length === 0 ? (
                 <div className="flex min-h-50 flex-col items-center justify-center gap-3 text-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
-                    <Clock3 size={22} className="text-[#66758a]" />
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${
+                      isDark ? "bg-white/5" : "bg-slate-100"
+                    }`}
+                  >
+                    <Clock3
+                      size={22}
+                      className={isDark ? "text-[#66758a]" : "text-slate-400"}
+                    />
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-white">
+                    <p className={`text-sm font-medium ${primaryTextClass}`}>
                       No slots found
                     </p>
 
-                    <p className="mt-1 text-xs text-[#66758a]">
+                    <p
+                      className={`mt-1 text-xs ${
+                        isDark ? "text-[#66758a]" : "text-slate-500"
+                      }`}
+                    >
                       Try changing your clinic or status filters.
                     </p>
                   </div>
@@ -155,20 +138,38 @@ const WeeklyScheduleCalendarGrid = ({
                 timeSlots.map((timeSlot) => (
                   <div
                     key={`${timeSlot.startTime}-${timeSlot.endTime}`}
-                    className="grid min-h-[100px] grid-cols-[100px_repeat(7,minmax(120px,1fr))] border-b border-white/6 last:border-b-0"
+                    className={`grid min-h-[100px] grid-cols-[100px_repeat(7,minmax(120px,1fr))] border-b last:border-b-0 ${
+                      isDark ? "border-white/6" : "border-slate-200"
+                    }`}
                   >
-                    <div className="flex items-center border-r border-white/8 px-3">
-                      <div className="rounded-lg border border-white/5 bg-white/[0.025] px-2.5 py-1.5 shadow-inner shadow-black/20">
-                        <p className="text-xs font-semibold text-white">
+                    {/* Time Column */}
+                    <div
+                      className={`flex items-center border-r ${borderClass} px-3`}
+                    >
+                      <div
+                        className={`rounded-lg border px-2.5 py-1.5 shadow-inner ${
+                          isDark
+                            ? "border-white/5 bg-white/[0.025] shadow-black/20"
+                            : "border-slate-200 bg-slate-50 shadow-slate-200/50"
+                        }`}
+                      >
+                        <p
+                          className={`text-xs font-semibold ${primaryTextClass}`}
+                        >
                           {formatTime(timeSlot.startTime)}
                         </p>
 
-                        <p className="mt-0.5 text-[11px] text-[#66758a]">
+                        <p
+                          className={`mt-0.5 text-[11px] ${
+                            isDark ? "text-[#66758a]" : "text-slate-400"
+                          }`}
+                        >
                           {formatTime(timeSlot.endTime)}
                         </p>
                       </div>
                     </div>
 
+                    {/* Day Columns */}
                     {weekDates.map((date) => {
                       const daySlots = getSlotsForCell(
                         date,
@@ -179,20 +180,23 @@ const WeeklyScheduleCalendarGrid = ({
                       return (
                         <div
                           key={`${date.toISOString()}-${timeSlot.startTime}`}
-                          className={`flex min-w-0 flex-col justify-center gap-1.5 border-r border-white/8 p-2 last:border-r-0 ${
+                          className={`flex min-w-0 flex-col justify-center gap-1.5 border-r ${borderClass} p-2 last:border-r-0 ${
                             isSameDay(date, new Date())
                               ? "bg-primary/[0.025]"
                               : ""
                           }`}
                         >
                           {daySlots.length === 0 ? (
-                            <span className="mx-auto text-xs text-white/10">
+                            <span
+                              className={`mx-auto text-xs ${
+                                isDark ? "text-white/10" : "text-slate-300"
+                              }`}
+                            >
                               —
                             </span>
                           ) : (
                             daySlots.map((slot) => {
-                              const parts =
-                                CALENDAR_STATUS_PARTS[slot.status];
+                              const parts = CALENDAR_STATUS_PARTS[slot.status];
 
                               const patientName = getPatientName(slot);
 
@@ -268,22 +272,37 @@ const WeeklyScheduleCalendarGrid = ({
                                     </button>
                                   </TooltipTrigger>
 
+                                  {/* Slot Tooltip */}
                                   <TooltipContent
                                     side="top"
-                                    className="border border-white/10 bg-[#142334] p-3 shadow-xl"
+                                    className={`border p-3 shadow-xl ${
+                                      isDark
+                                        ? "border-white/10 bg-[#142334]"
+                                        : "border-slate-200 bg-white"
+                                    }`}
                                   >
                                     <div className="space-y-2">
                                       <div>
-                                        <p className="font-semibold text-white">
+                                        <p
+                                          className={`font-semibold ${
+                                            isDark
+                                              ? "text-white"
+                                              : "text-slate-900"
+                                          }`}
+                                        >
                                           {patientName}
                                         </p>
 
-                                        <p className="mt-0.5 text-xs text-[#8b9ab0]">
+                                        <p
+                                          className={`mt-0.5 text-xs ${mutedTextClass}`}
+                                        >
                                           {slot.clinicName}
                                         </p>
                                       </div>
 
-                                      <div className="flex items-center gap-2 text-xs text-[#8b9ab0]">
+                                      <div
+                                        className={`flex items-center gap-2 text-xs ${mutedTextClass}`}
+                                      >
                                         {slot.mode === "ONLINE" ? (
                                           <Video size={13} />
                                         ) : (
@@ -295,7 +314,9 @@ const WeeklyScheduleCalendarGrid = ({
                                           : "Offline Consultation"}
                                       </div>
 
-                                      <p className="text-xs text-[#8b9ab0]">
+                                      <p
+                                        className={`text-xs ${mutedTextClass}`}
+                                      >
                                         {formatTime(slot.startTime)} –{" "}
                                         {formatTime(slot.endTime)}
                                       </p>
@@ -340,9 +361,7 @@ const WeeklyScheduleCalendarGrid = ({
               }}
             />
 
-            <span className="text-xs text-[#8b9ab0]">
-              {clinic.name}
-            </span>
+            <span className={`text-xs ${mutedTextClass}`}>{clinic.name}</span>
           </div>
         ))}
       </div>
@@ -357,7 +376,6 @@ const WeeklyScheduleCalendarGrid = ({
           />
         ))}
       </div>
-      
     </>
   );
 };

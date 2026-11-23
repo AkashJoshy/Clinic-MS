@@ -2,6 +2,7 @@ import React from "react";
 import { Pencil, Users, Power, Flame } from "lucide-react";
 import type { SubscriptionPlan } from "@/types/subscription";
 import SubscriptionFeatureItem from "./subscription-feature-item.component";
+import { getSubscriptionCardTheme } from "@/helpers/admin/subscription.helper";
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan;
@@ -41,40 +42,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     (feature) => feature.isIncluded,
   ).length;
 
-  const theme = {
-    card: isPopular
-      ? isDark
-        ? "border-primary/50 bg-gradient-to-b from-primary/10 via-[#0d1825] to-[#0a121c] shadow-xl shadow-primary/10"
-        : "border-primary/50 bg-gradient-to-b from-primary/5 via-white to-white shadow-xl shadow-primary/10"
-      : isDark
-        ? "border-white/8 bg-[#0b131d]/90 shadow-lg hover:border-white/15 hover:shadow-xl"
-        : "border-gray-200 bg-white shadow-sm hover:border-gray-300 hover:shadow-md",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    muted: isDark ? "text-gray-400" : "text-gray-600",
-    subtle: isDark ? "text-gray-500" : "text-gray-500",
-
-    badge: isDark
-      ? "border-white/10 bg-white/5 text-[#8b9ab0]"
-      : "border-gray-200 bg-gray-100 text-gray-600",
-
-    divider: isDark ? "border-white/8" : "border-gray-200",
-
-    subscriber: isDark
-      ? "bg-white/5 text-[#c9d5e4]"
-      : "bg-gray-100 text-gray-700",
-
-    featureHeading: isDark ? "text-gray-300" : "text-gray-700",
-
-    actionButton: isDark
-      ? "border-white/10 bg-white/5 text-white hover:border-white/20 hover:bg-white/10"
-      : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-300 hover:bg-gray-100",
-
-    inactiveButton: isDark
-      ? "border-white/10 text-gray-400 hover:border-amber-400/30 hover:bg-amber-400/5 hover:text-amber-400"
-      : "border-gray-200 text-gray-500 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-600",
-  };
+  const theme = getSubscriptionCardTheme(isDark, isPopular!)
 
   return (
     <article

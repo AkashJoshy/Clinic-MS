@@ -5,15 +5,23 @@ import {
 } from "@/constants/sidebar.constant";
 import NavSection from "../../admin/sidebar/nav-section.layout";
 import { ROLE_VALUES } from "@/constants/role.constants";
+import { useAuthStore } from "@/store";
 
 interface Props {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+  isDark: boolean;
 }
-//
-const SidebarContent: React.FC<Props> = ({ collapsed, setCollapsed }) => {
+
+const SidebarContent: React.FC<Props> = ({
+  collapsed,
+  setCollapsed,
+  isDark,
+}) => {
   return (
-    <div className="flex flex-col h-full">
+    <div
+      className={`flex h-full flex-col ${isDark ? "bg-[#0d1a27]" : "bg-white"}`}
+    >
       <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
         <NavSection
           title="Main Menu"

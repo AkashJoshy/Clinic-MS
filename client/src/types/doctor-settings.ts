@@ -117,7 +117,7 @@ export interface NotificationsSettings {
 
 export interface AppearanceSettings {
   section: "APPEARANCE";
-  mode: ThemeMode;
+  theme: ThemeMode;
   walletCardDesignId: number;
   colorPaletteId: string;
   compactScheduleView: boolean;

@@ -2,6 +2,7 @@ import type {
   DoctorSubscription,
   SubscriptionHistory,
   AvailablePlanOption,
+  CancellationReason,
 } from "@/types/doctor-subscription";
 import type { BillingCycle } from "@/types/subscription";
 
@@ -304,3 +305,25 @@ export const BILLING_SUFFIXES: Record<BillingCycle, string> = {
 
 export const BILLING_CYCLES = ["MONTHLY", "QUARTERLY", "YEARLY", "LIFETIME"] as const;
 
+export const CANCELLATION_REASONS: {
+  value: CancellationReason;
+  label: string;
+}[] = [
+  {
+    value: "TOO_EXPENSIVE",
+    label: "Cost concerns / looking for cheaper alternative",
+  },
+  {
+    value: "TEMPORARILY_CLOSING_CLINIC",
+    label: "Temporarily closing clinic or taking leave",
+  },
+  {
+    value: "MISSING_FEATURES",
+    label: "Missing specific EHR or lab features",
+  },
+  {
+    value: "SWITCHING_PLATFORM",
+    label: "Switching to another clinic management software",
+  },
+  { value: "OTHER", label: "Other reasons" },
+];

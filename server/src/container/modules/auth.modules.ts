@@ -33,6 +33,7 @@ import {
   mongooseClinicRepository,
   mongooseDoctorClinicRepository,
   mongooseDoctorRepository,
+  mongooseDoctorSettingsRepository,
   mongoosePatientRepository,
   mongoosePlatformSettingsRepository,
   mongooseRefreshSessionRepository,
@@ -103,6 +104,7 @@ const doctorLoginUseCase = new DoctorLoginUseCase(
   userExistenceService,
   emailVerificationService,
   mongooseDoctorRepository,
+  mongooseDoctorSettingsRepository,
   accessTokenGenerationService,
   refreshTokenGenerationService,
 );

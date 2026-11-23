@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import type { SubscriptionPlan } from "@/types/subscription";
+import { getSubscriptionStatusModalTheme } from "@/helpers/admin/subscription.helper";
 
 interface SubscriptionStatusModalProps {
   plan: SubscriptionPlan;
@@ -36,45 +37,7 @@ export const SubscriptionStatusModal: React.FC<
     .toLowerCase()
     .replace(/^./, (char) => char.toUpperCase());
 
-  const theme = {
-    modal: isDark
-      ? "border-white/10 bg-[#0e1724]"
-      : "border-gray-200 bg-white",
-
-    headerBorder: isDark ? "border-white/8" : "border-gray-200",
-
-    title: isDark ? "text-white" : "text-gray-900",
-    description: isDark ? "text-slate-400" : "text-gray-500",
-
-    closeButton: isDark
-      ? "text-slate-400 hover:bg-white/10 hover:text-white"
-      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-
-    summary: isDark
-      ? "border-white/8 bg-white/[0.03]"
-      : "border-gray-200 bg-gray-50",
-
-    label: isDark ? "text-slate-500" : "text-gray-500",
-    planName: isDark ? "text-white" : "text-gray-900",
-    price: isDark ? "text-white" : "text-gray-900",
-    secondaryText: isDark ? "text-slate-400" : "text-gray-500",
-
-    summaryBorder: isDark ? "border-white/8" : "border-gray-200",
-
-    explanationText: isDark ? "text-slate-300" : "text-gray-600",
-
-    confirmationText: isDark ? "text-slate-400" : "text-gray-500",
-
-    confirmationName: isDark ? "text-white" : "text-gray-900",
-
-    footer: isDark
-      ? "border-white/8 bg-white/[0.02]"
-      : "border-gray-200 bg-gray-50",
-
-    cancelButton: isDark
-      ? "border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:text-white"
-      : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900",
-  };
+  const theme = getSubscriptionStatusModalTheme(isDark)
 
   const handleConfirm = () => {
     if (!isUpdating) {

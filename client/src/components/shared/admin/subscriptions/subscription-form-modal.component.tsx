@@ -15,6 +15,7 @@ import type {
 } from "@/types/subscription";
 
 import SubscriptionFeaturesManager from "./subscription-features-manager.component";
+import { getSubscriptionFormModalTheme } from "@/helpers/admin/subscription.helper";
 
 interface SubscriptionFormModalProps {
   isOpen: boolean;
@@ -81,39 +82,7 @@ export const SubscriptionFormModal: React.FC<SubscriptionFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  const theme = {
-    modal: isDark ? "border-white/10 bg-[#0c141f]" : "border-gray-200 bg-white",
-
-    header: isDark
-      ? "border-white/8 bg-white/[0.02]"
-      : "border-gray-200 bg-gray-50",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    closeButton: isDark
-      ? "text-gray-400 hover:text-white hover:bg-white/10"
-      : "text-gray-500 hover:text-gray-900 hover:bg-gray-200",
-
-    label: isDark ? "text-gray-300" : "text-gray-700",
-
-    input: isDark
-      ? "bg-[#080d14] border-white/10 text-white placeholder:text-gray-500"
-      : "bg-white border-gray-200 text-gray-900 placeholder:text-gray-400",
-
-    section: isDark
-      ? "bg-white/[0.02] border-white/8"
-      : "bg-gray-50 border-gray-200",
-
-    divider: isDark ? "border-white/8" : "border-gray-200",
-
-    popularLabel: isDark ? "text-white" : "text-gray-800",
-
-    cancelButton: isDark
-      ? "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
-      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900",
-  };
+  const theme = getSubscriptionFormModalTheme(isDark)
 
   const inputClass = `w-full px-3.5 py-2.5 border rounded-xl text-sm focus:border-primary/60 focus:ring-1 focus:ring-primary/30 outline-none transition-all ${theme.input}`;
 

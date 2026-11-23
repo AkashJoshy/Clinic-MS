@@ -22,6 +22,7 @@ import {
   updateDoctorSettingsDetails,
 } from "@/services/doctor.service";
 import { mapDoctorSettingsResponse } from "@/helpers/doctor-settings.helper";
+import { useAuthStore } from "@/store";
 
 export const useDoctorSettings = () => {
   const [activeSection, setActiveSection] = useState<DoctorSettingsSection>(
@@ -30,6 +31,9 @@ export const useDoctorSettings = () => {
   const [activeSetting, setActiveSetting] =
     useState<DoctorSettingsKey>("PROFILE_INFO");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const doctor = useAuthStore((state) => state.users.doctor);
+  const updateUser = useAuthStore((state) => state.updateUser);
 
   const methods = useForm<DoctorSettingsSchemaType>({
     resolver: zodResolver(doctorSettingsSchema),
@@ -40,6 +44,7 @@ export const useDoctorSettings = () => {
   const {
     formState: { dirtyFields },
     reset,
+    getValues,
     resetField,
   } = methods;
 
@@ -91,7 +96,7 @@ export const useDoctorSettings = () => {
           appearance: {
             ...initialDoctorSettings.appearance,
             colorPaletteId: data.appearance.colorPaletteId,
-            mode: data.appearance.theme,
+            theme: data.appearance.theme,
             walletCardDesignId: data.appearance.walletCardDesignId,
             compactScheduleView: data.appearance.compactScheduleView,
             highContrastMode: data.appearance.highContrastMode,
@@ -109,8 +114,29 @@ export const useDoctorSettings = () => {
 
   const { mutate, isPending } = useMutate(updateDoctorSettingsDetails, {
     onSuccess(data) {
-      if (data.data) {
-        reset(data.data);
+      const updatedData = data.data.data;
+      const section = data.data.section;
+
+      if (updatedData) {
+        console.log(`Data Data from the API`);
+        console.log(updatedData);
+
+        if (section === "APPEARANCE") {
+          reset({
+            ...getValues,
+            appearance: updatedData,
+          });
+        }
+
+        if (updatedData.theme) {
+          updateUser(
+            {
+              theme: updatedData.theme,
+            },
+            "doctor",
+          );
+        }
+
       }
     },
   });

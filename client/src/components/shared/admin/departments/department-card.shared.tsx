@@ -1,8 +1,8 @@
-
 import { Pencil, Trash } from "lucide-react";
 import { MdRestoreFromTrash } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import type { DepartmentCardProps } from "@/types/admin";
+import { getDepartmentCardTheme } from "@/helpers/admin/departments.helper";
 
 const DepartmentCard = ({
   department,
@@ -13,17 +13,7 @@ const DepartmentCard = ({
 
   const isActive = department.status === "ACTIVE";
 
-  const theme = {
-    card: isDark
-      ? "bg-[#0d1a27] border-white/8 hover:border-white/15"
-      : "bg-white border-gray-200 hover:border-gray-300",
-    title: isDark ? "text-white" : "text-gray-900",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    modeBadge: isDark
-      ? "bg-white/5 text-[#8b9ab0]"
-      : "bg-gray-100 text-gray-600",
-    divider: isDark ? "border-white/8" : "border-gray-200",
-  };
+  const theme = getDepartmentCardTheme(isDark);
 
   const handleStatusChange = () => {
     handleDelete({
@@ -83,9 +73,7 @@ const DepartmentCard = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() =>
-              navigate(`/admin/department/edit/${department.id}`)
-            }
+            onClick={() => navigate(`/admin/department/edit/${department.id}`)}
             className={`p-1.5 rounded-lg transition-colors ${
               isDark
                 ? "text-[#8b9ab0] hover:text-blue-400 hover:bg-blue-500/10"
@@ -102,20 +90,13 @@ const DepartmentCard = ({
               isActive
                 ? "text-[#8b9ab0] hover:text-rose-400 hover:bg-rose-500/10"
                 : "text-[#8b9ab0] hover:text-primary hover:bg-primary/10"
-            } ${
-              !isDark && "text-gray-500"
-            }`}
-            aria-label={
-              isActive ? "Delete department" : "Restore department"
-            }
+            } ${!isDark && "text-gray-500"}`}
+            aria-label={isActive ? "Delete department" : "Restore department"}
           >
             {isActive ? (
               <Trash size={15} className="cursor-pointer" />
             ) : (
-              <MdRestoreFromTrash
-                size={15}
-                className="cursor-pointer"
-              />
+              <MdRestoreFromTrash size={15} className="cursor-pointer" />
             )}
           </button>
         </div>

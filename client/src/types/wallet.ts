@@ -134,3 +134,9 @@ export interface WalletActivityProps {
   transactions: WalletTransaction[];
 }
 
+export interface WalletBalanceCardProps {
+  totalBalance: number;
+  walletHolder?: string;
+  maskedId?: string;
+  trendPercent?: number;
+}

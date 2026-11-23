@@ -25,7 +25,10 @@ import {
   ghostButton,
 } from "@/constants/admin-settings.constant";
 
-import type { DoctorSettingsValues } from "@/types/doctor-settings";
+import type {
+  DoctorSettingsValues,
+  UpdateDoctorSettingsData,
+} from "@/types/doctor-settings";
 
 import { walletCardDesigns } from "@/components/shared/wallet/wallet-card-designs.shared";
 
@@ -34,6 +37,8 @@ import InterfaceThemeMode from "./interface-theme-mode.shared";
 
 export interface AppearanceSectionProps {
   isDark: boolean;
+  mutateFn: (data: UpdateDoctorSettingsData) => void;
+  isMutateFn: boolean;
 }
 
 const FIRST_WALLET_DESIGN_ID = walletCardDesigns[0].id;
@@ -42,18 +47,19 @@ const DEFAULT_PALETTE_ID = doctorColorPalettes[0].id;
 
 export const AppearanceSection: React.FC<AppearanceSectionProps> = ({
   isDark,
+  isMutateFn,
+  mutateFn,
 }) => {
   const { control, watch, setValue, resetField } =
     useFormContext<DoctorSettingsValues>();
-
-  const currentMode = watch("appearance.mode");
 
   const selectedDesignId = watch("appearance.walletCardDesignId");
 
   const selectedPaletteId = watch("appearance.colorPaletteId");
 
-  const selectedPalette =
-    doctorColorPalettes.find((palette) => palette.id === selectedPaletteId)
+  const selectedPalette = doctorColorPalettes.find(
+    (palette) => palette.id === selectedPaletteId,
+  );
 
   // Initialize default selections.
   useEffect(() => {
@@ -70,8 +76,6 @@ export const AppearanceSection: React.FC<AppearanceSectionProps> = ({
         shouldDirty: false,
       });
     }
-
-
   }, [selectedDesignId, selectedPaletteId, setValue]);
 
   const cardClass = `rounded-2xl border p-5 sm:p-6 transition-colors ${
@@ -92,20 +96,34 @@ export const AppearanceSection: React.FC<AppearanceSectionProps> = ({
       section: "APPEARANCE" as const,
     };
 
-    console.log(`RawData`);
-    console.log(rawData);
-
     const result = appearanceSettingsSchema.safeParse(rawData);
 
     if (!result.success) return;
 
-    console.log("[Doctor Settings] Successfully saved APPEARANCE:", {
-      section: result.data.section,
-      data: result.data,
-      timestamp: new Date().toISOString(),
+    console.log(`RawData`);
+    console.log(rawData);
+
+    const {
+      section,
+      theme,
+      colorPaletteId,
+      walletCardDesignId,
+      compactScheduleView,
+      highContrastMode,
+    } = rawData;
+
+    mutateFn({
+      section,
+      data: {
+        theme,
+        colorPaletteId,
+        compactScheduleView,
+        highContrastMode,
+        walletCardDesignId,
+      },
     });
 
-    toast.success("Appearance settings updated successfully");
+  
   };
 
   const handleReset = () => {

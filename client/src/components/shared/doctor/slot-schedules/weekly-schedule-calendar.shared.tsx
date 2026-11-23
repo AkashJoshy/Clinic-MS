@@ -1,45 +1,14 @@
 import { useMemo, useState } from "react";
 
 import { addDays, getMonday } from "@/helpers/session-slot.helper";
-
-import type { CalendarClinicDetails, SlotStatus } from "@/types/doctor-clinic";
-
+import type {  SlotStatus } from "@/types/doctor-clinic";
 import type { ServiceMode } from "@/types/common";
 
 import WeeklyScheduleCalendarControls from "./weekly-schedule-calendar-controls";
 import WeeklyScheduleCalendarGrid from "./weekly-schedule-calendar-grid";
 import { getLocalDateString } from "@/helpers/doctor-calendar.helper";
-
-export interface CalendarSlot {
-  id: string | null;
-  doctorId: string | null;
-  clinicId: string | null;
-  clinicName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: SlotStatus;
-  mode: ServiceMode;
-  patientName?: string;
-}
-
-interface WeeklyScheduleCalendarProps {
-  slots: CalendarSlot[];
-  clinics: CalendarClinicDetails[];
-  weekDates: Date[];
-  handleSlotByWeek: (from: Date, to: Date) => void;
-  ishandleSlotByWeek: boolean;
-  onSlotClick?: (slot: CalendarSlot, date: Date) => void;
-}
-
-const STATUS_ORDER: SlotStatus[] = [
-  "AVAILABLE",
-  "REPLACEABLE",
-  "BOOKED",
-  "APPROVED",
-  "CANCELLED",
-  "EXPIRED",
-];
+import type { WeeklyScheduleCalendarProps } from "@/types/doctor-dashboard";
+import { STATUS_ORDER } from "@/constants/doctor-dashboard.constant";
 
 const WeeklyScheduleCalendar = ({
   slots,
@@ -47,6 +16,7 @@ const WeeklyScheduleCalendar = ({
   weekDates,
   handleSlotByWeek,
   ishandleSlotByWeek,
+  isDark,
   onSlotClick,
 }: WeeklyScheduleCalendarProps) => {
   const [currentWeek, setCurrentWeek] = useState(() => getMonday(new Date()));
@@ -87,10 +57,7 @@ const WeeklyScheduleCalendar = ({
       .map((slot) => {
         const [startTime, endTime] = slot.split("-");
 
-        return {
-          startTime,
-          endTime,
-        };
+        return { startTime, endTime };
       })
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
   }, [filteredSlots]);
@@ -109,9 +76,6 @@ const WeeklyScheduleCalendar = ({
   const goToPreviousWeek = () => {
     setCurrentWeek((prev) => addDays(prev, -7));
 
-    console.log(`Current Week: `);
-    console.log(currentWeek);
-
     const prevStartDate = new Date(currentWeek);
     prevStartDate.setDate(currentWeek.getDate() - 1);
     prevStartDate.setHours(0, 0, 0, 0);
@@ -128,13 +92,7 @@ const WeeklyScheduleCalendar = ({
   };
 
   const goToNextWeek = () => {
-    setCurrentWeek((prev) => {
-      const newPrev = new Date(prev);
-      newPrev.setDate(prev.getDate());
-      newPrev.setHours(0, 0, 0, 0);
-      const newWeek = addDays(newPrev, 7);
-      return newWeek;
-    });
+    setCurrentWeek((prev) => addDays(prev, 7));
 
     const prevStartDate = new Date(currentWeek);
     prevStartDate.setDate(currentWeek.getDate() - 1);
@@ -175,6 +133,7 @@ const WeeklyScheduleCalendar = ({
         goToToday={goToToday}
         goToPreviousWeek={goToPreviousWeek}
         goToNextWeek={goToNextWeek}
+        isDark={isDark}
       />
 
       <WeeklyScheduleCalendarGrid
@@ -186,6 +145,7 @@ const WeeklyScheduleCalendar = ({
         clinicColorMap={clinicColorMap}
         getSlotsForCell={getSlotsForCell}
         onSlotClick={onSlotClick}
+        isDark={isDark}
       />
     </div>
   );

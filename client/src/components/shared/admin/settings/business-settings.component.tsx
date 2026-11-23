@@ -1,58 +1,25 @@
-
 import React from "react";
-
 import { Field, SettingRow, Note } from "./settings-ui.component";
 import { SubscriptionSettings } from "./subscription-settings.component";
-
-import {
-  inputClass,
-  num,
-} from "../../../../constants/admin-settings.constant";
-
-import type {
-  BusinessSettings,
-  SettingsKey,
-} from "../../../../types/admin-settings";
-
-export interface BusinessSettingsSectionProps {
-  sectionKey: SettingsKey;
-  business: BusinessSettings;
-  currency: string;
-  isDark: boolean;
-  updateBusiness: <K extends keyof BusinessSettings>(
-    key: K,
-    value: BusinessSettings[K],
-  ) => void;
-}
+import { inputClass, num } from "../../../../constants/admin-settings.constant";
+import type { BusinessSettingsSectionProps } from "@/types/admin-settings";
+import { getBusinessSettingsSectionTheme } from "@/helpers/admin/settings.helper";
 
 export const BusinessSettingsSection: React.FC<
   BusinessSettingsSectionProps
-> = ({
-  sectionKey,
-  business,
-  currency,
-  updateBusiness,
-  isDark,
-}) => {
-  const themedInputClass = `${inputClass} ${
-    isDark
-      ? "!bg-[#080d14] !text-white !border-white/10 placeholder:!text-[#6b7c93]"
-      : "!bg-white !text-gray-900 !border-gray-200 placeholder:!text-gray-400"
-  }`;
+> = ({ sectionKey, business, currency, updateBusiness, isDark }) => {
+  const theme = getBusinessSettingsSectionTheme(isDark, inputClass);
 
   switch (sectionKey) {
     case "PAYMENTS":
       return (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Field
-              label={`Minimum payout (${currency})`}
-              isDark={isDark}
-            >
+            <Field label={`Minimum payout (${currency})`} isDark={isDark}>
               <input
                 type="number"
                 min={0}
-                className={themedInputClass}
+                className={theme.input}
                 value={business.minimumPayout}
                 onChange={(e) =>
                   updateBusiness("minimumPayout", num(e.target.value))
@@ -62,13 +29,10 @@ export const BusinessSettingsSection: React.FC<
 
             <Field label="Payout processing time" isDark={isDark}>
               <select
-                className={themedInputClass}
+                className={theme.input}
                 value={business.payoutProcessingDays}
                 onChange={(e) =>
-                  updateBusiness(
-                    "payoutProcessingDays",
-                    Number(e.target.value),
-                  )
+                  updateBusiness("payoutProcessingDays", Number(e.target.value))
                 }
               >
                 {[1, 2, 3, 5, 7].map((days) => (
@@ -91,16 +55,13 @@ export const BusinessSettingsSection: React.FC<
       return (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Field
-              label="Default commission (%)"
-              isDark={isDark}
-            >
+            <Field label="Default commission (%)" isDark={isDark}>
               <input
                 type="number"
                 min={0}
                 max={100}
                 step={0.1}
-                className={themedInputClass}
+                className={theme.input}
                 value={business.commissionPercentage}
                 onChange={(e) =>
                   updateBusiness(
@@ -111,14 +72,11 @@ export const BusinessSettingsSection: React.FC<
               />
             </Field>
 
-            <Field
-              label={`Platform fee (${currency})`}
-              isDark={isDark}
-            >
+            <Field label={`Platform fee (${currency})`} isDark={isDark}>
               <input
                 type="number"
                 min={0}
-                className={themedInputClass}
+                className={theme.input}
                 value={business.platformFee}
                 onChange={(e) =>
                   updateBusiness("platformFee", num(e.target.value))
@@ -138,18 +96,12 @@ export const BusinessSettingsSection: React.FC<
       return (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Field
-              label="Default appointment duration"
-              isDark={isDark}
-            >
+            <Field label="Default appointment duration" isDark={isDark}>
               <select
-                className={themedInputClass}
+                className={theme.input}
                 value={business.appointmentDuration}
                 onChange={(e) =>
-                  updateBusiness(
-                    "appointmentDuration",
-                    Number(e.target.value),
-                  )
+                  updateBusiness("appointmentDuration", Number(e.target.value))
                 }
               >
                 {[15, 20, 30, 45, 60].map((minutes) => (
@@ -160,18 +112,12 @@ export const BusinessSettingsSection: React.FC<
               </select>
             </Field>
 
-            <Field
-              label="Cancellation window"
-              isDark={isDark}
-            >
+            <Field label="Cancellation window" isDark={isDark}>
               <select
-                className={themedInputClass}
+                className={theme.input}
                 value={business.cancellationWindow}
                 onChange={(e) =>
-                  updateBusiness(
-                    "cancellationWindow",
-                    Number(e.target.value),
-                  )
+                  updateBusiness("cancellationWindow", Number(e.target.value))
                 }
               >
                 {[0, 2, 6, 12, 24, 48].map((hours) => (
@@ -183,18 +129,12 @@ export const BusinessSettingsSection: React.FC<
             </Field>
           </div>
 
-          <div
-            className={`mt-5 pt-5 border-t ${
-              isDark ? "border-white/5" : "border-gray-200"
-            }`}
-          >
+          <div className={`mt-5 pt-5 border-t ${theme.sectionDivider}`}>
             <SettingRow
               title="Auto-confirm appointments"
               description="Confirm eligible bookings automatically when business rules allow it."
               checked={business.autoConfirmAppointments}
-              onChange={(v) =>
-                updateBusiness("autoConfirmAppointments", v)
-              }
+              onChange={(v) => updateBusiness("autoConfirmAppointments", v)}
               isDark={isDark}
             />
           </div>
@@ -208,9 +148,7 @@ export const BusinessSettingsSection: React.FC<
             title="Admin approval required"
             description="Doctors need admin approval before they can use applicable features."
             checked={business.doctorApprovalRequired}
-            onChange={(v) =>
-              updateBusiness("doctorApprovalRequired", v)
-            }
+            onChange={(v) => updateBusiness("doctorApprovalRequired", v)}
             isDark={isDark}
           />
 
@@ -231,9 +169,7 @@ export const BusinessSettingsSection: React.FC<
             title="Patient reviews"
             description="Let eligible patients review completed appointments."
             checked={business.patientReviewsEnabled}
-            onChange={(v) =>
-              updateBusiness("patientReviewsEnabled", v)
-            }
+            onChange={(v) => updateBusiness("patientReviewsEnabled", v)}
             isDark={isDark}
           />
 
@@ -241,9 +177,7 @@ export const BusinessSettingsSection: React.FC<
             title="Patient cancellation"
             description="Let patients cancel appointments within the cancellation policy."
             checked={business.patientCancellationEnabled}
-            onChange={(v) =>
-              updateBusiness("patientCancellationEnabled", v)
-            }
+            onChange={(v) => updateBusiness("patientCancellationEnabled", v)}
             isDark={isDark}
           />
         </>

@@ -113,9 +113,7 @@ export const applyPrimaryColor = (primaryColor: string): void => {
   });
 };
 
-// Colors with luminance above this are considered "very light" and get black text.
-// Everything else (dark and mid-tones like green) gets white text.
-// Raise it for more white text, lower it for more black text.
+
 const LIGHT_COLOR_LUMINANCE_THRESHOLD = 0.5;
 
 export const getContrastTextColor = (hex: string): "#000000" | "#FFFFFF" => {

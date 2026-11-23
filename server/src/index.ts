@@ -42,10 +42,15 @@ app.use(errorMiddleware);
 
 connectDB()
   .then(() => {
-    console.log(`Database Connected`);
+    console.log("Database Connected");
+
     startCronJobs();
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   })
-  .catch((e) => {
-    throw new Error("Error Connecting to DB");
+  .catch((error) => {
+    console.error("Failed to start server:", error);
+    process.exit(1);
   });

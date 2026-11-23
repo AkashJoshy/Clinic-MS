@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 import { X, CreditCard, ShieldCheck, Lock, AlertCircle } from "lucide-react";
@@ -7,7 +6,7 @@ import type { ManagePaymentMethodModalProps } from "@/types/doctor-subscription"
 
 export const ManagePaymentMethodModal: React.FC<
   ManagePaymentMethodModalProps
-> = ({ subscription, isOpen, onClose, onUpdatePaymentMethod }) => {
+> = ({ subscription, isOpen, isDark, onClose, onUpdatePaymentMethod }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cardHolder, setCardHolder] = useState("");
@@ -109,9 +108,25 @@ export const ManagePaymentMethodModal: React.FC<
 
   const previewExpiry = expiry || "MM/YY";
 
+  const modalBg = isDark ? "bg-[#0d1520]" : "bg-white";
+  const headerBg = isDark ? "bg-[#09101a]" : "bg-slate-50";
+  const borderColor = isDark ? "border-white/10" : "border-slate-200";
+  const primaryText = isDark ? "text-white" : "text-slate-900";
+  const secondaryText = isDark ? "text-gray-300" : "text-slate-700";
+  const mutedText = isDark ? "text-gray-400" : "text-slate-600";
+  const inputBg = isDark ? "bg-white/5" : "bg-slate-50";
+  const inputBorder = isDark ? "border-white/10" : "border-slate-200";
+  const subtlePanel = isDark
+    ? "border-white/5 bg-white/[0.02]"
+    : "border-slate-200 bg-slate-50";
+
+  const inputClass = `w-full rounded-xl border ${inputBorder} ${inputBg} px-3 py-2 text-xs ${secondaryText} transition-colors placeholder:text-gray-500 focus:border-primary focus:outline-none`;
+
+  const labelClass = `text-[11px] font-bold uppercase tracking-wider ${mutedText}`;
+
   return (
     <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex animate-in fade-in items-center justify-center bg-black/80 p-4 backdrop-blur-sm duration-200"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -120,10 +135,12 @@ export const ManagePaymentMethodModal: React.FC<
         role="dialog"
         aria-modal="true"
         aria-labelledby="payment-method-title"
-        className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0d1520] shadow-2xl"
+        className={`flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-2xl border ${borderColor} ${modalBg} shadow-2xl`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 bg-[#09101a] px-6 py-4">
+        <div
+          className={`flex shrink-0 items-center justify-between border-b ${borderColor} ${headerBg} px-6 py-4`}
+        >
           <div className="flex items-center gap-2">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
               <CreditCard size={16} />
@@ -131,7 +148,7 @@ export const ManagePaymentMethodModal: React.FC<
 
             <h3
               id="payment-method-title"
-              className="text-sm font-bold text-white"
+              className={`text-sm font-bold ${primaryText}`}
             >
               {currentPaymentMethod
                 ? "Manage Payment Method"
@@ -143,7 +160,11 @@ export const ManagePaymentMethodModal: React.FC<
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="cursor-pointer rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+            className={`cursor-pointer rounded-lg p-1.5 transition-colors ${
+              isDark
+                ? "text-gray-400 hover:bg-white/10 hover:text-white"
+                : "text-slate-500 hover:bg-slate-200 hover:text-slate-900"
+            }`}
           >
             <X size={18} />
           </button>
@@ -152,9 +173,9 @@ export const ManagePaymentMethodModal: React.FC<
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="flex-1 space-y-4 overflow-y-auto p-6 text-xs text-gray-300"
+          className={`flex-1 space-y-4 overflow-y-auto p-6 text-xs ${secondaryText}`}
         >
-          {/* Card preview */}
+          {/* Card Preview */}
           <div className="relative overflow-hidden rounded-xl border border-white/15 bg-gradient-to-tr from-[#0a1b24] via-[#0e2a33] to-[#123e3e] p-4 text-white shadow-lg">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
@@ -188,18 +209,15 @@ export const ManagePaymentMethodModal: React.FC<
             </div>
           </div>
 
-          <p className="text-[11px] leading-relaxed text-gray-400">
+          <p className={`text-[11px] leading-relaxed ${mutedText}`}>
             {currentPaymentMethod
               ? `Current payment method: ${currentPaymentMethod.replaceAll("_", " ")}. Enter your new card details below.`
               : "No saved card details are available. Enter your card details to add a payment method."}
           </p>
 
-          {/* Card number */}
+          {/* Card Number */}
           <div className="space-y-1.5">
-            <label
-              htmlFor="payment-card-number"
-              className="text-[11px] font-bold uppercase tracking-wider text-gray-400"
-            >
+            <label htmlFor="payment-card-number" className={labelClass}>
               Card Number
             </label>
 
@@ -209,23 +227,18 @@ export const ManagePaymentMethodModal: React.FC<
               inputMode="numeric"
               autoComplete="cc-number"
               value={cardNumber}
-              onChange={(e) =>
-                setCardNumber(formatCardNumber(e.target.value))
-              }
+              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
               placeholder="Enter card number"
               required
               maxLength={23}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           {/* Expiry and CVV */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label
-                htmlFor="payment-card-expiry"
-                className="text-[11px] font-bold uppercase tracking-wider text-gray-400"
-              >
+              <label htmlFor="payment-card-expiry" className={labelClass}>
                 Expiry Date (MM/YY)
               </label>
 
@@ -239,15 +252,12 @@ export const ManagePaymentMethodModal: React.FC<
                 placeholder="MM/YY"
                 maxLength={5}
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
+                className={inputClass}
               />
             </div>
 
             <div className="space-y-1.5">
-              <label
-                htmlFor="payment-card-cvv"
-                className="text-[11px] font-bold uppercase tracking-wider text-gray-400"
-              >
+              <label htmlFor="payment-card-cvv" className={labelClass}>
                 Security CVV
               </label>
 
@@ -264,17 +274,14 @@ export const ManagePaymentMethodModal: React.FC<
                 pattern="[0-9]{3,4}"
                 placeholder="CVV"
                 required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
+                className={inputClass}
               />
             </div>
           </div>
 
           {/* Cardholder */}
           <div className="space-y-1.5">
-            <label
-              htmlFor="payment-cardholder"
-              className="text-[11px] font-bold uppercase tracking-wider text-gray-400"
-            >
+            <label htmlFor="payment-cardholder" className={labelClass}>
               Name on Card
             </label>
 
@@ -286,38 +293,44 @@ export const ManagePaymentMethodModal: React.FC<
               onChange={(e) => setCardHolder(e.target.value)}
               placeholder="Enter cardholder name"
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors focus:border-primary focus:outline-none"
+              className={inputClass}
             />
           </div>
 
           {error && (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-[11px] text-red-300"
+              className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-[11px] text-red-500 dark:text-red-300"
             >
               <AlertCircle size={14} className="mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <div className="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.02] p-2.5 text-[11px] text-gray-400">
-            <ShieldCheck
-              size={14}
-              className="mt-0.5 shrink-0 text-primary"
-            />
+          {/* Security Notice */}
+          <div
+            className={`flex items-start gap-2 rounded-lg border p-2.5 text-[11px] ${subtlePanel} ${mutedText}`}
+          >
+            <ShieldCheck size={14} className="mt-0.5 shrink-0 text-primary" />
             <span>
               Use a PCI-DSS-compliant payment provider to securely collect and
-              tokenize card details. Never store raw card numbers or CVV in
-              your application database.
+              tokenize card details. Never store raw card numbers or CVV in your
+              application database.
             </span>
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-2.5 border-t border-white/10 pt-3">
+          <div
+            className={`flex items-center justify-end gap-2.5 border-t ${borderColor} pt-3`}
+          >
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer rounded-xl border border-white/10 px-4 py-2 text-xs font-semibold text-gray-300 transition-colors hover:bg-white/5"
+              className={`cursor-pointer rounded-xl border px-4 py-2 text-xs font-semibold transition-colors ${
+                isDark
+                  ? "border-white/10 text-gray-300 hover:bg-white/5"
+                  : "border-slate-200 text-slate-700 hover:bg-slate-100"
+              }`}
             >
               Cancel
             </button>

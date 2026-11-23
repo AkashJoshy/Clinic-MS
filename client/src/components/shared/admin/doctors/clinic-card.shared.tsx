@@ -1,4 +1,3 @@
-
 import { Activity, Building2, FileText, MapPin } from "lucide-react";
 
 import { DoctorScheduleCard } from "./schedule-card.shared";
@@ -10,6 +9,7 @@ import type { DoctorStatus } from "@/types/doctor";
 
 import { STATUS_STYLES } from "@/data/admin.data";
 import { useAuthStore } from "@/store";
+import { getDoctorClinicCardTheme } from "@/helpers/admin/doctors.helper";
 
 type DocField = "registrationDoc" | "establishmentLicenceDoc";
 
@@ -44,34 +44,10 @@ export const DoctorClinicCard = ({
   const { admin } = useAuthStore((state) => state.users);
   const isDark = admin?.theme === "DARK";
 
-  const theme = {
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    headerDivider: isDark ? "border-white/10" : "border-gray-200",
-    divider: isDark ? "border-white/5" : "border-gray-200",
-
-    card: isDark
-      ? "border-white/8 bg-[#0d1a27]"
-      : "border-gray-200 bg-white shadow-sm",
-
-    innerCard: isDark
-      ? "border-white/5 bg-white/[0.02]"
-      : "border-gray-200 bg-gray-50",
-
-    emptyCard: isDark
-      ? "border-white/8 bg-[#0d1a27]"
-      : "border-gray-200 bg-white",
-
-    dashedCard: isDark ? "border-white/10" : "border-gray-300",
-
-    emptyIcon: isDark ? "text-[#64748b]" : "text-gray-400",
-  };
+  const theme = getDoctorClinicCardTheme(isDark);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div
         className={`flex items-center justify-between border-b pb-4 ${theme.headerDivider}`}
       >
@@ -94,7 +70,6 @@ export const DoctorClinicCard = ({
         </div>
       </div>
 
-      {/* Empty State */}
       {!doctorClinicDetails.length && (
         <div
           className={`rounded-2xl border p-8 text-center ${theme.emptyCard}`}
@@ -111,7 +86,6 @@ export const DoctorClinicCard = ({
         </div>
       )}
 
-      {/* Clinic Profiles */}
       {doctorClinicDetails.map((entry) => {
         const { clinic, clinicAddress: address } = entry;
 
@@ -140,7 +114,6 @@ export const DoctorClinicCard = ({
             key={entry.id}
             className={`overflow-hidden rounded-2xl border ${theme.card}`}
           >
-            {/* Clinic Header */}
             <div
               className={`flex flex-col gap-3 border-b p-5 sm:flex-row sm:items-start sm:justify-between ${theme.divider}`}
             >
@@ -166,9 +139,7 @@ export const DoctorClinicCard = ({
               )}
             </div>
 
-            {/* Clinic Information */}
             <div className="grid grid-cols-1 gap-4 p-5 lg:grid-cols-2">
-              {/* Consultation Details */}
               <div className={`rounded-xl border p-4 ${theme.innerCard}`}>
                 <div className="mb-3 flex items-center gap-2">
                   <Activity size={15} className="text-primary" />
@@ -214,7 +185,6 @@ export const DoctorClinicCard = ({
                 </div>
               </div>
 
-              {/* Clinic Location */}
               <div className={`rounded-xl border p-4 ${theme.innerCard}`}>
                 <div className="mb-3 flex items-center gap-2">
                   <MapPin size={15} className="text-primary" />
@@ -268,7 +238,6 @@ export const DoctorClinicCard = ({
               </div>
             </div>
 
-            {/* Verification Documents */}
             <div className={`border-t p-5 ${theme.divider}`}>
               <p
                 className={`mb-3 text-xs font-semibold uppercase tracking-wider ${theme.muted}`}

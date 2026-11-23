@@ -33,6 +33,7 @@ export class DoctorSettingsController {
 
   async updateDoctorSettings(req: Request, res: Response, next: NextFunction) {
     try {
+
       const doctorSettings = await this._updateDoctorSettingsUseCase.execute(
         (req.user as User)?.id!,
         req.body,

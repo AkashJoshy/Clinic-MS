@@ -35,6 +35,8 @@ import type { User } from "@/types/user";
 import type { UpdateMethods } from "@/types/common";
 import StatusTicker from "@/components/shared/status-ticker.shared";
 import { useAuthStore } from "@/store";
+import { getDoctorDetailsTheme } from "@/helpers/admin/doctors.helper";
+import DoctorNotFound from "@/components/shared/admin/doctors/doctor-not-found.shared";
 
 export default function DoctorDetailsPage() {
   const { doctorId } = useParams<{ doctorId: string }>();
@@ -53,39 +55,7 @@ export default function DoctorDetailsPage() {
     null,
   );
 
-  const theme = {
-    page: isDark
-      ? "border-white/10 bg-white/[0.02]"
-      : "border-gray-200 bg-white shadow-sm",
-
-    card: isDark
-      ? "bg-[#0d1a27] border-white/8"
-      : "bg-white border-gray-200 shadow-sm",
-
-    inner: isDark
-      ? "bg-[#080d14] border-white/8"
-      : "bg-gray-50 border-gray-200",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    backButton: isDark
-      ? "text-[#8b9ab0] hover:text-white"
-      : "text-gray-500 hover:text-gray-900",
-
-    primaryButton: isDark
-      ? `text-black hover:bg-[#159a4e]`
-      : `text-white hover:bg-[#159a4e]`,
-
-    imageOverlay: isDark ? "bg-[#080d14]/90" : "bg-gray-900/80",
-
-    imageCard: isDark
-      ? "bg-[#0d1a27] border-white/8"
-      : "bg-white border-gray-200",
-
-    imageContent: isDark ? "bg-[#080d14]/30" : "bg-gray-100",
-  };
+  const theme = getDoctorDetailsTheme(isDark);
 
   const fetchDoctorDetails = async () => {
     if (!doctorId) return;
@@ -219,37 +189,7 @@ export default function DoctorDetailsPage() {
 
   if (!doctorData) {
     return (
-      <div className="space-y-6 p-6 lg:p-8">
-        <button
-          onClick={() => navigate("/admin/doctors")}
-          className={`mb-4 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold transition-colors ${theme.backButton}`}
-        >
-          <ArrowLeft size={16} />
-          Back to Doctor Management
-        </button>
-
-        <div
-          className={`mx-auto max-w-lg rounded-2xl border p-8 text-center ${theme.card}`}
-        >
-          <AlertTriangle className="mx-auto mb-4 text-amber-500" size={48} />
-
-          <h2 className={`${theme.heading} mb-2 text-xl font-bold`}>
-            Doctor Not Found
-          </h2>
-
-          <p className={`${theme.muted} mb-6 text-sm`}>
-            The doctor profile you are looking for does not exist or has been
-            removed.
-          </p>
-
-          <button
-            onClick={() => navigate("/admin/doctors")}
-            className={`cursor-pointer rounded-xl bg-primary px-6 py-2.5 font-semibold transition-all ${theme.primaryButton}`}
-          >
-            Go Back to List
-          </button>
-        </div>
-      </div>
+      <DoctorNotFound onBack={() => navigate("/admin/doctors")} theme={theme} />
     );
   }
 
@@ -264,7 +204,6 @@ export default function DoctorDetailsPage() {
         theme.page
       }`}
     >
-      {/* Header */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <button
           onClick={() => navigate("/admin/doctors")}

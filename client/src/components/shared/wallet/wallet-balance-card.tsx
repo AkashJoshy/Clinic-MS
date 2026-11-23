@@ -1,17 +1,9 @@
-
 import React, { useState } from "react";
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Wifi } from "lucide-react";
-
 import { formatCurrency } from "@/helpers/wallet.helper";
 import { getContrastTextColor } from "@/helpers/color-palette.helper";
 import { useAuthStore } from "@/store";
-
-interface WalletBalanceCardProps {
-  totalBalance: number;
-  walletHolder?: string;
-  maskedId?: string;
-  trendPercent?: number;
-}
+import type { WalletBalanceCardProps } from "@/types/wallet";
 
 export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({
   totalBalance,

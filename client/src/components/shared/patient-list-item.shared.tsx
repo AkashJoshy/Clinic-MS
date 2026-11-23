@@ -1,4 +1,3 @@
-
 import {
   Phone,
   Mail,
@@ -15,6 +14,7 @@ import DeleteConfirmationalModal from "./delete-confirmational-modal.shared";
 import type { EntityStatus, UpdateMethods } from "@/types/common";
 import { useMutate } from "@/hooks/use-mutate.hook";
 import { updatePatient } from "@/services/admin.service";
+import { getPatientListItemTheme } from "@/helpers/admin/patients.helper";
 
 export const PatientListItem = ({
   patientInfo,
@@ -35,35 +35,7 @@ export const PatientListItem = ({
   const isUser = patientInfo.user;
   const isPatient = patientInfo.patient;
 
-  const theme = {
-    card: isDark
-      ? "border-white/8 bg-[#0d1a27]"
-      : "border-gray-200 bg-white shadow-sm",
-
-    cardHover: "hover:border-1 hover:border-primary/40",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-
-    text: isDark ? "text-[#c1ccd9]" : "text-gray-700",
-
-    muted: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    idBadge: isDark
-      ? "border-white/10 bg-white/5 text-[#8b9ab0]"
-      : "border-gray-200 bg-gray-100 text-gray-600",
-
-    detailsButton: isDark
-      ? "border-white/10 text-[#8b9ab0] hover:text-white"
-      : "border-gray-200 text-gray-600 hover:text-gray-900",
-
-    detailsHover: isDark ? "hover:bg-white/5" : "hover:bg-gray-100",
-
-    missingCard: isDark
-      ? "border-red-500/20 bg-red-500/5"
-      : "border-red-200 bg-red-50",
-
-    missingText: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-  };
+  const theme = getPatientListItemTheme(isDark);
 
   const { mutate } = useMutate(updatePatient, {
     onSuccess: (data) => {
@@ -139,10 +111,7 @@ export const PatientListItem = ({
             {isUser && (
               <div className={`mt-3 text-xs ${theme.muted}`}>
                 <div className="flex min-w-0 gap-1">
-                  <Mail
-                    size={13}
-                    className="mt-0.5 shrink-0 text-primary"
-                  />
+                  <Mail size={13} className="mt-0.5 shrink-0 text-primary" />
 
                   <span className="truncate xsxs:w-20 xxs:w-40 md:w-30">
                     {isUser.email || "Email address unavailable"}

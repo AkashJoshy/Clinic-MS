@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import type { DashboardStatsData } from "@/types/admin/dashboard.types";
+import { getDashboardStatsTheme } from "@/helpers/admin/dashboard.helper";
 
 interface DashboardStatsProps {
   stats: DashboardStatsData;
@@ -32,6 +33,7 @@ interface StatItemProps {
   extraInfo?: React.ReactNode;
 }
 
+
 const StatItem: React.FC<StatItemProps> = ({
   title,
   value,
@@ -44,13 +46,11 @@ const StatItem: React.FC<StatItemProps> = ({
   isDark,
   extraInfo,
 }) => {
+  const theme = getDashboardStatsTheme(isDark);
+
   const content = (
     <div
-      className={`h-full flex flex-col justify-between p-5 rounded-2xl border transition-all duration-200 group ${
-        isDark
-          ? "bg-[#0d1a27] border-white/8 hover:border-primary/40 hover:bg-[#0f1f2f]"
-          : "bg-white border-gray-200 hover:border-primary/40 hover:shadow-md"
-      }`}
+      className={`h-full flex flex-col justify-between p-5 rounded-2xl border transition-all duration-200 group ${theme.card}`}
     >
       <div>
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -80,26 +80,22 @@ const StatItem: React.FC<StatItemProps> = ({
         </div>
 
         <p
-          className={`text-xs font-semibold uppercase tracking-wider mb-1 ${
-            isDark ? "text-[#8b9ab0]" : "text-gray-500"
-          }`}
+          className={`text-xs font-semibold uppercase tracking-wider mb-1 ${theme.title}`}
         >
           {title}
         </p>
 
         <p
-          className={`text-2xl lg:text-3xl font-extrabold tracking-tight ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
+          className={`text-2xl lg:text-3xl font-extrabold tracking-tight ${theme.value}`}
         >
           {value}
         </p>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-dashed border-white/10 flex items-center justify-between text-xs">
-        <span className={isDark ? "text-[#8b9ab0]" : "text-gray-500"}>
-          {subtitle}
-        </span>
+      <div
+        className={`mt-4 pt-3 border-t border-dashed ${theme.footer} flex items-center justify-between text-xs`}
+      >
+        <span className={theme.subtitle}>{subtitle}</span>
 
         {linkTo && (
           <span className="text-primary font-medium flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
@@ -127,15 +123,13 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
 }) => {
   const { doctors, patients, departments, subscriptionPlans } = stats;
 
+  const theme = getDashboardStatsTheme(isDark);
+
   return (
     <div className="space-y-4">
       {doctors.pending > 0 && (
         <div
-          className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border ${
-            isDark
-              ? "bg-amber-500/10 border-amber-500/25 text-amber-200"
-              : "bg-amber-50 border-amber-200 text-amber-900"
-          }`}
+          className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border ${theme.pendingAlert}`}
         >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">

@@ -16,6 +16,7 @@ import {
 import toast from "react-hot-toast";
 import type { ColorPaletteFormData } from "@/schemas/admin/admin.schema";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
+import { getColorPaletteManagementTheme } from "@/helpers/admin/subscription.helper";
 
 const ColorPaletteManagement: React.FC<SkeletonCardProps> = ({ isDark }) => {
   const [palettes, setPalettes] = useState<ColorPalette[]>(INITIAL_PALETTES);
@@ -97,17 +98,7 @@ const ColorPaletteManagement: React.FC<SkeletonCardProps> = ({ isDark }) => {
     },
   );
 
-  const theme = {
-    heading: isDark ? "text-white" : "text-gray-900",
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    section: isDark
-      ? "border-white/10 bg-white/[0.02]"
-      : "border-gray-200 bg-gray-50",
-    secondaryButton: isDark
-      ? "border-white/10 bg-white/5 text-gray-300 hover:bg-white/10"
-      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100",
-    dangerButton: "bg-red-500 text-white hover:bg-red-600",
-  };
+  const theme = getColorPaletteManagementTheme(isDark)
 
   const handleOpenCreate = () => {
     setEditingPalette(null);
@@ -146,7 +137,6 @@ const ColorPaletteManagement: React.FC<SkeletonCardProps> = ({ isDark }) => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="space-y-1">
           <div className="flex items-center gap-2">

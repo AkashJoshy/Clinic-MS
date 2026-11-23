@@ -4,6 +4,7 @@ import { X, Check, RefreshCcw } from "lucide-react";
 import { Button } from "../../../ui/button";
 import { RadioCard } from "../../radio-card.tsx";
 import { SegmentedControl } from "../../segmented-control.shared.tsx";
+import { getPatientFilterModalTheme } from "@/helpers/admin/patients.helper.ts";
 
 export interface PatientFilterState {
   status: "ALL" | "ACTIVE" | "INACTIVE";
@@ -46,20 +47,7 @@ export const PatientFilterModal: React.FC<DoctorFilterModalProps> = ({
 
   const handleReset = () => setLocalFilters(defaultPatientFilters);
 
-  const theme = {
-    modal: isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200",
-    headerBorder: isDark ? "border-white/8" : "border-gray-200",
-    heading: isDark ? "text-white" : "text-gray-900",
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    closeButton: isDark
-      ? "text-[#8b9ab0] bg-white/3 hover:bg-white/5 hover:text-white"
-      : "text-gray-500 bg-gray-100 hover:bg-gray-200 hover:text-gray-900",
-    sectionLabel: isDark ? "text-white" : "text-gray-900",
-    footer: isDark ? "bg-white/2" : "bg-gray-50",
-    resetButton: isDark
-      ? "text-[#8b9ab0] hover:text-white"
-      : "text-gray-500 hover:text-gray-900",
-  };
+  const theme = getPatientFilterModalTheme(isDark)
 
   return (
     <AnimatePresence>

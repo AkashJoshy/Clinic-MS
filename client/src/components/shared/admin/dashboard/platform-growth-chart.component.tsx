@@ -3,6 +3,7 @@ import { TrendingUp, Calendar } from "lucide-react";
 
 import type { DoctorDetailsCardInfo } from "@/types/doctor";
 import type { PatientBasicInfo } from "@/types/patient";
+import { getPlatformGrowthChartTheme } from "@/helpers/admin/dashboard.helper";
 
 interface PlatformGrowthChartProps {
   doctors: DoctorDetailsCardInfo[];
@@ -26,6 +27,8 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
 }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>("30D");
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+
+  const theme = getPlatformGrowthChartTheme(isDark);
 
   // Generate realistic growth series correlated to actual entities
   const chartData: DataPoint[] = useMemo(() => {
@@ -92,7 +95,6 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
     });
   }, [doctors.length, patients.length, timeRange]);
 
-  // SVG Dimensions
   const width = 640;
   const height = 240;
   const paddingX = 40;
@@ -105,7 +107,6 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
     return Math.max(maxD, maxP) * 1.25;
   }, [chartData]);
 
-  // Calculate coordinates for points
   const points = useMemo(() => {
     const innerW = width - paddingX * 2;
     const innerH = height - paddingY * 2;
@@ -182,19 +183,13 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
 
   return (
     <div
-      className={`w-full min-w-0 p-3 sm:p-4 lg:p-6 rounded-2xl border transition-all ${
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200"
-      }`}
+      className={`w-full min-w-0 p-3 sm:p-4 lg:p-6 rounded-2xl border transition-all ${theme.container}`}
     >
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 min-w-0">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h2
-              className={`text-sm sm:text-base font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h2 className={`text-sm sm:text-base font-bold ${theme.heading}`}>
               Platform Growth Trends
             </h2>
 
@@ -204,20 +199,14 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
             </span>
           </div>
 
-          <p
-            className={`text-[11px] sm:text-xs mt-1 ${
-              isDark ? "text-[#8b9ab0]" : "text-gray-500"
-            }`}
-          >
+          <p className={`text-[11px] sm:text-xs mt-1 ${theme.description}`}>
             Registered doctors vs patient account growth
           </p>
         </div>
 
         {/* Range Buttons */}
         <div
-          className={`grid grid-cols-4 w-full sm:w-auto items-center p-1 rounded-xl border shrink-0 ${
-            isDark ? "bg-white/5 border-white/8" : "bg-gray-100 border-gray-200"
-          }`}
+          className={`grid grid-cols-4 w-full sm:w-auto items-center p-1 rounded-xl border shrink-0 ${theme.rangeContainer}`}
         >
           {(["7D", "30D", "6M", "1Y"] as TimeRange[]).map((range) => (
             <button
@@ -227,13 +216,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
                 setHoverIndex(null);
               }}
               className={`min-w-0 px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                timeRange === range
-                  ? isDark
-                    ? "bg-primary text-slate-950 shadow-sm"
-                    : "bg-white text-gray-900 shadow-sm"
-                  : isDark
-                    ? "text-[#8b9ab0] hover:text-white"
-                    : "text-gray-500 hover:text-gray-900"
+                timeRange === range ? theme.rangeActive : theme.rangeInactive
               }`}
             >
               {range}
@@ -243,21 +226,21 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-4 p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-white/5 min-w-0">
+      <div
+        className={`grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-4 p-2.5 sm:p-3 rounded-xl border min-w-0 ${theme.metricsContainer}`}
+      >
         {/* Doctors */}
         <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <div className="size-2.5 sm:size-3 rounded-full bg-emerald-500 shrink-0" />
 
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] text-[#8b9ab0] font-medium">
+            <p
+              className={`text-[10px] sm:text-[11px] font-medium ${theme.metricLabel}`}
+            >
               Doctors
             </p>
 
-            <p
-              className={`text-xs sm:text-sm font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <p className={`text-xs sm:text-sm font-bold ${theme.metricValue}`}>
               {currentPoint ? currentPoint.doctors : doctors.length}
             </p>
           </div>
@@ -268,15 +251,13 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
           <div className="size-2.5 sm:size-3 rounded-full bg-sky-500 shrink-0" />
 
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] text-[#8b9ab0] font-medium">
+            <p
+              className={`text-[10px] sm:text-[11px] font-medium ${theme.metricLabel}`}
+            >
               Patients
             </p>
 
-            <p
-              className={`text-xs sm:text-sm font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <p className={`text-xs sm:text-sm font-bold ${theme.metricValue}`}>
               {currentPoint ? currentPoint.patients : patients.length}
             </p>
           </div>
@@ -289,14 +270,14 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] text-[#8b9ab0] font-medium">
+            <p
+              className={`text-[10px] sm:text-[11px] font-medium ${theme.metricLabel}`}
+            >
               Selected
             </p>
 
             <p
-              className={`text-xs font-semibold truncate ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
+              className={`text-xs font-semibold truncate ${theme.metricValue}`}
             >
               {currentPoint?.fullDate ?? "N/A"}
             </p>
@@ -333,7 +314,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
                 y1={y}
                 x2={width - paddingX}
                 y2={y}
-                stroke={isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}
+                stroke={theme.gridLine}
                 strokeDasharray="4 4"
               />
             );
@@ -367,7 +348,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
               y1={paddingY}
               x2={points[hoverIndex].x}
               y2={height - paddingY}
-              stroke={isDark ? "#38bdf8" : "#0284c7"}
+              stroke={theme.guideline}
               strokeWidth="1.5"
               strokeDasharray="3 3"
             />
@@ -384,7 +365,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
                   cx={pt.x}
                   cy={pt.yDocs}
                   r={isHovered ? 6 : 4}
-                  fill={isDark ? "#0d1a27" : "#ffffff"}
+                  fill={theme.chartPointFill}
                   stroke="#10b981"
                   strokeWidth={isHovered ? 3 : 2}
                   className="transition-all duration-150"
@@ -395,7 +376,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
                   cx={pt.x}
                   cy={pt.yPts}
                   r={isHovered ? 6 : 4}
-                  fill={isDark ? "#0d1a27" : "#ffffff"}
+                  fill={theme.chartPointFill}
                   stroke="#0ea5e9"
                   strokeWidth={isHovered ? 3 : 2}
                   className="transition-all duration-150"
@@ -407,15 +388,7 @@ export const PlatformGrowthChart: React.FC<PlatformGrowthChartProps> = ({
                   y={height - 8}
                   textAnchor="middle"
                   fontSize="11"
-                  fill={
-                    isHovered
-                      ? isDark
-                        ? "#ffffff"
-                        : "#111827"
-                      : isDark
-                        ? "#8b9ab0"
-                        : "#6b7280"
-                  }
+                  fill={isHovered ? theme.chartLabelActive : theme.chartLabel}
                   fontWeight={isHovered ? "bold" : "normal"}
                 >
                   {pt.label}

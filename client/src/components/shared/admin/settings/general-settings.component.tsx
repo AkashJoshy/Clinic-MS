@@ -3,16 +3,10 @@ import { Controller, useFormContext } from "react-hook-form";
 
 import { AppearanceSettings } from "./appearance-settings.component";
 import { Field, SettingRow } from "./settings-ui.component";
-
 import { inputClass } from "../../../../constants/admin-settings.constant";
-
-import type { SettingsKey } from "../../../../types/admin-settings";
 import type { PlatformSettings } from "@/schemas/admin/admin.schema";
-
-export interface GeneralSettingsSectionProps {
-  sectionKey: SettingsKey;
-  isDark: boolean;
-}
+import type { GeneralSettingsSectionProps } from "@/types/admin-settings";
+import { getGeneralSettingsSectionTheme } from "@/helpers/admin/settings.helper";
 
 export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
   sectionKey,
@@ -24,11 +18,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
     formState: { errors },
   } = useFormContext<PlatformSettings>();
 
-  const themedInputClass = `${inputClass} !focus:border-primary focus:!border-primary focus:!ring-primary/30 ${
-    isDark
-      ? "!bg-[#080d14] !text-white !border-white/10 placeholder:!text-[#6b7c93]"
-      : "!bg-white !text-gray-900 !border-gray-200 placeholder:!text-gray-400"
-  }`;
+  const theme = getGeneralSettingsSectionTheme(isDark, inputClass);
 
   switch (sectionKey) {
     case "PLATFORM":
@@ -37,7 +27,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
           <Field label="Platform name" isDark={isDark}>
             <input
               {...register("general.platform.platformName")}
-              className={themedInputClass}
+              className={theme.input}
               placeholder="Enter platform name"
             />
 
@@ -53,7 +43,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
               <input
                 type="email"
                 {...register("general.platform.supportEmail")}
-                className={themedInputClass}
+                className={theme.input}
                 placeholder="support@example.com"
               />
 
@@ -68,7 +58,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
               <input
                 type="tel"
                 {...register("general.platform.supportPhone")}
-                className={themedInputClass}
+                className={theme.input}
                 placeholder="Support phone number"
               />
 
@@ -82,7 +72,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
             <Field label="Default timezone" isDark={isDark}>
               <select
                 {...register("general.platform.defaultTimezone")}
-                className={themedInputClass}
+                className={theme.input}
               >
                 <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
                 <option value="UTC">UTC</option>
@@ -100,7 +90,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
             <Field label="Default currency" isDark={isDark}>
               <select
                 {...register("general.platform.defaultCurrency")}
-                className={themedInputClass}
+                className={theme.input}
               >
                 <option value="INR">INR - Indian Rupee</option>
                 <option value="USD">USD - US Dollar</option>
@@ -195,7 +185,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
                 {...register("general.security.adminSessionTimeoutMinutes", {
                   valueAsNumber: true,
                 })}
-                className={themedInputClass}
+                className={theme.input}
               >
                 {[15, 30, 60, 120].map((minutes) => (
                   <option key={minutes} value={minutes}>
@@ -218,7 +208,7 @@ export const GeneralSettingsSection: React.FC<GeneralSettingsSectionProps> = ({
                 {...register("general.security.absoluteSessionLifetimeHours", {
                   valueAsNumber: true,
                 })}
-                className={themedInputClass}
+                className={theme.input}
               >
                 {[12, 24, 72, 168, 336].map((hours) => (
                   <option key={hours} value={hours}>

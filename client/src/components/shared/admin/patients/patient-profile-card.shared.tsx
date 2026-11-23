@@ -1,6 +1,7 @@
 import type { PatientProfileCardProps } from "@/types/patient";
 import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getPatientProfileCardTheme } from "@/helpers/admin/patients.helper";
 
 export const PatientProfileCard = ({
   patient,
@@ -9,12 +10,11 @@ export const PatientProfileCard = ({
   isEmailVerified,
   isDark,
 }: PatientProfileCardProps) => {
+  const theme = getPatientProfileCardTheme(isDark);
+
   return (
     <div
-      className={cn(
-        "rounded-2xl border p-6 text-center space-y-4",
-        isDark ? "bg-[#0d1a27] border-white/8" : "bg-white border-gray-200",
-      )}
+      className={cn("rounded-2xl border p-6 text-center space-y-4", theme.card)}
     >
       <div className="relative mx-auto flex h-32 w-32 items-center justify-center overflow-hidden rounded-2xl border-2 border-primary/35 bg-primary/10">
         {patient.imageUrl?.url ? (
@@ -29,12 +29,7 @@ export const PatientProfileCard = ({
       </div>
 
       <div className="space-y-1">
-        <h2
-          className={cn(
-            "text-xl font-bold tracking-tight",
-            isDark ? "text-white" : "text-gray-900",
-          )}
-        >
+        <h2 className={cn("text-xl font-bold tracking-tight", theme.name)}>
           {patient.displayName}
         </h2>
 
@@ -42,9 +37,7 @@ export const PatientProfileCard = ({
           <span
             className={cn(
               "rounded-md border px-2 py-0.5 text-[11px] font-bold",
-              isDark
-                ? "bg-white/5 border-white/10 text-[#8b9ab0]"
-                : "bg-gray-50 border-gray-200 text-gray-500",
+              theme.badge,
             )}
           >
             {patient.patientNumber}
@@ -53,9 +46,7 @@ export const PatientProfileCard = ({
           <span
             className={cn(
               "rounded-md border px-2 py-0.5 text-[11px] font-bold capitalize",
-              isDark
-                ? "bg-white/5 border-white/10 text-[#8b9ab0]"
-                : "bg-gray-50 border-gray-200 text-gray-500",
+              theme.badge,
             )}
           >
             {patient.relation === "Self"
@@ -65,16 +56,9 @@ export const PatientProfileCard = ({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "flex flex-col gap-2 border-t pt-4",
-          isDark ? "border-white/5" : "border-gray-100",
-        )}
-      >
+      <div className={cn("flex flex-col gap-2 border-t pt-4", theme.divider)}>
         <div className="flex items-center justify-between text-xs">
-          <span className={isDark ? "text-[#8b9ab0]" : "text-gray-500"}>
-            Account Status
-          </span>
+          <span className={theme.description}>Account Status</span>
 
           <span
             className={cn(
@@ -91,9 +75,7 @@ export const PatientProfileCard = ({
         </div>
 
         <div className="flex items-center justify-between text-xs">
-          <span className={isDark ? "text-[#8b9ab0]" : "text-gray-500"}>
-            Email Verification
-          </span>
+          <span className={theme.description}>Email Verification</span>
 
           <span
             className={cn(

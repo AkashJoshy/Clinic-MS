@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
 import AdminPageHeader from "@/components/shared/page-header.shared";
 import { useAuthStore } from "@/store";
+import { getDepartmentTheme } from "@/helpers/admin/departments.helper";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -23,6 +24,8 @@ const DepartmentPage: React.FC = () => {
 
   const admin = useAuthStore((state) => state.users.admin);
   const isDark = admin?.theme === "DARK";
+
+  const theme = getDepartmentTheme(isDark);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,7 +42,6 @@ const DepartmentPage: React.FC = () => {
       const response = await getAllDepartments();
       const data = response.data;
 
-      
       if (data) {
         setAllDepartments(data);
       } else {
@@ -54,10 +56,11 @@ const DepartmentPage: React.FC = () => {
 
   useEffect(() => {
     fetchDepartments();
+
     window.scrollTo({
       behavior: "smooth",
-      top: 0
-    })
+      top: 0,
+    });
   }, []);
 
   const { mutate } = useMutate(updateDepartment, {
@@ -107,21 +110,21 @@ const DepartmentPage: React.FC = () => {
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
-    <div id="department-page"
-      className={`min-h-full p-6 lg:p-8 space-y-6 border shadow-2xs ${
-        isDark ? "border-white/10 bg-white/2" : "border-gray-200 bg-white"
-      }`}
+    <div
+      id="department-page"
+      className={`min-h-full p-6 lg:p-8 space-y-6 border shadow-2xs ${theme.container}`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <AdminPageHeader
           icon={LayoutGrid}
           title="Department Management"
           description="Manage hospital departments"
+          isDark={isDark}
         />
 
         <button
           onClick={() => navigate("/admin/department/add")}
-          className={`flex items-center gap-2 px-4 py-2 bg-primary rounded-[10px] font-bold hover:bg-primary/90 transition-colors text-primary-foreground cursor-pointer`}
+          className="flex items-center gap-2 px-4 py-2 bg-primary rounded-[10px] font-bold hover:bg-primary/90 transition-colors text-primary-foreground cursor-pointer"
         >
           <Plus size={18} />
           Add Department
@@ -131,9 +134,7 @@ const DepartmentPage: React.FC = () => {
       <div className="relative max-w-md">
         <Search
           size={18}
-          className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-            isDark ? "text-[#8b9ab0]" : "text-gray-400"
-          }`}
+          className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme.searchIcon}`}
         />
 
         <input
@@ -144,11 +145,7 @@ const DepartmentPage: React.FC = () => {
             setSearchQuery(e.target.value);
             setPage(1);
           }}
-          className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm outline-none transition-all ${
-            isDark
-              ? "bg-[#0d1a27] border-white/8 text-white placeholder:text-[#8b9ab0] focus:border-primary/50"
-              : "bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-primary/50"
-          }`}
+          className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm outline-none transition-all ${theme.searchInput}`}
         />
       </div>
 
@@ -160,7 +157,7 @@ const DepartmentPage: React.FC = () => {
         </div>
       ) : filteredDepartments.length === 0 ? (
         <div className="text-center py-12">
-          <h1 className={isDark ? "text-[#8b9ab0]" : "text-gray-500"}>
+          <h1 className={theme.emptyState}>
             <AllApprovals name="Departments" isDark={isDark} />
           </h1>
         </div>

@@ -22,11 +22,12 @@ import DoctorClinicDetailsSkeleton from "../../skeletons/doctor-clinic-details.s
 import ConsultationDetails from "./consulations-details.shared";
 import type { ConsulationDetailsSchema } from "@/schemas/doctor/doctor.schema";
 import DoctorAddressDetails from "./address-details.shared";
+import type { ThemeProps } from "@/types/common";
 
 const FIELD_CLASSES =
-  "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 bg-[#101f2e] text-white placeholder:text-[#5b6b80] focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
+  "w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none transition-all duration-200 focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)]";
 
-export const LABEL_CLASSES = "block text-xs font-medium text-[#8b9ab0] mb-1.5";
+export const LABEL_CLASSES = "block text-xs font-medium mb-1.5";
 
 export const SETTING_FIELDS = [
   {
@@ -40,7 +41,7 @@ export const SETTING_FIELDS = [
   },
 ] as const;
 
-const DoctorClinicDetails: React.FC = () => {
+const DoctorClinicDetails: React.FC<ThemeProps> = ({ isDark }) => {
   const doctorProfile = useAuthStore((state) => state.doctor);
   const updateDoctor = useAuthStore((state) => state.updateDoctor);
   const { doctor: user } = useAuthStore((state) => state.users);
@@ -172,7 +173,16 @@ const DoctorClinicDetails: React.FC = () => {
 
   const fieldClasses = cn(
     FIELD_CLASSES,
-    editingClinicId ? "border-white/10" : "border-white/8 cursor-default",
+    isDark
+      ? "bg-[#101f2e] text-white placeholder:text-[#5b6b80]"
+      : "bg-white text-slate-900 placeholder:text-slate-400",
+    editingClinicId
+      ? isDark
+        ? "border-white/10"
+        : "border-slate-300"
+      : isDark
+        ? "border-white/8 cursor-default"
+        : "border-slate-200 cursor-default",
   );
 
   return (
@@ -186,11 +196,19 @@ const DoctorClinicDetails: React.FC = () => {
         return (
           <div
             key={details.id}
-            className="rounded-2xl border border-white/8 bg-[#0d1a27] p-6"
+            className={`rounded-2xl border p-6 shadow-lg transition-shadow duration-200 ${
+              isDark
+                ? "border-white/10 bg-[#0d1a27] shadow-black/20"
+                : "border-slate-200 bg-white shadow-slate-200/70"
+            }`}
           >
             <div>
               <div className="mb-5 flex items-center justify-between">
-                <h3 className="flex items-center gap-2 text-base font-semibold text-white">
+                <h3
+                  className={`flex items-center gap-2 text-base font-semibold ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
+                >
                   <Building
                     className="h-4 w-4"
                     style={{ color: primaryColor }}
@@ -213,7 +231,11 @@ const DoctorClinicDetails: React.FC = () => {
                     <button
                       type="button"
                       onClick={cancelEdit}
-                      className="flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#8b9ab0] transition-colors hover:text-white"
+                      className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                        isDark
+                          ? "text-[#8b9ab0] hover:text-white"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
                     >
                       <X size={13} />
                       Cancel
@@ -254,11 +276,19 @@ const DoctorClinicDetails: React.FC = () => {
                 </div>
 
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white">
+                  <p
+                    className={`text-sm font-medium ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
+                  >
                     {details.clinic?.name}
                   </p>
 
-                  <p className="mt-1 text-sm leading-relaxed text-[#8b9ab0]">
+                  <p
+                    className={`mt-1 text-sm leading-relaxed ${
+                      isDark ? "text-[#8b9ab0]" : "text-slate-600"
+                    }`}
+                  >
                     {details.clinic?.about || "No description available."}
                   </p>
                 </div>
@@ -285,23 +315,45 @@ const DoctorClinicDetails: React.FC = () => {
               watch={watch}
               setValue={setValue}
               consultationTypeIcon={consultationTypeIcon}
+              isDark={isDark}
             />
 
             <DoctorAddressDetails
               doctorProfile={doctorProfile}
               clinicDetails={details}
+              isDark={isDark}
             />
           </div>
         );
       })}
 
       {!clinicDetails.length && (
-        <div className="rounded-2xl border border-white/8 bg-[#0d1a27] p-8 text-center">
-          <Building className="mx-auto mb-3 h-8 w-8 text-[#5b6b80]" />
+        <div
+          className={`rounded-2xl border p-8 text-center shadow-lg ${
+            isDark
+              ? "border-white/10 bg-[#0d1a27] shadow-black/20"
+              : "border-slate-200 bg-white shadow-slate-200/70"
+          }`}
+        >
+          <Building
+            className={`mx-auto mb-3 h-8 w-8 ${
+              isDark ? "text-[#5b6b80]" : "text-slate-400"
+            }`}
+          />
 
-          <p className="text-sm font-medium text-white">No clinics available</p>
+          <p
+            className={`text-sm font-medium ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}
+          >
+            No clinics available
+          </p>
 
-          <p className="mt-1 text-xs text-[#8b9ab0]">
+          <p
+            className={`mt-1 text-xs ${
+              isDark ? "text-[#8b9ab0]" : "text-slate-600"
+            }`}
+          >
             Clinic details will appear here once a clinic is associated.
           </p>
         </div>

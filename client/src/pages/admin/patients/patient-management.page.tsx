@@ -16,6 +16,7 @@ import { PatientListItemSkeleton } from "@/components/shared/skeletons/patient-l
 import { AnimatePresence, motion } from "framer-motion";
 import AdminPageHeader from "@/components/shared/page-header.shared";
 import { useAuthStore } from "@/store";
+import { getPatientManagementTheme } from "@/helpers/admin/patients.helper";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -32,29 +33,7 @@ export default function PatientManagementPage() {
   );
   const [page, setPage] = useState<number>(1);
 
-  const theme = {
-    container: isDark
-      ? "border-white/10 bg-white/[0.02]"
-      : "border-gray-200 bg-gray-50",
-
-    searchIcon: "text-[#4a5568] group-focus-within:text-primary",
-
-    searchInput: isDark
-      ? "border-white/8 bg-[#0d1a27] text-white placeholder:text-[#4a5568]"
-      : "border-gray-200 bg-white text-gray-900 placeholder:text-gray-400",
-
-    totalText: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    countBadge: isDark
-      ? "bg-gray-800 text-primary"
-      : "bg-primary/10 text-primary",
-
-    filterButton: isDark
-      ? "border-white/8 bg-[#0d1a27] text-[#8b9ab0] hover:text-white hover:bg-primary/5"
-      : "border-gray-200 bg-white text-gray-600 hover:text-gray-900 hover:bg-primary/5",
-
-    filterHover: "hover:border-primary/50",
-  };
+  const theme = getPatientManagementTheme(isDark)
 
   const fetchPatients = async () => {
     try {
@@ -142,6 +121,7 @@ export default function PatientManagementPage() {
           icon={Users}
           title="Patient Management"
           description="Monitor and manage all registered patients"
+          isDark={isDark}
         />
 
         <div className="group relative w-full lg:max-w-md">
@@ -168,7 +148,6 @@ export default function PatientManagementPage() {
           className={`flex items-center gap-2 text-sm font-bold ${theme.totalText}`}
         >
           <span>Total Patients</span>
-
           <span
             className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${theme.countBadge}`}
           >

@@ -58,16 +58,12 @@ export const notificationsSettingsSchema = z.object({
 
 export const appearanceSettingsSchema = z.object({
   section: z.literal("APPEARANCE"),
-
-  mode: z.enum(["LIGHT", "DARK"]),
-
+  theme: z.enum(["LIGHT", "DARK"]),
   walletCardDesignId: z
     .number()
     .int("Wallet card design ID must be an integer")
     .positive("Wallet card design ID must be positive"),
-
   colorPaletteId: z.string().trim().min(1, "Color palette is required"),
-
   compactScheduleView: z.boolean(),
   highContrastMode: z.boolean(),
 });

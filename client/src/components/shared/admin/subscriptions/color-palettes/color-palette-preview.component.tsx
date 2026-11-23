@@ -1,4 +1,8 @@
-import { CALENDAR_STATUS_LABELS, CALENDAR_STATUSES } from "@/constants/color-palette.constant";
+import {
+  CALENDAR_STATUS_LABELS,
+  CALENDAR_STATUSES,
+} from "@/constants/color-palette.constant";
+import { getColorPalettePreviewTheme } from "@/helpers/admin/subscription.helper";
 import type { PaletteColors } from "@/types/admin/color-palette.types";
 import React from "react";
 
@@ -13,6 +17,8 @@ const ColorPalettePreview: React.FC<ColorPalettePreviewProps> = ({
   isDark,
   compact = false,
 }) => {
+  const theme = getColorPalettePreviewTheme(isDark);
+
   return (
     <div className={compact ? "space-y-2" : "space-y-3"}>
       {CALENDAR_STATUSES.map((status) => {
@@ -21,21 +27,13 @@ const ColorPalettePreview: React.FC<ColorPalettePreviewProps> = ({
 
         return (
           <div key={status} className="flex items-center justify-between gap-3">
-            <span
-              className={`text-xs font-medium ${
-                isDark ? "text-[#9baabe]" : "text-gray-600"
-              }`}
-            >
+            <span className={`text-xs font-medium ${theme.label}`}>
               {label}
             </span>
 
             <div className="flex items-center gap-2">
               {!compact && (
-                <span
-                  className={`font-mono text-[10px] ${
-                    isDark ? "text-[#718096]" : "text-gray-400"
-                  }`}
-                >
+                <span className={`font-mono text-[10px] ${theme.hexCode}`}>
                   {color.toUpperCase()}
                 </span>
               )}

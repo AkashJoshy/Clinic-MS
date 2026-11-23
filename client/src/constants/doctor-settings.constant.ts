@@ -143,7 +143,7 @@ export const initialDoctorSettings: DoctorSettingsValues = {
   },
   appearance: {
     section: "APPEARANCE",
-    mode: "DARK",
+    theme: "DARK",
     colorPaletteId: "emerald",
     walletCardDesignId: 200,
     compactScheduleView: false,

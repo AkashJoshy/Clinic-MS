@@ -1,51 +1,56 @@
 import React from "react";
-import {
-  Building2,
-  CalendarDays,
-  Video,
-} from "lucide-react";
-
-import type {
-  AppointmentStatus,
-  RecentAppointment as RecentAppointmentType,
-} from "@/types/doctor-dashboard";
-
-interface RecentAppointmentsProps {
-  appointments: RecentAppointmentType[];
-}
-
-const statusStyles: Record<AppointmentStatus, string> = {
-  CONFIRMED: "bg-emerald-500/10 text-emerald-400",
-  COMPLETED: "bg-blue-500/10 text-blue-400",
-  PENDING: "bg-amber-500/10 text-amber-400",
-  CANCELLED: "bg-red-500/10 text-red-400",
-};
+import { Building2, CalendarDays, Video } from "lucide-react";
+import type { RecentAppointmentsProps } from "@/types/doctor-dashboard";
+import { statusStyles } from "@/constants/doctor-dashboard.constant";
 
 const RecentAppointments: React.FC<RecentAppointmentsProps> = ({
   appointments,
+  isDark,
 }) => {
+  const mutedTextClass = isDark ? "text-slate-400" : "text-slate-500";
+  const primaryTextClass = isDark ? "text-white" : "text-slate-900";
+
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <section
+      className={`rounded-2xl border p-5 ${
+        isDark
+          ? "border-white/10 bg-white/3"
+          : "border-slate-200 bg-white shadow-sm"
+      }`}
+    >
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-white">
+        <h2 className={`text-lg font-semibold ${primaryTextClass}`}>
           Recent Appointments
         </h2>
-        <p className="mt-1 text-sm text-slate-400">
+
+        <p className={`mt-1 text-sm ${mutedTextClass}`}>
           Your latest patient appointments
         </p>
       </div>
 
       {appointments.length === 0 ? (
-        <div className="flex min-h-[180px] flex-col items-center justify-center text-center">
-          <div className="mb-3 rounded-full bg-white/5 p-4">
-            <CalendarDays className="size-6 text-slate-500" />
+        <div className="flex min-h-45 flex-col items-center justify-center text-center">
+          <div
+            className={`mb-3 rounded-full p-4 ${
+              isDark ? "bg-white/5" : "bg-slate-100"
+            }`}
+          >
+            <CalendarDays
+              className={`size-6 ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`}
+            />
           </div>
 
-          <p className="font-medium text-slate-300">
+          <p
+            className={`font-medium ${
+              isDark ? "text-slate-300" : "text-slate-700"
+            }`}
+          >
             No recent appointments
           </p>
 
-          <p className="mt-1 text-sm text-slate-500">
+          <p className={`mt-1 text-sm ${mutedTextClass}`}>
             Your recent appointments will appear here.
           </p>
         </div>
@@ -55,7 +60,13 @@ const RecentAppointments: React.FC<RecentAppointmentsProps> = ({
           <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/10 text-xs text-slate-500">
+                <tr
+                  className={`border-b text-xs ${
+                    isDark
+                      ? "border-white/10 text-slate-500"
+                      : "border-slate-200 text-slate-500"
+                  }`}
+                >
                   <th className="pb-3 font-medium">Patient</th>
                   <th className="pb-3 font-medium">Date</th>
                   <th className="pb-3 font-medium">Type</th>
@@ -67,23 +78,30 @@ const RecentAppointments: React.FC<RecentAppointmentsProps> = ({
                 {appointments.map((appointment) => (
                   <tr
                     key={appointment.id}
-                    className="border-b border-white/5 last:border-0"
+                    className={`border-b last:border-0 ${
+                      isDark ? "border-white/5" : "border-slate-100"
+                    }`}
                   >
-                    <td className="py-4 text-sm font-medium text-white">
+                    <td
+                      className={`py-4 text-sm font-medium ${primaryTextClass}`}
+                    >
                       {appointment.patient}
                     </td>
 
-                    <td className="py-4 text-sm text-slate-400">
+                    <td className={`py-4 text-sm ${mutedTextClass}`}>
                       {appointment.date}
                     </td>
 
                     <td className="py-4">
-                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                      <div
+                        className={`flex items-center gap-2 text-sm ${mutedTextClass}`}
+                      >
                         {appointment.type === "ONLINE" ? (
                           <Video className="size-4" />
                         ) : (
                           <Building2 className="size-4" />
                         )}
+
                         {appointment.type}
                       </div>
                     </td>
@@ -101,20 +119,23 @@ const RecentAppointments: React.FC<RecentAppointmentsProps> = ({
             </table>
           </div>
 
-          {/* Mobile Cards */}
           <div className="space-y-3 md:hidden">
             {appointments.map((appointment) => (
               <div
                 key={appointment.id}
-                className="rounded-xl border border-white/10 bg-white/[0.02] p-4"
+                className={`rounded-xl border p-4 ${
+                  isDark
+                    ? "border-white/10 bg-white/2"
+                    : "border-slate-200 bg-slate-50"
+                }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-medium text-white">
+                    <p className={`font-medium ${primaryTextClass}`}>
                       {appointment.patient}
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className={`mt-1 text-xs ${mutedTextClass}`}>
                       {appointment.date}
                     </p>
                   </div>
@@ -126,7 +147,9 @@ const RecentAppointments: React.FC<RecentAppointmentsProps> = ({
                   </span>
                 </div>
 
-                <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
+                <div
+                  className={`mt-3 flex items-center gap-2 text-xs ${mutedTextClass}`}
+                >
                   {appointment.type === "ONLINE" ? (
                     <Video className="size-4" />
                   ) : (

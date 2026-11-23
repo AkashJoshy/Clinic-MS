@@ -3,11 +3,8 @@ import { getContrastTextColor } from "@/helpers/color-palette.helper";
 import { useAuthStore } from "@/store";
 import type { PageHeaderProps } from "@/types/admin";
 
-const PageHeader = ({ icon: Icon, title, description }: PageHeaderProps) => {
-  const { admin } = useAuthStore((state) => state.users);
+const PageHeader = ({ icon: Icon, title, description, isDark }: PageHeaderProps) => {
   const { primaryColor } = useAuthStore((state) => state.platform);
-  const isDark = admin?.theme === "DARK";
-
   return (
     <div className="flex items-center gap-4">
       <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-primary/25 bg-primary/15">

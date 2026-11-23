@@ -11,6 +11,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
   selectedClinicId,
   scheduleLength,
   error,
+  isDark,
 }) => {
   const [inlineFormDay, setInlineFormDay] = useState<string | null>(null);
   const [showGlobalForm, setShowGlobalForm] = useState(false);
@@ -20,7 +21,6 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
     endTime: "17:00",
     mode: "ONLINE" as ServiceMode,
   });
-
   const days = schedule;
 
   const { validateAndAddShift, deleteLastShift, errorMsg, setErrorMsg } =
@@ -30,189 +30,228 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
       selectedClinicId,
     });
 
+  const cardClass = isDark
+    ? "bg-[#0d1a27] border-white/10"
+    : "bg-white border-slate-200";
+
+  const headingClass = isDark ? "text-white" : "text-slate-900";
+  const labelClass = isDark ? "text-white" : "text-slate-700";
+  const mutedTextClass = isDark ? "text-[#8b9ab0]" : "text-slate-500";
+
+  const inputClass = isDark
+    ? "bg-[#0d1a27] border-white/10 text-white [color-scheme:dark]"
+    : "bg-white border-slate-300 text-slate-900 [color-scheme:light]";
+
+  const shiftCardClass = isDark
+    ? "border-white/10 bg-white/5"
+    : "border-slate-200 bg-slate-50";
+
+  const formCardClass = isDark
+    ? "bg-white/5 border-white/10"
+    : "bg-slate-50 border-slate-200";
+
+  const hoverClass = isDark ? "hover:bg-white/10" : "hover:bg-slate-100";
+
   return (
-    <div className="w-full bg-[#0d1a27] border border-white/10 rounded-lg p-3 xxs:p-4 xs:p-5">
+    <div className={`w-full border rounded-lg p-3 xxs:p-4 xs:p-5 ${cardClass}`}>
       <div className="flex items-center mb-6">
         <div className="[&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
           <NumberBadge number={1} />
         </div>
-        <h2 className="text-xl font-semibold text-white ml-2">
+
+        <h2 className={`text-xl font-semibold ml-2 ${headingClass}`}>
           Weekly Schedule
         </h2>
       </div>
 
       <div className="space-y-4 w-full">
-        {schedule
-          ? days.map((day) => {
-              const daySchedule = schedule.find(
-                (schedule) => schedule.dayOfWeek === day.dayOfWeek,
-              );
-              const shifts = daySchedule?.shifts ?? [];
-              const hasShifts = shifts.length > 0;
+        {schedule &&
+          days.map((day) => {
+            const daySchedule = schedule.find(
+              (item) => item.dayOfWeek === day.dayOfWeek,
+            );
 
-              return (
-                <div key={day.dayOfWeek} className="flex flex-col gap-3">
-                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 min-w-0">
-                    <span className="text-sm font-medium text-white shrink-0 sm:w-14 md:w-16 sm:pt-2">
-                      {day.dayOfWeek.toUpperCase().slice(0, 3)}
-                    </span>
+            const shifts = daySchedule?.shifts ?? [];
+            const hasShifts = shifts.length > 0;
 
-                    <div className="flex-1 min-w-0">
-                      {!hasShifts ? (
-                        <span className="block w-full text-red-400 border border-red-400/50 p-2 rounded-[10px] text-xs sm:text-sm text-center">
-                          DAY OFF
-                        </span>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          {shifts.map((shift) => {
-                            const isOnline = shift.mode === "ONLINE";
-                            const isOffline = shift.mode === "OFFLINE";
+            return (
+              <div key={day.dayOfWeek} className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 min-w-0">
+                  <span
+                    className={`text-sm font-medium shrink-0 sm:w-14 md:w-16 sm:pt-2 ${headingClass}`}
+                  >
+                    {day.dayOfWeek.toUpperCase().slice(0, 3)}
+                  </span>
 
-                            return (
-                              <div
-                                key={shift.id}
-                                className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 w-full min-w-0"
-                              >
-                                <div className="flex flex-1 items-center gap-2 min-w-0">
-                                  <span className="shrink-0 text-sm font-medium text-white">
-                                    {shift.startTime}
-                                  </span>
+                  <div className="flex-1 min-w-0">
+                    {!hasShifts ? (
+                      <span className="block w-full text-red-400 border border-red-400/50 p-2 rounded-[10px] text-xs sm:text-sm text-center">
+                        DAY OFF
+                      </span>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {shifts.map((shift) => {
+                          const isOnline = shift.mode === "ONLINE";
+                          const isOffline = shift.mode === "OFFLINE";
 
-                                  <div className="h-1.5 flex-1 min-w-3 overflow-hidden rounded-full">
-                                    {isOnline && (
-                                      <div className="h-full w-full bg-blue-500" />
-                                    )}
-                                    {isOffline && (
-                                      <div className="h-full w-full bg-green-500" />
-                                    )}
-                                  </div>
+                          return (
+                            <div
+                              key={shift.id}
+                              className={`flex items-center gap-2 rounded-lg border px-3 py-2 w-full min-w-0 ${shiftCardClass}`}
+                            >
+                              <div className="flex flex-1 items-center gap-2 min-w-0">
+                                <span
+                                  className={`shrink-0 text-sm font-medium ${headingClass}`}
+                                >
+                                  {shift.startTime}
+                                </span>
 
-                                  <span className="shrink-0 text-sm font-medium text-white">
-                                    {shift.endTime}
-                                  </span>
+                                <div className="h-1.5 flex-1 min-w-3 overflow-hidden rounded-full">
+                                  {isOnline && (
+                                    <div className="h-full w-full bg-blue-500" />
+                                  )}
+                                  {isOffline && (
+                                    <div className="h-full w-full bg-green-500" />
+                                  )}
                                 </div>
+
+                                <span
+                                  className={`shrink-0 text-sm font-medium ${headingClass}`}
+                                >
+                                  {shift.endTime}
+                                </span>
                               </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex sm:flex-col items-center justify-end sm:justify-start gap-1 shrink-0">
-                      <button
-                        onClick={() => {
-                          setInlineFormDay(
-                            inlineFormDay === day.dayOfWeek
-                              ? null
-                              : day.dayOfWeek,
+                            </div>
                           );
-                          setErrorMsg("");
-                        }}
-                        className="p-2 rounded-full hover:bg-white/10 text-primary"
-                        title="Add shift"
-                      >
-                        <Plus size={18} />
-                      </button>
-
-                      <button
-                        onClick={() => deleteLastShift(day.dayOfWeek)}
-                        disabled={!hasShifts}
-                        title={hasShifts ? "Clear day" : "No shifts to delete"}
-                        className={`p-2 rounded-full transition-colors ${hasShifts ? "hover:bg-white/10 text-[#8b9ab0] hover:text-red-400" : "text-white/10 cursor-not-allowed"}`}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                        })}
+                      </div>
+                    )}
                   </div>
 
-                  {inlineFormDay === day.dayOfWeek && (
-                    <div className="mt-2 w-full p-3 bg-white/5 rounded border border-white/10 flex flex-col sm:flex-row flex-wrap gap-4 sm:items-end">
-                      <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        <label className="text-xs text-white">Start Time</label>
-                        <input
-                          type="time"
-                          value={newShift.startTime}
-                          onChange={(e) =>
-                            setNewShift({
-                              ...newShift,
-                              startTime: e.target.value,
-                            })
-                          }
-                          className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
-                        />
-                      </div>
+                  <div className="flex sm:flex-col items-center justify-end sm:justify-start gap-1 shrink-0">
+                    <button
+                      onClick={() => {
+                        setInlineFormDay(
+                          inlineFormDay === day.dayOfWeek
+                            ? null
+                            : day.dayOfWeek,
+                        );
+                        setErrorMsg("");
+                      }}
+                      className={`p-2 rounded-full text-primary ${hoverClass}`}
+                      title="Add shift"
+                    >
+                      <Plus size={18} />
+                    </button>
 
-                      <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        <label className="text-xs text-white">End Time</label>
-                        <input
-                          type="time"
-                          value={newShift.endTime}
-                          onChange={(e) =>
-                            setNewShift({
-                              ...newShift,
-                              endTime: e.target.value,
-                            })
-                          }
-                          className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
-                        />
-                      </div>
-
-                      <div className="flex flex-col gap-1 w-full sm:w-auto">
-                        <label className="text-xs text-white">Mode</label>
-                        <select
-                          value={newShift.mode}
-                          onChange={(e) =>
-                            setNewShift({
-                              ...newShift,
-                              mode: e.target.value as ServiceMode,
-                            })
-                          }
-                          className="bg-[#0d1a27] border border-white/10 rounded px-2 py-1 text-white text-sm w-full"
-                        >
-                          <option value="ONLINE">Online</option>
-                          <option value="OFFLINE">Offline</option>
-                        </select>
-                      </div>
-
-                      <button
-                        onClick={() => setInlineFormDay(null)}
-                        className="bg-gray-400 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-500 cursor-pointer w-full sm:w-auto"
-                      >
-                        Cancel
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          if (
-                            validateAndAddShift(
-                              day.dayOfWeek,
-                              newShift.startTime,
-                              newShift.endTime,
-                              newShift.mode,
-                            )
-                          ) {
-                            setInlineFormDay(null);
-                          }
-                        }}
-                        className="bg-primary text-primary-foreground px-4 py-1.5 rounded text-sm font-medium hover:bg-primary/90 cursor-pointer w-full sm:w-auto"
-                      >
-                        Save
-                      </button>
-
-                      {errorMsg && (
-                        <p className="text-red-400 text-xs w-full mt-1">
-                          {errorMsg}
-                        </p>
-                      )}
-                    </div>
-                  )}
+                    <button
+                      onClick={() => deleteLastShift(day.dayOfWeek)}
+                      disabled={!hasShifts}
+                      title={hasShifts ? "Clear day" : "No shifts to delete"}
+                      className={`p-2 rounded-full transition-colors ${
+                        hasShifts
+                          ? `${mutedTextClass} hover:text-red-400 ${hoverClass}`
+                          : "text-slate-400/30 cursor-not-allowed"
+                      }`}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
-              );
-            })
-          : ""}
+
+                {inlineFormDay === day.dayOfWeek && (
+                  <div
+                    className={`mt-2 w-full p-3 rounded border flex flex-col sm:flex-row flex-wrap gap-4 sm:items-end ${formCardClass}`}
+                  >
+                    <div className="flex flex-col gap-1 w-full sm:w-auto">
+                      <label className={`text-xs ${labelClass}`}>
+                        Start Time
+                      </label>
+                      <input
+                        type="time"
+                        value={newShift.startTime}
+                        onChange={(e) =>
+                          setNewShift({
+                            ...newShift,
+                            startTime: e.target.value,
+                          })
+                        }
+                        className={`border rounded px-2 py-1 text-sm w-full ${inputClass}`}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1 w-full sm:w-auto">
+                      <label className={`text-xs ${labelClass}`}>
+                        End Time
+                      </label>
+                      <input
+                        type="time"
+                        value={newShift.endTime}
+                        onChange={(e) =>
+                          setNewShift({
+                            ...newShift,
+                            endTime: e.target.value,
+                          })
+                        }
+                        className={`border rounded px-2 py-1 text-sm w-full ${inputClass}`}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1 w-full sm:w-auto">
+                      <label className={`text-xs ${labelClass}`}>Mode</label>
+                      <select
+                        value={newShift.mode}
+                        onChange={(e) =>
+                          setNewShift({
+                            ...newShift,
+                            mode: e.target.value as ServiceMode,
+                          })
+                        }
+                        className={`border rounded px-2 py-1 text-sm w-full ${inputClass}`}
+                      >
+                        <option value="ONLINE">Online</option>
+                        <option value="OFFLINE">Offline</option>
+                      </select>
+                    </div>
+
+                    <button
+                      onClick={() => setInlineFormDay(null)}
+                      className="bg-gray-400 text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-gray-500 cursor-pointer w-full sm:w-auto"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (
+                          validateAndAddShift(
+                            day.dayOfWeek,
+                            newShift.startTime,
+                            newShift.endTime,
+                            newShift.mode,
+                          )
+                        ) {
+                          setInlineFormDay(null);
+                        }
+                      }}
+                      className="bg-primary text-primary-foreground px-4 py-1.5 rounded text-sm font-medium hover:bg-primary/90 cursor-pointer w-full sm:w-auto"
+                    >
+                      Save
+                    </button>
+
+                    {errorMsg && (
+                      <p className="text-red-400 text-xs w-full mt-1">
+                        {errorMsg}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
 
-      {error && <h4 className="text-red-600">{error?.message}</h4>}
+      {error && <h4 className="text-red-600 mt-2">{error.message}</h4>}
 
       <div className="mt-6">
         {!showGlobalForm ? (
@@ -226,12 +265,14 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
             <Plus size={18} /> Add Shift
           </button>
         ) : (
-          <div className="p-4 border border-white/10 rounded-lg bg-white/5 space-y-4">
-            <h3 className="text-white text-sm font-medium">Add New Shift</h3>
+          <div className={`p-4 border rounded-lg space-y-4 ${formCardClass}`}>
+            <h3 className={`text-sm font-medium ${headingClass}`}>
+              Add New Shift
+            </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-[#8b9ab0]">
+                <label className={`text-xs font-medium ${mutedTextClass}`}>
                   Day
                 </label>
                 <select
@@ -242,7 +283,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                       day: e.target.value.toUpperCase(),
                     })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors"
+                  className={`border rounded-md px-3 py-2 text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors ${inputClass}`}
                 >
                   {schedule.map((d) => (
                     <option key={d.dayOfWeek} value={d.dayOfWeek}>
@@ -254,7 +295,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-[#8b9ab0]">
+                <label className={`text-xs font-medium ${mutedTextClass}`}>
                   Start Time
                 </label>
                 <input
@@ -263,12 +304,12 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                   onChange={(e) =>
                     setNewShift({ ...newShift, startTime: e.target.value })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors [color-scheme:dark]"
+                  className={`border rounded-md px-3 py-2 text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors ${inputClass}`}
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-[#8b9ab0]">
+                <label className={`text-xs font-medium ${mutedTextClass}`}>
                   End Time
                 </label>
                 <input
@@ -277,12 +318,12 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                   onChange={(e) =>
                     setNewShift({ ...newShift, endTime: e.target.value })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors [color-scheme:dark]"
+                  className={`border rounded-md px-3 py-2 text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors ${inputClass}`}
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-[#8b9ab0]">
+                <label className={`text-xs font-medium ${mutedTextClass}`}>
                   Mode
                 </label>
                 <select
@@ -293,7 +334,7 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
                       mode: e.target.value as ServiceMode,
                     })
                   }
-                  className="bg-[#0d1a27] border border-white/10 rounded-md px-3 py-2 text-white text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors"
+                  className={`border rounded-md px-3 py-2 text-sm w-full outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-colors ${inputClass}`}
                 >
                   <option value="ONLINE">Online</option>
                   <option value="OFFLINE">Offline</option>
@@ -310,10 +351,13 @@ export const WeeklySchedule: React.FC<WeeklyScheduleProps> = ({
             <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-1">
               <button
                 onClick={() => setShowGlobalForm(false)}
-                className="px-4 py-2 text-sm text-[#8b9ab0] hover:text-white transition-colors rounded-md"
+                className={`px-4 py-2 text-sm rounded-md transition-colors ${mutedTextClass} ${
+                  isDark ? "hover:text-white" : "hover:text-slate-900"
+                }`}
               >
                 Cancel
               </button>
+
               <button
                 onClick={() => {
                   if (

@@ -1,4 +1,5 @@
 import type { SlotStatus } from "@/types/doctor-clinic";
+import type { AppointmentStatus, CalendarClinicDetails } from "@/types/doctor-dashboard";
 
 
 export const CALENDAR_STATUS_STYLES: Record<SlotStatus, string> = {
@@ -80,3 +81,19 @@ export const STATUS_LABELS: Record<SlotStatus, string> = {
 export const MOBILE_BREAKPOINT = 1024;
 
 export const TIME_COLUMN_WIDTH = "100px";
+
+export const STATUS_ORDER: SlotStatus[] = [
+  "AVAILABLE",
+  "REPLACEABLE",
+  "BOOKED",
+  "APPROVED",
+  "CANCELLED",
+  "EXPIRED",
+];
+
+export const statusStyles: Record<AppointmentStatus, string> = {
+  CONFIRMED: "bg-emerald-500/10 text-emerald-400",
+  COMPLETED: "bg-blue-500/10 text-blue-400",
+  PENDING: "bg-amber-500/10 text-amber-400",
+  CANCELLED: "bg-red-500/10 text-red-400",
+};

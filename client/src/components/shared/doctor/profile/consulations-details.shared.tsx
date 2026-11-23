@@ -23,6 +23,7 @@ interface ConsultationDetailsProps {
   watch: UseFormWatch<ConsulationDetailsSchema>;
   setValue: UseFormSetValue<ConsulationDetailsSchema>;
   consultationTypeIcon: React.ElementType;
+  isDark: boolean;
 }
 
 const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
@@ -36,6 +37,7 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
   watch,
   setValue,
   consultationTypeIcon,
+  isDark,
 }) => {
   const currentIsActive = watch("isActive");
 
@@ -50,9 +52,23 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
     });
   };
 
+  const labelClasses = cn(
+    LABEL_CLASSES,
+    isDark ? "text-[#8b9ab0]" : "text-slate-600",
+  );
+
+  const valueClasses = cn(
+    "px-3.5 py-2.5 text-sm",
+    isDark ? "text-white" : "text-slate-900",
+  );
+
   return (
     <div>
-      <h3 className="mb-5 text-base font-semibold text-white">
+      <h3
+        className={`mb-5 text-base font-semibold ${
+          isDark ? "text-white" : "text-slate-900"
+        }`}
+      >
         Consultation settings
       </h3>
 
@@ -65,7 +81,7 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
 
           return (
             <div key={field.key}>
-              <label className={LABEL_CLASSES}>
+              <label className={labelClasses}>
                 <span className="inline-flex items-center gap-1.5">
                   <Icon size={12} />
                   {field.label}
@@ -92,9 +108,7 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
                   )}
                 </>
               ) : (
-                <p className="px-3.5 py-2.5 text-sm text-white">
-                  {field.display(value)}
-                </p>
+                <p className={valueClasses}>{field.display(value)}</p>
               )}
             </div>
           );
@@ -102,7 +116,7 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
 
         {/* Time zone */}
         <div>
-          <label className={LABEL_CLASSES}>
+          <label className={labelClasses}>
             <span className="inline-flex items-center gap-1.5">
               <Globe size={12} />
               Time zone
@@ -117,15 +131,13 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
               className={cn(fieldClasses, "cursor-not-allowed")}
             />
           ) : (
-            <p className="px-3.5 py-2.5 text-sm text-white">
-              {details.timeZone || "Not Set"}
-            </p>
+            <p className={valueClasses}>{details.timeZone || "Not Set"}</p>
           )}
         </div>
 
         {/* Consultation type */}
         <div>
-          <label className={LABEL_CLASSES}>
+          <label className={labelClasses}>
             <span className="inline-flex items-center gap-1.5">
               {React.createElement(consultationTypeIcon, {
                 size: 12,
@@ -153,20 +165,32 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
               )}
             </>
           ) : (
-            <p className="px-3.5 py-2.5 text-sm capitalize text-white">
+            <p className={cn(valueClasses, "capitalize")}>
               {details.type.toLowerCase()}
             </p>
           )}
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-white/8 pt-4">
+      <div
+        className={`mt-4 flex items-center justify-between border-t pt-4 ${
+          isDark ? "border-white/8" : "border-slate-200"
+        }`}
+      >
         <div>
-          <p className="text-sm font-medium text-white">
+          <p
+            className={`text-sm font-medium ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}
+          >
             Accepting appointments
           </p>
 
-          <p className="mt-0.5 text-xs text-[#8b9ab0]">
+          <p
+            className={`mt-0.5 text-xs ${
+              isDark ? "text-[#8b9ab0]" : "text-slate-600"
+            }`}
+          >
             Patients can only book slots while this is on.
           </p>
         </div>
@@ -182,7 +206,9 @@ const ConsultationDetails: React.FC<ConsultationDetailsProps> = ({
           style={{
             backgroundColor: displayedIsActive
               ? primaryColor
-              : "rgba(255,255,255,0.1)",
+              : isDark
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(15,23,42,0.12)",
           }}
         >
           <span

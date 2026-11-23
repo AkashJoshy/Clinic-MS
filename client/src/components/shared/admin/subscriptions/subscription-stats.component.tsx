@@ -1,6 +1,7 @@
 import React from "react";
 import { Layers, Users, IndianRupee, ShieldCheck } from "lucide-react";
 import type { SubscriptionStats } from "@/types/subscription";
+import { getSubscriptionStatsSectionTheme } from "@/helpers/admin/subscription.helper";
 
 interface SubscriptionStatsProps {
   stats: SubscriptionStats;
@@ -11,14 +12,7 @@ export const SubscriptionStatsSection: React.FC<SubscriptionStatsProps> = ({
   stats,
   isDark,
 }) => {
-  const theme = {
-    card: isDark
-      ? "bg-[#0c141e]/80 border-white/8 hover:border-white/15"
-      : "bg-white border-gray-200 hover:border-gray-300",
-    title: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-    value: isDark ? "text-white" : "text-gray-900",
-    subtitle: isDark ? "text-[#6b7c93]" : "text-gray-500",
-  };
+  const theme = getSubscriptionStatsSectionTheme(isDark)
 
   const statItems = [
     {

@@ -209,6 +209,13 @@ export type MutateFn<T> = UseMutateFunction<
   void
 >;
 
-export interface SkeletonCardProps {
+export interface ThemeProps {
+  isDark: boolean;
+}
+
+export type SkeletonCardProps = ThemeProps;
+
+export interface DoctorAccountInfoProps {
+  department: Pick<DepartmentData, "id" | "name"> | null;
   isDark: boolean;
 }

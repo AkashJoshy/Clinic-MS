@@ -11,6 +11,7 @@ import {
 } from "@/components/shared/admin/subscriptions";
 import SubscriptionStatusModal from "@/components/shared/admin/subscriptions/subscription-status.modal";
 import { useSubscriptions } from "@/hooks/use-subscriptions.hook";
+import { getSubscriptionsPageTheme } from "@/helpers/admin/subscription.helper";
 
 type SubscriptionTab = "PLANS" | "PALETTES";
 
@@ -43,47 +44,12 @@ const SubscriptionsPage = () => {
     statusPlan,
   } = useSubscriptions();
 
-  const theme = {
-    container: isDark
-      ? "border-white/10 bg-white/[0.02]"
-      : "border-gray-200 bg-white shadow-sm",
-
-    emptyContainer: isDark
-      ? "border-white/10 bg-white/[0.01]"
-      : "border-gray-200 bg-gray-50",
-
-    iconWrapper: isDark
-      ? "border-white/10 bg-white/5 text-gray-400"
-      : "border-gray-200 bg-white text-gray-400",
-
-    heading: isDark ? "text-white" : "text-gray-900",
-
-    description: isDark ? "text-[#8b9ab0]" : "text-gray-500",
-
-    resetButton: isDark
-      ? "border-white/10 bg-white/5 text-white hover:bg-white/10"
-      : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100",
-
-    createButton: "bg-primary text-primary-foreground hover:bg-primary/90",
-
-    tabContainer: isDark
-      ? "border-white/10 bg-[#080d14]"
-      : "border-gray-200 bg-gray-50",
-
-    inactiveTab: isDark
-      ? "text-[#8b9ab0] hover:bg-white/5 hover:text-white"
-      : "text-gray-500 hover:bg-white hover:text-gray-900",
-
-    activeTab: isDark
-      ? "bg-primary text-white shadow-sm"
-      : "bg-primary text-gray-900 shadow-sm border border-gray-200",
-  };
+  const theme = getSubscriptionsPageTheme(isDark)
 
   return (
     <div
-      className={`min-h-full space-y-6 rounded-2xl border p-4 shadow-2xs sm:p-6 lg:p-8 ${theme.container}`}
+      className={`min-h-full space-y-6 rounded border p-4 shadow-2xs sm:p-6 lg:p-8 ${theme.container}`}
     >
-      {/* Page Tabs */}
       <div
         className={`inline-flex w-full max-w-md items-center gap-1 rounded-xl border p-1 ${theme.tabContainer}`}
       >
@@ -110,7 +76,6 @@ const SubscriptionsPage = () => {
         </button>
       </div>
 
-      {/* Subscription Plans */}
       {activeTab === "PLANS" && (
         <>
           <SubscriptionHeader

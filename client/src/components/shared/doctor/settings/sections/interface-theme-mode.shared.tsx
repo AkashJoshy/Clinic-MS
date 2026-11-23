@@ -17,7 +17,7 @@ const InterfaceThemeMode = ({
   const { control, watch, setValue, resetField } =
     useFormContext<DoctorSettingsValues>();
 
-  const currentMode = watch("appearance.mode");
+  const currentMode = watch("appearance.theme");
 
   return (
     <section className={cardClass}>
@@ -62,7 +62,7 @@ const InterfaceThemeMode = ({
               key={theme.value}
               type="button"
               onClick={() =>
-                setValue("appearance.mode", theme.value, {
+                setValue("appearance.theme", theme.value, {
                   shouldDirty: true,
                 })
               }
@@ -76,14 +76,12 @@ const InterfaceThemeMode = ({
                   }
                 `}
             >
-              {/* Theme Preview */}
               <div
                 className={`
                     p-4 sm:p-5 transition-colors
                     ${darkPreview ? "bg-[#080F1B]" : "bg-white"}
                   `}
               >
-                {/* Preview Header */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">
                     <div
@@ -122,7 +120,6 @@ const InterfaceThemeMode = ({
                   </div>
                 </div>
 
-                {/* Preview Content */}
                 <div
                   className={`
                       rounded-xl border p-4
@@ -168,7 +165,6 @@ const InterfaceThemeMode = ({
                     </div>
                   </div>
 
-                  {/* Preview Statistics */}
                   <div className="grid grid-cols-2 gap-3">
                     {[1, 2].map((item) => (
                       <div
@@ -200,7 +196,6 @@ const InterfaceThemeMode = ({
                   </div>
                 </div>
 
-                {/* Preview Footer */}
                 <div className="flex items-center gap-2 mt-4">
                   <span className="w-2 h-2 rounded-full bg-primary" />
 
@@ -215,7 +210,6 @@ const InterfaceThemeMode = ({
                 </div>
               </div>
 
-              {/* Theme Selection Details */}
               <div
                 className={`
                     flex items-center justify-between gap-3 px-4 py-4

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, LayoutGrid, Save } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,6 +15,7 @@ import NotFound from "@/components/shared/not-found.shared";
 import EditDepartmentSkeleton from "@/components/shared/skeletons/edit-department.skeleton";
 import AdminPageHeader from "@/components/shared/page-header.shared";
 import { useAuthStore } from "@/store";
+import { getEditDepartmentTheme } from "@/helpers/admin/departments.helper";
 
 const EditDepartmentPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +23,8 @@ const EditDepartmentPage: React.FC = () => {
 
   const admin = useAuthStore((state) => state.users.admin);
   const isDark = admin?.theme === "DARK";
+
+  const theme = getEditDepartmentTheme(isDark);
 
   const [notFound, setNotFound] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -67,20 +69,12 @@ const EditDepartmentPage: React.FC = () => {
 
   return (
     <div
-      className={`min-h-full p-4 lg:p-18 space-y-6 border shadow-2xs ${
-        isDark
-          ? "border-white/10 bg-white/2"
-          : "border-gray-200 bg-gray-50"
-      }`}
+      className={`min-h-full p-4 lg:p-18 space-y-6 border shadow-2xs ${theme.container}`}
     >
       <div className="flex items-center gap-4 xsxs:mt-0 xsxs:ml-0 lg:-mt-10 lg:-ml-10">
         <button
           onClick={() => navigate("/admin/departments")}
-          className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all ${
-            isDark
-              ? "bg-[#0d1a27] border-white/8 text-[#8b9ab0] hover:text-white hover:border-white/15"
-              : "bg-white border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300"
-          }`}
+          className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all ${theme.backButton}`}
         >
           <ArrowLeft size={20} />
         </button>
@@ -89,16 +83,13 @@ const EditDepartmentPage: React.FC = () => {
           icon={LayoutGrid}
           title="Department Management"
           description="Manage hospital departments"
+          isDark={isDark}
         />
       </div>
 
       <div className="flex justify-center px-4 xsxs:mt-0">
         <div
-          className={`w-full max-w-3xl border rounded-2xl p-6 md:p-8 ${
-            isDark
-              ? "bg-[#0d1a27] border-white/8"
-              : "bg-white border-gray-200"
-          }`}
+          className={`w-full max-w-3xl border rounded-2xl p-6 md:p-8 ${theme.card}`}
         >
           <form
             onSubmit={handleSubmit(async (data) => {
@@ -131,11 +122,7 @@ const EditDepartmentPage: React.FC = () => {
                 errors={errors}
                 control={control}
                 isDark={isDark}
-                containerClass={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-all ${
-                  isDark
-                    ? "bg-white/5 border-white/8 text-white focus:border-primary/50"
-                    : "bg-gray-50 border-gray-200 text-gray-900 focus:border-primary/50"
-                }`}
+                containerClass={`w-full px-4 py-3 border rounded-xl text-sm outline-none transition-all ${theme.input}`}
               />
             ) : (
               <div>
@@ -153,11 +140,7 @@ const EditDepartmentPage: React.FC = () => {
                   type="button"
                   disabled={isPending}
                   onClick={() => navigate("/admin/departments")}
-                  className={`flex-1 px-4 w-full py-3 bg-transparent border rounded-xl text-sm font-semibold transition-all ${
-                    isDark
-                      ? "border-white/8 text-white hover:bg-white/5"
-                      : "border-gray-200 text-gray-700 hover:bg-gray-100"
-                  }`}
+                  className={`flex-1 px-4 w-full py-3 bg-transparent border rounded-xl text-sm font-semibold transition-all ${theme.cancelButton}`}
                 >
                   Cancel
                 </button>
