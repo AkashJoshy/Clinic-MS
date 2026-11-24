@@ -44,11 +44,12 @@ export class WalletController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { amount } = req.body;
+      const { amount, transactionType } = req.body;
 
       const result = await this._createWalletTopupOrderUseCase.execute({
         ownerId: (req.user as User)?.id!,
         amount,
+        transactionType: transactionType.toUpperCase().trim()
       });
 
       res.status(ResponseStatusCode.CREATED).json({

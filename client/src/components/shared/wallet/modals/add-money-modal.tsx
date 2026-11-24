@@ -49,6 +49,7 @@ export const AddMoneyModal: React.FC<Props> = ({
     resolver: zodResolver(addMoneySchema),
     defaultValues: {
       amount: 1000,
+      walletType: "credit"
     },
   });
 
@@ -106,6 +107,8 @@ export const AddMoneyModal: React.FC<Props> = ({
 
   const selectedAmount = watch("amount") || 0;
 
+  const transactionType = watch("walletType") || "credit";
+
   if (!isOpen) return null;
 
   const quickAmounts = [500, 1000, 2000, 5000];
@@ -114,6 +117,7 @@ export const AddMoneyModal: React.FC<Props> = ({
     mutate({
       amount: data.amount,
       authRole: roleOverride,
+      transactionType
     });
   };
 

@@ -63,7 +63,7 @@ api.interceptors.response.use(
   },
   async (error) => {
     console.log(`Error in the interceptor response: `);
-    console.log(error);
+    console.log(error?.message);
     
     const status = error.response?.status;
     const code = error.response?.data?.code;

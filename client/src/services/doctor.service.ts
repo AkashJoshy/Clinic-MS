@@ -11,6 +11,8 @@ import type { ConfirmedSlots, GenerateSlotsData } from "@/types/doctor-clinic";
 import type {
   BuySubscriptionWithWalletData,
   CancelSubscriptionData,
+  CreateSubscriptionRazorpayOrderData,
+  VerifySubscriptionRazorpayData,
 } from "@/types/doctor-subscription";
 import type { CalendarDateRange } from "@/types/doctor-dashboard";
 import type { BankAccountData, PanFormValues } from "@/schemas/doctor/settings";
@@ -18,10 +20,12 @@ import type { UpdateDoctorSettingsData } from "@/types/doctor-settings";
 
 export const registerDoctor = async (doctorData: FormData) => {
   try {
+    console.log(`Reaching...`)
     const res = await api.post(ENDPOINTS.DOCTOR.REGISTER, doctorData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+        timeout: 180000,
       authRole: ROLE_VALUES.lower.DOCTOR,
     });
     return res.data;
@@ -290,6 +294,54 @@ export const buySubscriptionWithWallet = async (
   try {
     const res = await api.post(
       ENDPOINTS.DOCTOR.BUY_SUBSCRIPTION_WITH_WALLET,
+      data,
+      {
+        authRole: ROLE_VALUES.lower.DOCTOR,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const buySubscriptionWithRazorpay = async (
+  data: CreateSubscriptionRazorpayOrderData,
+) => {
+  try {
+    const res = await api.post(
+      ENDPOINTS.DOCTOR.BUY_SUBSCRIPTION_WITH_RAZORPAY,
+      data,
+      {
+        authRole: ROLE_VALUES.lower.DOCTOR,
+      },
+    );
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const verifySubscriptionRazorpay = async (
+  data: VerifySubscriptionRazorpayData,
+) => {
+  try {
+    const res = await api.post(
+      ENDPOINTS.DOCTOR.VERIFY_SUBSCRIPTION_RAZORPAY,
       data,
       {
         authRole: ROLE_VALUES.lower.DOCTOR,

@@ -21,6 +21,8 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
   isOpen,
   onClose,
   onWalletPay,
+  onOnlinePay,
+  isOnlineProcessing = false,
   walletDetails,
   isDark,
 }) => {
@@ -76,6 +78,11 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
   const handleWalletPayment = () => {
     if (isProcessing || isWalletUnavailable) return;
     onWalletPay();
+  };
+
+  const handleOnlinePayment = () => {
+    if (isProcessing || isOnlineProcessing) return;
+    onOnlinePay?.();
   };
 
   const modalBg = isDark ? "bg-[#0d1520]" : "bg-white";
@@ -377,12 +384,13 @@ const SubscriptionUpgradeModal: React.FC<SubscriptionUpgradeModalProps> = ({
 
             <button
               type="button"
-              disabled={isProcessing}
+              onClick={handleOnlinePayment}
+              disabled={isProcessing || isOnlineProcessing}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60 md:flex-1"
             >
               <CreditCard size={16} className="shrink-0" />
 
-              <span>{isProcessing ? "Processing..." : "Pay online"}</span>
+              <span>{isOnlineProcessing ? "Processing..." : "Pay online"}</span>
 
               <ArrowRight size={14} className="ml-auto shrink-0" />
             </button>

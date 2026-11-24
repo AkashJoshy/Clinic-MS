@@ -7,7 +7,7 @@ import { VerifyWalletTopupOrderUseCase } from "../../application/use-cases/share
 import { DepartmentController } from "../../presentation/controllers/shared/department.controller.ts";
 import { PlatformDataController } from "../../presentation/controllers/shared/platform-data.controller.ts";
 import { WalletController } from "../../presentation/controllers/shared/wallet.controller.ts";
-import { getDoctorWalletBalanceUseCase, getDoctorWalletUseCase, getPatientWalletUseCase, mongooseDepartmentRepository, mongoosePatientRepository, mongoosePlatformSettingsRepository, mongooseUserRepository, mongooseWalletRepository, mongooseWalletTransactionRepository, razorpayService, walletTransactionsDetailsService } from "../index.ts";
+import { createWalletTransactionService, getDoctorWalletBalanceUseCase, getDoctorWalletUseCase, getPatientWalletUseCase, mongooseDepartmentRepository, mongoosePatientRepository, mongoosePlatformSettingsRepository, mongooseUserRepository, mongooseWalletRepository, mongooseWalletTransactionRepository, razorpayService, walletTransactionsDetailsService } from "../index.ts";
 
 // Use-cases
 const getAllDepartmentsUseCase = new GetAllDepartmentsUseCase(
@@ -19,6 +19,7 @@ const createWalletTopupOrderUseCase = new CreateWalletTopupOrderUseCase(
   mongooseWalletRepository,
   mongooseWalletTransactionRepository,
   razorpayService,
+  createWalletTransactionService
 )
 
 const verifyWalletTopupOrderUseCase = new VerifyWalletTopupOrderUseCase(

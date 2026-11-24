@@ -2,28 +2,8 @@ import { Schema } from "mongoose";
 import type { SubscriptionFeature } from "../../../domain/types/subscription-plan.types.ts";
 import type { ISubscriptionPlanPersistence } from "./subscription-plan.types.ts";
 import { BILLING_CYCLE, ENTITY_STATUS } from "../../../domain/constants/status.constants.ts";
+import { subscriptionFeatureSchema } from "../shared/shared.schema.ts";
 
-const subscriptionFeatureSchema = new Schema<SubscriptionFeature>(
-  {
-    id: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    isIncluded: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
-  },
-  {
-    _id: false,
-  },
-);
 
 export const subscriptionPlanSchema = new Schema<ISubscriptionPlanPersistence>(
   {

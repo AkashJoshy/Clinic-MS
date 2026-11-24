@@ -114,6 +114,22 @@ export interface BuySubscriptionWithWalletData {
   payableAmount: number
 }
 
+export interface CreateSubscriptionRazorpayOrderData {
+  doctorId: string;
+  planId: string;
+}
+
+export interface VerifySubscriptionRazorpayData {
+  doctorId: string;
+  planId: string;
+  status: "SUCCESS" | "FAILED";
+  orderDetails: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  };
+}
+
 export interface CancelSubscriptionData {
   doctorId: string;
   planId: SubscriptionPlan["id"];
@@ -244,6 +260,8 @@ export interface SubscriptionUpgradeModalProps {
   currentPlanName: string;
   onClose: () => void;
   onWalletPay: () => void;
+  onOnlinePay?: () => void;
+  isOnlineProcessing?: boolean;
   isDark: boolean;
   // onConfirmUpgrade: (
   //   plan: AvailablePlanOption,

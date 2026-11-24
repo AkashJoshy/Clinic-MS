@@ -54,6 +54,7 @@ export class Wallet {
   }
 
   debit(amount: number): void {
+    console.log('Amount', amount)
     this.validateAmount(amount);
 
     if (this.status !== "ACTIVE") {

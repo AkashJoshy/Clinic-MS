@@ -3,8 +3,8 @@ import {
   walletPaymentMethod,
   walletStatus,
   walletTransactionSource,
-  walletType,
 } from "../../../domain/enums/user.enums.ts";
+import { DatabaseError } from "../../../domain/errors/database.error.ts";
 import { ForbiddenError } from "../../../domain/errors/forbidden.error.ts";
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import { ValidationError } from "../../../domain/errors/validation.error.ts";
@@ -17,7 +17,7 @@ import type {
   TopupOrderResponseDto,
 } from "../../dto/wallet.dto.ts";
 import type { ICreateWalletTopupOrderUseCase } from "../../interfaces/repositories/shared/i-create-wallet-topup-order.usecase.ts";
-import { WalletMapper } from "../../mappers/wallet/wallet.mapper.ts";
+import type { ICreateWalletTransactionService } from "../../interfaces/services/wallet/i-create-wallet-transaction.service.ts";
 
 export class CreateWalletTopupOrderUseCase implements ICreateWalletTopupOrderUseCase {
   constructor(
@@ -25,6 +25,7 @@ export class CreateWalletTopupOrderUseCase implements ICreateWalletTopupOrderUse
     private _walletRepository: IWalletRepository,
     private _walletTransactionRepository: IWalletTransactionRepository,
     private _paymentGatewayService: IPaymentGatewayService,
+    private _createWalletTransactionService: ICreateWalletTransactionService,
   ) {}
 
   async execute(
@@ -69,8 +70,9 @@ export class CreateWalletTopupOrderUseCase implements ICreateWalletTopupOrderUse
         purpose,
       });
 
-    await this._walletTransactionRepository.save(
-      WalletMapper.toTransactionEntity({
+    const walletTransaction =
+      await this._createWalletTransactionService.execute({
+        transactionType: data.transactionType,
         orderId,
         ownerId: data.ownerId,
         walletId: wallet.id!,
@@ -79,10 +81,16 @@ export class CreateWalletTopupOrderUseCase implements ICreateWalletTopupOrderUse
         currency,
         paymentMethod: walletPaymentMethod.RAZORPAY,
         source: walletTransactionSource.WALLET_TOPUP,
-        description: "",
-        type: "CREDIT"
-      }),
-    );
+        status: walletStatus.PENDING,
+        description:
+          "Wallet top-up initiated via Razorpay. Awaiting payment confirmation.",
+      });
+
+    if (!walletTransaction) {
+      throw new DatabaseError("Failed to create wallet transaction.");
+    }
+
+    await this._walletTransactionRepository.save(walletTransaction);
 
     return {
       amount,

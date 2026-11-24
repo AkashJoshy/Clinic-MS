@@ -3,6 +3,7 @@ import type { Session, SlotRules } from "../../../domain/types/doctor-clinic.typ
 import type { ImageData, VerifyImageData } from "../../../domain/types/shared.types.ts";
 import { APPROVAL_STATUS } from "../../../domain/constants/status.constants.ts";
 import type { Subscription, SubscriptionDetails } from "../../../domain/types/doctor.types.ts";
+import type { SubscriptionFeature } from "../../../domain/types/subscription-plan.types.ts";
 
 export const SlotRulesSchema = new Schema<SlotRules>(
   {
@@ -133,6 +134,28 @@ export const ImageDataSchema = new Schema<ImageData>(
     publicId: {
       type: String,
       required: false,
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
+export const subscriptionFeatureSchema = new Schema<SubscriptionFeature>(
+  {
+    id: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    isIncluded: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
   },
   {

@@ -1,7 +1,7 @@
-import type { CreateWalletTopupOrderRequestDto, CreateWalletTopupOrderResponseDto, RazorpaySuccessDto, VerifyPaymentDto } from "../../application/dto/shared.dto.ts";
+import type { CreateWalletTopupOrderRequestDto, RazorpaySuccessDto, TopupOrderResponseDto, VerifyPaymentDto } from "../../application/dto/wallet.dto.ts";
 
 export interface IPaymentGatewayService {
-  createOrder(data: CreateWalletTopupOrderRequestDto): Promise<CreateWalletTopupOrderResponseDto>
+  createOrder(data: CreateWalletTopupOrderRequestDto): Promise<TopupOrderResponseDto>
   verifyPayment(data: RazorpaySuccessDto): Promise<VerifyPaymentDto>
 //   fetchPayment();
 //   refundPayment();

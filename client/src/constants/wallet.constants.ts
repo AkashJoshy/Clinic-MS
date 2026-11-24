@@ -1,0 +1,1 @@
+export const TRANSACTION_TYPE = ["credit", "debit"] as const;

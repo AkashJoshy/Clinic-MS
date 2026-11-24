@@ -18,6 +18,7 @@ export interface AddMoneyModalProps {
 export interface CreateWalletTopUpOrderParams {
   amount: number;
   authRole: RouteRoleProps;
+  transactionType: TransactionType
 }
 
 export interface verifyPaymentMutationParams {

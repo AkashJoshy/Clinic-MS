@@ -7,6 +7,8 @@ import type { IBuySubscriptionWithWalletUseCase } from "../../../application/int
 import type { ICancelSubscriptionUseCase } from "../../../application/interfaces/repositories/doctor/subscription/i-cancel-subscription.use-case.ts";
 import type { CancelSubscriptionDto } from "../../../application/dto/doctor-subscription.dto.ts";
 import type { IGetSubscriptionUpgradeOptionsUseCase } from "../../../application/interfaces/repositories/doctor/subscription/i-get-subscription-upgrade-options.usecase.ts";
+import type { ICreateSubscriptionRazorpayOrderUseCase } from "../../../application/interfaces/repositories/doctor/subscription/i-create-subscription-razorpay-order.usecase.ts";
+import type { IVerifySubscriptionRazorpayPaymentUseCase } from "../../../application/interfaces/repositories/doctor/subscription/i-verify-subscription-razorpay-payment.usecase.ts";
 
 export class SubscriptionController {
   constructor(
@@ -14,6 +16,8 @@ export class SubscriptionController {
     private readonly _buySubscriptionWithWalletUseCase: IBuySubscriptionWithWalletUseCase,
     private readonly _cancelSubscriptionUseCase: ICancelSubscriptionUseCase,
     private readonly _getSubscriptionUpgradeOptionsUseCase: IGetSubscriptionUpgradeOptionsUseCase,
+    private readonly _createSubscriptionRazorpayOrderUseCase: ICreateSubscriptionRazorpayOrderUseCase,
+    private readonly _verifySubscriptionRazorpayPaymentUseCase: IVerifySubscriptionRazorpayPaymentUseCase,
   ) {}
 
   async getSubscriptionOverview(
@@ -115,6 +119,56 @@ export class SubscriptionController {
         message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "wallet options"),
         data: subscriptionDetails,
         silent: true,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createSubscriptionRazorpayOrder(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { doctorId, planId } = req.body;
+
+      const result =
+        await this._createSubscriptionRazorpayOrderUseCase.execute({
+          doctorId,
+          planId,
+        });
+
+      return res.status(ResponseStatusCode.CREATED).json({
+        success: true,
+        message: "Subscription order created successfully",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async verifySubscriptionRazorpayPayment(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { doctorId, planId, status, orderDetails } = req.body;
+
+      const result =
+        await this._verifySubscriptionRazorpayPaymentUseCase.execute({
+          doctorId,
+          planId,
+          status,
+          orderDetails,
+        });
+
+      return res.status(ResponseStatusCode.OK).json({
+        success: true,
+        message: RESPONSE_MESSAGE.PLAN_PURCHASED(result.planName),
+        data: result.currentPlan,
       });
     } catch (error) {
       next(error);

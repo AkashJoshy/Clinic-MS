@@ -1,4 +1,3 @@
-
 import { WalletTransaction } from "../../../domain/entities/wallet-transaction.entity.ts";
 import {
   walletPaymentMethod,
@@ -7,8 +6,15 @@ import {
   walletType,
 } from "../../../domain/enums/user.enums.ts";
 import type { Role } from "../../../domain/types/user.types.ts";
-import type { WalletTransactionType } from "../../../domain/types/wallet-transaction.types.ts";
-import type { TopupOrderResponseDto, WalletTopupResponseDto } from "../../dto/wallet.dto.ts";
+import type {
+  WalletPaymentMethod,
+  WalletTransactionSource,
+  WalletTransactionType,
+} from "../../../domain/types/wallet-transaction.types.ts";
+import type {
+  TopupOrderResponseDto,
+  WalletTopupResponseDto,
+} from "../../dto/wallet.dto.ts";
 
 type TransactionData = {
   orderId: string | null;
@@ -17,8 +23,8 @@ type TransactionData = {
   ownerId: string;
   role: Role;
   currency: TopupOrderResponseDto["currency"];
-  paymentMethod: walletPaymentMethod;
-  source: walletTransactionSource;
+  paymentMethod: WalletPaymentMethod;
+  source: WalletTransactionSource;
   description: string;
 };
 
@@ -52,7 +58,10 @@ export class WalletMapper {
   }
 
   private static toTransactionEntity(
-    data: TransactionData & { type: WalletTransactionType },
+    data: TransactionData & {
+      type: WalletTransactionType;
+      description: string;
+    },
   ): WalletTransaction {
     return WalletTransaction.create({
       id: null,
@@ -72,18 +81,14 @@ export class WalletMapper {
     });
   }
 
-  static toCreditTransactionEntity(
-    data: TransactionData,
-  ): WalletTransaction {
+  static toCreditTransactionEntity(data: TransactionData): WalletTransaction {
     return this.toTransactionEntity({
       ...data,
       type: walletType.CREDIT,
     });
   }
 
-  static toDebitTransactionEntity(
-    data: TransactionData,
-  ): WalletTransaction {
+  static toDebitTransactionEntity(data: TransactionData): WalletTransaction {
     return this.toTransactionEntity({
       ...data,
       type: walletType.DEBIT,

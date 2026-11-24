@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   PlusCircle,
@@ -8,6 +9,8 @@ import {
   Building2,
   ShieldCheck,
 } from "lucide-react";
+
+import UnderConstructionOverlay from "../under-construction-overlay.shared";
 
 interface WalletQuickActionsProps {
   onAddMoney: () => void;
@@ -33,6 +36,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
       desc: "Top up wallet",
       icon: PlusCircle,
       isPrimary: true,
+      isUnderConstruction: false,
       onClick: onAddMoney,
     },
     {
@@ -41,6 +45,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
       desc: "Payout to bank",
       icon: ArrowDownToLine,
       isPrimary: false,
+      isUnderConstruction: true,
       onClick: onWithdraw,
     },
     {
@@ -49,6 +54,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
       desc: "View all logs",
       icon: ListOrdered,
       isPrimary: false,
+      isUnderConstruction: false,
       onClick: onViewTransactions,
     },
     {
@@ -57,6 +63,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
       desc: "Export PDF/CSV",
       icon: FileSpreadsheet,
       isPrimary: false,
+      isUnderConstruction: true,
       onClick: onOpenStatements,
     },
     {
@@ -65,6 +72,7 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
       desc: "UPI & Cards",
       icon: CreditCard,
       isPrimary: false,
+      isUnderConstruction: true,
       onClick: onOpenPaymentMethods,
     },
   ];
@@ -115,28 +123,8 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
         {actions.map((action) => {
           const Icon = action.icon;
 
-          return (
-            <button
-              key={action.id}
-              type="button"
-              onClick={action.onClick}
-              className={`
-                group flex min-w-0 flex-col items-center
-                justify-center rounded-xl border
-                p-2.5 text-center transition-all
-                active:scale-[0.98]
-                focus-visible:outline-none
-                focus-visible:ring-2 focus-visible:ring-primary
-                sm:p-3
-                ${
-                  action.isPrimary
-                    ? "border-primary/30 bg-primary/10 hover:bg-primary/20"
-                    : isDark
-                      ? "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
-                      : "border-slate-200/80 bg-slate-50/70 hover:border-slate-300 hover:bg-slate-100"
-                }
-              `}
-            >
+          const tileContent = (
+            <>
               <span
                 className={`
                   mb-2 flex h-9 w-9 shrink-0 items-center
@@ -173,6 +161,61 @@ export const WalletQuickActions: React.FC<WalletQuickActionsProps> = ({
               >
                 {action.desc}
               </span>
+            </>
+          );
+
+          const tileClass = `
+            group flex min-w-0 min-h-[105px] flex-col
+            items-center justify-center rounded-xl border
+            p-2.5 text-center transition-all sm:p-3
+            ${
+              action.isPrimary
+                ? "border-primary/30 bg-primary/10 hover:bg-primary/20"
+                : isDark
+                  ? "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                  : "border-slate-200/80 bg-slate-50/70 hover:border-slate-300 hover:bg-slate-100"
+            }
+          `;
+
+          // Under Construction Actions
+          if (action.isUnderConstruction) {
+            return (
+              <div
+                key={action.id}
+                className={`
+                  relative flex min-h-[105px] min-w-0
+                  items-center justify-center overflow-hidden
+                  rounded-xl border
+                  ${
+                    isDark
+                      ? "border-white/10 bg-white/5"
+                      : "border-slate-200/80 bg-slate-50/70"
+                  }
+                `}
+              >
+                <UnderConstructionOverlay
+                  name={action.label}
+                  isDark={isDark}
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+            );
+          }
+
+          // Functional Actions
+          return (
+            <button
+              key={action.id}
+              type="button"
+              onClick={action.onClick}
+              className={`
+                ${tileClass}
+                active:scale-[0.98]
+                focus-visible:outline-none
+                focus-visible:ring-2 focus-visible:ring-primary
+              `}
+            >
+              {tileContent}
             </button>
           );
         })}

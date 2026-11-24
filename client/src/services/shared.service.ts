@@ -71,10 +71,11 @@ export const createWalletTopUpOrder = async (
   data: CreateWalletTopUpOrderParams,
 ) => {
   try {
-    const { amount, authRole } = data;
+    const { amount, authRole, transactionType } = data;
+
     const res = await api.post(
       ENDPOINTS.COMMON.CREATE_WALLET_TOPUP_ORDER,
-      { amount },
+      { amount, transactionType },
       { authRole },
     );
 

@@ -13,6 +13,7 @@ import { registerDoctor } from "@/services/doctor.service";
 import { useDepartments } from "@/hooks/use-departments.hook";
 import { useEffect } from "react";
 import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
+import toast from "react-hot-toast";
 
 export default function DoctorRegistration() {
   const { step, goNext, goBack, onSubmit } = useDoctorRegistrationContext();
@@ -151,8 +152,16 @@ export default function DoctorRegistration() {
                 <button
                   disabled={isPending}
                   onClick={async () => {
-                    const data = await onSubmit();
-                    if (data) mutate(data);
+                    try {
+                      const data = await onSubmit();
+                      if (data) {
+                        console.log(data);
+                        
+                        mutate(data);
+                      }
+                    } catch (error: any) {
+                      toast.error("Error - ",error?.message)
+                    }
                   }}
                   className={`flex-1 py-3 text-white font-bold rounded-xl transition shadow-md shadow-primary-100 ${
                     isPending

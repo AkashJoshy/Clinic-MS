@@ -36,6 +36,8 @@ export const initialData: DoctorProfileData = {
   },
   doctor: {
     id: "",
+    fieldsToReupload: [],
+    reviewedReason: null,
     userId: null,
     displayName: "",
     doctorCode: "",

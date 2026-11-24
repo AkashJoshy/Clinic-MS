@@ -66,7 +66,7 @@ export const ENDPOINTS = {
       `/common/wallet/${ownerId}/balance`,
   },
   DOCTOR: {
-    REGISTER: `/doctor/register`,
+    REGISTER: `/auth/doctor/register`,
     DASHBOARD_OVERVIEW: `/doctor/dashboard/overview`,
     SUBSCRIPTION_OVERVIEW: `/doctor/subscriptions/overview`,
     BUY_SUBSCRIPTION_WITH_WALLET: `/doctor/subscriptions/purchase/wallet`,

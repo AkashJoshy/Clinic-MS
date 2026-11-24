@@ -2,27 +2,8 @@ import { Schema } from "mongoose";
 import type { IDoctorSubscription } from "./doctor-subscription.types.ts";
 import { CANCELLATION_REASON, PAYMENT_METHOD, SUBSCRIPTION_STATUS } from "../../../domain/constants/subscription.constants.ts";
 import { BILLING_CYCLE } from "../../../domain/constants/status.constants.ts";
+import { subscriptionFeatureSchema } from "../shared/shared.schema.ts";
 
-const subscriptionFeatureSchema = new Schema(
-  {
-    id: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    isIncluded: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  {
-    _id: false,
-  },
-);
 
 export const doctorSubscriptionSchema =
   new Schema<IDoctorSubscription>(

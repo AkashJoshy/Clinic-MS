@@ -1,9 +1,7 @@
 import type { WalletTransaction } from "../entities/wallet-transaction.entity.ts";
 import type { WalletOwnerType } from "./wallet.types.ts";
 
-export type WalletTransactionType =
-  | "CREDIT"
-  | "DEBIT";
+export type WalletTransactionType = "CREDIT" | "DEBIT";
 
 export type WalletTransactionStatus =
   | "PENDING"
@@ -42,7 +40,9 @@ export interface WalletTransactionProps {
   updatedAt: Date | null;
 }
 
+export type SafeWalletTransaction = Pick<
+  WalletTransaction,
+  "cancel" | "fail" | "complete"
+>;
 
-export type SafeWalletTransaction = Pick<WalletTransaction, "cancel" | "fail" | "complete">
-
-export type WalletTransactionResponseDto = SafeWalletTransaction
+export type WalletTransactionResponseDto = SafeWalletTransaction;

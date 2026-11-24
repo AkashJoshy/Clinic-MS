@@ -78,6 +78,12 @@ export class RegisterController {
       const data = req.body;
       const files = req.files;
 
+      console.log(`Data: `)
+      console.log(data)
+
+      console.log(`Files: `)
+      console.log(files)
+
       const updatedData = {
         ...data,
         gender: data.gender.toUpperCase(),
@@ -87,11 +93,12 @@ export class RegisterController {
         consultationFee: Number(data.consultationFee),
       };
 
-      await this._doctorRegister.execute({ ...updatedData, ...files });
+      const result = await this._doctorRegister.execute({ ...updatedData, ...files });
 
       return res.status(ResponseStatusCode.CREATED).json({
         success: true,
         message: RESPONSE_MESSAGE.SUCCESS,
+        data: result,
       });
     } catch (error) {
       return next(error);

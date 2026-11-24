@@ -56,6 +56,7 @@ export const PatientWalletPage = ({
           onAddMoney={() => setIsAddMoneyOpen(true)}
           onOpenStatements={() => setIsStatementsOpen(true)}
           onOpenPaymentMethods={() => setIsPaymentMethodsOpen(true)}
+          isDark={false}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">

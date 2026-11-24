@@ -34,6 +34,8 @@ import { KycEncryptionService } from "../application/services/kyc/kyc-encryption
 import { KycRepository } from "../infrastructure/repositories/kyc.repository.ts";
 import { DoctorSettingsRepository } from "../infrastructure/repositories/doctor-settings.repository.ts";
 import { ColorPaletteRepository } from "../infrastructure/repositories/color-palette.repository.ts";
+import { DoctorSubscriptionHistoryRepository } from "../infrastructure/repositories/doctor-subscription-history.repository.ts";
+import { CreateWalletTransactionService } from "../application/services/wallet/create-wallet-transaction.service.ts";
 
 // DB Repo's
 export const mongooseUserRepository = new UserRepository();
@@ -59,6 +61,8 @@ export const mongoosePlatformSettingsRepository =
 export const mongooseKycRepository = new KycRepository();
 export const mongooseDoctorSettingsRepository = new DoctorSettingsRepository();
 export const mongooseColorPaletteRepository = new ColorPaletteRepository();
+export const mongooseDoctorSubscriptionHistoryRepository =
+  new DoctorSubscriptionHistoryRepository();
 
 // Services
 export const argonHashService = new ArgonHashService();
@@ -72,24 +76,31 @@ export const emailVerificationService = new EmailVerificationService(
   nodeMailService,
   redisService,
 );
+
 export const addressDetailsService = new AddressDetailsService(
   mongooseAddressRepository,
 );
+
 export const clinicDetailsService = new ClinicDetailsService(
   mongooseClinicRepository,
 );
+
 export const bulkWriteGenerationService = new BulkWriteGenerationService();
+
 export const doctorClinicDetailsService = new DoctorClinicDetailsService(
   mongooseDoctorClinicRepository,
 );
+
 export const departmentDetailsService = new DepartmentDetailsService(
   mongooseDepartmentRepository,
 );
+
 export const doctorClinicContextService = new DoctorClinicContextService(
   addressDetailsService,
   clinicDetailsService,
   doctorClinicDetailsService,
 );
+
 export const doctorDetailsService = new DoctorDetailsService(
   mongooseUserRepository,
   mongooseDepartmentRepository,
@@ -97,15 +108,21 @@ export const doctorDetailsService = new DoctorDetailsService(
   departmentDetailsService,
   doctorClinicContextService,
 );
+
 export const doctorExistsService = new DoctorExistsService(
   mongooseUserRepository,
   mongooseDoctorRepository,
   mongooseDoctorClinicRepository,
   mongooseClinicRepository,
 );
+
 export const walletTransactionsDetailsService =
   new WalletTransactionsDetailsService(mongooseWalletTransactionRepository);
 
 export const subscriptionChangeCalculationService =
   new SubscriptionChangeCalculationService();
+
 export const kycEncryptionService = new KycEncryptionService();
+
+export const createWalletTransactionService =
+  new CreateWalletTransactionService();

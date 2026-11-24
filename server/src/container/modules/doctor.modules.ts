@@ -43,11 +43,16 @@ import {
   mongooseKycRepository,
   kycEncryptionService,
   mongooseDoctorSettingsRepository,
+  mongooseDoctorSubscriptionHistoryRepository,
+  createWalletTransactionService,
+  razorpayService,
 } from "../index.ts";
 import { UpdateReapplicationDetailsUseCase } from "../../application/use-cases/doctor/reapplication/update-doctor-reapplication.use-case.ts";
 import { GetSubscriptionOverview } from "../../application/use-cases/doctor/subscription/get-subscription-overview.usecase.ts";
 import { SubscriptionController } from "../../presentation/controllers/doctor/subscription.controller.ts";
 import { BuySubscriptionWithWallet } from "../../application/use-cases/doctor/subscription/buy-subscription-with-wallet.usecase.ts";
+import { CreateSubscriptionRazorpayOrderUseCase } from "../../application/use-cases/doctor/subscription/create-subscription-razorpay-order.usecase.ts";
+import { VerifySubscriptionRazorpayPaymentUseCase } from "../../application/use-cases/doctor/subscription/verify-subscription-razorpay-payment.usecase.ts";
 import { CancelSubscriptionUseCase } from "../../application/use-cases/doctor/subscription/cancel-subscription.use-case.ts";
 import { GetSubscriptionUpgradeOptionsUseCase } from "../../application/use-cases/doctor/subscription/get-subscription-upgrade-options.usecase.ts";
 import { GetDoctorDashboardOverviewUseCase } from "../../application/use-cases/doctor/dashboard/get-doctor-dashboard-overview.use-case.ts";
@@ -178,8 +183,35 @@ export const buySubscriptionWithWalletUseCase = new BuySubscriptionWithWallet(
   mongooseDoctorSubscriptionRepository,
   mongooseWalletRepository,
   mongooseWalletTransactionRepository,
+  mongooseDoctorSubscriptionHistoryRepository,
   subscriptionChangeCalculationService,
-);
+  createWalletTransactionService
+);  
+
+export const createSubscriptionRazorpayOrderUseCase =
+  new CreateSubscriptionRazorpayOrderUseCase(
+    mongooseUserRepository,
+    mongooseDoctorRepository,
+    mongooseSubscriptionPlanRepository,
+    mongooseDoctorSubscriptionRepository,
+    mongooseWalletRepository,
+    mongooseWalletTransactionRepository,
+    razorpayService,
+    subscriptionChangeCalculationService,
+    createWalletTransactionService,
+  );
+
+export const verifySubscriptionRazorpayPaymentUseCase =
+  new VerifySubscriptionRazorpayPaymentUseCase(
+    mongooseUserRepository,
+    mongooseDoctorRepository,
+    mongooseSubscriptionPlanRepository,
+    mongooseDoctorSubscriptionRepository,
+    mongooseWalletRepository,
+    mongooseWalletTransactionRepository,
+    mongooseDoctorSubscriptionHistoryRepository,
+    razorpayService,
+  );  
 
 export const getSubscriptionUpgradeOptionsUseCase =
   new GetSubscriptionUpgradeOptionsUseCase(
@@ -300,6 +332,8 @@ export const doctorSubscriptionController = new SubscriptionController(
   buySubscriptionWithWalletUseCase,
   cancelSubscriptionUseCase,
   getSubscriptionUpgradeOptionsUseCase,
+  createSubscriptionRazorpayOrderUseCase,
+  verifySubscriptionRazorpayPaymentUseCase,
 );
 
 export const doctorDashboardController = new DashboardController(

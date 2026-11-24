@@ -101,12 +101,14 @@ export class VerifyWalletTopupOrderUseCase implements IVerifyWalletTopupOrderUse
     }
 
     if (status === "SUCCESS") {
+      console.log(`Payment Success`);
       return WalletMapper.success(
         verifiedPaymentDetails.razorpayOrderId,
         wallet.balance,
         transactionDetails,
       );
     } else {
+      console.log(`Payment Failed`);
       return WalletMapper.failed(
         verifiedPaymentDetails.razorpayOrderId,
         wallet.balance,

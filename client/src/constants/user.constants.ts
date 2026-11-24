@@ -13,3 +13,4 @@ export const initialAuthState = {
   patients: [],
   activePatient: null,
 };
+

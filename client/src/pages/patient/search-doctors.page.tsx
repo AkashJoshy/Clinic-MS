@@ -42,6 +42,7 @@ const SearchDoctorsPage = () => {
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
         >
+          
           <DoctorResultsHeader
             count={filteredDoctors.length}
             sort={sort}

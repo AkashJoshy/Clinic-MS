@@ -156,6 +156,32 @@ router.post(
   },
 );
 
+router.post(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["BUY"]["RAZORPAY"]["PURCHASE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.createSubscriptionRazorpayOrder(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
+router.post(
+  DOCTOR_ENDPOINTS["SUBSCRIPTION"]["BUY"]["RAZORPAY"]["VERIFY"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorSubscriptionController.verifySubscriptionRazorpayPayment(
+      req,
+      res,
+      next,
+    );
+  },
+);
+
 router.get(
   DOCTOR_ENDPOINTS["SUBSCRIPTION"]["UPGRADE_OPTIONS"],
   authenticateUser,

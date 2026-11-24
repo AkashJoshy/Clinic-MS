@@ -1,7 +1,7 @@
 import type { WalletTransaction } from "../../domain/entities/wallet-transaction.entity.ts";
-import type { ownerModel } from "../../domain/enums/user.enums.ts";
+import type { ownerModel, walletStatus } from "../../domain/enums/user.enums.ts";
 import type { PaymentStatus } from "../../domain/types/shared.types.ts";
-import type { SafeWalletTransaction } from "../../domain/types/wallet-transaction.types.ts";
+import type { SafeWalletTransaction, WalletPaymentMethod, WalletTransactionSource, WalletTransactionStatus, WalletTransactionType } from "../../domain/types/wallet-transaction.types.ts";
 import type {
   SafeWallet,
   WalletOwnerType,
@@ -23,6 +23,7 @@ export type WalletBalanceResponseDto = {
 export type CreateWalletTopupOrderDto = {
   ownerId: string;
   amount: number;
+  transactionType: WalletTransactionType
 };
 
 export interface CreateWalletTopupOrderInputDto {
@@ -98,4 +99,18 @@ export interface TransactionDto {
 export interface CreateWalletDto {
   ownerId: string;
   ownerType: WalletOwnerType;
+}
+
+export interface CreateWalletTransactionDto {
+  transactionType: "CREDIT" | "DEBIT";
+  ownerId: string;
+  walletId: string;
+  role: "ADMIN" | "DOCTOR" | "PATIENT";
+  amount: number;
+  currency: TopupOrderResponseDto["currency"];
+  paymentMethod: WalletPaymentMethod;
+  source: WalletTransactionSource;
+  status: walletStatus;
+  description: string;
+  orderId: string | null;
 }

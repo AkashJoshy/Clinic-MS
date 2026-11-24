@@ -1,12 +1,13 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import type {
-  CreateWalletTopupOrderRequestDto,
-  CreateWalletTopupOrderResponseDto,
-  RazorpaySuccessDto,
-  VerifyPaymentDto,
-} from "../../application/dto/shared.dto.ts";
 import type { IPaymentGatewayService } from "../../domain/services/i-payment-gateway.service.ts";
 import { instance } from "../payment/razorpay.ts";
+import type {
+  CreateWalletTopupOrderRequestDto,
+  TopupOrderResponseDto,
+  RazorpaySuccessDto,
+  VerifyPaymentDto,
+  CreateWalletTopupOrderOutputDto,
+} from "../../application/dto/wallet.dto.ts";
 
 export class RazorpayService implements IPaymentGatewayService {
   async verifyPayment(data: RazorpaySuccessDto): Promise<VerifyPaymentDto> {
@@ -41,7 +42,7 @@ export class RazorpayService implements IPaymentGatewayService {
 
   async createOrder(
     data: CreateWalletTopupOrderRequestDto,
-  ): Promise<CreateWalletTopupOrderResponseDto> {
+  ): Promise<TopupOrderResponseDto> {
     const { amount, ownerId, receipt, purpose } = data;
 
     try {
@@ -58,8 +59,7 @@ export class RazorpayService implements IPaymentGatewayService {
       return {
         orderId: order.id,
         amount: Number(order.amount),
-        currency:
-          order.currency as CreateWalletTopupOrderResponseDto["currency"],
+        currency: order.currency as TopupOrderResponseDto["currency"],
         status: order.status,
       };
     } catch (error) {

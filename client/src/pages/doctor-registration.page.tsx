@@ -4,11 +4,11 @@ import DoctorRegistrationProvider from "@/components/shared/doctor-registration/
 import { usePlatformConfig } from "@/hooks/use-platform-config.hook";
 
 const DoctorRegistrationPage = () => {
-  const { websiteName } = usePlatformConfig()
+  const { websiteName, primaryColor } = usePlatformConfig()
 
   return (
     <div>
-      <PublicHeader websiteName={websiteName} />
+      <PublicHeader primaryColor={primaryColor} websiteName={websiteName} />
       <DoctorRegistrationProvider>
         <DoctorRegistration />
       </DoctorRegistrationProvider>
