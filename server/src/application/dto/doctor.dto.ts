@@ -15,6 +15,7 @@ import type { DoctorReapplication } from "../../domain/entities/doctor-reapplica
 import type { SafeUser } from "./auth.dto.ts";
 import type { SafeDoctorClinic } from "./doctor-clinic.dto.ts";
 import type { Address } from "../../domain/entities/address.entity.ts";
+import type { PaginatedResponseDto } from "./shared.dto.ts";
 
 export interface ClinicDetails {
   id: string;
@@ -362,4 +363,36 @@ export interface UpdateDoctorPersonalDto {
   section: "PROFILE_INFO";
 }
 
-export type DoctorPersonalResponseDto = Omit<UpdateDoctorPersonalDto, "section">;
+export type DoctorPersonalResponseDto = Omit<
+  UpdateDoctorPersonalDto,
+  "section"
+>;
+
+export interface DoctorManagementResponseDto {
+  approved: PaginatedResponseDto<DoctorDetailsCardResponseDto>;
+  pending: PaginatedResponseDto<DoctorDetailsCardResponseDto>;
+  rejected: PaginatedResponseDto<DoctorDetailsCardResponseDto>;
+}
+
+export type GetAllDoctorsQueryDto = {
+  search?: string | undefined;
+  gender?: Gender | undefined;
+  departmentIds?: string[] | undefined;
+  sortBy: string;
+  limit: number;
+  approvedPage: number;
+  pendingPage: number;
+  rejectedPage: number;
+};
+
+export type GetPatientDoctorsQueryDto = {
+  search?: string | undefined;
+  gender?: string | undefined;
+  specializations?: string[] | undefined;
+  consultationModes?: string[] | undefined;
+  experience?: string | undefined;
+  rating?: string | number | undefined;
+  sort?: string | undefined;
+  page?: number | undefined;
+  limit?: number | undefined;
+};

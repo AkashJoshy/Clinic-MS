@@ -1,5 +1,10 @@
-import type { SafeSubscriptionResponseDto } from "../../../../dto/subscription-plan.dto.ts";
+import type {
+  GetAllSubscriptionPlansQueryDto,
+  SubscriptionManagementResponseDto,
+} from "../../../../dto/subscription-plan.dto.ts";
 
 export interface IGetAllSubscriptionPlansUseCase {
-  execute(): Promise<SafeSubscriptionResponseDto[]>;
+  execute(
+    query?: GetAllSubscriptionPlansQueryDto,
+  ): Promise<SubscriptionManagementResponseDto>;
 }

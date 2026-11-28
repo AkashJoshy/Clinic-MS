@@ -24,6 +24,14 @@ const router = Router();
 
 // Routes
 router.get(
+  ADMIN_ENDPOINTS["DEPARTMENTS"]["FETCH_ALL"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) =>
+    await adminDepartmentController.getAllDepartments(req, res, next),
+);
+
+router.get(
   ADMIN_ENDPOINTS["DEPARTMENTS"]["FETCH_ONE"],
   authenticateUser,
   authorizeUser,

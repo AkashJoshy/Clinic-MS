@@ -1,5 +1,5 @@
-import type { DoctorDetailsCardResponseDto } from "../../../../dto/doctor.dto.ts";
+import type { DoctorManagementResponseDto, GetAllDoctorsQueryDto } from "../../../../dto/doctor.dto.ts";
 
 export interface IGetAllDoctorsUseCase {
-  execute(): Promise<DoctorDetailsCardResponseDto[]>;
+  execute(query: GetAllDoctorsQueryDto): Promise<DoctorManagementResponseDto>;
 }

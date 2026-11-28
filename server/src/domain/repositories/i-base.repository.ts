@@ -1,11 +1,12 @@
 import type { UpdateQuery } from "mongoose";
-import type { BulkWriteOperation, QueryOptions } from "../types/shared.types.ts";
+import type { BulkWriteOperation, PaginatedResult, PaginationOptions, QueryOptions } from "../types/shared.types.ts";
 
 
 export interface IBaseRepository<T, TDocument = any> {
   findById(id: string, options?: QueryOptions): Promise<T | null>;
   save(entity: T): Promise<T>;
   find(): Promise<T[]>;
+  paginate(filter: Record<string, any>, options: PaginationOptions): Promise<PaginatedResult<T>>
   delete(id: string): Promise<void>;
   findByIdAndUpdate(id: string, data: Partial<T>): Promise<T | null>;
   findBy(filter: Partial<T>): Promise<T[]>;

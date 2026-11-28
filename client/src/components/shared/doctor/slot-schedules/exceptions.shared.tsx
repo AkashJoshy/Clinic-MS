@@ -1,18 +1,24 @@
 import { Button } from "@/components/ui/button";
 import type { ExceptionsProps } from "@/types/doctor-clinic";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, SaveIcon, Trash2 } from "lucide-react";
 import { NumberBadge } from "../../number-badge.shared";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { LockedOverlay } from "./locked-overlay.shared";
 import { useExceptions } from "@/hooks/use-exceptions.hook";
 import { ExceptionTabs } from "./exception-tabs.shared";
+import { useAuthStore } from "@/store";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import { useState } from "react";
+import ConfirmDialog from "../../confirm-dialog.shared";
 
 export const Exceptions: React.FC<ExceptionsProps> = ({
   exceptions,
   onChange,
-  generateSlots,
+  handleSchedule,
+  isPending,
   disabled,
   isDark,
+  isDirty,
 }) => {
   const {
     activeTab,
@@ -39,6 +45,9 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
     showForm,
     showOverrideForm,
   } = useExceptions(exceptions, onChange);
+
+  const { primaryColor } = useAuthStore((state) => state.platform);
+  const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
 
   const headingClass = isDark ? "text-white" : "text-slate-900";
   const labelClass = isDark ? "text-[#8b9ab0]" : "text-slate-600";
@@ -85,7 +94,6 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
           ${disabled ? "select-none" : ""}
         `}
       >
-        {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center">
             <div className="[&_*]:!text-primary [&_*]:!border-primary [&_*]:!bg-primary/10">
@@ -262,6 +270,7 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   type="button"
                   onClick={handleAddBreak}
                   disabled={!isBreakFormValid}
+                  style={{ color: getContrastTextColor(primaryColor) }}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   Add Break
@@ -270,7 +279,6 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             </div>
           )}
 
-          {/* Vacation / Blackout / Holiday Form */}
           {activeTab !== "breaks" && showForm && (
             <div className={`mt-4 rounded-lg border p-4 ${formClass}`}>
               <div className="grid gap-3 sm:grid-cols-3">
@@ -278,25 +286,6 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   <label className={`mb-1 block text-xs ${labelClass}`}>
                     Reason
                   </label>
-
-                  <input
-                    type="text"
-                    placeholder={`e.g. ${
-                      activeTab === "vacations"
-                        ? "Family vacation"
-                        : activeTab === "blackouts"
-                          ? "Clinic unavailable"
-                          : "Public holiday"
-                    }`}
-                    value={dateForm.reason}
-                    onChange={(e) =>
-                      setDateForm((prev) => ({
-                        ...prev,
-                        reason: e.target.value,
-                      }))
-                    }
-                    className={`w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-primary ${inputClass}`}
-                  />
                 </div>
 
                 <div>
@@ -356,19 +345,13 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
                   disabled={!isDateFormValid}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Add{" "}
-                  {activeTab === "vacations"
-                    ? "Vacation"
-                    : activeTab === "blackouts"
-                      ? "Blackout"
-                      : "Holiday"}
+                  Add {activeTab === "blackouts" ? "Blackout" : "Holiday"}
                 </Button>
               </div>
             </div>
           )}
         </div>
 
-        {/* One-Time Extra Availability */}
         <div
           className={`mt-8 border-t pt-6 ${
             isDark ? "border-white/10" : "border-slate-200"
@@ -408,7 +391,6 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             </div>
           )}
 
-          {/* Override Form */}
           {showOverrideForm && (
             <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
               <div className="grid gap-3 sm:grid-cols-3">
@@ -503,16 +485,17 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
             </button>
           )}
 
-          <Button
-            type="submit"
-            onClick={() => {
-              console.log("Clicked!!");
-              generateSlots();
-            }}
-            className="mt-4 w-full text-lg font-semibold"
-          >
-            Generate Slots
-          </Button>
+          <div>
+            <Button
+              type="button"
+              disabled={!isDirty || isPending}
+              onClick={() => setIsConfirmOpen(true)}
+              className="mt-4 h-14 w-full gap-3 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <SaveIcon className="h-5 w-5" />
+              Save Schedule
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -524,6 +507,22 @@ export const Exceptions: React.FC<ExceptionsProps> = ({
           isDark={isDark}
         />
       )}
+
+      <ConfirmDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        title="Overwrite Existing Schedule?"
+        description="Saving this schedule will replace your existing weekly schedule, slot rules, and exceptions for this clinic. This action will update your current schedule configuration."
+        confirmText="Overwrite & Save"
+        cancelText="Cancel"
+        isPending={isPending}
+        onConfirm={() => {
+          handleSchedule();
+          setIsConfirmOpen(false);
+        }}
+        isDark={isDark}
+      />
+
     </div>
   );
 };

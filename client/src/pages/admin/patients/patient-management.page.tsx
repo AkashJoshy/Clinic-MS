@@ -1,116 +1,37 @@
-
-import { useEffect, useState } from "react";
 import { Users, Filter, Search } from "lucide-react";
-import toast from "react-hot-toast";
 import { AllApprovals } from "@/components/shared/admin/all-approvals.shared";
 import { Pagination } from "@/components/layout/pagination.layout";
-import { getAllPatients } from "@/services/admin.service";
-import type { PatientBasicInfo } from "@/types/patient";
 import { PatientListItem } from "@/components/shared/patient-list-item.shared";
-import {
-  defaultPatientFilters,
-  PatientFilterModal,
-  type PatientFilterState,
-} from "@/components/shared/admin/patients/patient-filter-modal";
+import { PatientFilterModal } from "@/components/shared/admin/patients/patient-filter-modal";
 import { PatientListItemSkeleton } from "@/components/shared/skeletons/patient-list-item.skeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import AdminPageHeader from "@/components/shared/page-header.shared";
 import { useAuthStore } from "@/store";
 import { getPatientManagementTheme } from "@/helpers/admin/patients.helper";
-
-const ITEMS_PER_PAGE = 6;
+import { usePatientManagement } from "@/hooks/use-patient-management.hook";
 
 export default function PatientManagementPage() {
   const { admin } = useAuthStore((state) => state.users);
   const isDark = admin?.theme === "DARK";
 
-  const [patientDetails, setPatientDetails] = useState<PatientBasicInfo[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [filters, setFilters] = useState<PatientFilterState>(
-    defaultPatientFilters,
-  );
-  const [page, setPage] = useState<number>(1);
+  const {
+    patientDetails,
+    setPatientDetails,
+    isLoading,
+    searchQuery,
+    handleSearchChange,
+    filters,
+    handleApplyFilters,
+    isFilterOpen,
+    setIsFilterOpen,
+    page,
+    setPage,
+    totalPatients,
+    totalPages,
+    itemsPerPage,
+  } = usePatientManagement();
 
-  const theme = getPatientManagementTheme(isDark)
-
-  const fetchPatients = async () => {
-    try {
-      setIsLoading(true);
-
-      const getPatients = await getAllPatients();
-      const data = getPatients.data;
-
-      setPatientDetails(data ?? []);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to fetch patients.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
-  const filteredPatients = patientDetails.filter((det) => {
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-
-      const match =
-        det.patient.displayName.toLowerCase().includes(q) ||
-        det.user?.email?.toLowerCase().includes(q);
-
-      if (!match) return false;
-    }
-
-    if (
-      filters.gender !== "ALL" &&
-      det.patient.gender !== filters.gender.toUpperCase()
-    ) {
-      return false;
-    }
-
-    const activeStatus = det.user
-      ? det.user.isActive === true
-        ? "ACTIVE"
-        : "INACTIVE"
-      : "INACTIVE";
-
-    if (filters.status !== "ALL" && filters.status !== activeStatus) {
-      return false;
-    }
-
-    return true;
-  });
-
-  filteredPatients.sort((a, b) => {
-    if (filters.sortBy === "NEWEST") {
-      return (
-        new Date(b.patient?.createdAt || 0).getTime() -
-        new Date(a.patient?.createdAt || 0).getTime()
-      );
-    } else if (filters.sortBy === "OLDEST") {
-      return (
-        new Date(a.patient?.createdAt || 0).getTime() -
-        new Date(b.patient?.createdAt || 0).getTime()
-      );
-    } else if (filters.sortBy === "NAME_ASC") {
-      return a.patient?.displayName.localeCompare(b.patient?.displayName);
-    } else if (filters.sortBy === "NAME_DESC") {
-      return b.patient?.displayName.localeCompare(a.patient?.displayName);
-    }
-
-    return 0;
-  });
-
-  const totalPages = Math.ceil(filteredPatients.length / ITEMS_PER_PAGE);
-
-  const paginatedPatients = filteredPatients.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE,
-  );
+  const theme = getPatientManagementTheme(isDark);
 
   return (
     <div
@@ -134,10 +55,7 @@ export default function PatientManagementPage() {
             type="text"
             placeholder="Search by Patient name or email..."
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setPage(1);
-            }}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className={`w-full rounded-xl border py-3.5 pl-11 pr-4 text-sm shadow-sm outline-none transition-all focus:border-primary/50 focus:ring-1 focus:ring-primary/20 ${theme.searchInput}`}
           />
         </div>
@@ -151,7 +69,7 @@ export default function PatientManagementPage() {
           <span
             className={`rounded-md px-2 py-0.5 text-[11px] font-bold ${theme.countBadge}`}
           >
-            {filteredPatients.length}
+            {totalPatients}
           </span>
         </div>
 
@@ -169,10 +87,7 @@ export default function PatientManagementPage() {
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
-        onApplyFilters={(newFilters) => {
-          setFilters(newFilters);
-          setPage(1);
-        }}
+        onApplyFilters={handleApplyFilters}
         isDark={isDark}
       />
 
@@ -182,7 +97,7 @@ export default function PatientManagementPage() {
             <PatientListItemSkeleton key={i} isDark={admin?.theme === "DARK"} />
           ))}
         </div>
-      ) : paginatedPatients.length === 0 ? (
+      ) : patientDetails.length === 0 ? (
         <AllApprovals icon={Users} name="Patients" isDark={isDark} />
       ) : (
         <AnimatePresence mode="wait">
@@ -208,7 +123,7 @@ export default function PatientManagementPage() {
             className="space-y-3"
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {paginatedPatients.map((det) => (
+              {patientDetails.map((det) => (
                 <motion.div
                   key={det.patient?.id}
                   variants={{
@@ -250,8 +165,8 @@ export default function PatientManagementPage() {
         <Pagination
           currentPage={page}
           totalPages={totalPages}
-          totalItems={filteredPatients.length}
-          itemsPerPage={ITEMS_PER_PAGE}
+          totalItems={totalPatients}
+          itemsPerPage={itemsPerPage}
           onPageChange={setPage}
           isDark={isDark}
         />

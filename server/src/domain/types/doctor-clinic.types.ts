@@ -23,7 +23,6 @@ export type SlotStatus =
   | "REPLACEABLE";
 
 export interface Shift {
-  id: string;
   startTime: string;
   endTime: string;
   mode: ServiceMode;
@@ -54,32 +53,24 @@ export interface Leave {
 }
 
 export interface SlotRules {
-  sessionDuration: number;
-  bufferTime: number;
-  maxSessionsPerDay: number;
-  minAdvanceNotice: number;
-  bookingWindow: number;
-  slotInterval: "AUTO" | "FIXED";
+  maxTokensPerDay: number;
   autoConfirmBookings: boolean;
   allowReschedule: boolean;
 }
 
 export interface Break {
-  id: string;
   label: string;
   startTime: string;
   endTime: string;
 }
 
 export interface ScheduleException {
-  id: string;
   reason: string;
   startDate: string;
   endDate: string;
 }
 
 export interface OneTimeAvailability {
-  id: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -87,17 +78,10 @@ export interface OneTimeAvailability {
 
 export interface Exceptions {
   breaks: Break[];
-  vacations: ScheduleException[];
   blackouts: ScheduleException[];
   holidays: ScheduleException[];
   overrides: OneTimeAvailability[];
 }
-
-export type BreakWithoutId = Omit<Break, "id">;
-
-export type ScheduleExceptionWithoutId = Omit<ScheduleException, "id">;
-
-export type OneTimeAvailabilityWithoutId = Omit<OneTimeAvailability, "id">;
 
 export interface AddDoctorClinicProps {
   id: string | null;
@@ -115,7 +99,6 @@ export interface AddDoctorClinicProps {
 }
 
 export interface Shift {
-  id: string;
   startTime: string;
   endTime: string;
   mode: ServiceMode;

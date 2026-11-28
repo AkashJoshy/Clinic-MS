@@ -14,7 +14,7 @@ const AdminDashboardLayout: React.FC = () => {
         className={`flex-1 bg-${admin?.theme === "DARK" ? "[#080d14]" : ""} flex overflow-hidden`}
       >
         <AdminSideNav />
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <main id="" className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <div className="container mx-auto p-2 h-full">
               <Outlet />

@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -8,6 +7,7 @@ import type {
   SubscriptionStats,
 } from "@/types/subscription";
 import type { SubscriptionFormValues } from "@/schemas/admin/subscription.schema";
+import type { PaginatedData } from "@/types/common";
 
 import { useMutate } from "@/hooks/use-mutate.hook";
 import {
@@ -17,31 +17,93 @@ import {
   updateSubscriptionPlanStatus,
 } from "@/services/admin.service";
 
+const ITEMS_PER_PAGE = 6;
+const SEARCH_DEBOUNCE_MS = 400;
+
+const emptyPaginated: PaginatedData<SubscriptionPlan> = {
+  data: [],
+  hasNextPage: false,
+  hasPreviousPage: false,
+  limit: ITEMS_PER_PAGE,
+  page: 1,
+  total: 0,
+  totalPages: 0,
+};
+
+const initialStats: SubscriptionStats = {
+  totalPlans: 0,
+  activePlans: 0,
+  totalSubscribers: 0,
+  estimatedMonthlyRevenue: 0,
+};
+
 export const useSubscriptions = () => {
-  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [all, setAll] = useState<PaginatedData<SubscriptionPlan>>(emptyPaginated);
+  const [active, setActive] = useState<PaginatedData<SubscriptionPlan>>(emptyPaginated);
+  const [inactive, setInactive] = useState<PaginatedData<SubscriptionPlan>>(emptyPaginated);
+  const [serverStats, setServerStats] = useState<SubscriptionStats>(initialStats);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | PlanStatus>("ALL");
 
+  const [allPage, setAllPage] = useState(1);
+  const [activePage, setActivePage] = useState(1);
+  const [inactivePage, setInactivePage] = useState(1);
+
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(
-    null,
-  );
+  const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
 
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusPlan, setStatusPlan] = useState<SubscriptionPlan | null>(null);
 
+  // Debounce search so we don't hit the API on every keystroke
+  useEffect(() => {
+    const t = setTimeout(
+      () => setDebouncedSearch(searchQuery.trim()),
+      SEARCH_DEBOUNCE_MS,
+    );
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  const queryParams = useMemo(
+    () => ({
+      search: debouncedSearch || undefined,
+      limit: ITEMS_PER_PAGE,
+      allPage,
+      activePage,
+      inactivePage,
+    }),
+    [debouncedSearch, allPage, activePage, inactivePage],
+  );
+
   const fetchSubscriptionPlans = useCallback(async () => {
     try {
-      const response = await getAllSubscriptionPlans();
-      setPlans(response.data ?? []);
+      setIsLoading(true);
+      const response = await getAllSubscriptionPlans(queryParams);
+      const data = response.data;
+
+      setAll(data?.all ?? emptyPaginated);
+      setActive(data?.active ?? emptyPaginated);
+      setInactive(data?.inactive ?? emptyPaginated);
+
+      if (data?.stats) {
+        setServerStats(data.stats);
+      }
     } catch (error: unknown) {
       toast.error(
         error instanceof Error
           ? error.message
           : "Failed to fetch subscription plans",
       );
+      setAll(emptyPaginated);
+      setActive(emptyPaginated);
+      setInactive(emptyPaginated);
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     void fetchSubscriptionPlans();
@@ -50,10 +112,8 @@ export const useSubscriptions = () => {
   const { mutate: createPlan, isPending: isCreating } = useMutate(
     createNewSubscriptionPlan,
     {
-      onSuccess(data) {
-        if (data.data) {
-          setPlans((prev) => [data.data, ...prev]);
-        }
+      onSuccess() {
+        void fetchSubscriptionPlans();
       },
     },
   );
@@ -61,23 +121,8 @@ export const useSubscriptions = () => {
   const { mutate: editPlan, isPending: isEditing } = useMutate(
     editSubscriptionPlan,
     {
-      onSuccess(data) {
-        const updatedPlan = data.data;
-        if (!updatedPlan) return;
-
-        setPlans((prev) =>
-          prev.map((plan) =>
-            String(plan.id) === String(updatedPlan.id)
-              ? updatedPlan
-              : plan,
-          ),
-        );
-
-        setEditingPlan((current) =>
-          current && String(current.id) === String(updatedPlan.id)
-            ? updatedPlan
-            : current,
-        );
+      onSuccess() {
+        void fetchSubscriptionPlans();
       },
     },
   );
@@ -85,91 +130,66 @@ export const useSubscriptions = () => {
   const { mutate: updatePlanStatus, isPending: isUpdatingStatus } = useMutate(
     updateSubscriptionPlanStatus,
     {
-      onSuccess(data) {
-        const updatedStatus = data.data;
-
-        if (updatedStatus) {
-          setPlans((prev) =>
-            prev.map((plan) =>
-              String(plan.id) === String(updatedStatus.id)
-                ? { ...plan, status: updatedStatus.status }
-                : plan,
-            ),
-          );
-        }
-
+      onSuccess() {
         setIsStatusModalOpen(false);
         setStatusPlan(null);
+        void fetchSubscriptionPlans();
       },
     },
   );
 
-  const stats: SubscriptionStats = useMemo(() => {
-    const totalPlans = plans.length;
-
-    const activePlans = plans.filter(
-      (plan) => plan.status === "ACTIVE",
-    ).length;
-
-    const totalSubscribers = plans.reduce(
-      (total, plan) => total + (plan.activeSubscribersCount || 0),
-      0,
-    );
-
-    const estimatedMonthlyRevenue = plans.reduce((total, plan) => {
-      if (plan.status !== "ACTIVE") return total;
-
-      const subscriberCount = plan.activeSubscribersCount || 0;
-      let monthlyEquivalent = plan.price;
-
-      if (plan.billingCycle === "YEARLY") {
-        monthlyEquivalent = plan.price / 12;
-      } else if (plan.billingCycle === "QUARTERLY") {
-        monthlyEquivalent = plan.price / 3;
-      } else if (plan.billingCycle === "LIFETIME") {
-        monthlyEquivalent = 0;
-      }
-
-      return total + monthlyEquivalent * subscriberCount;
-    }, 0);
-
-    return {
-      totalPlans,
-      activePlans,
-      totalSubscribers,
-      estimatedMonthlyRevenue: Math.round(estimatedMonthlyRevenue),
-    };
-  }, [plans]);
-
   const counts = useMemo(
     () => ({
-      all: plans.length,
-      active: plans.filter((plan) => plan.status === "ACTIVE").length,
-      inactive: plans.filter((plan) => plan.status === "INACTIVE").length,
+      all: all.total,
+      active: active.total,
+      inactive: inactive.total,
     }),
-    [plans],
+    [all.total, active.total, inactive.total],
   );
 
   const filteredPlans = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+    if (statusFilter === "ACTIVE") return active.data;
+    if (statusFilter === "INACTIVE") return inactive.data;
+    return all.data;
+  }, [statusFilter, all.data, active.data, inactive.data]);
 
-    return plans.filter((plan) => {
-      if (statusFilter !== "ALL" && plan.status !== statusFilter) {
-        return false;
-      }
+  const currentPage =
+    statusFilter === "ACTIVE"
+      ? activePage
+      : statusFilter === "INACTIVE"
+        ? inactivePage
+        : allPage;
 
-      if (!query) return true;
+  const currentTotalPages =
+    statusFilter === "ACTIVE"
+      ? active.totalPages
+      : statusFilter === "INACTIVE"
+        ? inactive.totalPages
+        : all.totalPages;
 
-      return (
-        plan.name.toLowerCase().includes(query) ||
-        (plan.tagline?.toLowerCase().includes(query) ?? false) ||
-        plan.description.toLowerCase().includes(query) ||
-        plan.features.some((feature) =>
-          feature.name.toLowerCase().includes(query),
-        )
-      );
-    });
-  }, [plans, searchQuery, statusFilter]);
+  const currentTotalItems =
+    statusFilter === "ACTIVE"
+      ? active.total
+      : statusFilter === "INACTIVE"
+        ? inactive.total
+        : all.total;
+
+  const handlePageChange = (newPage: number) => {
+    if (statusFilter === "ACTIVE") {
+      setActivePage(newPage);
+    } else if (statusFilter === "INACTIVE") {
+      setInactivePage(newPage);
+    } else {
+      setAllPage(newPage);
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setAllPage(1);
+    setActivePage(1);
+    setInactivePage(1);
+  };
 
   const handleOpenCreateModal = useCallback(() => {
     setEditingPlan(null);
@@ -207,8 +227,6 @@ export const useSubscriptions = () => {
 
   const handleSubmitForm = useCallback(
     (values: SubscriptionFormValues) => {
-      console.log(`Values: `)
-      console.log(values)
       if (editingPlan) {
         editPlan({
           ...values,
@@ -238,15 +256,20 @@ export const useSubscriptions = () => {
   const handleResetFilters = useCallback(() => {
     setSearchQuery("");
     setStatusFilter("ALL");
+    setAllPage(1);
+    setActivePage(1);
+    setInactivePage(1);
   }, []);
 
   return {
-    plans,
+    all,
+    active,
+    inactive,
     filteredPlans,
-    stats,
+    stats: serverStats,
     counts,
     searchQuery,
-    setSearchQuery,
+    setSearchQuery: handleSearchChange,
     statusFilter,
     setStatusFilter,
     handleResetFilters,
@@ -264,6 +287,18 @@ export const useSubscriptions = () => {
     isCreating,
     isEditing,
     isUpdatingStatus,
+    isLoading,
+    allPage,
+    setAllPage,
+    activePage,
+    setActivePage,
+    inactivePage,
+    setInactivePage,
+    currentPage,
+    currentTotalPages,
+    currentTotalItems,
+    handlePageChange,
+    itemsPerPage: ITEMS_PER_PAGE,
     fetchSubscriptionPlans,
   };
 };

@@ -7,6 +7,7 @@ import type { IUpdateStatusUseCase } from "../../../application/interfaces/repos
 import type { IGetDoctorUseCase } from "../../../application/interfaces/repositories/admin/doctor/i-get-doctor.usecase.ts";
 import type { IVerifyDocumentUseCase } from "../../../application/interfaces/repositories/admin/doctor/i-verify-document.usecase.ts";
 import type { IReviewDoctorUseCase } from "../../../application/interfaces/repositories/admin/doctor/i-review-doctor.usecase.ts";
+import type { GetAllDoctorsQueryDto } from "../../../application/dto/doctor.dto.ts";
 
 export class DoctorController {
   constructor(
@@ -55,12 +56,36 @@ export class DoctorController {
 
   async getAllDoctors(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this._getDoctors.execute();
+      console.log(`Query in the Controller: `);
+      console.log(req.query);
+
+      const query: GetAllDoctorsQueryDto = {
+        ...(req.query.search && {
+          search: String(req.query.search),
+        }),
+        ...(req.query.gender && {
+          gender: String(
+            req.query.gender,
+          ).toUpperCase() as GetAllDoctorsQueryDto["gender"],
+        }),
+        ...(req.query.departmentIds && {
+          departmentIds: Array.isArray(req.query.departmentIds)
+            ? req.query.departmentIds.map(String)
+            : [String(req.query.departmentIds)],
+        }),
+        sortBy: String(req.query.sortBy ?? "NEWEST"),
+        limit: Number(req.query.limit ?? 10),
+        approvedPage: Number(req.query.approvedPage ?? 1),
+        pendingPage: Number(req.query.pendingPage ?? 1),
+        rejectedPage: Number(req.query.rejectedPage ?? 1),
+      };
+
+      const result = await this._getDoctors.execute(query);
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,
         message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Doctors"),
-        data: data,
+        data: result,
       });
     } catch (error) {
       return next(error);

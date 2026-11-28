@@ -128,3 +128,12 @@ export type CreateDependentDto = {
   allergies?: string[];
   chronicConditions?: string[];
 };
+
+export type GetAllPatientsQueryDto = {
+  search?: string | undefined;
+  gender?: Gender | undefined;
+  status?: "ACTIVE" | "INACTIVE" | undefined;
+  sortBy: string;
+  limit: number;
+  page: number;
+};

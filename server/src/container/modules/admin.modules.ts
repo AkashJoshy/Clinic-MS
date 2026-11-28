@@ -2,6 +2,7 @@ import { PatientDetailsService } from "../../application/services/patient/patien
 import { AddDepartmentUseCase } from "../../application/use-cases/admin/department-management/add-department.usecase.ts";
 import { EditDepartmentUseCase } from "../../application/use-cases/admin/department-management/edit-department.usecase.ts";
 import { GetDepartmentUseCase } from "../../application/use-cases/admin/department-management/get-department.usecase.ts";
+import { GetAllDepartmentsUseCase as GetAllDepartmentsAdminUseCase } from "../../application/use-cases/admin/department-management/get-all-departments.usecase.ts";
 import { UpdateDepartmentStatusUseCase } from "../../application/use-cases/admin/department-management/update-department-status.usecase.ts";
 import { ApproveDoctorUseCase } from "../../application/use-cases/admin/doctor-management/approve-doctor.usecase.ts";
 import { GetAllDoctorsUseCase } from "../../application/use-cases/admin/doctor-management/get-all-doctors.usecase.ts";
@@ -82,6 +83,10 @@ const updateDepartmentStatusUseCase = new UpdateDepartmentStatusUseCase(
   mongooseDepartmentRepository,
 );
 
+const getAllDepartmentsAdminUseCase = new GetAllDepartmentsAdminUseCase(
+  mongooseDepartmentRepository,
+);
+
 const getAllDoctorsUseCase = new GetAllDoctorsUseCase(
   mongooseDoctorRepository,
   doctorDetailsService,
@@ -95,6 +100,7 @@ const getDoctorUseCase = new GetDoctorUseCase(
 const getAllPatientsUseCase = new GetAllPatientsUseCase(
   mongoosePatientRepository,
   patientDetailsService,
+  mongooseUserRepository,
 );
 
 const getPatientUseCase = new GetPatientUseCase(
@@ -201,6 +207,7 @@ export const adminDepartmentController = new DepartmentController(
   editDepartmentUseCase,
   getDepartmentUseCase,
   updateDepartmentStatusUseCase,
+  getAllDepartmentsAdminUseCase,
 );
 
 export const adminDoctorController = new DoctorController(

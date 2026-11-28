@@ -219,3 +219,14 @@ export interface DoctorAccountInfoProps {
   department: Pick<DepartmentData, "id" | "name"> | null;
   isDark: boolean;
 }
+
+
+export interface PaginatedData<T> {
+  data: T[];
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+}

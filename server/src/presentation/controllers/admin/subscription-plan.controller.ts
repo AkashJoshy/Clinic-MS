@@ -5,6 +5,7 @@ import type { IGetAllSubscriptionPlansUseCase } from "../../../application/inter
 import type { IEditSubscriptionPlanUseCase } from "../../../application/interfaces/repositories/admin/subscription/i-edit-subscription-plan.usecase.ts";
 import type { ICreateSubscriptionPlanUseCase } from "../../../application/interfaces/repositories/admin/subscription/i-create-subscription-plan.usecase.ts";
 import type { IUpdateSubscriptionPlanStatusUseCase } from "../../../application/interfaces/repositories/admin/subscription/i-update-subscription-plan-status.usecase.ts";
+import type { GetAllSubscriptionPlansQueryDto } from "../../../application/dto/subscription-plan.dto.ts";
 
 export class SubscriptionPlanController {
   constructor(
@@ -20,8 +21,18 @@ export class SubscriptionPlanController {
     next: NextFunction,
   ) {
     try {
+      const query: GetAllSubscriptionPlansQueryDto = {
+        ...(req.query.search && {
+          search: String(req.query.search),
+        }),
+        limit: Number(req.query.limit ?? 6),
+        allPage: Number(req.query.allPage ?? 1),
+        activePage: Number(req.query.activePage ?? 1),
+        inactivePage: Number(req.query.inactivePage ?? 1),
+      };
+
       const subscriptionPlans =
-        await this._getAllSubscriptionPlansUseCase.execute();
+        await this._getAllSubscriptionPlansUseCase.execute(query);
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,

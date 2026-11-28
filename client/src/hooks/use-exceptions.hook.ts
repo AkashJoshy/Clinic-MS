@@ -100,23 +100,23 @@ export function useExceptions(
       endDate: dateForm.endDate,
     };
 
-    if (activeTab === "vacations") {
-      const isAlreadyExists = exceptions.vacations.find(
-        (vacation) =>
-          vacation.reason === dateForm.reason.trim() ||
-          vacation.startDate === dateForm.startDate ||
-          vacation.endDate === dateForm.endDate,
-      );
+    // if (activeTab === "vacations") {
+    //   const isAlreadyExists = exceptions.vacations.find(
+    //     (vacation) =>
+    //       vacation.reason === dateForm.reason.trim() ||
+    //       vacation.startDate === dateForm.startDate ||
+    //       vacation.endDate === dateForm.endDate,
+    //   );
 
-      if (isAlreadyExists) {
-        toast.error("Vacations already exists");
-        return;
-      }
-      onChange({
-        ...exceptions,
-        vacations: [...exceptions.vacations, newItem],
-      });
-    }
+    //   if (isAlreadyExists) {
+    //     toast.error("Vacations already exists");
+    //     return;
+    //   }
+    //   onChange({
+    //     ...exceptions,
+    //     vacations: [...exceptions.vacations, newItem],
+    //   });
+    // }
 
     if (activeTab === "blackouts") {
       const isAlreadyExists = exceptions.blackouts.find(

@@ -1,13 +1,7 @@
 import type { Exceptions, SlotRules, WeeklySchedule } from "../types/doctor-clinic.types.ts";
 
 export const INITIAL_SLOT_RULES: SlotRules = {
-  sessionDuration: 30,
-  bufferTime: 10,
-  maxSessionsPerDay: 20,
-  minAdvanceNotice: 60,
-  bookingWindow: 30,
-  slotInterval: "AUTO",
-  // bookingMode: "both",
+  maxTokensPerDay: 20,
   autoConfirmBookings: true,
   allowReschedule: true,
 };
@@ -46,7 +40,6 @@ export const INITIAL_SCHEDULE: WeeklySchedule[] = [
 export const INITIAL_EXCEPTIONS: Exceptions = {
   breaks: [],
   holidays: [],
-  vacations: [],
   blackouts: [],
   overrides: []
 }

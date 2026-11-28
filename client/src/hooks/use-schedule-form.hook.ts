@@ -10,8 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-
-export function useScheduleForm<T extends ScheduleFormSchemaFormData>(mutateFn: MutateFn<T>): UseScheduleFormReturn {
+export function useScheduleForm<T extends ScheduleFormSchemaFormData>(
+  mutateFn: MutateFn<T>,
+): UseScheduleFormReturn {
   const doctorDetails = useAuthStore((state) => state.doctor);
   const [selectedClinicId, setSelectedClinicId] = useState(
     doctorDetails?.doctorClinicDetails[0]?.clinic?.id,
@@ -36,11 +37,12 @@ export function useScheduleForm<T extends ScheduleFormSchemaFormData>(mutateFn: 
     handleSubmit,
     trigger,
     reset,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isDirty },
   } = useForm<ScheduleFormSchemaFormData>({
     resolver: zodResolver(scheduleFormSchema),
     mode: "onSubmit",
     reValidateMode: "onChange",
+    shouldFocusError: true,
     defaultValues: {
       doctorClinicId: selectedClinic?.id!,
       doctorId: doctorDetails?.doctor?.id!,
@@ -90,11 +92,11 @@ export function useScheduleForm<T extends ScheduleFormSchemaFormData>(mutateFn: 
     });
   };
 
-  const handleGenerateSlots = () => {
+  const handleSchedule = () => {
     const submitHandler = handleSubmit(
       (data) => {
         console.log("Valid form data:", data);
-        mutateFn(data as T)
+        mutateFn(data as T);
       },
       (errors) => {
         console.log("Validation errors:", errors);
@@ -125,7 +127,9 @@ export function useScheduleForm<T extends ScheduleFormSchemaFormData>(mutateFn: 
     errors,
     isSubmitted,
     trigger,
+    isDirty,
+    reset,
     handleSubmit,
-    handleGenerateSlots,
+    handleSchedule,
   };
 }

@@ -17,7 +17,7 @@ const DoctorDashboardLayout: React.FC = () => {
       <div className={`flex-1 ${isDark ? "bg-[#080d14]" : "bg-white"}  flex overflow-hidden`}>
         <DoctorSideNav />
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <div className="flex-1 overflow-y-auto no-scrollbar">
+          <div id="doctor-main-layout" className="flex-1 overflow-y-auto no-scrollbar">
             <div className="container mx-auto p-2 h-full">
               <Outlet />
             </div>

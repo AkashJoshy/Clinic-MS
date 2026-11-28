@@ -5,6 +5,7 @@ import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import type { IGetPatientUseCase } from "../../../application/interfaces/repositories/admin/patient/i-get-patient.usecase.ts";
 import type { IUpdateStatusUseCase } from "../../../application/interfaces/repositories/admin/patient/i-update-status.usecase.ts";
 import type { IGetAllPatientsUseCase } from "../../../application/interfaces/repositories/admin/patient/i-get-all-patients.usecase.ts";
+import type { GetAllPatientsQueryDto } from "../../../application/dto/patient.dto.ts";
 
 export class PatientController {
   constructor(
@@ -15,11 +16,30 @@ export class PatientController {
 
   async getAllPatients(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await this._getPatients.execute();
+      const query: GetAllPatientsQueryDto = {
+        ...(req.query.search && {
+          search: String(req.query.search),
+        }),
+        ...(req.query.gender && {
+          gender: String(
+            req.query.gender,
+          ).toUpperCase() as GetAllPatientsQueryDto["gender"],
+        }),
+        ...(req.query.status && {
+          status: String(
+            req.query.status,
+          ).toUpperCase() as GetAllPatientsQueryDto["status"],
+        }),
+        sortBy: String(req.query.sortBy ?? "NEWEST"),
+        limit: Number(req.query.limit ?? 6),
+        page: Number(req.query.page ?? 1),
+      };
+
+      const data = await this._getPatients.execute(query);
 
       return res.status(ResponseStatusCode.OK).json({
         success: true,
-        message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Doctors"),
+        message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Patients"),
         data: data,
       });
     } catch (error) {

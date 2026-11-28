@@ -85,3 +85,10 @@ export type UpdatePlatformSettingsData =
       selection: "SYSTEM";
       data: SystemSettings;
     };
+
+export type GetAllDepartmentsQueryParams = {
+  search?: string | undefined;
+  sortBy?: string | undefined;
+  limit?: number | undefined;
+  page?: number | undefined;
+};

@@ -103,7 +103,6 @@ export default function DoctorManagementPage() {
     <div
       className={`relative min-h-full space-y-6 border p-6 shadow-2xs transition-colors duration-200 lg:p-8 ${theme.container}`}
     >
-      {/* Header and Search */}
       <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
         <AdminPageHeader
           icon={Stethoscope}
@@ -128,7 +127,6 @@ export default function DoctorManagementPage() {
         </div>
       </div>
 
-      {/* Tabs and Filters */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div
           className={`scrollbar-none custom-scrollbar ${
@@ -177,7 +175,6 @@ export default function DoctorManagementPage() {
         </button>
       </div>
 
-      {/* Filter Modal */}
       <DoctorFilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
@@ -188,7 +185,6 @@ export default function DoctorManagementPage() {
         isDark={isDark}
       />
 
-      {/* All Doctors */}
       {activeTab === "all" && (
         <>
           {isLoading ? (
@@ -232,7 +228,6 @@ export default function DoctorManagementPage() {
         </>
       )}
 
-      {/* Pending Doctors */}
       {activeTab === "pending" && (
         <>
           {isLoading ? (
@@ -284,7 +279,6 @@ export default function DoctorManagementPage() {
         </>
       )}
 
-      {/* Rejected Doctors */}
       {activeTab === "rejected" && (
         <>
           {isLoading ? (

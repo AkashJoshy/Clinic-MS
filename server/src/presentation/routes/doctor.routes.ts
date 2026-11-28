@@ -17,14 +17,13 @@ import {
 import { validateFile } from "../middlewares/validate-file.middleware.ts";
 import { updatePersonalProfilePictureSchema } from "../schemas/shared/shared.schema.ts";
 import { generateSlotsSchema } from "../schemas/doctor/generate-slots.schema.ts";
-import { confirmedSlotsSchema } from "../schemas/doctor/confirm-slots.schema.ts";
 import {
   doctorController,
   doctorDashboardController,
   doctorKycController,
   doctorReapplicationController,
+  doctorScheduleController,
   doctorSettingsController,
-  doctorSlotController,
   doctorSubscriptionController,
 } from "../../container/modules/doctor.modules.ts";
 import {
@@ -102,26 +101,6 @@ router.patch(
   validateFile(updatePersonalProfilePictureSchema),
   async (req, res, next) => {
     await doctorController.updateProfessionalDetails(req, res, next);
-  },
-);
-
-router.patch(
-  DOCTOR_ENDPOINTS["CLINICS"]["SLOTS"]["GENERATE"],
-  authenticateUser,
-  authorizeUser,
-  validate(generateSlotsSchema),
-  async (req, res, next) => {
-    await doctorSlotController.generateSlots(req, res, next);
-  },
-);
-
-router.post(
-  DOCTOR_ENDPOINTS["CLINICS"]["SLOTS"]["CONFIRM"],
-  authenticateUser,
-  authorizeUser,
-  validate(confirmedSlotsSchema),
-  async (req, res, next) => {
-    await doctorSlotController.confirmSlots(req, res, next);
   },
 );
 
@@ -306,6 +285,15 @@ router.patch(
   validate(updateDoctorSettingsSchema),
   async (req, res, next) => {
     await doctorSettingsController.updateDoctorSettings(req, res, next);
+  },
+);
+
+router.put(
+  DOCTOR_ENDPOINTS["SCHEDULE"]["UPDATE"],
+  authenticateUser,
+  authorizeUser,
+  async (req, res, next) => {
+    await doctorScheduleController.updateSchedule(req, res, next);
   },
 );
 

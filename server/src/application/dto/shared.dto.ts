@@ -4,7 +4,10 @@ import type { Doctor } from "../../domain/entities/doctor.entity.ts";
 import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
 import type Patient from "../../domain/entities/patient.entity.ts";
 import type User from "../../domain/entities/user.entity.ts";
-import type { ImageData } from "../../domain/types/shared.types.ts";
+import type {
+  ImageData,
+  PaginationMetaData,
+} from "../../domain/types/shared.types.ts";
 import type { ClinicDetails } from "./doctor.dto.ts";
 import type { PatientProfile, UpdateAddress } from "./patient.dto.ts";
 import type { SafeClinic } from "./clinic.dto.ts";
@@ -16,7 +19,10 @@ import type { ownerModel } from "../../domain/enums/user.enums.ts";
 import type { SafeWalletTransaction } from "../../domain/types/wallet-transaction.types.ts";
 import type { DepartmentDto, SafeDepartmentDto } from "./department.dto.ts";
 import type { PlatformSettings } from "../../domain/entities/platform-settings.entity.ts";
-import type { AppearanceSettingsProps, PlatformDetailsProps } from "../../domain/types/platform-settings.types.ts";
+import type {
+  AppearanceSettingsProps,
+  PlatformDetailsProps,
+} from "../../domain/types/platform-settings.types.ts";
 
 type DoctorClinicDetails = Omit<
   DoctorClinic,
@@ -129,3 +135,7 @@ export type PlatformDataResponseDto = {
   primaryColor: AppearanceSettingsProps["primaryBrandColor"];
   isMaintenanceMode: boolean;
 };
+
+export type PaginatedResponseDto<T> = {
+  data: T[];
+} & PaginationMetaData;

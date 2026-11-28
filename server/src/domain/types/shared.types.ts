@@ -1,5 +1,30 @@
 export type Gender = "MALE" | "FEMALE" | "OTHERS" | "PREFER NOT TO SAY";
 
+export type SortOrder = 1 | -1;
+
+export type SortBy =
+  | "NEWEST"
+  | "OLDEST"
+  | "NAME_ASC"
+  | "NAME_DESC";
+
+export interface PaginationOptions {
+  page?: number | undefined;
+  limit?: number | undefined;
+  sort?: string | Record<string, 1 | -1> | undefined;
+  select?: string | undefined;
+}
+
+export interface PaginatedResult<TEntity> {
+  data: TEntity[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export type DayOfWeek =
   | "MONDAY"
   | "TUESDAY"
@@ -114,4 +139,13 @@ export interface RecordHttpRequestParams {
   route: string;
   statusCode: number;
   durationSeconds: number;
+}
+
+export type PaginationMetaData = {
+  total: number,
+  page: number,
+  limit: number,
+  totalPages: number,
+  hasNextPage: boolean,
+  hasPreviousPage: boolean
 }

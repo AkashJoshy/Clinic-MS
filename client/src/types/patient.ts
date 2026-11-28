@@ -1,9 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { ImageData, UpdateMethods } from "./common";
 import type { Address, User } from "./user";
-import type React from "react";
 import type { PatientFormInstance } from "@/hooks/use-patient-form.hook";
-import type { UseFormRegister } from "react-hook-form";
 import type { RELATIONS } from "@/constants/form-fields.constants";
 import type { AdminDoctorInfo, BasicDoctorInfo } from "./doctor";
 
@@ -268,5 +266,27 @@ export type PatientDoctorDetailsCard = {
 > | null,
   })[]
   address: AdminDoctorInfo["address"] | null;
-  department: BasicDoctorInfo["department"]
-}
+  department: BasicDoctorInfo["department"];
+};
+
+export type GetAllPatientsQueryParams = {
+  search?: string | undefined;
+  gender?: Gender | undefined;
+  status?: "ACTIVE" | "INACTIVE" | undefined;
+  sortBy?: string | undefined;
+  limit?: number | undefined;
+  page?: number | undefined;
+};
+
+export type GetPatientDoctorsQueryParams = {
+  search?: string | undefined;
+  gender?: string | undefined;
+  specializations?: string[] | undefined;
+  consultationModes?: string[] | undefined;
+  experience?: string | undefined;
+  rating?: string | number | undefined;
+  sort?: string | undefined;
+  limit?: number | undefined;
+  page?: number | undefined;
+};
+

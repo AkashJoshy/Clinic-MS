@@ -14,7 +14,7 @@ const SearchDoctorsPage = () => {
     sort,
     currentPage,
     totalPages,
-    filteredDoctors,
+    totalDoctors,
     paginatedDoctors,
     isLoading,
     hasActiveFilters,
@@ -29,10 +29,11 @@ const SearchDoctorsPage = () => {
     <div className="min-h-screen bg-gray-50/50 font-sans">
       <div className="space-y-6 bg-white p-6 border border-gray-200 shadow-sm">
         <PatientPageHeader
-        icon={Stethoscope}
-        title="Find the right doctor for you"
-        description="Search specialists, compare doctors, and find available appointments."
-      />
+          icon={Stethoscope}
+          title="Find the right doctor for you"
+          description="Search specialists, compare doctors, and find available appointments."
+          isDark={false}
+        />
 
         <DoctorSearchBar value={searchQuery} onChange={handleSearchChange} />
 
@@ -42,9 +43,8 @@ const SearchDoctorsPage = () => {
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
         >
-          
           <DoctorResultsHeader
-            count={filteredDoctors.length}
+            count={totalDoctors}
             sort={sort}
             onSortChange={handleSortChange}
           />

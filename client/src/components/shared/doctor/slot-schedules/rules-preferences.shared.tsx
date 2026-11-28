@@ -59,7 +59,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
             aria-checked={enabled}
             aria-label={label}
             onClick={() => handleChange(key, !enabled)}
-            className={`relative mt-2 h-6 w-11 rounded-full transition-colors xsxs:block md:hidden ${
+            className={`relative mt-2 h-6 w-11 rounded-full cursor-pointer transition-colors xsxs:block md:hidden ${
               enabled ? "bg-primary" : "bg-gray-600"
             }`}
           >
@@ -119,136 +119,22 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label className={`text-sm ${labelClass}`}>
-              Session Duration (minutes)
-            </label>
-
-            <input
-              type="number"
-              min={5}
-              value={rules.sessionDuration ?? ""}
-              onChange={(e) =>
-                handleChange("sessionDuration", Number(e.target.value))
-              }
-              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
-            />
-
-            {error?.sessionDuration?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.sessionDuration.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className={`text-sm ${labelClass}`}>
-              Buffer Time (minutes)
-            </label>
-
-            <input
-              type="number"
-              min={0}
-              value={rules.bufferTime ?? ""}
-              onChange={(e) =>
-                handleChange("bufferTime", Number(e.target.value))
-              }
-              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
-            />
-
-            {error?.bufferTime?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.bufferTime.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className={`text-sm ${labelClass}`}>
-              Max Sessions Per Day
+              Maximum Tokens Per Day
             </label>
 
             <input
               type="number"
               min={1}
-              value={rules.maxSessionsPerDay ?? ""}
+              value={rules.maxTokensPerDay ?? ""}
               onChange={(e) =>
-                handleChange("maxSessionsPerDay", Number(e.target.value))
+                handleChange("maxTokensPerDay", Number(e.target.value))
               }
               className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
             />
 
-            {error?.maxSessionsPerDay?.message && (
+            {error?.maxTokensPerDay?.message && (
               <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.maxSessionsPerDay.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className={`text-sm ${labelClass}`}>
-              Min Advance Notice (hours)
-            </label>
-
-            <input
-              type="number"
-              min={0}
-              value={rules.minAdvanceNotice ?? ""}
-              onChange={(e) =>
-                handleChange("minAdvanceNotice", Number(e.target.value))
-              }
-              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
-            />
-
-            {error?.minAdvanceNotice?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.minAdvanceNotice.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className={`text-sm ${labelClass}`}>
-              Booking Window (days ahead)
-            </label>
-
-            <input
-              type="number"
-              min={1}
-              value={rules.bookingWindow ?? ""}
-              onChange={(e) =>
-                handleChange("bookingWindow", Number(e.target.value))
-              }
-              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 ${inputClass}`}
-            />
-
-            {error?.bookingWindow?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.bookingWindow.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className={`text-sm ${labelClass}`}>
-              Slot Interval Calculation
-            </label>
-
-            <select
-              value={rules.slotInterval}
-              onChange={(e) =>
-                handleChange(
-                  "slotInterval",
-                  e.target.value as SlotRules["slotInterval"],
-                )
-              }
-              className={`rounded border px-3 py-2 outline-none transition focus:border-primary/50 xsxs:text-[10px] xs:text-[14px] ${inputClass}`}
-            >
-              <option value="AUTO">Auto (Continuous)</option>
-              <option value="FIXED">Fixed On the Hour/Half-Hour</option>
-            </select>
-
-            {error?.slotInterval?.message && (
-              <p className="mt-1 text-sm text-red-500" role="alert">
-                {error.slotInterval.message}
+                {error.maxTokensPerDay.message}
               </p>
             )}
           </div>
@@ -264,6 +150,7 @@ export const SlotRulesPreferences: React.FC<SlotRulesPreferencesProps> = ({
             "Allow Rescheduling",
             "Allow patients to reschedule existing appointments.",
           )}
+          
         </div>
       </div>
 

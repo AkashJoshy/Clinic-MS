@@ -15,6 +15,7 @@ import {
   mongoosePatientRepository,
   mongooseDoctorRepository,
   doctorDetailsService,
+  mongooseDepartmentRepository,
   mongooseWalletRepository,
   walletTransactionsDetailsService,
 } from "../index.ts";
@@ -54,6 +55,7 @@ const createPatientProfileUseCase = new CreatePatientProfileUseCase(
 const getAllDoctorsUseCase = new GetAllDoctorsUsecase(
   mongooseDoctorRepository,
   doctorDetailsService,
+  mongooseDepartmentRepository,
 );
 
 export const getPatientWalletUseCase = new GetPatientWalletUseCase(

@@ -128,7 +128,6 @@ export class BuySubscriptionWithWallet implements IBuySubscriptionWithWalletUseC
       );
     }
 
-    // Wallet status validation
     if (doctorWallet.status === "CLOSED") {
       throw new LockedError("Your wallet is permanently closed.");
     }
@@ -151,7 +150,6 @@ export class BuySubscriptionWithWallet implements IBuySubscriptionWithWalletUseC
       );
     }
 
-    // Subscription period calculation
     const startDate = new Date();
 
     let currentPeriodEnd: Date | null = null;

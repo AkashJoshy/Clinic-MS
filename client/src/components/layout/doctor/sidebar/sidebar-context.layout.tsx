@@ -20,7 +20,7 @@ const SidebarContent: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex h-full flex-col ${isDark ? "bg-[#0d1a27]" : "bg-white"}`}
+      className={`flex h-full flex-col ${isDark ? "bg-[#080d14]" : "bg-white"}`}
     >
       <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
         <NavSection

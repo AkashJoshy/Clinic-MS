@@ -8,7 +8,7 @@ export const ExceptionTabs: React.FC<ExceptionTabsProps> = ({
   tabInactiveClass,
   countInactiveClass,
 }) => {
-  const tabs = ["breaks", "vacations", "blackouts", "holidays"] as const;
+  const tabs = ["breaks", "blackouts", "holidays"] as const;
 
   return (
     <div className="flex items-center overflow-x-auto border-b border-gray-200 dark:border-slate-700/60">

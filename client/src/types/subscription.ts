@@ -1,3 +1,5 @@
+import type { PaginatedData } from "./common";
+
 export type BillingCycle = "MONTHLY" | "QUARTERLY" | "YEARLY" | "LIFETIME";
 
 export type PlanStatus = "ACTIVE" | "INACTIVE";
@@ -43,4 +45,19 @@ export interface SubscriptionStats {
 export type UpdateSubscriptionStatusData = {
   id: string;
   status: PlanStatus;
+};
+
+export interface SubscriptionManagementResponse {
+  all: PaginatedData<SubscriptionPlan>;
+  active: PaginatedData<SubscriptionPlan>;
+  inactive: PaginatedData<SubscriptionPlan>;
+  stats?: SubscriptionStats;
+}
+
+export type GetAllSubscriptionPlansQueryParams = {
+  search?: string | undefined;
+  limit?: number | undefined;
+  allPage?: number | undefined;
+  activePage?: number | undefined;
+  inactivePage?: number | undefined;
 };

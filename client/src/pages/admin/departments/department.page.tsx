@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { LayoutGrid, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationalModal from "@/components/shared/delete-confirmational-modal.shared";
-import { useMutate } from "@/hooks/use-mutate.hook";
-import { updateDepartment } from "@/services/admin.service";
-import { getAllDepartments } from "@/services/shared.service";
 import { AllApprovals } from "@/components/shared/admin/all-approvals.shared";
 import { Pagination } from "@/components/layout/pagination.layout";
-import type { DepartmentData, SelectedDept } from "@/types/admin";
-import type { UpdateMethods } from "@/types/common";
 import DepartmentCard from "@/components/shared/admin/departments/department-card.shared";
 import DepartmentCardSkeleton from "@/components/shared/skeletons/department-card.skeleton";
-import toast from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
 import AdminPageHeader from "@/components/shared/page-header.shared";
 import { useAuthStore } from "@/store";
 import { getDepartmentTheme } from "@/helpers/admin/departments.helper";
-
-const ITEMS_PER_PAGE = 6;
+import { useDepartmentManagement } from "@/hooks/use-department-management.hook";
 
 const DepartmentPage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,87 +20,29 @@ const DepartmentPage: React.FC = () => {
 
   const theme = getDepartmentTheme(isDark);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [allDepartments, setAllDepartments] = useState<DepartmentData[]>([]);
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const [selectedDept, setSelectedDept] = useState<
-    (SelectedDept & { action: UpdateMethods }) | null
-  >(null);
-  const [page, setPage] = useState<number>(1);
-
-  const fetchDepartments = async () => {
-    try {
-      setIsLoading(true);
-      const response = await getAllDepartments();
-      const data = response.data;
-
-      if (data) {
-        setAllDepartments(data);
-      } else {
-        setAllDepartments([]);
-      }
-    } catch (error) {
-      toast.error("Error fetching departments");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    departmentList,
+    isLoading,
+    searchQuery,
+    handleSearchChange,
+    isOpen,
+    selectedDept,
+    handleDelete,
+    closeDeleteBox,
+    onUpdate,
+    page,
+    setPage,
+    totalDepartments,
+    totalPages,
+    itemsPerPage,
+  } = useDepartmentManagement();
 
   useEffect(() => {
-    fetchDepartments();
-
     window.scrollTo({
       behavior: "smooth",
       top: 0,
     });
-  }, []);
-
-  const { mutate } = useMutate(updateDepartment, {
-    onSuccess: (data) => {
-      setAllDepartments((prev) => {
-        return prev.map((dept) => {
-          if (dept.id === data.data?.departmentId) {
-            return {
-              ...dept,
-              status: data.data?.status,
-            };
-          }
-
-          return dept;
-        });
-      });
-
-      setOpen(false);
-    },
-  });
-
-  function onUpdate() {
-    if (selectedDept && selectedDept.id) {
-      mutate({ id: selectedDept.id, status: selectedDept.status });
-    }
-  }
-
-  const filteredDepartments = allDepartments.filter((dept) =>
-    dept.name.toLowerCase().includes(searchQuery.toLowerCase().trim()),
-  );
-
-  function handleDelete({
-    id,
-    name,
-    status,
-    action,
-  }: SelectedDept & { action: UpdateMethods }) {
-    setSelectedDept({ id, name, status, action });
-    setOpen((prev) => !prev);
-  }
-
-  function closeDeleteBox() {
-    setOpen(false);
-  }
-
-  const totalItems = filteredDepartments.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  }, [page]);
 
   return (
     <div
@@ -141,10 +76,7 @@ const DepartmentPage: React.FC = () => {
           type="text"
           placeholder="Search all departments..."
           value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setPage(1);
-          }}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm outline-none transition-all ${theme.searchInput}`}
         />
       </div>
@@ -155,7 +87,7 @@ const DepartmentPage: React.FC = () => {
             <DepartmentCardSkeleton key={i} isDark={isDark} />
           ))}
         </div>
-      ) : filteredDepartments.length === 0 ? (
+      ) : departmentList.length === 0 ? (
         <div className="text-center py-12">
           <h1 className={theme.emptyState}>
             <AllApprovals name="Departments" isDark={isDark} />
@@ -172,7 +104,7 @@ const DepartmentPage: React.FC = () => {
             className="space-y-3"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredDepartments.map((dept) => (
+              {departmentList.map((dept) => (
                 <DepartmentCard
                   key={dept.id}
                   department={dept}
@@ -198,14 +130,16 @@ const DepartmentPage: React.FC = () => {
         />
       )}
 
-      <Pagination
-        currentPage={page}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={totalItems}
-        totalPages={totalPages}
-        onPageChange={setPage}
-        isDark={isDark}
-      />
+      {totalPages >= 1 && (
+        <Pagination
+          currentPage={page}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalDepartments}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          isDark={isDark}
+        />
+      )}
     </div>
   );
 };

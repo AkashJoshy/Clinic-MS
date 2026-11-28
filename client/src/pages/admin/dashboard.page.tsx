@@ -68,20 +68,27 @@ const AdminDashboardPage: React.FC = () => {
 
       setError(null);
 
-      const [docsRes, ptsRes, plansRes, departRes, statsRes] =
+      const [
+        // docsRes, 
+        // ptsRes, 
+        plansRes, 
+        departRes, 
+        statsRes
+      ] =
         await Promise.allSettled([
-          getAllDoctors(),
-          getAllPatients(),
+          // getAllDoctors(),
+          // getAllPatients(),
           getAllSubscriptionPlans(),
           departmentDistribution(),
           dashboardStats(),
         ]);
 
-      if (docsRes.status === "fulfilled" && docsRes.value?.data) {
-        setDoctors(docsRes.value.data);
-      } else if (docsRes.status === "rejected") {
-        console.warn("Doctors fetch warning:", docsRes.reason);
-      }
+      // if (docsRes.status === "fulfilled" && docsRes.value?.data) {
+      //   // setDoctors(docsRes.value.data);
+      //   setDoctors([]);
+      // } else if (docsRes.status === "rejected") {
+      //   console.warn("Doctors fetch warning:", docsRes.reason);
+      // }
 
       if (departRes.status === "fulfilled" && departRes.value?.data) {
         console.log(departRes.value.data);
@@ -94,11 +101,11 @@ const AdminDashboardPage: React.FC = () => {
         console.warn("Departments fetch warning:", departRes.reason);
       }
 
-      if (ptsRes.status === "fulfilled" && ptsRes.value?.data) {
-        setPatients(ptsRes.value.data);
-      } else if (ptsRes.status === "rejected") {
-        console.warn("Patients fetch warning:", ptsRes.reason);
-      }
+      // if (ptsRes.status === "fulfilled" && ptsRes.value?.data) {
+      //   setPatients(ptsRes.value.data);
+      // } else if (ptsRes.status === "rejected") {
+      //   console.warn("Patients fetch warning:", ptsRes.reason);
+      // }
 
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {
         setStats(statsRes.value.data);

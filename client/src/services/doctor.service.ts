@@ -7,7 +7,7 @@ import api from "../api/interceptors";
 import { ENDPOINTS } from "./endpoints";
 import type { ProfileAddress } from "@/types/patient";
 import { ROLE_VALUES } from "@/constants/role.constants";
-import type { ConfirmedSlots, GenerateSlotsData } from "@/types/doctor-clinic";
+import type { UpdateScheduleData } from "@/types/doctor-clinic";
 import type {
   BuySubscriptionWithWalletData,
   CancelSubscriptionData,
@@ -224,51 +224,6 @@ export const updateDoctorProfilePicture = async (personalData: FormData) => {
   }
 };
 
-export const generateSlots = async (data: GenerateSlotsData) => {
-  try {
-    const { doctorClinicId, ...rest } = data;
-    const res = await api.patch(
-      ENDPOINTS.DOCTOR.GENERATE_SLOTS(doctorClinicId),
-      rest,
-      {
-        authRole: ROLE_VALUES.lower.DOCTOR,
-      },
-    );
-    return res.data;
-  } catch (error: any) {
-    if (error.response) {
-      throw error.response.data;
-    }
-
-    return {
-      success: false,
-      message: error.message || "Network Error",
-    };
-  }
-};
-
-export const confirmSlots = async (data: ConfirmedSlots) => {
-  try {
-    const { doctorClinicId, ...rest } = data;
-    const res = await api.post(
-      ENDPOINTS.DOCTOR.CONFIRM_SLOTS(doctorClinicId),
-      rest,
-      {
-        authRole: ROLE_VALUES.lower.DOCTOR,
-      },
-    );
-    return res.data;
-  } catch (error: any) {
-    if (error.response) {
-      throw error.response.data;
-    }
-
-    return {
-      success: false,
-      message: error.message || "Network Error",
-    };
-  }
-};
 
 export const fetchSubscriptionOverview = async () => {
   try {
@@ -555,3 +510,22 @@ export const getDoctorSettingsDetails = async () => {
     };
   }
 };
+
+export const updateDoctorSchedule = async (scheduleData: UpdateScheduleData) => {
+  try {
+    const res = await api.put(ENDPOINTS.DOCTOR.UPDATE_SCHEDULE, scheduleData, {
+      authRole: ROLE_VALUES.lower.DOCTOR,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+

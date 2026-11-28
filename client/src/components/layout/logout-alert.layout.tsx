@@ -8,6 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { getContrastTextColor } from "@/helpers/color-palette.helper";
+import { useAuthStore } from "@/store";
 
 interface LogoutAlertProps {
   open: boolean;
@@ -22,6 +24,9 @@ const LogoutAlert: React.FC<LogoutAlertProps> = ({
   onConfirm,
   isDark
 }) => {
+
+  const { primaryColor } = useAuthStore(state => state.platform)
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className={`border-none ${isDark ? "bg-gray-900" : ""} `}>
@@ -39,6 +44,7 @@ const LogoutAlert: React.FC<LogoutAlertProps> = ({
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
+            style={{ color: `${getContrastTextColor(primaryColor)}` }}
             className="bg-red-600 hover:bg-red-500 hover:border-none"
             onClick={onConfirm}
           >

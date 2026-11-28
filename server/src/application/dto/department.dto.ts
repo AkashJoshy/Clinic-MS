@@ -20,5 +20,12 @@ export type GetDepartmentDto = Omit<CreateDepartmentDto, "mode" | "name"> & {
 
 export type EditDepartmentDto = DepartmentDto;
 
-export type SafeDepartmentDto = Omit<SafeDepartment, "createdAt">
-export type DepartmentResponseDto = SafeDepartmentDto
+export type SafeDepartmentDto = Omit<SafeDepartment, "createdAt">;
+export type DepartmentResponseDto = SafeDepartmentDto;
+
+export type GetAllDepartmentsQueryDto = {
+  search?: string | undefined;
+  sortBy?: string | undefined;
+  limit?: number | undefined;
+  page?: number | undefined;
+};

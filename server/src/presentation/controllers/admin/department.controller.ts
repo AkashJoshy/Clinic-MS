@@ -5,8 +5,12 @@ import { RESPONSE_MESSAGE } from "../../../domain/constants/response.constant.ts
 import { NotFoundError } from "../../../domain/errors/not-found.error.ts";
 import type { IGetDepartmentUseCase } from "../../../application/interfaces/repositories/admin/department/i-get-department.usecase.ts";
 import type { IUpdateDepartmentStatusUseCase } from "../../../application/interfaces/repositories/admin/department/i-update-department.usecase.ts";
-import type { CreateDepartmentDto } from "../../../application/dto/department.dto.ts";
+import type {
+  CreateDepartmentDto,
+  GetAllDepartmentsQueryDto,
+} from "../../../application/dto/department.dto.ts";
 import type { IEditDepartmentUseCase } from "../../../application/interfaces/repositories/admin/department/i-edit-department.usecase.ts";
+import type { IGetAllDepartmentsAdminUseCase } from "../../../application/interfaces/repositories/admin/department/i-get-all-departments.usecase.ts";
 
 export class DepartmentController {
   constructor(
@@ -14,7 +18,35 @@ export class DepartmentController {
     private _editDepartment: IEditDepartmentUseCase,
     private _getDepartment: IGetDepartmentUseCase,
     private _updateDepartmentStatus: IUpdateDepartmentStatusUseCase,
+    private _getAllDepartments?: IGetAllDepartmentsAdminUseCase,
   ) {}
+
+  async getAllDepartments(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!this._getAllDepartments) {
+        throw new Error("GetAllDepartmentsUseCase not injected");
+      }
+
+      const query: GetAllDepartmentsQueryDto = {
+        ...(req.query.search && {
+          search: String(req.query.search),
+        }),
+        sortBy: String(req.query.sortBy ?? "NEWEST"),
+        limit: Number(req.query.limit ?? 6),
+        page: Number(req.query.page ?? 1),
+      };
+
+      const result = await this._getAllDepartments.execute(query);
+
+      return res.status(ResponseStatusCode.OK).json({
+        success: true,
+        message: RESPONSE_MESSAGE.FETCHED.replace("Resource", "Departments"),
+        data: result,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
 
   async addDepartment(req: Request, res: Response, next: NextFunction) {
     try {

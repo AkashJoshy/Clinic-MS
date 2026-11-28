@@ -1,8 +1,11 @@
+import type { PaginationMetaData } from "../../../domain/types/shared.types.ts";
 import type {
   AdminDoctorFullInfoDto,
   AdminDoctorInfoDto,
   DoctorDetailsCardResponseDto,
+  DoctorManagementResponseDto,
 } from "../../dto/doctor.dto.ts";
+import type { PaginatedResponseDto } from "../../dto/shared.dto.ts";
 
 export class DoctorMapper {
   static toDoctorDetailsCard(doctorDetails: AdminDoctorFullInfoDto) {
@@ -103,6 +106,30 @@ export class DoctorMapper {
         updatedAt: doctorClinic.updatedAt,
       })),
       address: address ? address : null,
+    };
+  }
+
+  static toDoctorDetailsCardResponse(
+    approvedPagination: PaginationMetaData,
+    pendingPagination: PaginationMetaData,
+    rejectedPagination: PaginationMetaData,
+    updatedApprovedResponse: DoctorDetailsCardResponseDto[],
+    updatedPendingResponse: DoctorDetailsCardResponseDto[],
+    updatedRejectedResponse: DoctorDetailsCardResponseDto[],
+  ): DoctorManagementResponseDto {
+    return {
+      approved: {
+        ...approvedPagination,
+        data: updatedApprovedResponse,
+      },
+      pending: {
+        ...pendingPagination,
+        data: updatedPendingResponse,
+      },
+      rejected: {
+        ...rejectedPagination,
+        data: updatedRejectedResponse,
+      },
     };
   }
 }

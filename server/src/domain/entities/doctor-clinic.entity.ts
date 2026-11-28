@@ -81,6 +81,10 @@ export class DoctorClinic {
     this.slotRules = newRules;
   }
 
+  updateExceptions(newExceptions: Exceptions) {
+    this.exceptions = newExceptions;
+  }
+
   updateConsultationDetails(
     data: Pick<
       DoctorClinic,

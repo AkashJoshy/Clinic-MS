@@ -2,7 +2,6 @@ import { DAY_NAMES } from "@/constants/doctor.constant";
 import { z } from "zod";
 
 const shiftSchema = z.object({
-  id: z.string(),
   startTime: z.string(),
   endTime: z.string(),
   mode: z.enum(["ONLINE", "OFFLINE", "BOTH"]),
@@ -24,43 +23,48 @@ const weeklyScheduleSchema = z
   });
 
 const slotRulesSchema = z.object({
-  sessionDuration: z
-    .number()
-    .positive()
-    .min(5, "Session duration must be at least 5 minutes.")
-    .max(180, "Session duration cannot exceed 180 minutes."),
-  slotInterval: z.enum(["AUTO", "FIXED"], {
-    message: "Please select a valid slot interval.",
-  }),
-  bufferTime: z
-    .number()
-    .min(0, "Buffer time cannot be negative.")
-    .max(60, "Buffer time cannot exceed 60 minutes."),
-  maxSessionsPerDay: z
-    .number()
-    .int("Maximum sessions per day must be a whole number.")
-    .min(1, "Maximum sessions per day must be at least 1.")
-    .max(50, "Maximum sessions per day cannot exceed 50."),
-  minAdvanceNotice: z
-    .number()
-    .int("Minimum advance notice must be a whole number of minutes.")
-    .min(0, "Minimum advance notice cannot be negative.")
-    .max(10080, "Minimum advance notice cannot exceed 7 days."),
-  bookingWindow: z
-    .number()
-    .int("Booking window must be a whole number of days.")
-    .min(1, "Booking window must be at least 1 day.")
-    .max(365, "Booking window cannot exceed 365 days."),
+  maxTokensPerDay: z
+    .number("Maximum tokens per day must be a valid number.")
+    .int("Maximum tokens must be a whole number.")
+    .min(1, "At least 1 token is required.")
+    .max(100, "Maximum tokens cannot exceed 100."),
   autoConfirmBookings: z.boolean(),
   allowReschedule: z.boolean(),
 });
 
-const exceptionsSchema = z.object({
-  breaks: z.array(z.any()),
-  holidays: z.array(z.any()),
-  blackouts: z.array(z.any()),
-  overrides: z.array(z.any()),
-  vacations: z.array(z.any()),
+export const breakSchema = z.object({
+  label: z.string().trim().min(1, "Break label is required."),
+  startTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid start time."),
+  endTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid end time."),
+});
+
+export const holidaySchema = z.object({
+  reason: z.string().trim().min(1, "Holiday reason is required."),
+  startDate: z.string().min(1, "Start date is required."),
+  endDate: z.string().min(1, "End date is required."),
+});
+
+export const blackoutSchema = z.object({
+  reason: z.string().trim().min(1, "Reason is required."),
+  startDate: z.string().min(1, "Start date is required."),
+  endDate: z.string().min(1, "End date is required."),
+});
+
+export const overrideSchema = z.object({
+  date: z.string().min(1, "Date is required."),
+  startTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid start time."),
+  endTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Invalid end time."),
+});
+
+export const exceptionsSchema = z.object({
+  breaks: z.array(breakSchema),
+  holidays: z.array(holidaySchema),
+  blackouts: z.array(blackoutSchema),
+  overrides: z.array(overrideSchema),
 });
 
 export const scheduleFormSchema = z.object({

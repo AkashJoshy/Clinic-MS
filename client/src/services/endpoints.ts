@@ -20,6 +20,7 @@ export const ENDPOINTS = {
   },
   ADMIN: {
     ADD_DEPARTMENT: "/admin/departments",
+    DEPARTMENTS: "/admin/departments",
     DOCTORS: "/admin/doctors",
     PATIENTS: "/admin/patients",
     SUBSCRIPTION: "/admin/subscriptions",
@@ -98,5 +99,6 @@ export const ENDPOINTS = {
       `/doctor/clinics/${doctorClinicId}/slots/generate`,
     CONFIRM_SLOTS: (doctorClinicId: string) =>
       `/doctor/clinics/${doctorClinicId}/slots/confirm`,
+    UPDATE_SCHEDULE: `/doctor/schedule`,
   },
 };

@@ -7,35 +7,10 @@ import type { SubscriptionFeature } from "../../../domain/types/subscription-pla
 
 export const SlotRulesSchema = new Schema<SlotRules>(
   {
-    sessionDuration: {
+    maxTokensPerDay: {
       type: Number,
       required: true,
       min: 1,
-    },
-    bufferTime: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    maxSessionsPerDay: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    minAdvanceNotice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    bookingWindow: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    slotInterval: {
-      type: String,
-      enum: ["AUTO", "FIXED"],
-      required: true,
     },
     autoConfirmBookings: {
       type: Boolean,

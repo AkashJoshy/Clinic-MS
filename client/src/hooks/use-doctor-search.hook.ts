@@ -1,11 +1,11 @@
-import {
-  MOCK_DOCTORS,
-  type AvailabilityType,
-  type ConsultationMode,
-} from "@/mocks/mock-doctors.mock";
+import type { AvailabilityType } from "@/mocks/mock-doctors.mock";
 import { fetchDoctors } from "@/services/patient.service";
-import type { PatientDoctorDetailsCard } from "@/types/patient";
-import { useState, useMemo, useEffect } from "react";
+import type { PaginatedData } from "@/types/common";
+import type {
+  GetPatientDoctorsQueryParams,
+  PatientDoctorDetailsCard,
+} from "@/types/patient";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 
 export interface FilterState {
@@ -22,6 +22,7 @@ export interface SortState {
 }
 
 const ITEMS_PER_PAGE = 6;
+const SEARCH_DEBOUNCE_MS = 400;
 
 const initialFilters: FilterState = {
   specializations: [],
@@ -32,115 +33,81 @@ const initialFilters: FilterState = {
   rating: "",
 };
 
+const emptyPaginated: PaginatedData<PatientDoctorDetailsCard> = {
+  data: [],
+  hasNextPage: false,
+  hasPreviousPage: false,
+  limit: ITEMS_PER_PAGE,
+  page: 1,
+  total: 0,
+  totalPages: 0,
+};
+
 export function useDoctorSearch() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [doctors, setDoctors] = useState<PatientDoctorDetailsCard[]>([]);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [doctorsData, setDoctorsData] =
+    useState<PaginatedData<PatientDoctorDetailsCard>>(emptyPaginated);
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [sort, setSort] = useState<SortState>({ value: "relevance" });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchAllDoctors = async () => {
-      try {
-        const res = await fetchDoctors();
-        if (res.data) {
-          setDoctors(res.data);
-        }
-      } catch (error) {
-        toast.error("Error While fetching doctors");
-      }
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const queryParams = useMemo<GetPatientDoctorsQueryParams>(() => {
+    return {
+      search: debouncedSearch || undefined,
+      gender: filters.gender !== "any" ? filters.gender : undefined,
+      specializations:
+        filters.specializations.length > 0
+          ? filters.specializations
+          : undefined,
+      consultationModes:
+        filters.consultationModes.length > 0
+          ? filters.consultationModes
+          : undefined,
+      experience: filters.experience || undefined,
+      rating: filters.rating || undefined,
+      sort: sort.value,
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
     };
+  }, [debouncedSearch, filters, sort, currentPage]);
 
-    fetchAllDoctors();
-  }, []);
-
-  const filteredDoctors = useMemo(() => {
-    let docs = [...doctors];
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      docs = docs.filter(
-        (d) =>
-          d.doctor?.displayName.toLowerCase().includes(q) ||
-          d.department?.name.toLowerCase().includes(q),
-      );
+  const fetchDoctorList = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchDoctors(queryParams);
+      if (res.data) {
+        setDoctorsData(res.data);
+      } else {
+        setDoctorsData(emptyPaginated);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Error while fetching doctors");
+      setDoctorsData(emptyPaginated);
+    } finally {
+      setIsLoading(false);
     }
+  }, [queryParams]);
 
-    if (filters.specializations.length > 0) {
-      docs = docs.filter((d) => {
-        if (d.department?.name) {
-          return filters.specializations.includes(
-            d.department?.name[0].toUpperCase() + d.department?.name.slice(1),
-          );
-        }
-      });
-    }
-
-    // Availability
-    // if (filters.availability.length > 0) {
-    //   docs = docs.filter((d) => filters.availability.includes(d.availability));
-    // }
-
-    if (filters.consultationModes.length > 0) {
-      docs = docs.filter((doctor) =>
-        filters.consultationModes.some((mode) =>
-          doctor.doctorClinicDetails.some(
-            (clinic) => clinic.type === mode.toUpperCase(),
-          ),
-        ),
-      );
-    }
-
-    if (filters.gender !== "any") {
-      docs = docs.filter(
-        (d) => d.doctor.gender.toLowerCase() === filters.gender,
-      );
-    }
-
-    if (filters.experience) {
-      docs = docs.filter((d) => {
-        if (filters.experience === "0-5") return d.doctor.experienceYears <= 5;
-        if (filters.experience === "5-10")
-          return d.doctor.experienceYears > 5 && d.doctor.experienceYears <= 10;
-        if (filters.experience === "10+") return d.doctor.experienceYears > 10;
-        return true;
-      });
-    }
-
-    if (filters.rating) {
-      const minRating = parseFloat(filters.rating);
-      docs = docs.filter((d) => d.doctor.averageRating >= minRating);
-    }
-
-    switch (sort.value) {
-      case "rating":
-        docs.sort((a, b) => b.doctor.averageRating - a.doctor.averageRating);
-        break;
-      case "experience":
-        docs.sort(
-          (a, b) => b.doctor.experienceYears - a.doctor.experienceYears,
-        );
-        break;
-      // case "fee":
-      //   docs.sort((a, b) => a.consultationFee - b.consultationFee);
-      //   break;
-      default:
-        break;
-    }
-
-    return docs;
-  }, [searchQuery, filters, sort, doctors]);
+  useEffect(() => {
+    fetchDoctorList();
+  }, [fetchDoctorList]);
 
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredDoctors.length / ITEMS_PER_PAGE),
+    doctorsData.totalPages || Math.ceil(doctorsData.total / ITEMS_PER_PAGE),
   );
 
-  const paginatedDoctors = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredDoctors.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredDoctors, currentPage]);
+  const paginatedDoctors = doctorsData.data ?? [];
+  const filteredDoctors = paginatedDoctors;
 
   function handleSearchChange(q: string) {
     setSearchQuery(q);
@@ -186,6 +153,7 @@ export function useDoctorSearch() {
     sort,
     currentPage,
     totalPages,
+    totalDoctors: doctorsData.total,
     filteredDoctors,
     paginatedDoctors,
     isLoading,

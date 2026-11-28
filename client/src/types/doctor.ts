@@ -9,7 +9,13 @@ import type {
   PlainUrl,
   VerifyPlainUrl,
 } from "./common";
-import type { DoctorClinic, ExceptionsData, Session, SlotRules, WeeklySchedule } from "./doctor-clinic";
+import type {
+  DoctorClinic,
+  ExceptionsData,
+  Session,
+  SlotRules,
+  WeeklySchedule,
+} from "./doctor-clinic";
 import type { Clinic } from "./clinic";
 import type { DepartmentData } from "./admin";
 import type { RouteRoleProps } from "./auth";
@@ -54,8 +60,10 @@ export interface UpdateDoctorStatusDto {
   reviewMessage?: string;
 }
 
-export interface RejectedDoctor
-  extends Omit<Doctor, "userId" | "subscription"> {
+export interface RejectedDoctor extends Omit<
+  Doctor,
+  "userId" | "subscription"
+> {
   reviewedReason: string | null;
 }
 
@@ -130,7 +138,6 @@ export type DoctorProfileData = {
   >;
 };
 
-
 export type BasicDoctorInfo = {
   user: Pick<User, "email" | "phone" | "isActive" | "isBlocked"> | null;
   doctor: Omit<
@@ -164,7 +171,13 @@ export type DoctorInfo = Omit<BasicDoctorInfo, "doctorClinic"> & {
   doctorClinicDetails: (BasicDoctorInfo["doctorClinic"][number] & {
     clinic: Pick<
       Clinic,
-      "id" | "name" | "about" | "location" | "status" | "establishmentLicenceDoc" | "registrationDoc"
+      | "id"
+      | "name"
+      | "about"
+      | "location"
+      | "status"
+      | "establishmentLicenceDoc"
+      | "registrationDoc"
     > | null;
     clinicAddress: BaseAddress | null;
   })[];
@@ -221,10 +234,10 @@ export type AdminDoctorInfo = Omit<
       | null;
     clinicAddress: BaseAddress | null;
   })[];
-  address: BaseAddress | null
+  address: BaseAddress | null;
 };
 
-export type DoctorCompleteInfo = AdminDoctorInfo
+export type DoctorCompleteInfo = AdminDoctorInfo;
 
 export interface DoctorStatusUpdateDto {
   id: string;
@@ -256,7 +269,7 @@ export interface DoctorProfileCardProps {
   doctor: DoctorProfCard;
   department: { id: string; name: string } | null;
   isBlocked: boolean;
-  role: RouteRoleProps
+  role: RouteRoleProps;
 }
 
 type DoctorQualificationCard = Pick<
@@ -276,7 +289,7 @@ type DoctorQualificationCard = Pick<
 
 export interface DoctorQualificationsCardProps {
   doctor: DoctorQualificationCard;
-  role: RouteRoleProps
+  role: RouteRoleProps;
   onViewDocument: (url: string) => void;
   formatDate: (date: any) => string;
   onDocumentAction?: (
@@ -324,9 +337,7 @@ export interface DoctorClinicCardProps {
   clinic: ClinicCard;
   doctor: Omit<
     Doctor,
-    | "registrationDoc"
-    | "medicalLicenceDoc"
-    | "profilePicture"
+    "registrationDoc" | "medicalLicenceDoc" | "profilePicture"
   > & {
     registrationDoc: VerifyPlainUrl;
   } & {
@@ -434,3 +445,14 @@ export interface DoctorPersonalDetails {
   publicProfileVisible: boolean;
   section: "PROFILE_INFO";
 }
+
+export type GetAllDoctorsQueryParams = {
+  search?: string | undefined;
+  gender?: Gender | undefined;
+  departmentIds?: string[] | undefined;
+  sortBy: string;
+  limit: number;
+  approvedPage: number;
+  pendingPage: number;
+  rejectedPage: number;
+};

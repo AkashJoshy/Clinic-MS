@@ -1,41 +1,52 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
 import {
   approveDoctor,
   getAllDoctors,
   rejectDoctor,
 } from "@/services/admin.service";
 import { getAllDepartments } from "@/services/shared.service";
-
 import { useMutate } from "@/hooks/use-mutate.hook";
-
 import type {
   DoctorDetailsCardInfo,
   DoctorRejectDto,
   DoctorStatusUpdateDto,
+  GetAllDoctorsQueryParams,
 } from "@/types/doctor";
 import type { DepartmentData, DoctorManagementTab } from "@/types/admin";
-
 import { defaultDoctorFilters, DOCTOR_TABS } from "@/constants/admin.constant";
 import type { DoctorFilterState } from "@/types/admin/doctor.types";
+import type { PaginatedData } from "@/types/common";
+import type { Gender } from "@/types/patient";
 
 const ITEMS_PER_PAGE = 6;
+const SEARCH_DEBOUNCE_MS = 400;
+
+const emptyPaginated: PaginatedData<DoctorDetailsCardInfo> = {
+  data: [],
+  hasNextPage: false,
+  hasPreviousPage: false,
+  limit: ITEMS_PER_PAGE,
+  page: 1,
+  total: 0,
+  totalPages: 0,
+};
 
 export const useDoctorManagement = () => {
   // States
   const [activeTab, setActiveTab] = useState<DoctorManagementTab>("all");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [doctorDetails, setDoctorDetails] = useState<DoctorDetailsCardInfo[]>(
-    [],
-  );
+  const [approved, setApproved] = useState(emptyPaginated);
+  const [pending, setPending] = useState(emptyPaginated);
+  const [rejected, setRejected] = useState(emptyPaginated);
 
   const [rejectTarget, setRejectTarget] =
     useState<DoctorDetailsCardInfo | null>(null);
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [departments, setDepartments] = useState<DepartmentData[]>([]);
@@ -46,20 +57,56 @@ export const useDoctorManagement = () => {
   const [pendingPage, setPendingPage] = useState(1);
   const [rejectedPage, setRejectedPage] = useState(1);
 
+  // Debounce search so we don't hit the API on every keystroke
+  useEffect(() => {
+    const t = setTimeout(
+      () => setDebouncedSearch(searchQuery.trim()),
+      SEARCH_DEBOUNCE_MS,
+    );
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  const queryParams = useMemo<GetAllDoctorsQueryParams>(
+    () => ({
+      search: debouncedSearch || undefined,
+      gender:
+        filters.gender !== "ALL"
+          ? (filters.gender.toUpperCase() as Gender)
+          : undefined,
+      departmentIds:
+        filters.department.length < 1
+          ? undefined
+          : filters.department.filter((d) => d.name !== "ALL").map((d) => d.id),
+      sortBy: filters.sortBy,
+      limit: ITEMS_PER_PAGE,
+      approvedPage: allPage,
+      pendingPage,
+      rejectedPage,
+    }),
+    [debouncedSearch, filters, allPage, pendingPage, rejectedPage],
+  );
+
   // Fetch doctors
   const fetchDoctors = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const response = await getAllDoctors();
-      setDoctorDetails(response.data ?? []);
+      // console.log(queryParams);
+      console.log(filters.department);
+      const response = await getAllDoctors(queryParams);
+
+      setApproved(response.data.approved ?? emptyPaginated);
+      setPending(response.data.pending ?? emptyPaginated);
+      setRejected(response.data.rejected ?? emptyPaginated);
     } catch (error: any) {
       toast.error(error?.message || "Failed to fetch doctors");
-      setDoctorDetails([]);
+      setApproved(emptyPaginated);
+      setPending(emptyPaginated);
+      setRejected(emptyPaginated);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [queryParams]);
 
   // Fetch departments
   const fetchDepartments = useCallback(async () => {
@@ -75,167 +122,31 @@ export const useDoctorManagement = () => {
   }, []);
 
   useEffect(() => {
-    fetchDoctors();
     fetchDepartments();
-  }, [fetchDoctors, fetchDepartments]);
+  }, [fetchDepartments]);
 
-  // Search and filter doctors
-  const filteredDoctors = useMemo(() => {
-    const result = doctorDetails.filter((det) => {
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
+  // Refetches whenever search / filters / any page changes
+  useEffect(() => {
+    fetchDoctors();
+  }, [fetchDoctors]);
 
-        const matchesSearch =
-          det.doctor?.displayName?.toLowerCase().includes(query) ||
-          det.doctorClinicDetails?.some((dc) =>
-            dc.clinic?.name?.toLowerCase().includes(query),
-          );
-
-        if (!matchesSearch) return false;
-      }
-
-      if (
-        filters.gender !== "ALL" &&
-        det.doctor.gender !== filters.gender.toUpperCase()
-      ) {
-        return false;
-      }
-
-      const isAllDepartment = filters.department.some(
-        (department) => department.name === "ALL",
-      );
-
-      if (
-        !isAllDepartment &&
-        !filters.department.some(
-          (department) => department.id === det.doctor.departmentId,
-        )
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-
-    // Sorting
-    result.sort((a, b) => {
-      switch (filters.sortBy) {
-        case "NEWEST":
-          return (
-            new Date(b.doctor?.createdAt || 0).getTime() -
-            new Date(a.doctor?.createdAt || 0).getTime()
-          );
-
-        case "OLDEST":
-          return (
-            new Date(a.doctor?.createdAt || 0).getTime() -
-            new Date(b.doctor?.createdAt || 0).getTime()
-          );
-
-        case "NAME_ASC":
-          return a.doctor?.displayName.localeCompare(b.doctor?.displayName);
-
-        case "NAME_DESC":
-          return b.doctor?.displayName.localeCompare(a.doctor?.displayName);
-
-        default:
-          return 0;
-      }
-    });
-
-    return result;
-  }, [doctorDetails, searchQuery, filters]);
-
-  // Status-based lists
-  const approvedDoctors = useMemo(
-    () => filteredDoctors.filter((det) => det.doctor?.status === "APPROVED"),
-    [filteredDoctors],
-  );
-
-  const pendingDoctors = useMemo(
-    () => filteredDoctors.filter((det) => det.doctor?.status === "PENDING"),
-    [filteredDoctors],
-  );
-
-  const rejectedDoctors = useMemo(
-    () => filteredDoctors.filter((det) => det.doctor?.status === "REJECTED"),
-    [filteredDoctors],
-  );
-
-  // Pagination calculations
-  const allTotalPages = Math.ceil(approvedDoctors.length / ITEMS_PER_PAGE);
-  const pendingTotalPages = Math.ceil(pendingDoctors.length / ITEMS_PER_PAGE);
-  const rejectedTotalPages = Math.ceil(rejectedDoctors.length / ITEMS_PER_PAGE);
-
-  const paginatedAll = useMemo(
-    () =>
-      approvedDoctors.slice(
-        (allPage - 1) * ITEMS_PER_PAGE,
-        allPage * ITEMS_PER_PAGE,
-      ),
-    [approvedDoctors, allPage],
-  );
-
-  const paginatedPending = useMemo(
-    () =>
-      pendingDoctors.slice(
-        (pendingPage - 1) * ITEMS_PER_PAGE,
-        pendingPage * ITEMS_PER_PAGE,
-      ),
-    [pendingDoctors, pendingPage],
-  );
-
-  const paginatedRejected = useMemo(
-    () =>
-      rejectedDoctors.slice(
-        (rejectedPage - 1) * ITEMS_PER_PAGE,
-        rejectedPage * ITEMS_PER_PAGE,
-      ),
-    [rejectedDoctors, rejectedPage],
-  );
-
-  // Mutations
-  const { mutate } = useMutate(approveDoctor);
+  // Mutations (refetch after success so lists, counts and pages stay correct)
+  const { mutate } = useMutate(approveDoctor, {
+    onSuccess: () => {
+      fetchDoctors();
+    },
+  });
 
   const { mutate: rejectHandler } = useMutate(rejectDoctor, {
     onSuccess: () => {
-      if (!rejectTarget) return;
-
-      setDoctorDetails((prev) =>
-        prev.map((doctor) =>
-          doctor.doctor?.id === rejectTarget.doctor.id
-            ? {
-                ...doctor,
-                doctor: {
-                  ...doctor.doctor,
-                  status: "REJECTED",
-                },
-              }
-            : doctor,
-        ),
-      );
-
       setRejectTarget(null);
+      fetchDoctors();
     },
   });
 
   // Approve doctor
   const handleApprove = (data: DoctorStatusUpdateDto) => {
     mutate(data);
-
-    setDoctorDetails((prev) =>
-      prev.map((doctor) =>
-        doctor.doctor?.id === data.id
-          ? {
-              ...doctor,
-              doctor: {
-                ...doctor.doctor,
-                status: "APPROVED",
-              },
-            }
-          : doctor,
-      ),
-    );
   };
 
   // Confirm rejection
@@ -245,19 +156,19 @@ export const useDoctorManagement = () => {
     rejectHandler(data);
   };
 
-  // Tab counts
+  // Tab counts (straight from server totals)
   const doctorTabsWithCount = useMemo(
     () =>
       DOCTOR_TABS.map((tab) => ({
         ...tab,
         count:
           tab.key === "all"
-            ? approvedDoctors.length
+            ? approved.total
             : tab.key === "rejected"
-              ? rejectedDoctors.length
-              : pendingDoctors.length,
+              ? rejected.total
+              : pending.total,
       })),
-    [approvedDoctors.length, rejectedDoctors.length, pendingDoctors.length],
+    [approved.total, pending.total, rejected.total],
   );
 
   // Search handler
@@ -277,22 +188,14 @@ export const useDoctorManagement = () => {
   };
 
   return {
-    // Data
-    doctorDetails,
     departments,
-    approvedDoctors,
-    pendingDoctors,
-    rejectedDoctors,
-
-    // Loading
+    approvedDoctors: approved.data,
+    pendingDoctors: pending.data,
+    rejectedDoctors: rejected.data,
     isLoading,
-
-    // Tabs
     activeTab,
     setActiveTab,
     doctorTabsWithCount,
-
-    // Search and filters
     searchQuery,
     handleSearchChange,
     filters,
@@ -300,29 +203,23 @@ export const useDoctorManagement = () => {
     handleApplyFilters,
     isFilterOpen,
     setIsFilterOpen,
-
-    // Pagination
     allPage,
     setAllPage,
     pendingPage,
     setPendingPage,
     rejectedPage,
     setRejectedPage,
-    allTotalPages,
-    pendingTotalPages,
-    rejectedTotalPages,
-    paginatedAll,
-    paginatedPending,
-    paginatedRejected,
-
-    // Actions
+    allTotalPages: approved.totalPages,
+    pendingTotalPages: pending.totalPages,
+    rejectedTotalPages: rejected.totalPages,
+    paginatedAll: approved.data,
+    paginatedPending: pending.data,
+    paginatedRejected: rejected.data,
     handleApprove,
     rejectTarget,
     setRejectTarget,
     handleRejectConfirm,
     rejectHandler,
-
-    // Document preview
     previewImage,
     setPreviewImage,
   };

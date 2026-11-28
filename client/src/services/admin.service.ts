@@ -2,19 +2,22 @@ import api from "@/api/interceptors";
 import type {
   DepartmentData,
   DepartmentDto,
+  GetAllDepartmentsQueryParams,
   UpdatePlatformSettingsData,
 } from "@/types/admin";
 import type {
   DoctorRejectDto,
   DoctorStatusUpdateDto,
   DocumentDto,
+  GetAllDoctorsQueryParams,
 } from "@/types/doctor";
 import { ENDPOINTS } from "./endpoints";
-import type { DeletePatientDto } from "@/types/patient";
+import type { DeletePatientDto, GetAllPatientsQueryParams } from "@/types/patient";
 import type { UpdateMethods } from "@/types/common";
 import { ROLE_VALUES } from "@/constants/role.constants";
 import type {
   BaseSubscriptionData,
+  GetAllSubscriptionPlansQueryParams,
   SubscriptionPlan,
   UpdateSubscriptionStatusData,
 } from "@/types/subscription";
@@ -100,9 +103,37 @@ export const editDepartment = async (departmentData: DepartmentData) => {
   }
 };
 
-export const getAllDoctors = async () => {
+export const getAllDepartments = async (
+  params?: GetAllDepartmentsQueryParams,
+) => {
+  try {
+    const res = await api.get(ENDPOINTS.ADMIN.DEPARTMENTS, {
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
+      authRole: ROLE_VALUES.lower.ADMIN,
+    });
+    return res.data;
+  } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
+    return {
+      success: false,
+      message: error.message || "Network Error",
+    };
+  }
+};
+
+export const getAllDoctors = async (params: GetAllDoctorsQueryParams) => {
   try {
     const res = await api.get(ENDPOINTS.ADMIN.DOCTORS, {
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
       authRole: ROLE_VALUES.lower.ADMIN,
     });
     return res.data;
@@ -206,9 +237,13 @@ export const updateDoctorStatus = async (data: {
   }
 };
 
-export const getAllPatients = async () => {
+export const getAllPatients = async (params?: GetAllPatientsQueryParams) => {
   try {
     const res = await api.get(ENDPOINTS.ADMIN.PATIENTS, {
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
       authRole: ROLE_VALUES.lower.ADMIN,
     });
     return res.data;
@@ -331,9 +366,15 @@ export const createNewSubscriptionPlan = async (
   }
 };
 
-export const getAllSubscriptionPlans = async () => {
+export const getAllSubscriptionPlans = async (
+  params?: GetAllSubscriptionPlansQueryParams,
+) => {
   try {
     const res = await api.get(ENDPOINTS.ADMIN.SUBSCRIPTION, {
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
       authRole: ROLE_VALUES.lower.ADMIN,
     });
     return res.data;

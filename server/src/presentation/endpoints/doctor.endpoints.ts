@@ -10,6 +10,7 @@ const SUBSCRIPTION_BASE = "/subscriptions";
 const SUBSCRIPTION_PURCHASE_BASE = `${SUBSCRIPTION_BASE}/purchase`;
 const KYC_BASE = "/kyc";
 const SETTINGS_BASE = "/doctor-settings";
+const SCHEDULE_BASE = "/schedule";
 
 
 export const DOCTOR_ENDPOINTS = {
@@ -87,5 +88,9 @@ export const DOCTOR_ENDPOINTS = {
     BASE: SETTINGS_BASE,
     UPDATE_ONE: `${SETTINGS_BASE}`,
     FETCH_ONE: `${SETTINGS_BASE}`
+  },
+  SCHEDULE: {
+    BASE: SCHEDULE_BASE,
+    UPDATE: SCHEDULE_BASE,
   }
 };

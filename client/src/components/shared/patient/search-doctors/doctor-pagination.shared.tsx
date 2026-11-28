@@ -9,10 +9,9 @@ interface DoctorPaginationProps {
 
 const DoctorPagination = ({
   currentPage,
-  totalPages,
+  totalPages, 
   onPageChange,
 }: DoctorPaginationProps) => {
-  if (totalPages <= 1) return null;
 
   const getPages = () => {
     const pages: (number | "...")[] = [];

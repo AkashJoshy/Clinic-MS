@@ -1,5 +1,11 @@
-import type { PatientBasicInfoResponseDto } from "../../../../dto/patient.dto.ts";
+import type {
+  GetAllPatientsQueryDto,
+  PatientBasicInfoResponseDto,
+} from "../../../../dto/patient.dto.ts";
+import type { PaginatedResponseDto } from "../../../../dto/shared.dto.ts";
 
 export interface IGetAllPatientsBasicUseCase {
-  execute(): Promise<PatientBasicInfoResponseDto[]>;
+  execute(
+    query: GetAllPatientsQueryDto,
+  ): Promise<PaginatedResponseDto<PatientBasicInfoResponseDto>>;
 }

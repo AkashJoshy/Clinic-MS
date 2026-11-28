@@ -1,5 +1,6 @@
 import type {
   EmergencyContactDetails,
+  GetPatientDoctorsQueryParams,
   PersonalProfile,
   ProfileAddress,
   ProfileDto,
@@ -126,13 +127,21 @@ export const createPatientProfile = async (profileData: ProfileDto) => {
   }
 };
 
-export const fetchDoctors = async () => {
+export const fetchDoctors = async (params?: GetPatientDoctorsQueryParams) => {
   try {
     const res = await api.get(ENDPOINTS.PATIENT.DOCTORS, {
-      authRole: "patient"
+      params,
+      paramsSerializer: {
+        indexes: null,
+      },
+      authRole: "patient",
     });
     return res.data;
   } catch (error: any) {
+    if (error.response) {
+      throw error.response.data;
+    }
+
     return {
       success: false,
       message:

@@ -1,47 +1,56 @@
 import { CalendarClock, ChevronDown, CircleHelp, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { PreviewGeneratedSlots } from "@/components/shared/doctor/slot-schedules/preview-generated-slots.shared";
 import { SlotRulesPreferences } from "@/components/shared/doctor/slot-schedules/rules-preferences.shared";
 import { WeeklySchedule } from "@/components/shared/doctor/slot-schedules/weekly-schedule.shared";
 import DoctorPageHeader from "@/components/shared/page-header.shared";
 import { Exceptions } from "@/components/shared/doctor/slot-schedules/exceptions.shared";
 import { useScheduleForm } from "@/hooks/use-schedule-form.hook";
 import { useMutate } from "@/hooks/use-mutate.hook";
-import { confirmSlots, generateSlots } from "@/services/doctor.service";
 import type {
   ConfirmedSlots,
   GenerateSlotsData,
   SlotsWithDate,
 } from "@/types/doctor-clinic";
-
 import { useAuthStore } from "@/store";
+import { updateDoctorSchedule } from "@/services/doctor.service";
 
 const SchedulePage = () => {
   const [previewSlots, setPreviewSlots] = useState<SlotsWithDate[]>([]);
 
   const doctor = useAuthStore((state) => state.users.doctor);
+  const updateDoctor = useAuthStore((state) => state.updateDoctor);
   const isDark = doctor?.theme === "DARK";
 
-  const { mutate, isPending } = useMutate(generateSlots, {
+  const { mutate, isPending } = useMutate(updateDoctorSchedule, {
     onSuccess(data) {
-      console.log("Data iam getting from API");
-      console.log(data.data.generatedSlots);
-      console.log(data.data.generatedSlots.length);
+      const scheduleData = data.data;
 
-      if (data.data) {
-        setSchedule(data.data.weeklySchedule);
-        setSlotRules(data.data.slotRules);
-        setExceptions(data.data.exceptions);
-        setPreviewSlots(data.data.generatedSlots);
+      if (scheduleData) {
+        const updatedClinicDetails = doctorDetails?.doctorClinicDetails.map(
+          (dc) =>
+            dc.clinic?.id === scheduleData.clinicId
+              ? {
+                  ...dc,
+                  weeklySchedule: scheduleData.weeklySchedule,
+                  slotRules: scheduleData.slotRules,
+                  exceptions: scheduleData.exceptions,
+                }
+              : dc,
+        );
+
+        updateDoctor({
+          doctorClinicDetails: updatedClinicDetails,
+        });
+
+        reset(scheduleData);
+
+        document.getElementById("doctor-main-layout")?.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
       }
     },
   });
-
-  const { mutate: confirmSlotMutate, isPending: confirmSlotIsPending } =
-    useMutate(confirmSlots, {
-      onSuccess(data) {},
-    });
 
   const {
     exceptions,
@@ -62,7 +71,9 @@ const SchedulePage = () => {
     isSubmitted,
     watch,
     trigger,
-    handleGenerateSlots,
+    isDirty,
+    reset,
+    handleSchedule,
   } = useScheduleForm<GenerateSlotsData>(mutate);
 
   const mutedTextClass = isDark ? "text-white/50" : "text-slate-500";
@@ -76,6 +87,7 @@ const SchedulePage = () => {
 
   return (
     <div
+      id="schedule-page"
       className={`relative min-h-full space-y-6 border p-6 shadow-2xs lg:p-8 ${
         isDark ? "border-white/10 bg-white/[0.02]" : "border-slate-200 bg-white"
       }`}
@@ -87,7 +99,6 @@ const SchedulePage = () => {
         isDark={isDark}
       />
 
-      {/* Session Schedule Header */}
       <div
         className={`flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-end sm:justify-between ${
           isDark ? "border-white/10" : "border-slate-200"
@@ -113,7 +124,6 @@ const SchedulePage = () => {
           </p>
         </div>
 
-        {/* Clinic Selector */}
         <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:justify-between">
           <div className="w-full sm:w-[240px]">
             <label
@@ -175,7 +185,6 @@ const SchedulePage = () => {
         </div>
       </div>
 
-      {/* Selected Clinic Information */}
       {selectedClinic && (
         <div
           className={`flex items-center gap-3 rounded-xl border px-4 py-3 ${
@@ -260,58 +269,10 @@ const SchedulePage = () => {
                 setExceptions(value);
                 setValue("exceptions", value);
               }}
-              generateSlots={handleGenerateSlots}
+              isPending={isPending}
+              isDirty={isDirty}
+              handleSchedule={handleSchedule}
               disabled={scheduleLength === 0}
-            />
-          )}
-        </div>
-
-        <div className="min-w-0">
-          {schedule && slotRules && exceptions && (
-            <PreviewGeneratedSlots
-              schedule={schedule}
-              rules={slotRules}
-              previewSlots={previewSlots}
-              exceptions={exceptions}
-              isPending={confirmSlotIsPending}
-              isDark={isDark}
-              previewDate={new Date("2026-09-03")}
-              onDateChange={(newDate) => {
-                console.log("Preview date:", newDate);
-              }}
-              onConfirm={() => {
-                console.log("All Confirmed Slots:");
-                console.log(previewSlots);
-
-                const doctorClinic =
-                  doctorDetails?.doctorClinicDetails.find(
-                    (dc) => dc.clinic?.id === selectedClinicId,
-                  ) ?? null;
-
-                if (
-                  !doctorDetails?.doctor?.id ||
-                  !doctorClinic?.clinic?.id ||
-                  !doctorClinic.id
-                ) {
-                  toast.error("Doctor or clinic details are missing");
-                  return;
-                }
-
-                if (doctorClinic && previewSlots.length > 0 && doctorDetails) {
-                  const data: ConfirmedSlots = {
-                    doctorId: doctorDetails.doctor.id,
-                    clinicId: doctorClinic.clinic.id,
-                    doctorClinicId: doctorClinic.id,
-                    generatedSlots: previewSlots,
-                  };
-
-                  confirmSlotMutate(data);
-                }
-              }}
-              disabled={false}
-              onUnlock={() => {
-                console.log("Unlock schedule");
-              }}
             />
           )}
         </div>

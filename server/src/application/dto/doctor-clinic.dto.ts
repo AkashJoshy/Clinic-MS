@@ -1,5 +1,5 @@
 import type { DoctorClinic } from "../../domain/entities/doctor-clinic.entity.ts";
-import type { BreakWithoutId, Exceptions, OneTimeAvailabilityWithoutId, ScheduleExceptionWithoutId, Session, SlotRules, SlotStatus, WeeklySchedule, WeeklyScheduleWithoutShiftId } from "../../domain/types/doctor-clinic.types.ts";
+import type { Exceptions, Break, OneTimeAvailability, ScheduleException, Session, SlotRules, SlotStatus, WeeklySchedule, WeeklyScheduleWithoutShiftId } from "../../domain/types/doctor-clinic.types.ts";
 import type { DayOfWeek, ServiceMode } from "../../domain/types/shared.types.ts";
 import type { SafeClinic } from "./clinic.dto.ts";
 import type { SafeAddress } from "./shared.dto.ts";
@@ -19,7 +19,7 @@ export type SafeDoctorClinic = Omit<
 
 export type SafeDoctorClinicResponseDto = SafeDoctorClinic
 
-export interface GenerateSlotsDto {
+export interface UpdateScheduleDto {
   doctorId: string;
   clinicId: string;
   doctorClinicId: string;
@@ -35,11 +35,11 @@ export interface DoctorClinicScheduleWithoutIdDto {
 }
 
 export interface ExceptionsWithoutIdDto {
-  breaks: BreakWithoutId[];
-  vacations: ScheduleExceptionWithoutId[];
-  blackouts: ScheduleExceptionWithoutId[];
-  holidays: ScheduleExceptionWithoutId[];
-  overrides: OneTimeAvailabilityWithoutId[];
+  breaks: Break[];
+  vacations: ScheduleException[];
+  blackouts: ScheduleException[];
+  holidays: ScheduleException[];
+  overrides: OneTimeAvailability[];
 }
 
 export type SlotsWithDateResponseDto = {
@@ -54,11 +54,10 @@ export type SlotsWithDateResponseDto = {
   }[];
 };
 
-export type DoctorSlotsWithDateResponseDto = {
+export type DoctorScheduleResponseDto = {
   doctorId: string;
   clinicId: string;
   doctorClinicId: string;
-  generatedSlots: SlotsWithDateResponseDto[],
   weeklySchedule: WeeklySchedule[],
   slotRules: SlotRules,
   exceptions: Exceptions

@@ -1,4 +1,4 @@
-import type { FieldError, FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
+import type { FieldError, FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormReset, UseFormSetValue, UseFormTrigger, UseFormWatch } from "react-hook-form";
 import type {
   ApprovalStatus,
   DayOfWeek,
@@ -48,19 +48,20 @@ export interface OneTimeAvailability {
 
 export interface ExceptionsData {
   breaks: Break[]
-  vacations: ScheduleException[];
+  // vacations: ScheduleException[];
   blackouts: ScheduleException[];
   holidays: ScheduleException[];
   overrides: OneTimeAvailability[];
 }
 
 export interface SlotRules {
-  sessionDuration: number;
-  bufferTime: number;
-  maxSessionsPerDay: number;
-  minAdvanceNotice: number;
-  bookingWindow: number;
-  slotInterval: "AUTO" | "FIXED";
+  // sessionDuration: number;
+  maxTokensPerDay: number;
+  // bufferTime: number;
+  // maxSessionsPerDay: number;
+  // minAdvanceNotice: number;
+  // bookingWindow: number;
+  // slotInterval: "AUTO" | "FIXED";
   autoConfirmBookings: boolean;
   allowReschedule: boolean;
 }
@@ -108,12 +109,7 @@ export interface Shift {
 export type ScheduleData = Record<string, Shift[]>;
 
 export interface SlotRules {
-  sessionDuration: number;
-  bufferTime: number;
-  maxSessionsPerDay: number;
-  minAdvanceNotice: number;
-  bookingWindow: number;
-  slotInterval: 'AUTO' | 'FIXED';
+  maxTokensPerDay: number;
   autoConfirmBookings: boolean;
   allowReschedule: boolean;
 }
@@ -140,7 +136,9 @@ export interface ExceptionsProps {
   exceptions: ExceptionsData;
   onChange: (updatedExceptions: ExceptionsData) => void;
   disabled: boolean;
-  generateSlots: () => void
+  handleSchedule: () => void
+  isPending: boolean
+  isDirty: boolean
   optional?: boolean;
   isDark: boolean;
 }
@@ -169,7 +167,7 @@ export interface PreviewGeneratedSlotsProps {
   isDark: boolean
 }
 
-export type ActiveTab = "breaks" | "vacations" | "blackouts" | "holidays";
+export type ActiveTab = "breaks" | "blackouts" | "holidays";
 
 export interface BreakForm {
   label: string;
@@ -207,8 +205,10 @@ export interface UseScheduleFormReturn {
   errors: FieldErrors<ScheduleFormSchemaFormData>;
   isSubmitted: boolean
   trigger: UseFormTrigger<ScheduleFormSchemaFormData>
+  isDirty: boolean
+  reset: UseFormReset<ScheduleFormSchemaFormData>
   handleSubmit: UseFormHandleSubmit<ScheduleFormSchemaFormData>;
-  handleGenerateSlots: () => void
+  handleSchedule: () => void
 }
 
 export type UseWeeklyScheduleParams = Pick<
@@ -224,6 +224,9 @@ export interface GenerateSlotsData {
   exceptions: ExceptionsData;
   slotRules: SlotRules;
 }
+
+export type UpdateScheduleData = GenerateSlotsData;
+
 
 export type SlotsWithDate = {
   date: string;
@@ -281,7 +284,7 @@ export interface DoctorAddressDetailsProps {
   isDark: boolean
 }
 
-export type ExceptionTab = "breaks" | "vacations" | "blackouts" | "holidays";
+export type ExceptionTab = "breaks" | "blackouts" | "holidays";
 
 export interface ExceptionTabsProps {
   activeTab: ExceptionTab;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, SearchX, RotateCcw, Layers, Palette } from "lucide-react";
 import { useAuthStore } from "@/store";
@@ -12,6 +12,7 @@ import {
 import SubscriptionStatusModal from "@/components/shared/admin/subscriptions/subscription-status.modal";
 import { useSubscriptions } from "@/hooks/use-subscriptions.hook";
 import { getSubscriptionsPageTheme } from "@/helpers/admin/subscription.helper";
+import { Pagination } from "@/components/layout/pagination.layout";
 
 type SubscriptionTab = "PLANS" | "PALETTES";
 
@@ -42,9 +43,22 @@ const SubscriptionsPage = () => {
     stats,
     statusFilter,
     statusPlan,
+    isLoading,
+    currentPage,
+    currentTotalPages,
+    currentTotalItems,
+    handlePageChange,
+    itemsPerPage,
   } = useSubscriptions();
 
-  const theme = getSubscriptionsPageTheme(isDark)
+  const theme = getSubscriptionsPageTheme(isDark);
+
+  useEffect(() => {
+    window.scrollTo({
+      behavior: "smooth",
+      top: 0,
+    });
+  }, [currentPage]);
 
   return (
     <div
@@ -90,7 +104,20 @@ const SubscriptionsPage = () => {
 
           <SubscriptionStatsSection stats={stats} isDark={isDark} />
 
-          {filteredPlans.length === 0 ? (
+          {isLoading ? (
+            <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 2xl:grid-cols-3 2xl:gap-6">
+              {Array.from({ length: itemsPerPage }).map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-72 animate-pulse rounded-2xl border ${
+                    isDark
+                      ? "border-slate-800 bg-slate-900/50"
+                      : "border-slate-200 bg-slate-100/50"
+                  }`}
+                />
+              ))}
+            </div>
+          ) : filteredPlans.length === 0 ? (
             <div
               className={`space-y-4 rounded-2xl border border-dashed px-4 py-16 text-center ${theme.emptyContainer}`}
             >
@@ -157,6 +184,17 @@ const SubscriptionsPage = () => {
                 ))}
               </motion.div>
             </AnimatePresence>
+          )}
+
+          {currentTotalPages >= 1 && !isLoading && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={currentTotalPages}
+              totalItems={currentTotalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={handlePageChange}
+              isDark={isDark}
+            />
           )}
 
           <SubscriptionFormModal
